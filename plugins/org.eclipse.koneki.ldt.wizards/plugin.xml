@@ -20,7 +20,7 @@
       <wizard
             category="org.eclipse.koneki.ldt.category"
             class="org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard:org.eclipse.koneki.ldt.nature"
-            icon="img/lua.gif"
+            icon="img/lua_newprj_wiz.gif"
             id="org.eclipse.koneki.ldt.wizard"
             name="LuaProject"
             project="true">
