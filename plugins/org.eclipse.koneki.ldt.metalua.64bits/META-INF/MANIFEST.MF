@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Metalua compiled for 64 bits architectures (incubator)
+Bundle-SymbolicName: org.eclipse.koneki.ldt.metalua.64bits
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Sierra Wireless
+Fragment-Host: org.eclipse.koneki.ldt.metalua;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-PlatformFilter: (osgi.arch=x86_64)

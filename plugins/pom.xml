@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>aggregator</artifactId>
+		<groupId>org.eclipse.koneki.ldt</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+  <groupId>org.eclipse.koneki.ldt</groupId>
+  <artifactId>plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>com.naef.jnlua</module>
+    <module>com.naef.jnlua.linux</module>
+    <module>com.naef.jnlua.linux64</module>
+    <module>com.naef.jnlua.macosx</module>
+    <module>com.naef.jnlua.windows</module>
+    <module>com.naef.jnlua.windows64</module>
+	<module>org.eclipse.koneki.ldt</module>
+    <module>org.eclipse.koneki.ldt.completion</module>
+    <module>org.eclipse.koneki.ldt.editor</module>
+    <module>org.eclipse.koneki.ldt.metalua</module>
+    <module>org.eclipse.koneki.ldt.metalua.32bits</module>
+    <module>org.eclipse.koneki.ldt.metalua.64bits</module>
+    <module>org.eclipse.koneki.ldt.parser</module>
+    <module>org.eclipse.koneki.ldt.templates</module>
+    <module>org.eclipse.koneki.ldt.ui</module>
+    <module>org.eclipse.koneki.ldt.wizards</module>
+  </modules>
+</project>

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JNLua - Linux x86 (incubator)
+Bundle-SymbolicName: com.naef.jnlua.linux
+Bundle-Version: 0.9.1.qualifier
+Bundle-Vendor: NAEF
+Fragment-Host: com.naef.jnlua;bundle-version="0.9.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Eclipse-PlatformFilter: (&(osgi.os=linux)(osgi.arch=x86))
+Bundle-NativeCode: lib/libjnlua5.1.so ; lib/liblua5.1.so
+Bundle-ClassPath: lib/,
+  .

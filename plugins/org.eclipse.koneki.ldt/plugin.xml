@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?><!--
+    Copyright (c) 2009, 2011 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Sierra Wireless - initial API and implementation
+ -->
+
+<plugin>
+   <extension
+         id="nature"
+         name="Lua nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.koneki.ldt.core.LuaNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            describer="org.eclipse.koneki.ldt.core.LuaContentDescriber"
+            file-extensions="lua"
+            id="org.eclipse.koneki.ldt.content-type"
+            name="Lua Source File"
+            priority="high">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.language">
+      <language
+            class="org.eclipse.koneki.ldt.core.LuaLanguageToolkit"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </language>
+   </extension>
+
+</plugin>
