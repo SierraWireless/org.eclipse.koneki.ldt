@@ -258,11 +258,12 @@ public final class DLTKObjectFactory {
 				new NamedJavaFunction() {
 					@Override
 					public int invoke(LuaState l) {
-						Literal ref = l.checkJavaObject(1, Literal.class);
-						if (ref != null) {
-							l.pushJavaObject(new Pair(ref, l.checkJavaObject(2, Statement.class)));
+						final Expression left = l.checkJavaObject(1, Expression.class);
+						final Statement right = l.checkJavaObject(2, Statement.class);
+						if (left instanceof Literal) {
+							l.pushJavaObject(new Pair((Literal) left, right));
 						} else {
-							l.pushJavaObject(new Pair(l.checkJavaObject(1, SimpleReference.class), l.checkJavaObject(2, Statement.class)));
+							l.pushJavaObject(new Pair((SimpleReference) left, right));
 						}
 						return 1;
 					}

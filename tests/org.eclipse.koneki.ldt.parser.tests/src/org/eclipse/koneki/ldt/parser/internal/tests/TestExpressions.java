@@ -145,6 +145,8 @@ public class TestExpressions extends TestCase {
 	public void testPair() {
 		module = parse("dic = {[1] = 'one', two = 2}"); //$NON-NLS-1$
 		assertFalse("Pair is not recognized.", module.isEmpty()); //$NON-NLS-1$
+		module = parse("local subpath = 'path' local i = {[subpath] = value}"); //$NON-NLS-1$
+		assertFalse("Pair with identifier key is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
