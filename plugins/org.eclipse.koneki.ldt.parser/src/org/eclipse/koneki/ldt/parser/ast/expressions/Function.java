@@ -17,17 +17,15 @@ import org.eclipse.dltk.utils.CorePrinter;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
 import org.eclipse.koneki.ldt.parser.ast.declarations.FunctionDeclaration;
 import org.eclipse.koneki.ldt.parser.ast.statements.Chunk;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
 /**
- * The Class Function represent a function node of an DLTK AST. This node is
- * used to describe a function definition. Even so, is not interpreted by DLTK
- * as a regular function declaration. Therefore this function node needs to be
- * wrapped in a {@link FunctionDeclaration} in order to appear in DLTK tooling.
+ * The Class Function represent a function node of an DLTK AST. This node is used to describe a function definition. Even so, is not interpreted by
+ * DLTK as a regular function declaration. Therefore this function node needs to be wrapped in a {@link FunctionDeclaration} in order to appear in
+ * DLTK tooling.
  * 
- * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
+ * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
-public class Function extends Block implements IndexedNode {
+public class Function extends Chunk {
 
 	/** The parameters are in this raw chunk. */
 	private Chunk args;
@@ -53,9 +51,7 @@ public class Function extends Block implements IndexedNode {
 	/**
 	 * Function's raw arguments in a {@link Chunk}
 	 * 
-	 * @return {@link Chunk} contains function's arguments, they need to be
-	 *         parsed and registered as {@link Argument} in a
-	 *         {@link FunctionDeclaration}
+	 * @return {@link Chunk} contains function's arguments, they need to be parsed and registered as {@link Argument} in a {@link FunctionDeclaration}
 	 */
 	public Chunk getArguments() {
 		return args;
@@ -90,8 +86,7 @@ public class Function extends Block implements IndexedNode {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @seeorg.eclipse.dltk.ast.statements.Block#traverse(org.eclipse.dltk.ast.
-	 * ASTVisitor)
+	 * @seeorg.eclipse.dltk.ast.statements.Block#traverse(org.eclipse.dltk.ast. ASTVisitor)
 	 */
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {

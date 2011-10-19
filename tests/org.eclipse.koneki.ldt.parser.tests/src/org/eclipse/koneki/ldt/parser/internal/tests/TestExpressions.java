@@ -21,13 +21,13 @@ import junit.framework.TestCase;
 
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.Expression;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.koneki.ldt.parser.LuaSourceParser;
+import org.eclipse.koneki.ldt.parser.LuaSourceParserFactory;
 import org.eclipse.koneki.ldt.parser.internal.tests.utils.DummyReporter;
 
 /**
- * The Class TestExpressions, tests if {@linkplain LuaSourceParser} can handle
- * every kind of {@linkplain Expression} that Lua offers.
+ * The Class TestExpressions, tests if {@linkplain LuaSourceParser} can handle every kind of {@linkplain Expression} that Lua offers.
  */
 public class TestExpressions extends TestCase {
 
@@ -35,10 +35,16 @@ public class TestExpressions extends TestCase {
 	private IProblemReporter reporter;
 
 	/** The file name. */
-	private char[] fileName;
+	private final String fileName = "none"; //$NON-NLS-1$
 
 	/** The module. */
 	private ModuleDeclaration module;
+
+	private ModuleDeclaration parse(final String source) {
+		ModuleSource input = new ModuleSource(fileName, source);
+		return (ModuleDeclaration) new LuaSourceParserFactory().createSourceParser().parse(input, this.reporter);
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -46,9 +52,6 @@ public class TestExpressions extends TestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	public void setUp() {
-		// No tests on about file name
-		fileName = "none".toCharArray();
-
 		// Dummy problem reporter
 		this.reporter = new DummyReporter();
 	}
@@ -57,56 +60,43 @@ public class TestExpressions extends TestCase {
 	 * Test boolean false.
 	 */
 	public void testBooleanFalse() {
-
-		char[] source = "bool = false".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("False is not recognized.", module.isEmpty());
+		module = parse("bool = false"); //$NON-NLS-1$
+		assertFalse("False is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test boolean true.
 	 */
 	public void testBooleanTrue() {
-
-		char[] source = "bool = true".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("True is not recognized.", module.isEmpty());
+		module = parse("bool = true");//$NON-NLS-1$
+		assertFalse("True is not recognized.", module.isEmpty());//$NON-NLS-1$
 	}
 
 	/**
 	 * Test call.
 	 */
 	public void testCall() {
+		module = parse("method = function () end method()");//$NON-NLS-1$
+		assertFalse("Call to function is not recognized.", module.isEmpty());//$NON-NLS-1$
 
-		char[] source = "method = function () end method()".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Call to function is not recognized.", module.isEmpty());
-
-		source = "withParam = function (foo, bar) end withParam(nil, nil)"
-				.toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Call to function with parameters is not recognized.",
-				module.isEmpty());
+		module = parse("withParam = function (foo, bar) end withParam(nil, nil)");//$NON-NLS-1$
+		assertFalse("Call to function with parameters is not recognized.", module.isEmpty());//$NON-NLS-1$
 	}
 
 	/**
 	 * Test dots.
 	 */
 	public void testDots() {
-
-		char[] source = "method = function (...) end method()".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Dots are not recognized.", module.isEmpty());
+		module = parse("method = function (...) end method()");//$NON-NLS-1$
+		assertFalse("Dots are not recognized.", module.isEmpty());//$NON-NLS-1$
 	}
 
 	/**
 	 * Empty source code
 	 */
 	public void testEmptySource() {
-
-		char[] source = "".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Empy source not handled.", module.isEmpty());
+		module = parse("");//$NON-NLS-1$
+		assertFalse("Empy source not handled.", module.isEmpty());//$NON-NLS-1$
 	}
 
 	/**
@@ -114,10 +104,8 @@ public class TestExpressions extends TestCase {
 	 */
 	public void testFunction() {
 
-		char[] source = "method = function (var) return var +1 end"
-				.toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Function is not recognized.", module.isEmpty());
+		module = parse("method = function (var) return var +1 end"); //$NON-NLS-1$
+		assertFalse("Function is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
@@ -125,96 +113,80 @@ public class TestExpressions extends TestCase {
 	 */
 	public void testIndex() {
 
-		char[] source = "tab = {} tab[2]= 2".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Numeric index is not handled.", module.isEmpty());
+		module = parse("tab = {} tab[2]= 2"); //$NON-NLS-1$
+		assertFalse("Numeric index is not handled.", module.isEmpty()); //$NON-NLS-1$
 
-		source = "module = {} module.field= 2".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Field-like index is not handled.", module.isEmpty());
+		module = parse("module = {} module.field= 2"); //$NON-NLS-1$
+		assertFalse("Field-like index is not handled.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	public void testInvoke() {
-		char[] source = "module:method()".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Simple invocation is not handled.", module.isEmpty());
+		module = parse("module:method()"); //$NON-NLS-1$
+		assertFalse("Simple invocation is not handled.", module.isEmpty()); //$NON-NLS-1$
 
-		source = "module:table(arg)".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Invocation with argument not handled.", module.isEmpty());
+		module = parse("module:table(arg)"); //$NON-NLS-1$
+		assertFalse("Invocation with argument not handled.", module.isEmpty()); //$NON-NLS-1$
 
-		source = "y(ii):w(ty).y".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Imbricated invocation is not handled.", module.isEmpty());
+		module = parse("y=y(ii):w(ty).y"); //$NON-NLS-1$
+		assertFalse("Imbricated invocation is not handled.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	public void testLength() {
-		char[] source = "var = #table".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Length operator not handled.", module.isEmpty());
+		module = parse("var = #table"); //$NON-NLS-1$
+		assertFalse("Length operator not handled.", module.isEmpty()); //$NON-NLS-1$
 
-		source = "var = #{}".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Length operator not handled.", module.isEmpty());
-
+		module = parse("var = #{}"); //$NON-NLS-1$
+		assertFalse("Length operator not handled.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test pair.
 	 */
 	public void testPair() {
-		char[] source = "dic = {[1] = 'one', two = 2}".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Pair is not recognized.", module.isEmpty());
+		module = parse("dic = {[1] = 'one', two = 2}"); //$NON-NLS-1$
+		assertFalse("Pair is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test nil.
 	 */
 	public void testNil() {
-
-		char[] source = "null = nil".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Nil is not recognized.", module.isEmpty());
+		module = parse("null = nil"); //$NON-NLS-1$
+		assertFalse("Nil is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test number.
 	 */
 	public void testNumber() {
-
-		char[] source = "number = 6".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Number is not recognized.", module.isEmpty());
+		module = parse("number = 6"); //$NON-NLS-1$
+		assertFalse("Number is not recognized.", module.isEmpty()); //$NON-NLS-1$
+		module = parse("local number = 6.0"); //$NON-NLS-1$
+		assertFalse("Number is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test parenthesis.
 	 */
 	public void testParenthesis() {
-		char[] source = "paren = (1 + 2) * 5".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Parenthesis is not recognized.", module.isEmpty());
+		module = parse("paren = (1 + 2) * 5"); //$NON-NLS-1$
+		assertFalse("Parenthesis is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test string.
 	 */
 	public void testString() {
-		char[] source = ("string, another = 'string', [[anotherOne]]")
-				.toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("String is not recognized.", module.isEmpty());
+		module = parse("string, another = 'string', [[anotherOne]]"); //$NON-NLS-1$
+		assertFalse("String is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test table.
 	 */
 	public void testTable() {
-
-		char[] source = "table = {1,'2'}".toCharArray();
-		module = new LuaSourceParser().parse(fileName, source, this.reporter);
-		assertFalse("Table is not recognized.", module.isEmpty());
+		module = parse("table = {1,'2'}"); //$NON-NLS-1$
+		assertFalse("Table is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}
 
 }

@@ -16,9 +16,10 @@
       <editor
             class="org.eclipse.koneki.ldt.editor.LuaEditor"
             default="false"
+            extensions="lua"
             icon="img/lua-logo.gif"
             id="org.eclipse.koneki.ldt.editor"
-            name="Lua Editor">
+            name="%editor.name">
          <contentTypeBinding
                contentTypeId="org.eclipse.koneki.ldt.content-type">
          </contentTypeBinding>
@@ -38,5 +39,71 @@
             language="org.eclipse.koneki.ldt.nature">
       </modelLabelProvider>
    </extension>
-
+ <extension
+         point="org.eclipse.dltk.core.completionEngine">
+      <completionEngine
+            class="org.eclipse.koneki.ldt.editor.internal.completion.LuaCompletionEngine"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </completionEngine>
+   </extension>
+   <extension
+         id="LuaTypeCompletionProposalComputer"
+         name="%extension.name"
+         point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+      <scriptCompletionProposalComputer
+            activate="true"
+            categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
+            class="org.eclipse.koneki.ldt.editor.internal.completion.LuaCompletionProposalComputer"
+            toolkitId="org.eclipse.koneki.ldt.nature">
+         <partition
+               type="__dftl_partition_content_type">
+         </partition>
+      </scriptCompletionProposalComputer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <contextType
+            class="org.eclipse.koneki.ldt.editor.templates.LuaUniversalTemplateContextType"
+            id="LuaUniversalTemplateContextType"
+            name="%page.name">
+      </contextType>
+       <include
+          file="templates/templates.xml"
+          translations="templates/templates.properties">
+       </include>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.editor.templates.LuaTemplatePreferencePage"
+            id="org.eclipse.koneki.ldt.templates.Template"
+            name="%page.name">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.language">
+      <language
+            class="org.eclipse.koneki.ldt.editor.LuaUILanguageToolkit"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.completion">
+      <proposalLabelProvider
+            class="org.eclipse.koneki.ldt.editor.internal.completion.LuaCompletionProposalLabelProvide"
+            nature="org.eclipse.koneki.ldt.nature">
+      </proposalLabelProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.dltk.ui.edit.text.script.toggle.comment"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+SHIFT+C">
+      </key>
+   </extension>
 </plugin>

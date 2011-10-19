@@ -11,6 +11,8 @@
 
 package org.eclipse.koneki.ldt.core;
 
+import java.awt.Toolkit;
+
 import org.eclipse.dltk.core.AbstractLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.koneki.ldt.Activator;
@@ -45,7 +47,7 @@ public class LuaLanguageToolkit extends AbstractLanguageToolkit {
 	 */
 	@Override
 	public String getLanguageContentType() {
-		return Activator.PLUGIN_ID + ".content-type";
+		return Activator.PLUGIN_ID + ".content-type"; //$NON-NLS-1$
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class LuaLanguageToolkit extends AbstractLanguageToolkit {
 	 */
 	@Override
 	public String getLanguageName() {
-		return "Lua";
+		return "Lua"; //$NON-NLS-1$
 	}
 
 	/**
@@ -69,4 +71,15 @@ public class LuaLanguageToolkit extends AbstractLanguageToolkit {
 		return LuaNature.LUA_NATURE;
 	}
 
+	/**
+	 * @see org.eclipse.dltk.core.AbstractLanguageToolkit#languageSupportZIPBuildpath()
+	 */
+	@Override
+	public boolean languageSupportZIPBuildpath() {
+		return true;
+	}
+
+	public String getPreferenceQualifier() {
+		return Activator.PLUGIN_ID;
+	}
 }

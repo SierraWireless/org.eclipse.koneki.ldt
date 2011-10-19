@@ -21,8 +21,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.parser.ISourceParser;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.koneki.ldt.parser.LuaSourceParser;
+import org.eclipse.koneki.ldt.parser.LuaSourceParserFactory;
 import org.eclipse.koneki.ldt.parser.internal.tests.utils.DummyReporter;
 import org.eclipse.koneki.ldt.parser.internal.tests.utils.SpyVisitor;
 
@@ -31,41 +33,40 @@ import org.eclipse.koneki.ldt.parser.internal.tests.utils.SpyVisitor;
  */
 public class TestVisitor extends TestCase {
 
-    /** The visitor. */
-    private ASTVisitor visitor;
+	/** The visitor. */
+	private ASTVisitor visitor;
 
-    /** The reporter. */
-    private IProblemReporter reporter;
+	/** The reporter. */
+	private IProblemReporter reporter;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
-    public void setUp() {
-	this.visitor = new SpyVisitor();
-	this.reporter = new DummyReporter();
-    }
-
-    /**
-     * Test visitor.
-     */
-    public void testVisitor() {
-	String errorMessage = new String();
-	boolean success = true;
-	LuaSourceParser parser = new LuaSourceParser();
-	char[] fileName = "none".toCharArray();
-	char[] source = "for k = 1,20 do end".toCharArray();
-	try {
-	    ModuleDeclaration parse = parser.parse(fileName, source, reporter);
-	    parse.traverse(visitor);
-	} catch (Exception e) {
-	    success = false;
-	    if (e.getMessage() != null) {
-		errorMessage = ": " + e.getMessage();
-	    }
-	    errorMessage = ". " + ((SpyVisitor)visitor).getErrorMessage();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	public void setUp() {
+		this.visitor = new SpyVisitor();
+		this.reporter = new DummyReporter();
 	}
-	assertTrue("Error while walking through AST" + errorMessage, success);
-    }
+
+	/**
+	 * Test visitor.
+	 */
+	public void testVisitor() {
+		String errorMessage = new String();
+		boolean success = true;
+		ISourceParser parser = new LuaSourceParserFactory().createSourceParser();
+		final String source = "for k = 1,20 do end"; //$NON-NLS-1$
+		try {
+			ModuleDeclaration parse = (ModuleDeclaration) parser.parse(new ModuleSource(source), reporter);
+			parse.traverse(visitor);
+		} catch (Exception e) {
+			success = false;
+			if (e.getMessage() != null) {
+				errorMessage = ": " + e.getMessage(); //$NON-NLS-1$
+			}
+			errorMessage = ". " + ((SpyVisitor) visitor).getErrorMessage(); //$NON-NLS-1$
+		}
+		assertTrue("Error while walking through AST" + errorMessage, success); //$NON-NLS-1$
+	}
 }

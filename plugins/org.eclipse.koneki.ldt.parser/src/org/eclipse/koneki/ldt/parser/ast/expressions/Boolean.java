@@ -11,29 +11,36 @@
 
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.BooleanLiteral;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
-public class Boolean extends BooleanLiteral implements IndexedNode,
-	LuaExpressionConstants {
+public class Boolean extends BooleanLiteral implements LuaExpressionConstants, INavigableNode {
 
-    private long id;
+	private ASTNode parentNode;
 
-    public Boolean(int start, int end, boolean b) {
-	super(start, end, b);
-    }
+	public Boolean(int start, int end, boolean b) {
+		super(start, end, b);
+	}
 
-    public long getID() {
-	return id;
-    }
+	public int getKind() {
+		return boolValue() ? BOOL_TRUE : BOOL_FALSE;
+	}
 
-    public void setID(long id) {
-	this.id = id;
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
 
-    public int getKind() {
-	return boolValue() ? BOOL_TRUE : BOOL_FALSE;
-    }
-
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

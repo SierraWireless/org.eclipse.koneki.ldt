@@ -21,8 +21,8 @@ import org.eclipse.dltk.core.ScriptNature;
 import org.eclipse.koneki.ldt.Activator;
 
 /**
- * The Class LuaNature gives a common denomination used by several components of
- * the IDE.
+ * The Class LuaNature gives a common denomination used by several components of the IDE.
+ * 
  * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
  */
 public class LuaNature extends ScriptNature {
@@ -32,5 +32,5 @@ public class LuaNature extends ScriptNature {
 	 * 
 	 * @return String
 	 */
-	public static final String LUA_NATURE = Activator.PLUGIN_ID + ".nature";
+	public static final String LUA_NATURE = Activator.PLUGIN_ID + ".nature"; //$NON-NLS-1$
 }

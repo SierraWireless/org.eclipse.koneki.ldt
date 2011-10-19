@@ -382,7 +382,7 @@ public class DefaultJavaReflector implements JavaReflector {
 							String
 									.format(
 											"attempt to write array of %s at index %d with %s value",
-											componentType.getCanonicalName(),
+											componentType.getCanonicalName(),index,
 											luaState.typeName(3)));
 				}
 				Object value = luaState.toJavaObject(3, componentType);
@@ -415,7 +415,7 @@ public class DefaultJavaReflector implements JavaReflector {
 	/**
 	 * <code>__len</code> metamethod implementation.
 	 */
-	private class Length implements JavaFunction {
+	private static class Length implements JavaFunction {
 		@Override
 		public int invoke(LuaState luaState) {
 			Object object = luaState.toJavaObject(1, Object.class);
@@ -431,7 +431,7 @@ public class DefaultJavaReflector implements JavaReflector {
 	/**
 	 * <code>__eq</code> metamethod implementation.
 	 */
-	private class Equal implements JavaFunction {
+	private static class Equal implements JavaFunction {
 		@Override
 		public int invoke(LuaState luaState) {
 			Object object1 = luaState.toJavaObject(1, Object.class);
@@ -445,7 +445,7 @@ public class DefaultJavaReflector implements JavaReflector {
 	/**
 	 * <code>__lt</code> metamethod implementation.
 	 */
-	private class LessThan implements JavaFunction {
+	private static class LessThan implements JavaFunction {
 		@SuppressWarnings("unchecked")
 		@Override
 		public int invoke(LuaState luaState) {
@@ -465,7 +465,7 @@ public class DefaultJavaReflector implements JavaReflector {
 	/**
 	 * <code>__le</code> metamethod implementation.
 	 */
-	private class LessThanOrEqual implements JavaFunction {
+	private static class LessThanOrEqual implements JavaFunction {
 		@SuppressWarnings("unchecked")
 		@Override
 		public int invoke(LuaState luaState) {
@@ -573,7 +573,7 @@ public class DefaultJavaReflector implements JavaReflector {
 	/**
 	 * <code>__tostring</code> metamethod implementation.
 	 */
-	private class ToString implements JavaFunction {
+	private static class ToString implements JavaFunction {
 		@Override
 		public int invoke(LuaState luaState) {
 			Object object = luaState.toJavaObject(1, Object.class);

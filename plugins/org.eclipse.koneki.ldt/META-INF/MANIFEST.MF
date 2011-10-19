@@ -1,14 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Lua Editor (incubator)
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.eclipse.koneki.ldt.Activator
-Bundle-Vendor: Sierra Wireless
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui;bundle-version="3.5.0",
  org.eclipse.core.resources;bundle-version="3.5.0",
  org.eclipse.core.runtime,
- org.eclipse.dltk.core;bundle-version="[2.0.0,3.0.0)"
+ org.eclipse.dltk.core;bundle-version="[2.0.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.koneki.ldt.core
+Export-Package: org.eclipse.koneki.ldt,
+ org.eclipse.koneki.ldt.core

@@ -11,6 +11,5 @@
  -->
 
 <plugin>
-   <extension-point id="testSuites" name="Test suite for ldt plugins" schema="schema/testSuites.exsd"/>
-
+   <extension-point id="testSuites" name="%extension-point.name" schema="schema/testSuites.exsd"/>
 </plugin>

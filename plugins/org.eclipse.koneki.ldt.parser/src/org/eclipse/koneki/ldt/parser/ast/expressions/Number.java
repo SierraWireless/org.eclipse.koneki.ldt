@@ -17,52 +17,59 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
 import org.eclipse.dltk.utils.CorePrinter;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Number.
  */
-public class Number extends FloatNumericLiteral implements
-	LuaExpressionConstants, IndexedNode {
+public class Number extends FloatNumericLiteral implements LuaExpressionConstants, INavigableNode {
 
-    private long id;
+	private ASTNode parentNode;
 
-    /**
-     * Instantiates a new number.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     * @param value
-     *            the value
-     */
-    public Number(int start, int end, double value) {
-	super(start, end, value);
-    }
+	/**
+	 * Instantiates a new number.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param value
+	 *            the value
+	 */
+	public Number(int start, int end, double value) {
+		super(start, end, value);
+	}
 
-    public long getID() {
-	return id;
-    }
+	public void printNode(CorePrinter output) {
+		output.formatPrintLn(getValue());
+	}
 
-    public void printNode(CorePrinter output) {
-	output.formatPrintLn(getValue());
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.dltk.ast.expressions.Literal#toString()
+	 */
+	public java.lang.String toString() {
+		return getValue();
+	}
 
-    public void setID(long id) {
-	this.id = id;
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.dltk.ast.expressions.Literal#toString()
-     */
-    public java.lang.String toString() {
-	return getValue();
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

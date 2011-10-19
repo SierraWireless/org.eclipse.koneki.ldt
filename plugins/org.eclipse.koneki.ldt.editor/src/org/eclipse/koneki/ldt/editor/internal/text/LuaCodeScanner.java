@@ -31,17 +31,11 @@ import org.eclipse.jface.text.rules.WordRule;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
 
-	private static String[] fgKeywords = { "and", "break", "do", "else",
-			"elseif", "end", "false", "for", "function", "if", "in", "local",
-			"nil", "not", "or", "repeat", "return", "then", "true", "until",
-			"while" };
+	private static String[] fgKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
+			"not", "or", "repeat", "return", "then", "true", "until", "while" };
 
-	private static String fgTokenProperties[] = new String[] {
-			ILuaColorConstants.LUA_STRING,
-			ILuaColorConstants.LUA_SINGLE_LINE_COMMENT,
-			ILuaColorConstants.LUA_MULTI_LINE_COMMENT,
-			ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
-			ILuaColorConstants.LUA_KEYWORD };
+	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_STRING, ILuaColorConstants.LUA_SINGLE_LINE_COMMENT,
+			ILuaColorConstants.LUA_MULTI_LINE_COMMENT, ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT, ILuaColorConstants.LUA_KEYWORD };
 
 	public LuaCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
@@ -55,10 +49,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		IToken keyword = this.getToken(ILuaColorConstants.LUA_KEYWORD);
-		IToken comment = this
-				.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
-		IToken multiline = this
-				.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
+		IToken comment = this.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
+		IToken multiline = this.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
 		IToken numbers = this.getToken(ILuaColorConstants.LUA_NUMBER);
 		IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
 
@@ -126,22 +118,22 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		public IToken evaluate(ICharacterScanner scanner) {
 			int c = scanner.read();
 			int p = c;
-			if (Character.isDigit((char) c) || c == '.' ) {
-				if (fColumn == UNDEFINED
-						|| (fColumn == scanner.getColumn() - 1)) {
+			if (Character.isDigit((char) c) || c == '.') {
+				if (fColumn == UNDEFINED || (fColumn == scanner.getColumn() - 1)) {
 					do {
 						p = c;
 						c = scanner.read();
 					} while (Character.isDigit((char) c));
 
 					switch (c) {
-					default:
-						scanner.unread();
 					case '-':
 					case 'e':
 					case 'E':
 					case 'x':
 					case 'X':
+						break;
+					default:
+						scanner.unread();
 					}
 
 					if (p == '.') {

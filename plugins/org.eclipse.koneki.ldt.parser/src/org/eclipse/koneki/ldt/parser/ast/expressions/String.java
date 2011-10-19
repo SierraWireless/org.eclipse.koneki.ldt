@@ -17,34 +17,44 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class String.
  */
-public class String extends StringLiteral implements IndexedNode {
+public class String extends StringLiteral implements INavigableNode {
 
-    private long id;
+	private ASTNode parentNode;
 
-    /**
-     * Instantiates a new string.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     */
-    public String(int start, int end, java.lang.String value) {
-	super(start, end, value);
-    }
+	/**
+	 * Instantiates a new string.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public String(int start, int end, java.lang.String value) {
+		super(start, end, value);
+	}
 
-    public long getID() {
-	return id;
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
 
-    public void setID(long id) {
-	this.id = id;
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
+
 }

@@ -63,5 +63,9 @@ public interface LuaExpressionConstants extends ExpressionConstants {
      */
     public static final int E_DOTS = 38010;
 
+	/** Invocations like <code>table:func()</code> */
     public static final int E_INVOKE = 38011;
+
+	/** Represents error nodes indicated by parser */
+	public static final int E_ERROR = 38012;
 }

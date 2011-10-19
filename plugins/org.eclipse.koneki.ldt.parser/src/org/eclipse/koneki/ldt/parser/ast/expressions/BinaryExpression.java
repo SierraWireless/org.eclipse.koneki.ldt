@@ -10,18 +10,23 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
+import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
 
 /**
  * Defines a two operand expression.
  * 
- * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
+ * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
-public class BinaryExpression extends Expression implements IndexedNode {
+public class BinaryExpression extends Expression implements INavigableNode {
+
+	/** Kind of expression's operator. */
+	private int kind;
 
 	/** Left parent of the expression. */
 	private Statement left;
@@ -29,10 +34,7 @@ public class BinaryExpression extends Expression implements IndexedNode {
 	/** Right parent of the expression. */
 	private Statement right;
 
-	/** Kind of expression's operator. */
-	protected int kind;
-
-	protected long id;
+	private ASTNode parentNode;
 
 	/**
 	 * Defines a two operands expression.
@@ -50,20 +52,21 @@ public class BinaryExpression extends Expression implements IndexedNode {
 	 * 
 	 * @see org.eclipse.dltk.ast.expressions.ExpressionConstants
 	 */
-	public BinaryExpression(int start, int end, Expression left, int kind,
-			Expression right) {
+	public BinaryExpression(int start, int end, Expression left, int kind, Expression right) {
 		super(start, end);
 		this.kind = kind;
 		this.left = left;
 		this.right = right;
 		if (left != null) {
 			this.setStart(left.sourceStart());
-			assert left instanceof Expression;
 		}
 		if (right != null) {
 			this.setEnd(right.sourceEnd());
-			assert right instanceof Expression;
 		}
+	}
+
+	public BinaryExpression(int start, int end, Expression left, java.lang.String operatorName, Expression right) {
+		this(start, end, left, operatorNameToKind(operatorName), right);
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class BinaryExpression extends Expression implements IndexedNode {
 	public java.lang.String getOperator() {
 		switch (getKind()) {
 		case E_CONCAT:
-			return "..";
+			return ".."; //$NON-NLS-1$
 		default:
 		}
 		return super.getOperator();
@@ -107,9 +110,7 @@ public class BinaryExpression extends Expression implements IndexedNode {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.dltk.ast.expressions.Expression#printNode(org.eclipse.dltk
-	 * .utils.CorePrinter)
+	 * @see org.eclipse.dltk.ast.expressions.Expression#printNode(org.eclipse.dltk .utils.CorePrinter)
 	 */
 	public void printNode(CorePrinter output) {
 		if (this.left != null) {
@@ -126,13 +127,10 @@ public class BinaryExpression extends Expression implements IndexedNode {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast
-	 * .ASTVisitor)
+	 * @see org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast .ASTVisitor)
 	 */
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
-			super.traverse(visitor);
 			if (getLeft() != null) {
 				getLeft().traverse(visitor);
 			}
@@ -143,13 +141,56 @@ public class BinaryExpression extends Expression implements IndexedNode {
 		}
 	}
 
-	@Override
-	public long getID() {
-		return id;
+	public static int operatorNameToKind(final java.lang.String s) {
+
+		if ("sub".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_MINUS;
+		} else if ("mul".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_MULT;
+		} else if ("div".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_DIV;
+		} else if ("eq".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_EQUAL;
+		} else if ("concat".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_CONCAT;
+		} else if ("mod".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_MOD;
+		} else if ("pow".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_POWER;
+		} else if ("lt".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_LT;
+		} else if ("le".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_LE;
+		} else if ("and".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_LAND;
+		} else if ("or".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_LOR;
+		} else if ("not".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_BNOT;
+		} else if ("len".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_LENGTH;
+		} else if ("unm".equals(s)) { //$NON-NLS-1$
+			return LuaExpressionConstants.E_UN_MINUS;
+		} else {
+			// Assume it's an addition
+			assert "add".equals(s) : "Unhandled operator: " + s; //$NON-NLS-1$ //$NON-NLS-2$
+			return LuaExpressionConstants.E_PLUS;
+		}
 	}
 
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
 	@Override
-	public void setID(long id) {
-		this.id = id;
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
 	}
 }

@@ -32,12 +32,14 @@ import com.naef.jnlua.LuaState;
 /**
  * Provides {@link LuaState} loaded with Metalua.
  * 
- * @author Kévin KIN-FOO <kkinfoo@anwyware-tech.com> {@linkplain http
- *         ://metalua.luaforge.net/manual000.html}
+ * @author Kévin KIN-FOO <kkinfoo@anwyware-tech.com> {@linkplain http ://metalua.luaforge.net/manual000.html}
  */
-class MetaluaStateFactory {
+public class MetaluaStateFactory {
 
 	private static String sourcePath = null;
+
+	private MetaluaStateFactory() {
+	}
 
 	/**
 	 * Provides a LuaState that can run Metalua code
@@ -64,22 +66,18 @@ class MetaluaStateFactory {
 
 		// Update path in order to be able to load Metalua
 		String metaluaPath = MetaluaStateFactory.sourcesPath();
-		String path = "package.path = package.path  .. [[;" + metaluaPath
-				+ "?.luac;" + metaluaPath + "?.lua]]";
+		StringBuilder path = new StringBuilder();
+		path.append("package.path = [[" + metaluaPath + "?.luac;" + metaluaPath + "?.lua]]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		path.append("package.cpath = ''");//$NON-NLS-1$
 
 		// Load Metalua's byte code
-		String require = "require 'metalua.compiler'";
+		String require = "require 'metalua.compiler'"; //$NON-NLS-1$
 
 		// Detect problems
-		l.load(path, "pathLoading");
+		l.load(path.toString(), "pathLoading"); //$NON-NLS-1$
 		l.call(0, 0);
-		l.load(require, "requireContentFromPath");
+		l.load(require, "requireContentFromPath");//$NON-NLS-1$
 		l.call(0, 0);
-//		switch (l.LdoString(path) + l.LdoString(require)) {
-//		default:
-//			Metalua.raise(l);
-//		case 0:
-//		}
 
 		// State is ready
 		return l;
@@ -100,20 +98,15 @@ class MetaluaStateFactory {
 			// Stop when fragment's root can't be located
 			try {
 				/*
-				 * A folder called as below is available only from fragments, it
-				 * contains Metalua files.
+				 * A folder called as below is available only from fragments, it contains Metalua files.
 				 */
-				String folder = "metalua";
-
-				// Locate it on disk
-				URL ressource = bundle.getResource("/" + folder);
+				URL ressource = bundle.getResource("/lib"); //$NON-NLS-1$
 				String _sourcePath = FileLocator.toFileURL(ressource).getPath();
 
 				/*
-				 * Remove folder name at the end of path in order to obtain
-				 * fragment location on disk. It is the real Metalua path.
+				 * Remove folder name at the end of path in order to obtain fragment location on disk. It is the real Metalua path.
 				 */
-				_sourcePath = new File(_sourcePath).getParent() + File.separator;
+				_sourcePath = new File(_sourcePath).getPath() + File.separator;
 				sourcePath = _sourcePath;
 			} catch (IOException e) {
 				return new String();

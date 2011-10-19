@@ -17,6 +17,7 @@ local idToNode = {}
 local nodeToId = {}
 local publicDeclarationsIDs = {}
 local localDeclarationsIDs = {}
+local declarationSets={}
 local parent = {}
 
 --
@@ -30,7 +31,7 @@ local function getID()
 end
 
 
---
+---
 -- Assign name to `Function and `Table nested in `Pairs like:
 --	<code>
 --	local table = {
@@ -53,11 +54,12 @@ local function nameNestedPair(id)
 		end
 	end
 end
---
+---
 -- Assing name to "valuable" nodes, such as:
--- * `Function
--- * `Table
---
+-- <ul>
+-- <li> `Function </li>
+-- <li> `Table </li>
+-- </ul>
 -- @param ast AST of "table" type
 --
 local function matchDeclaration( ast )
@@ -80,7 +82,35 @@ local function matchDeclaration( ast )
 	local function cacheDeclaration(hash, t)
 		assert( type(hash) == 'table' )
 		assert( type(t)    == 'table' )
+		-- declaration: node containing declarations
+		-- occurences: table of occurrences containing variable names and associated references as identifiers, like
+		--	{ "varname" : {`Id, `Id} }
 		for declaration, occurrences in pairs(t) do
+			-- At this point we know we are dealing only with `Local and `Localrec
+			local identifiersChunk, valuesChunk = declaration[1], declaration[2]
+			-- Fetch variable names
+			for i = 1 , #identifiersChunk do
+				local currentIdentifierName = identifiersChunk[i][1]
+				-- Attach occurences to identifier
+				identifiersChunk[i].occurrences = occurrences
+			end
+print "_______ids\n|||||||||| Key" 
+table.print ( identifiersChunk,"nohash", 1)
+print " |||||||||| vals";
+table.print( valuesChunk,"nohash",1)			
+--print "_______declaration\n|||||||||| Key" ;
+--table.print ( declaration,1)
+--print " |||||||||| occurrences";
+--table.print( occurrences,1)
+			-- Register occurences in master declaration
+			if not declaration.occurrences then
+				declaration.occurrences ={}
+			end
+			table.insert(declaration.occurrences, nodeToId[occurrences])
+			-- Link identifiers to master declaration
+			for k, identifier in pairs( occurrences ) do
+				identifier.declaration = nodeToId[declaration]
+			end
 			if registered(declaration) then
 				table.insert(hash, nodeToId[ declaration ])
 			end
@@ -89,22 +119,26 @@ local function matchDeclaration( ast )
 	local function cacheGlobalDeclaration(hash, t)
 		local function isCall( node  )
 			if not node then return false end
-			if node.tag and node.tag =="Call" or node.tag == "Invoke" then
+			if node.tag and node.tag == "Call" or node.tag == "Invoke" then
 				return true
 			end
 			return isCall(idToNode[parent[nodeToId[node]]])
 		end
 		assert( type(hash) == 'table' )
 		assert( type(t)    == 'table' )
-		for name, occurences in pairs( t ) do
-			for id, node in pairs(occurences) do
+		for name, occurrences in pairs( t ) do
+print ("_______declaration\n|||||||||| Key : ".. name) ;
+print " |||||||||| occurrences";
+table.print( occurrences,1)
+			for id, node in pairs(occurrences) do
+				node.occurrences = occurrences
 				if registered(node) and not isCall(node) then
 					table.insert(hash, nodeToId[ node ])
 				end
 			end
 		end
 	end
-	--
+	---
 	-- Browse left side node in order to compose an human redeable
 	-- name from declaration identifier
 	--
@@ -221,10 +255,16 @@ local function matchDeclaration( ast )
 	)
 	-- Seek for local and global declarations
 	require 'metalua.walk.bindings'
+print ('avant ast:'..tostring(ast))
 	local declareds, leftovers = bindings( ast )
+print ('apres decla:'..tostring(declareds)..' left:'..tostring(leftovers))
+--[[_________________
+	les locales
+_________________]]
+--table.print(declareds, 1)
 	cacheDeclaration(localDeclarationsIDs, declareds)
+print 'toujours la'
 	cacheGlobalDeclaration(publicDeclarationsIDs, leftovers)
-
 	-- Now that AST is indexed and local declarations separated from globals
 	-- ones, let's back patch declaration with their identifier name
 	for key, declaration in pairs( localDeclarationsIDs ) do
@@ -268,6 +308,9 @@ end
 -- @param ADT to index
 --
 function index( ast )
+
+	print ( "ca va arriver" )
+	local error = false
  	local function doIndex( adt )
 		local function childNodes( ast )
 			local nodes = {}
@@ -282,6 +325,11 @@ function index( ast )
 		local id = getID()
 		idToNode[ id ] = adt
 	 	nodeToId[ adt ] = id
+
+		-- Check if current node is an error
+		if adt and adt.tag and adt.tag == 'Error' then
+			error = true
+		end
 
 		-- Index child nodes
 		for k,v in ipairs( childNodes(adt) )do
@@ -311,12 +359,14 @@ function index( ast )
 	--
  	-- Append declaration data on declaration nodes
 	--
-	publicDeclarationsIDs = {}
-	localDeclarationsIDs = {}
-	if #idToNode > 0 then
-		rememberParents( 1 )
+		publicDeclarationsIDs = {}
+		localDeclarationsIDs = {}
+		if #idToNode > 0 then
+			rememberParents( 1 )
+		end
+	if not error then
+		matchDeclaration( ast )
 	end
-	matchDeclaration( ast )
 end
 
 --
@@ -395,7 +445,7 @@ end
 --
 -- @param int ID of requested node
 -- 
-function getStart( id )
+ function getStart( id )
   local node = idToNode[ id ]
   if node and node[ 'lineinfo' ] then
 	return tonumber(node[ 'lineinfo' ]['first'][3])
@@ -475,6 +525,40 @@ function getParent(id)
 	end
 	return nil
 end
+---
+-- Provides numeric identifier of declarition current `Identifier refers to
+--
+-- @param identifierId Numeric identifier of `Identifier node
+-- @return Numeric identifier of declaration or 0 if not available
+function getDeclaration( identifierId )
+	local declaration = idToNode[identifierId].declaration
+	return declaration and declaration or 0
+end
+---
+-- Indicates if a node is a declaration regarding to Metalua
+--
+-- @param id Numeric identifier of node to test
+-- @return true if node is a declaration, false else way
+function isDeclaration( id )
+	return type(idToNode[id].occurrences) == 'table' 
+end
+---
+-- Numeric identifiers of occurences refering to a declaration node
+--
+-- @param id Numeric identifier of node supposed to be a declaration
+-- @param declarationName name of declaration 
+-- @return Table of numeric identifiers of nodes refering to given declaration
+function getOccurrencies(id, declarationName)
+	local ids, declaration ={}, idToNode[id]
+	if declaration.occurences then
+		local occurrences = declaration.occurrences[declarationName]
+		if not occurrences then return ids end
+		for k, occurrence in pairs( occurrences ) do
+			table.insert(ids, nodeToId[occurrence] )
+		end
+	end
+	return ids, #ids
+end
 -- Parse files given from command line
 if arg and #arg > 0 then
 	local start = os.time()
@@ -483,14 +567,14 @@ if arg and #arg > 0 then
 	local verbose = arg[1] and arg[1]=="-v"
 	local firstArgPosition = verbose and 2 or 1
 	local good, bad, errors = {},{},{}
-	require 'metalua.compiler'
+	require 'errnode'
 	for position,filename in pairs(arg) do
 		if firstArgPosition <= position then
 			print(math.floor(position*100/#arg).."%\t"..filename)
 			local file = io.open(filename, 'r')
 			local source = file:read("*all")
 			file:close()
-			local tree = mlc.luastring_to_ast( source )
+			local tree = getast( source )
 			if verbose then
 				print( source )
 				table.print(tree, "nohash", 1)

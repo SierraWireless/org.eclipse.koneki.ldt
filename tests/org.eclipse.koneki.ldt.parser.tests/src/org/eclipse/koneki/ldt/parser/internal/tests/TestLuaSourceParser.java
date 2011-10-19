@@ -9,7 +9,6 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 /**
  * @author	Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  * @date $Date: 2009-07-23 12:07:30 +0200 (jeu., 23 juil. 2009) $
@@ -21,15 +20,14 @@ package org.eclipse.koneki.ldt.parser.internal.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.koneki.ldt.parser.LuaSourceParser;
+import org.eclipse.koneki.ldt.parser.LuaSourceParserFactory;
 import org.eclipse.koneki.ldt.parser.internal.tests.utils.DummyReporter;
 
-
 /**
- * The Class TestLuaSourceParser. Is the privileged entrance of the package.
- * Allows to generate AST from source from a file or even straight from source
- * code.
+ * The Class TestLuaSourceParser. Is the privileged entrance of the package. Allows to generate AST from source from a file or even straight from
+ * source code.
  */
 public class TestLuaSourceParser extends TestCase {
 
@@ -37,7 +35,7 @@ public class TestLuaSourceParser extends TestCase {
 	private IProblemReporter reporter;
 
 	/** The file name. */
-	private char[] fileName;
+	private String fileName = "none"; //$NON-NLS-1$
 
 	/*
 	 * (non-Javadoc)
@@ -45,9 +43,6 @@ public class TestLuaSourceParser extends TestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	public void setUp() {
-		// No tests on about file name
-		fileName = "none".toCharArray();
-
 		// Dummy problem reporter
 		this.reporter = new DummyReporter();
 	}
@@ -56,22 +51,18 @@ public class TestLuaSourceParser extends TestCase {
 	 * Test empty chunk.
 	 */
 	public void testEmptyChunk() {
-		char[] source = "".toCharArray();
-		ModuleDeclaration module = new LuaSourceParser().parse(fileName,
-				source, this.reporter);
-		assertFalse("AST should contain at least an empty chunk", module
-				.isEmpty());
+		ModuleSource source = new ModuleSource(fileName, ""); //$NON-NLS-1$
+		ModuleDeclaration module = (ModuleDeclaration) new LuaSourceParserFactory().createSourceParser().parse(source, this.reporter);
+		assertFalse("AST should contain at least an empty chunk", module.isEmpty()); //$NON-NLS-1$
 	}
 
 	/**
 	 * Test single assignment.
 	 */
 	public void testSingleAssignment() {
-
 		// Single assignment
-		char[] source = "var = 1 + 2 * 3".toCharArray();
-		ModuleDeclaration module = new LuaSourceParser().parse(fileName,
-				source, this.reporter);
-		assertFalse("Valid code provides empty AST", module.isEmpty());
+		ModuleSource source = new ModuleSource(fileName, "var = 1 + 2 * 3"); //$NON-NLS-1$
+		ModuleDeclaration module = (ModuleDeclaration) new LuaSourceParserFactory().createSourceParser().parse(source, this.reporter);
+		assertFalse("Valid code provides empty AST", module.isEmpty());//$NON-NLS-1$
 	}
 }

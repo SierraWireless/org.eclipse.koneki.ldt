@@ -18,10 +18,9 @@ import org.junit.Test;
 import com.naef.jnlua.LuaState;
 
 /**
- * The aim here is to ensure that LuaJava is able to handle concurrent calls
- * from different {@link LuaState}.
- *
- * @author Kevin KIN-FOO <kevinkinfoo@gmail.com>
+ * The aim here is to ensure that LuaJava is able to handle concurrent calls from different {@link LuaState}.
+ * 
+ * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
 public class ConcurrencyTest extends TestCase {
 
@@ -29,8 +28,7 @@ public class ConcurrencyTest extends TestCase {
 	private final static int THREAD_COUNT = 5;
 
 	/**
-	 * Internal definition of thread for the only purpose to perform a function
-	 * call using LuaJava
+	 * Internal definition of thread for the only purpose to perform a function call using LuaJava
 	 */
 	private class JNLuaUse extends Thread {
 
@@ -41,30 +39,27 @@ public class ConcurrencyTest extends TestCase {
 		}
 
 		/**
-		 * Compute the result of the Fibonacci serie from Lua using a
-		 * {@link LuaState}. The execution of this method take a few time on
-		 * purpose, in order to ensure thats different threads will call LuaJava
-		 * at the same time.
+		 * Compute the result of the Fibonacci serie from Lua using a {@link LuaState}. The execution of this method take a few time on purpose, in
+		 * order to ensure thats different threads will call LuaJava at the same time.
 		 */
 		@Override
 		public void run() {
 
 			// Define Fibonacci serie
-			String code = "function fibo(n) if n< 2 then return 1 end "
-					+ "return fibo(n-1) + fibo(n-2) end";
+			String code = "function fibo(n) if n< 2 then return 1 end return fibo(n-1) + fibo(n-2) end"; //$NON-NLS-1$
 
 			// Load function
 			state.load(code, "fibonacciFunction"); //$NON-NLS-1$
 			state.call(0, 0);
 
 			// Retrieve function in Lua
-			state.getField(LuaState.GLOBALSINDEX, "fibo");
+			state.getField(LuaState.GLOBALSINDEX, "fibo"); //$NON-NLS-1$
 
 			// Pass an argument to the function
 			state.pushNumber(32);
 
 			// Call the Fibonacci serie
-			assert state.isNumber(-1) && state.isFunction(-2) : "Badly formed function call.";
+			assert state.isNumber(-1) && state.isFunction(-2) : "Badly formed function call."; //$NON-NLS-1$
 			state.call(1, 1);
 
 			// Clean stack
@@ -73,10 +68,8 @@ public class ConcurrencyTest extends TestCase {
 	}
 
 	/**
-	 * Here we targeting to activate several thread which are going to use a
-	 * {@link LuaState} at the same time. If the component is tread safe,
-	 * nothing will happen. Else way, the execution of the unit tests will
-	 * crash.
+	 * Here we targeting to activate several thread which are going to use a {@link LuaState} at the same time. If the component is tread safe,
+	 * nothing will happen. Else way, the execution of the unit tests will crash.
 	 */
 	@Test
 	public void testLuaJavaUse() {
@@ -102,7 +95,7 @@ public class ConcurrencyTest extends TestCase {
 				fail(e.getMessage());
 			}
 		}
-		assertEquals("A thread encounter an error", count, THREAD_COUNT);
+		assertEquals("A thread encounter an error", count, THREAD_COUNT); //$NON-NLS-1$
 	}
 
 }

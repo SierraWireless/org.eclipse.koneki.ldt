@@ -8,14 +8,11 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-
-
 package org.eclipse.koneki.ldt.ui.internal.interpreter;
 
 import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.koneki.ldt.core.LuaNature;
-
 
 public class LuaInterpreterInstall extends AbstractInterpreterInstall {
 

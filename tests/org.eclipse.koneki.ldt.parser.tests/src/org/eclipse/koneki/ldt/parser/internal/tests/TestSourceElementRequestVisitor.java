@@ -9,7 +9,6 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 /**
  * @author	Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  * @date $Date$
@@ -18,15 +17,12 @@
  */
 package org.eclipse.koneki.ldt.parser.internal.tests;
 
-import org.eclipse.koneki.ldt.parser.LuaSourceElementParser;
-import org.eclipse.koneki.ldt.parser.LuaSourceParser;
-
 import junit.framework.TestCase;
 
+import org.eclipse.koneki.ldt.parser.LuaSourceElementParser;
 
 /**
- * The Class TestSourceElementRequestVisitor aims to provide a way to trace how
- * AST from {@linkplain LuaSourceParser} behaves.
+ * The Class TestSourceElementRequestVisitor aims to provide a way to trace how AST from {@linkplain LuaSourceParser} behaves.
  */
 public class TestSourceElementRequestVisitor extends TestCase {
 
@@ -35,7 +31,6 @@ public class TestSourceElementRequestVisitor extends TestCase {
 	 */
 	public void testSourceElementRequestVisitor() {
 		LuaSourceElementParser visitor = new LuaSourceElementParser();
-		assertNotNull("Visitor from element parser is not defined.", visitor
-				.createVisitor());
+		assertNotNull("Visitor from element parser is not defined.", visitor.createVisitor()); //$NON-NLS-1$
 	}
 }

@@ -21,8 +21,10 @@ import org.osgi.framework.Bundle;
 /**
  * The Class SuiteProvider.
  */
-public class SuiteProvider {
-	
+public final class SuiteProvider {
+	private SuiteProvider() {
+	}
+
 	/**
 	 * Gets the.
 	 * 
@@ -31,32 +33,32 @@ public class SuiteProvider {
 	public static TestSuite get() {
 
 		// Get plug-in's contributors
-		TestSuite suite = new TestSuite("LuaEclipse2");
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(Activator.EXTENSION_POINT);
+		TestSuite suite = new TestSuite("Lua Development Tools"); //$NON-NLS-1$
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(Activator.EXTENSION_POINT);
 
 		// Append every TestSuite to the current one
-		for (IExtension ext : extensionPoint.getExtensions() ) {
+		for (IExtension ext : extensionPoint.getExtensions()) {
 
 			// Get the good extension point from schema
-			String className = ext.getConfigurationElements()[Activator.EXTENSION_POINT_ID]
-					.getAttribute("class");
+			String className = ext.getConfigurationElements()[Activator.EXTENSION_POINT_ID].getAttribute("class"); //$NON-NLS-1$
 
-			// Retrieve instance of contributor's plug-in 
+			// Retrieve instance of contributor's plug-in
 			String bundleId = ext.getContributor().getName();
 			Bundle bundle = Platform.getBundle(bundleId);
 
 			// Load the TestSuite
 			try {
-
-				// Retrieve instance of contributor through it's plug-in  
+				// Retrieve instance of contributor through it's plug-in
 				Object newInstance = bundle.loadClass(className).newInstance();
 				if (newInstance instanceof TestSuite) {
 					suite.addTest((TestSuite) newInstance);
 				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (InstantiationException e) {
+				Activator.logError(e.getMessage(), e);
+			} catch (IllegalAccessException e) {
+				Activator.logError(e.getMessage(), e);
+			} catch (ClassNotFoundException e) {
+				Activator.logError(e.getMessage(), e);
 			}
 		}
 		return suite;

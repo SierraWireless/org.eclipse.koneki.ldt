@@ -13,7 +13,7 @@
 <plugin>
    <extension
          id="nature"
-         name="Lua nature"
+         name="%extension.name"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
@@ -28,7 +28,7 @@
             describer="org.eclipse.koneki.ldt.core.LuaContentDescriber"
             file-extensions="lua"
             id="org.eclipse.koneki.ldt.content-type"
-            name="Lua Source File"
+            name="%content-type.name"
             priority="high">
       </content-type>
    </extension>

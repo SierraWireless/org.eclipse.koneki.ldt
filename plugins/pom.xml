@@ -18,14 +18,12 @@
     <module>com.naef.jnlua.macosx</module>
     <module>com.naef.jnlua.windows</module>
     <module>com.naef.jnlua.windows64</module>
-	<module>org.eclipse.koneki.ldt</module>
-    <module>org.eclipse.koneki.ldt.completion</module>
+    <module>org.eclipse.koneki.ldt</module>
     <module>org.eclipse.koneki.ldt.editor</module>
     <module>org.eclipse.koneki.ldt.metalua</module>
     <module>org.eclipse.koneki.ldt.metalua.32bits</module>
     <module>org.eclipse.koneki.ldt.metalua.64bits</module>
     <module>org.eclipse.koneki.ldt.parser</module>
-    <module>org.eclipse.koneki.ldt.templates</module>
     <module>org.eclipse.koneki.ldt.ui</module>
     <module>org.eclipse.koneki.ldt.wizards</module>
   </modules>

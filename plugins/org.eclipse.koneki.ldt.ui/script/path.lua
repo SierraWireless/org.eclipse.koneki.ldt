@@ -9,10 +9,10 @@
 --     Sierra Wireless - initial API and implementation
 --------------------------------------------------------------------------------
 
-path = package.path
-parse = true
+local path = package.path
+local parse = true
 while parse do
-	last = string.find(path, ";")
+	local last = string.find(path, ";")
 	if last == nil then
 		parse = false
 		last = string.find(path, '?')

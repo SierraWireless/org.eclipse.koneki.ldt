@@ -17,61 +17,66 @@ import com.naef.jnlua.LuaState;
 /**
  * Enables to run Metalua code and source files quickly.
  * 
- * It works with an unique inner {@link LuaState} instance as loading Metalua
- * could be pretty time costly.
+ * It works with an unique inner {@link LuaState} instance as loading Metalua could be pretty time costly.
  * 
  * @author Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  */
-public class Metalua {
+final public class Metalua {
 
-    /** Provides a new LuaState with Metalua capabilities */
-    public synchronized static LuaState newState() throws LuaException {
-	return MetaluaStateFactory.newLuaState();
-    }
+	private Metalua() {
+	}
 
-    /**
-     * Retrieve error message from a LuaState.
-     * 
-     * @param l
-     *            the l
-     * 
-     * @throws LuaException
-     *             the lua exception
-     */
-    public static void raise(LuaState l) throws LuaException {
+	/** Provides a new LuaState with Metalua capabilities */
+	public static synchronized LuaState newState() throws LuaException {
+		return MetaluaStateFactory.newLuaState();
+	}
 
-	// Get message at top of stack
-	String msg = l.toString(-1);
+	/**
+	 * Retrieve error message from a LuaState.
+	 * 
+	 * @param l
+	 *            the l
+	 * 
+	 * @throws LuaException
+	 *             the lua exception
+	 */
+	public static void raise(LuaState l) throws LuaException {
 
-	// Clean stack
-	l.pop(1);
-	throw new LuaRuntimeException(msg);
-    }
+		// Get message at top of stack
+		String msg = l.toString(-1);
 
-    /**
-     * Indicate if code contains syntax errors
-     * 
-     * @param code
-     *            to run
-     * @return true is code is correct, otherwise false
-     */
-    public static boolean isValid(final String code) {
+		// Clean stack
+		l.pop(1);
+		throw new LuaRuntimeException(msg);
+	}
 
-	// Try to load code without run it
-	LuaState state;
-	try {
-	    state = newState();
-	    state.load(code, "isCodeValid"); //$NON-NLS-1$
-	} catch (LuaException e) {
-	    return false;
-	} 
+	/**
+	 * Indicate if code contains syntax errors
+	 * 
+	 * @param code
+	 *            to run
+	 * @return true is code is correct, otherwise false
+	 */
+	public static boolean isValid(final String code) {
 
-	// Clear stack
-	state.pop(1);
-	return true;
-    }
+		// Try to load code without run it
+		LuaState state = null;
+		try {
+			state = newState();
+			state.load(code, "isCodeValid"); //$NON-NLS-1$
+		} catch (LuaException e) {
+			return false;
+		} finally {
+			if (state != null)
+				state.close();
+		}
 
-    public static String path() {
-	return MetaluaStateFactory.sourcesPath();
-    }
+		// Clear stack
+		state.pop(1);
+		return true;
+	}
+
+	public static String path() {
+		return MetaluaStateFactory.sourcesPath();
+	}
 }

@@ -11,29 +11,37 @@
 
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.NilLiteral;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
-public class Nil extends NilLiteral implements LuaExpressionConstants, IndexedNode {
+public class Nil extends NilLiteral implements LuaExpressionConstants, INavigableNode {
 
-    private long id;
+	private ASTNode parentNode;
 
-    public Nil(int start, int end) {
-	super(start, end);
-    }
+	public Nil(int start, int end) {
+		super(start, end);
+	}
 
-    @Override
-    public int getKind() {
-	return NIL_LITTERAL;
-    }
+	@Override
+	public int getKind() {
+		return NIL_LITTERAL;
+	}
 
-    public long getID() {
-	return id;
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
 
-    public void setID(long id) {
-	this.id = id;
-    }
-
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

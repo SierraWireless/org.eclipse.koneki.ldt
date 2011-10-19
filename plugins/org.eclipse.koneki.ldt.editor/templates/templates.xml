@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (c) 2009, 2011 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+-->
+<templates>
+<template
+	id="org.eclipse.koneki.templates.for"
+	context="LuaUniversalTemplateContextType"
+	description="%template.forlist"
+	name="for">for ${var} in ${list} do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.fordots"
+	context="LuaUniversalTemplateContextType"
+	description="%template.fordots"
+	name="ford">for ${index}=1,select("#", ...) do
+	local ${temp} = select(${index}, ...)
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.foripairs"
+	context="LuaUniversalTemplateContextType"
+	description="%template.ipairs"
+	name="fori">for ${var} in ipairs(${table}) do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.forpairs"
+	context="LuaUniversalTemplateContextType"
+	description="%template.pairs"
+	name="forp">for ${var} in pairs(${table}) do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.fornumeric"
+	context="LuaUniversalTemplateContextType"
+	description="%template.fornumeric"
+	name="forn">for ${var}=${exp},${exp} do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.forrange"
+	context="LuaUniversalTemplateContextType"
+	description="%template.fornumeric.range"
+	name="forr">for ${var}=${exp},${exp},${exp} do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.if"
+	context="LuaUniversalTemplateContextType"
+	description="%template.if"
+	name="if">if ${exp} then
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.function"
+	context="LuaUniversalTemplateContextType"
+	description="%template.function"
+	name="function">function ${name}(${parameters})
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.repeat"
+	context="LuaUniversalTemplateContextType"
+	description="%template.repeat"
+	name="repeat">repeat
+	${cursor}
+until ${exp} 
+</template>
+<template
+	id="org.eclipse.koneki.templates.while"
+	context="LuaUniversalTemplateContextType"
+	description="%template.while"
+	name="while">while ${exp} do
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.local"
+	context="LuaUniversalTemplateContextType"
+	description="%template.local"
+	name="local">local ${variable}
+${cursor}</template>
+<template
+	id="org.eclipse.koneki.templates.localAssignment"
+	context="LuaUniversalTemplateContextType"
+	description="%template.localAssignment"
+	name="loci">local ${variable} = ${cursor}</template>
+<template
+	id="org.eclipse.koneki.templates.pcall"
+	context="LuaUniversalTemplateContextType"
+	description="%template.pcall"
+	name="pcall">local ${status}, ${result} = pcall(${function}, ${param})
+if not ${status} then
+	${cursor}
+end</template>
+<template
+	id="org.eclipse.koneki.templates.print"
+	context="LuaUniversalTemplateContextType"
+	description="%template.print"
+	name="print">print("${string}")
+${cursor}</template>
+</templates>

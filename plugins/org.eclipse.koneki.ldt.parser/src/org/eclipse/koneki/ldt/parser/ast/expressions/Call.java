@@ -17,16 +17,20 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.Expression;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Call.
  */
-public class Call extends CallExpression implements LuaExpressionConstants {
+public class Call extends CallExpression implements LuaExpressionConstants, INavigableNode {
+
+	private ASTNode parentNode;
 
 	/**
 	 * Instantiates a new call.
@@ -45,8 +49,7 @@ public class Call extends CallExpression implements LuaExpressionConstants {
 	}
 
 	public Call(int start, int end, Expression name) {
-		super(start, end, name, name.toString(), new CallArgumentsList(start,
-				end));
+		super(start, end, name, name.toString(), new CallArgumentsList(start, end));
 	}
 
 	/*
@@ -58,4 +61,21 @@ public class Call extends CallExpression implements LuaExpressionConstants {
 	public int getKind() {
 		return E_CALL;
 	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
+
 }

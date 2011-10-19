@@ -17,19 +17,22 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.utils.CorePrinter;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 
-// TODO: Auto-generated Javadoc
 /**
  * Used to define variables' names.
  * 
- * @author kkinfoo
+ * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
-public class Identifier extends SimpleReference implements LeftHandSide, IndexedNode {
+public class Identifier extends SimpleReference implements INavigableNode {
 
-	private long id;
+	/** {@link Declaration} related to this identifier */
+	private Declaration declaration;
+	private ASTNode parentNode;
 
 	/**
 	 * Instantiates a new identifier.
@@ -45,35 +48,62 @@ public class Identifier extends SimpleReference implements LeftHandSide, Indexed
 		super(start, end, value);
 	}
 
-	public long getID() {
-		return id;
+	/**
+	 * Provides related {@link Declaration}. In
+	 * 
+	 * <pre>
+	 * function foo()end
+	 * foo()
+	 * </pre>
+	 * 
+	 * The <code>foo()</code> function call contains an {@link Identifier}. This {@link Identifier} is related to previous {@link Declaration}. This
+	 * {@link Declaration} is available here.
+	 * 
+	 * @return Related {@link Declaration}
+	 */
+	public Declaration getDeclaration() {
+		return declaration;
+	}
+
+	/**
+	 * Indicates if variable is related to {@link Declaration}
+	 * 
+	 * @return true is there is a related declaration, false else way
+	 */
+	public boolean hasDeclaration() {
+		return getDeclaration() != null;
 	}
 
 	public void printNode(CorePrinter output) {
 		output.formatPrintLn(getName());
 	}
 
-	public void setID(long id) {
-		this.id = id;
+	public void setDeclaration(Declaration d) {
+		declaration = d;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.anwrt.ldt.parser.ast.expressions.LeftHandSide#isLeftHandSide()
+	/**
+	 * Human readable name of model identifier.
 	 */
 	@Override
-	public boolean isLeftHandSide() {
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.dltk.ast.expressions.Literal#toString()
-	 */
 	public java.lang.String toString() {
 		return getStringRepresentation();
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
 	}
 
 }

@@ -13,40 +13,41 @@ package org.eclipse.koneki.ldt.editor;
 
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
+import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.koneki.ldt.core.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.editor.internal.text.ILuaPartitions;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaASTFoldingStructureProvider;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaTextTools;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 /**
  * 
  * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
- *
+ * 
  */
 public class LuaEditor extends ScriptEditor {
 
-	public static final String EDITOR_CONTEXT = "#LuaEditorContext";
-	public static final String EDITOR_ID = Activator.PLUGIN_ID + ".LuaEditor"; //$NON-NLS-1$
+	public static final String EDITOR_CONTEXT = "#LuaEditorContext"; //$NON-NLS-1$
+	public static final String EDITOR_ID = Activator.PLUGIN_ID;
 	private IFoldingStructureProvider foldingStructureProvider = null;
 
 	/**
 	 * Connects partitions used to deal with comments or strings in editor.
 	 */
-	protected void connectPartitioningToElement(IEditorInput input,
-			IDocument document) {
+	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 		if (document instanceof IDocumentExtension3) {
 			IDocumentExtension3 extension = (IDocumentExtension3) document;
-			if (extension
-					.getDocumentPartitioner(ILuaPartitions.LUA_PARTITIONING) == null) {
+			if (extension.getDocumentPartitioner(ILuaPartitions.LUA_PARTITIONING) == null) {
 				LuaTextTools tools = Activator.getDefault().getTextTools();
-				tools.setupDocumentPartitioner(document,
-						ILuaPartitions.LUA_PARTITIONING);
+				tools.setupDocumentPartitioner(document, ILuaPartitions.LUA_PARTITIONING);
 			}
 		}
 	}
@@ -66,7 +67,7 @@ public class LuaEditor extends ScriptEditor {
 		}
 		return foldingStructureProvider;
 	}
-	
+
 	@Override
 	public IDLTKLanguageToolkit getLanguageToolkit() {
 		return LuaLanguageToolkit.getDefault();
@@ -76,9 +77,24 @@ public class LuaEditor extends ScriptEditor {
 	 * @return Editor's preferences
 	 */
 	@Override
-	protected IPreferenceStore getScriptPreferenceStore() {
-		return Activator.getDefault().getPreferenceStore();
+	public IPreferenceStore getScriptPreferenceStore() {
+		// TODO BUG_ECLIPSE ???? 360689
+		IPreferenceStore uiLanguageToolkitStore = super.getScriptPreferenceStore();
+		IPreferenceStore dltkUIStore = DLTKUIPlugin.getDefault().getPreferenceStore();
+		if (uiLanguageToolkitStore != null)
+			return new ChainedPreferenceStore(new IPreferenceStore[] { uiLanguageToolkitStore, dltkUIStore });
+		else
+			return dltkUIStore;
+	}
 
+	/**
+	 * @see org.eclipse.dltk.internal.ui.editor.ScriptEditor#doSelectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 */
+	@Override
+	protected void doSelectionChanged(SelectionChangedEvent event) {
+		// TODO BUG_ECLIPSE ???? 360693
+		if (getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE))
+			super.doSelectionChanged(event);
 	}
 
 	@Override

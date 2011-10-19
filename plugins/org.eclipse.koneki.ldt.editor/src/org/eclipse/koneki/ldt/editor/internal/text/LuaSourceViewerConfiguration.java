@@ -31,12 +31,12 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.koneki.ldt.completion.LuaCompletionProcessor;
+import org.eclipse.koneki.ldt.editor.completion.LuaCompletionProcessor;
+import org.eclipse.koneki.ldt.parser.LuaConstants;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class LuaSourceViewerConfiguration extends
-		ScriptSourceViewerConfiguration {
+public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 
 	private AbstractScriptScanner fCodeScanner;
 	private AbstractScriptScanner fStringScanner;
@@ -45,19 +45,16 @@ public class LuaSourceViewerConfiguration extends
 	private AbstractScriptScanner fMultilineCommentScanner;
 	private AbstractScriptScanner fNumberScanner;
 
-	public LuaSourceViewerConfiguration(IColorManager colorManager,
-			IPreferenceStore preferenceStore, ITextEditor editor,
-			String partitioning) {
+	public LuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
 	}
+
 	protected void alterContentAssistant(ContentAssistant assistant) {
-		IContentAssistProcessor scriptProcessor = new LuaCompletionProcessor(
-				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
-		assistant.setContentAssistProcessor(scriptProcessor,
-				IDocument.DEFAULT_CONTENT_TYPE);
+		IContentAssistProcessor scriptProcessor = new LuaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 	}
-	public IAutoEditStrategy[] getAutoEditStrategies(
-			ISourceViewer sourceViewer, String contentType) {
+
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return new IAutoEditStrategy[] { new DefaultIndentLineAutoEditStrategy() };
 	}
 
@@ -66,14 +63,12 @@ public class LuaSourceViewerConfiguration extends
 		return LuaContentAssistPreference.getDefault();
 	}
 
-	public String[] getIndentPrefixes(ISourceViewer sourceViewer,
-			String contentType) {
+	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
 		return new String[] { "\t", "        " };
 	}
 
 	@Override
-	protected IInformationControlCreator getOutlinePresenterControlCreator(
-			ISourceViewer sourceViewer, final String commandId) {
+	protected IInformationControlCreator getOutlinePresenterControlCreator(ISourceViewer sourceViewer, final String commandId) {
 		return new IInformationControlCreator() {
 
 			/**
@@ -92,11 +87,9 @@ public class LuaSourceViewerConfiguration extends
 		};
 	}
 
-	public IPresentationReconciler getPresentationReconciler(
-			ISourceViewer sourceViewer) {
+	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new ScriptPresentationReconciler();
-		reconciler.setDocumentPartitioning(this
-				.getConfiguredDocumentPartitioning(sourceViewer));
+		reconciler.setDocumentPartitioning(this.getConfiguredDocumentPartitioning(sourceViewer));
 
 		DefaultDamagerRepairer dr;
 		dr = new DefaultDamagerRepairer(this.fCodeScanner);
@@ -131,25 +124,15 @@ public class LuaSourceViewerConfiguration extends
 	 */
 	protected void initializeScanners() {
 		// This is our code scanner
-		this.fCodeScanner = new LuaCodeScanner(this.getColorManager(),
-				this.fPreferenceStore);
+		this.fCodeScanner = new LuaCodeScanner(this.getColorManager(), this.fPreferenceStore);
 
 		// This is default scanners for partitions with same color.
-		this.fStringScanner = new SingleTokenScriptScanner(this
-				.getColorManager(), this.fPreferenceStore,
-				ILuaColorConstants.LUA_STRING);
-		this.fSingleQuoteStringScanner = new SingleTokenScriptScanner(this
-				.getColorManager(), this.fPreferenceStore,
-				ILuaColorConstants.LUA_STRING);
-		this.fMultilineCommentScanner = new SingleTokenScriptScanner(this
-				.getColorManager(), this.fPreferenceStore,
+		this.fStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
+		this.fSingleQuoteStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
+		this.fMultilineCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
 				ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
-		this.fCommentScanner = new SingleTokenScriptScanner(this
-				.getColorManager(), this.fPreferenceStore,
-				ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
-		this.fNumberScanner = new SingleTokenScriptScanner(this
-				.getColorManager(), this.fPreferenceStore,
-				ILuaColorConstants.LUA_NUMBER);
+		this.fCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
+		this.fNumberScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_NUMBER);
 	}
 
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
@@ -165,8 +148,22 @@ public class LuaSourceViewerConfiguration extends
 	}
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
-		return this.fCodeScanner.affectsBehavior(event)
-				|| this.fStringScanner.affectsBehavior(event)
+		return this.fCodeScanner.affectsBehavior(event) || this.fStringScanner.affectsBehavior(event)
 				|| this.fSingleQuoteStringScanner.affectsBehavior(event);
+	}
+
+	/**
+	 * Lua specific one line comment
+	 * 
+	 * @see ScriptSourceViewerConfiguration#getCommentPrefix()
+	 */
+	@Override
+	protected String getCommentPrefix() {
+		return LuaConstants.COMMENT_STRING;
+	}
+
+	@Override
+	public String[] getConfiguredContentTypes(final ISourceViewer sourceViewer) {
+		return ILuaPartitions.LUA_PARTITION_TYPES;
 	}
 }

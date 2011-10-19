@@ -21,16 +21,15 @@ import junit.framework.TestSuite;
  * @author kkinfoo
  */
 public class LuaEclipseTestSuite extends TestSuite {
-	
+
 	/** The asserts enabled. */
 	static boolean assertsEnabled;
-	static{
+	static {
 		assert assertsEnabled = true; // Intentional side effect!!!
 	}
 
-
 	/**
-	 * All {@link TestCase} registered from  contributed {@link TestSuite}.
+	 * All {@link TestCase} registered from contributed {@link TestSuite}.
 	 * 
 	 * @return {@link TestSuite} to be run
 	 */

@@ -10,34 +10,54 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.parser.ast.statements;
 
+import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Break.
  * 
- * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
+ * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
-public class Break extends SimpleStatement {
+public class Break extends AbastractSimpleStatement implements INavigableNode {
 
-    /**
-     * Instantiates a new break.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     */
-    public Break(int start, int end) {
-	super(start, end, null);
-    }
+	private ASTNode parentNode;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.dltk.ast.statements.Statement#getKind()
-     */
-    @Override
-    public int getKind() {
-	return LuaStatementConstants.S_BREAK;
-    }
+	/**
+	 * Instantiates a new break.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public Break(int start, int end) {
+		super(start, end, null);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.dltk.ast.statements.Statement#getKind()
+	 */
+	@Override
+	public int getKind() {
+		return LuaStatementConstants.S_BREAK;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

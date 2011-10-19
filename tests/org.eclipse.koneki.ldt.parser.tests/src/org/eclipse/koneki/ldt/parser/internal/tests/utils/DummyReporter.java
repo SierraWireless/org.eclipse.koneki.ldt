@@ -9,7 +9,6 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 /**
  * @author	Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  * @date $Date: 2009-07-23 12:07:30 +0200 (jeu., 23 juil. 2009) $
@@ -18,30 +17,30 @@
  */
 package org.eclipse.koneki.ldt.parser.internal.tests.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 
 /**
- * The Class DummyReporter.
- * Is an empty reporter used for testing.
+ * The Class DummyReporter. Is an empty reporter used for testing.
  */
 public class DummyReporter implements IProblemReporter {
 
-	/* (non-Javadoc)
+	private List<IProblem> problems = new ArrayList<IProblem>();
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.dltk.compiler.problem.IProblemReporter#reportProblem(org.eclipse.dltk.compiler.problem.IProblem)
 	 */
 	@Override
 	public void reportProblem(IProblem problem) {
-		// Do nothing
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		// Empty Object
-		return new Object();
+		problems.add(problem);
 	}
 
+	public List<IProblem> getProblems() {
+		return problems;
+	}
 }

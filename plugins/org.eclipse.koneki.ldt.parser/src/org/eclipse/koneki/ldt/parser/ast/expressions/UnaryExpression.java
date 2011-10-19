@@ -17,18 +17,19 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class UnaryExpression.
  */
-public class UnaryExpression extends Expression implements IndexedNode {
+public class UnaryExpression extends Expression implements INavigableNode {
 
 	/** The kind. */
 	private int kind;
@@ -36,7 +37,7 @@ public class UnaryExpression extends Expression implements IndexedNode {
 	/** The expression. */
 	private Statement expression;
 
-	private long id;
+	private ASTNode parentNode;
 
 	/**
 	 * Instantiates a new unary expression.
@@ -54,6 +55,10 @@ public class UnaryExpression extends Expression implements IndexedNode {
 		super(start, end);
 		this.expression = e;
 		this.kind = kind;
+	}
+
+	public UnaryExpression(int start, int end, java.lang.String operatorName, Statement e) {
+		this(start, end, BinaryExpression.operatorNameToKind(operatorName), e);
 	}
 
 	/**
@@ -75,25 +80,17 @@ public class UnaryExpression extends Expression implements IndexedNode {
 		return kind;
 	}
 
-	public long getID() {
-		return id;
-	}
-
 	@Override
 	public java.lang.String getOperator() {
-		switch ( this.getKind() ){
+		switch (this.getKind()) {
 		case LuaExpressionConstants.E_LENGTH:
-			return "#";
+			return "#"; //$NON-NLS-1$
 		case LuaExpressionConstants.E_UN_MINUS:
-			return "-";
+			return "-"; //$NON-NLS-1$
 		case LuaExpressionConstants.E_BNOT:
-			return " not ";
+			return " not "; //$NON-NLS-1$
 		}
 		return super.getOperator();
-	}
-
-	public void setID(long id) {
-		this.id = id;
 	}
 
 	/**
@@ -116,7 +113,24 @@ public class UnaryExpression extends Expression implements IndexedNode {
 		}
 	}
 
+	@Override
 	public void printNode(CorePrinter output) {
 		output.formatPrintLn(this.getOperator() + getExpression().toString());
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
 	}
 }

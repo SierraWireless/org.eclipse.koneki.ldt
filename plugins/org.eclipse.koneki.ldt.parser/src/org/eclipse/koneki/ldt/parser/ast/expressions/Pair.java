@@ -17,7 +17,7 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
-import org.eclipse.dltk.ast.declarations.Argument;
+import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.expressions.Literal;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.statements.Statement;
@@ -27,15 +27,14 @@ import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
 /**
  * The Class Pair.
  */
-public class Pair extends Argument {
+public class Pair extends Index {
 
-	public Pair(final Literal name, final Statement s, final int mods) {
-		this(new SimpleReference(name.sourceStart(), name.sourceEnd(),
-				name.getValue()), s, mods);
+	public Pair(final Literal name, final Statement s) {
+		this(new SimpleReference(name.sourceStart(), name.sourceEnd(), name.getValue()), s);
 	}
 
-	public Pair(final SimpleReference ref, final Statement s, final int mods) {
-		super(ref, ref.sourceStart(), ref.sourceEnd(), s, mods);
+	public Pair(final SimpleReference ref, final Statement s) {
+		super(ref, (Expression) s);
 	}
 
 	@Override

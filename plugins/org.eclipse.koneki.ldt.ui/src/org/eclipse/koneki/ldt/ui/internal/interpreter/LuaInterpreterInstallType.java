@@ -8,8 +8,6 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-
-
 package org.eclipse.koneki.ldt.ui.internal.interpreter;
 
 import java.io.IOException;
@@ -21,18 +19,16 @@ import org.eclipse.dltk.internal.launching.AbstractInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.ui.Activator;
-import org.eclipse.koneki.ldt.ui.internal.interpreter.LuaInterpreterInstall;
 import org.osgi.framework.Bundle;
 
-
 public class LuaInterpreterInstallType extends AbstractInterpreterInstallType {
-	
-	private static final String[] INTERPRETER_NAMES = { "lua5.1", "lua" };
+
+	private static final String[] INTERPRETER_NAMES = { "lua5.1", "lua" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	@Override
 	protected IPath createPathFile(IDeployment deployment) throws IOException {
 		Bundle bundle = Activator.getDefault().getBundle();
-		return deployment.add(bundle, "script/path.lua");
+		return deployment.add(bundle, "script/path.lua"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -57,7 +53,7 @@ public class LuaInterpreterInstallType extends AbstractInterpreterInstallType {
 
 	@Override
 	public String getName() {
-		return "Lua";
+		return "Lua"; //$NON-NLS-1$
 	}
 
 	@Override

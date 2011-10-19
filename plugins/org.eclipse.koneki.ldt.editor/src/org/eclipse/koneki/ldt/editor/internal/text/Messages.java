@@ -9,7 +9,6 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 package org.eclipse.koneki.ldt.editor.internal.text;
 
 import org.eclipse.osgi.util.NLS;

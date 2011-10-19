@@ -19,74 +19,62 @@ package org.eclipse.koneki.ldt.parser.ast.statements;
 
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
-import org.eclipse.dltk.ast.statements.Block;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class While.
  */
-public class While extends Block implements LuaStatementConstants, IndexedNode {
+public class While extends Chunk implements LuaStatementConstants {
 
-    /** The expression. */
-    private Expression expression;
-    private long id;
+	/** The expression. */
+	private Expression expression;
 
-    /**
-     * Instantiates a new while.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     * @param expr
-     *            the expr
-     * @param block
-     *            the block
-     */
-    public While(int start, int end, Expression expr, Chunk block) {
-	super(start, end, block.getStatements());
-	this.expression = expr;
-    }
-
-    /**
-     * Gets the expression.
-     * 
-     * @return the expression
-     */
-    public Expression getExpression() {
-	return expression;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.dltk.ast.statements.Block#getKind()
-     */
-    @Override
-    public int getKind() {
-	return S_WHILE;
-    }
-
-    public long getID() {
-	return id;
-    }
-
-    public void setID(long id) {
-	this.id = id;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.eclipse.dltk.ast.statements.Block#traverse(org.eclipse.dltk.ast.
-     * ASTVisitor)
-     */
-    public void traverse(ASTVisitor visitor) throws Exception {
-	if (visitor.visit(this)) {
-	    super.traverse(visitor);
-	    expression.traverse(visitor);
-	    visitor.endvisit(this);
+	/**
+	 * Instantiates a new while.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param expr
+	 *            the expr
+	 * @param block
+	 *            the block
+	 */
+	public While(int start, int end, Expression expr, Chunk block) {
+		super(start, end, block.getStatements());
+		this.expression = expr;
 	}
-    }
+
+	/**
+	 * Gets the expression.
+	 * 
+	 * @return the expression
+	 */
+	public Expression getExpression() {
+		return expression;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.dltk.ast.statements.Block#getKind()
+	 */
+	@Override
+	public int getKind() {
+		return S_WHILE;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.eclipse.dltk.ast.statements.Block#traverse(org.eclipse.dltk.ast. ASTVisitor)
+	 */
+	public void traverse(ASTVisitor visitor) throws Exception {
+		if (visitor.visit(this)) {
+			super.traverse(visitor);
+			expression.traverse(visitor);
+			visitor.endvisit(this);
+		}
+	}
 }

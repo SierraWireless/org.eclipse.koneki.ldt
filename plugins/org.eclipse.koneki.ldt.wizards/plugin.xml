@@ -15,14 +15,14 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="org.eclipse.koneki.ldt.category"
-            name="Lua">
+            name="%category.name">
       </category>
       <wizard
             category="org.eclipse.koneki.ldt.category"
             class="org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard:org.eclipse.koneki.ldt.nature"
             icon="img/lua_newprj_wiz.gif"
             id="org.eclipse.koneki.ldt.wizard"
-            name="LuaProject"
+            name="%wizard.name"
             project="true">
       </wizard>
    </extension>

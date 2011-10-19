@@ -17,110 +17,113 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.expressions;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ast.ASTListNode;
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
+import org.eclipse.dltk.utils.CorePrinter;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 import org.eclipse.koneki.ldt.parser.LuaExpressionConstants;
-import org.eclipse.koneki.ldt.parser.ast.statements.Chunk;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Table.
  */
-public class Table extends Expression implements IndexedNode {
+public class Table extends Expression implements INavigableNode {
 
-    /** The statements. */
-    List<Statement> statements;
-    private long id;
+	/** The statements. */
+	private ASTListNode statements;
+	private ASTNode parentNode;
 
-    /**
-     * Instantiates a new table.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     * @param statements
-     *            the statements
-     */
-    public Table(int start, int end, List<Statement> statements) {
-	super(start, end);
-	this.statements = statements;
-    }
-
-    /**
-     * Instantiates a new table.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     */
-    public Table(int start, int end) {
-	this(start, end, new ArrayList<Statement>());
-    }
-
-    /**
-     * Adds the statement.
-     * 
-     * @param statement
-     *            the statement
-     */
-    public void addStatement(Statement statement) {
-	statements.add(statement);
-    }
-
-    public Chunk getChunk() {
-	int start = 0, end = 0;
-	if (getStatements().size() > 0) {
-	    start = getStatements().get(0).matchStart();
-	    end = getStatements().get(getStatements().size() - 1).matchStart();
+	/**
+	 * Instantiates a new table.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param statements
+	 *            the statements
+	 */
+	public Table(int start, int end, ASTListNode statements) {
+		super(start, end);
+		this.statements = statements;
 	}
-	return new Chunk(start, end, getStatements());
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.dltk.ast.statements.Statement#getKind()
-     */
-    @Override
-    public int getKind() {
-	return LuaExpressionConstants.E_TABLE;
-    }
-
-    public List<Statement> getStatements() {
-	return statements;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast
-     * .ASTVisitor)
-     */
-    public void traverse(ASTVisitor pVisitor) throws Exception {
-	if (pVisitor.visit(this)) {
-	    super.traverse(pVisitor);
-	    for (Statement node : getStatements()) {
-		node.traverse(pVisitor);
-	    }
-	    pVisitor.endvisit(this);
+	/**
+	 * Instantiates a new table.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public Table(int start, int end) {
+		this(start, end, new ASTListNode());
 	}
-    }
 
-    @Override
-    public long getID() {
-	return id;
-    }
+	/**
+	 * Adds the statement.
+	 * 
+	 * @param statement
+	 *            the statement
+	 */
+	public void addStatement(Statement statement) {
+		statements.addNode(statement);
+	}
 
-    @Override
-    public void setID(long id) {
-	this.id = id;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.dltk.ast.statements.Statement#getKind()
+	 */
+	@Override
+	public int getKind() {
+		return LuaExpressionConstants.E_TABLE;
+	}
+
+	public ASTListNode getStatements() {
+		return statements;
+	}
+
+	@Override
+	public void traverse(ASTVisitor pVisitor) throws Exception {
+		if (pVisitor.visit(this)) {
+			super.traverse(pVisitor);
+			getStatements().traverse(pVisitor);
+			pVisitor.endvisit(this);
+		}
+	}
+
+	@Override
+	public void printNode(CorePrinter output) {
+		output.append('{');
+		List children = getStatements().getChilds();
+		for (int position = 0; position < children.size(); position++) {
+			if (children.get(position) instanceof Statement) {
+				((Statement) children.get(position)).printNode(output);
+			}
+		}
+		output.append('}');
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
+
 }

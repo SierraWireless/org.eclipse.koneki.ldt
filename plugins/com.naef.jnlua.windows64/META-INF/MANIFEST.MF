@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JNLua - Windows x86_64 (incubator)
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.naef.jnlua.windows64
 Bundle-Version: 0.9.1.qualifier
-Bundle-Vendor: NAEF
+Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: com.naef.jnlua;bundle-version="0.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86_64))

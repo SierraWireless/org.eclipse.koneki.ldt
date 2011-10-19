@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Lua Test Infrastructure (incubator)
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt.tests;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.koneki.ldt.tests.Activator
-Bundle-Vendor: Sierra Wireless
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit;bundle-version="4.5.0",

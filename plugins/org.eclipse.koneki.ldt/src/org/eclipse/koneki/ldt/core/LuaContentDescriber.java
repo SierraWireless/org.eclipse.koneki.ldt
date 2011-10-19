@@ -16,16 +16,15 @@ import java.util.regex.Pattern;
 import org.eclipse.dltk.core.ScriptContentDescriber;
 
 /**
- * The Class LuaContentDescriber gives patterns for Lua files headers. Most of
- * the time those headers allow to choose an interpreter for runnable scripts
+ * The Class LuaContentDescriber gives patterns for Lua files headers. Most of the time those headers allow to choose an interpreter for runnable
+ * scripts
  * 
  * @author Kevin KIN-FOO <kkin-foo@sierrawireless.com>
  */
 public class LuaContentDescriber extends ScriptContentDescriber {
 
 	/** Accepted patterns for headers. */
-	protected static Pattern[] header_patterns = { Pattern.compile(
-			"^#!.*lua.*", Pattern.MULTILINE) };
+	protected static Pattern[] header_patterns = { Pattern.compile("^#!.*lua.*", Pattern.MULTILINE) };//$NON-NLS-1$
 
 	/**
 	 * Instantiates a new Lua content describer.

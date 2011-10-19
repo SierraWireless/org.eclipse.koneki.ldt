@@ -19,61 +19,58 @@ package org.eclipse.koneki.ldt.parser.ast.statements;
 
 import java.util.List;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.ast.statements.Statement;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Chunk.
  */
-public class Chunk extends Block implements IndexedNode {
+public class Chunk extends Block implements INavigableNode {
 
-    private long id;
+	private ASTNode parentNode;
 
-    /**
-     * Instantiates a new chunk.
-     */
-    // public Chunk() {
-    // super();
-    // }
+	/**
+	 * Instantiates a new chunk.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param statems
+	 *            the statems
+	 */
+	public Chunk(int start, int end, List<Statement> statems) {
+		super(start, end, statems);
+	}
 
-    /**
-     * Instantiates a new chunk.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     * @param statems
-     *            the statems
-     */
-    public Chunk(int start, int end, List<Statement> statems) {
-	super(start, end, statems);
-    }
+	/**
+	 * Instantiates a new chunk.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public Chunk(int start, int end) {
+		super(start, end);
+	}
 
-    /**
-     * Instantiates a new chunk.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     */
-    public Chunk(int start, int end) {
-	super(start, end);
-    }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
 
-    public long getID() {
-	return id;
-    }
-
-    public void setID(long id) {
-	this.id = id;
-    }
-
-    // @Override
-    // public void traverse(ASTVisitor visitor) throws Exception {
-    // super.traverse(visitor);
-    // }
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

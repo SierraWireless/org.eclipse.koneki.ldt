@@ -17,6 +17,11 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.statements;
 
+import java.util.List;
+
+import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.ASTVisitor;
+import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.expressions.ExpressionConstants;
 
 // TODO: Auto-generated Javadoc
@@ -24,134 +29,60 @@ import org.eclipse.dltk.ast.expressions.ExpressionConstants;
  * The Class Set.
  */
 public class Set extends BinaryStatement {
-    /**
-     * Construct default strict assignment.
-     * 
-     * @param left
-     *            the left
-     * @param right
-     *            the right
-     */
-    public Set(int start, int end, Chunk left, Chunk right) {
-	super(start, end, left, E_ASSIGN, right);
-    }
+	/**
+	 * Construct default strict assignment.
+	 * 
+	 * @param left
+	 *            the left
+	 * @param right
+	 *            the right
+	 */
+	public Set(int start, int end, Chunk left, Chunk right) {
+		super(start, end, left, E_ASSIGN, right);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.anwrt.ldt.parser.ast.expressions.BinaryExpression#getKind()
-     */
-    @Override
-    public int getKind() {
-	return ExpressionConstants.E_ASSIGN;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see BinaryExpression#getKind()
+	 */
+	@Override
+	public int getKind() {
+		return ExpressionConstants.E_ASSIGN;
+	}
 
-    // public static Set factory(int start, int end, Chunk left, Chunk right) {
-    // int leftSize = left.getStatements().size();
-    // int rightSize = right.getStatements().size();
-    //
-    // /*
-    // * Create empty chunk for right side, it will contain statement and
-    // * declarations when needed.
-    // */
-    // int availableValues = leftSize > rightSize ? rightSize : leftSize;
-    // Chunk castedRight = new Chunk(left.matchStart(), left.matchLength()
-    // + left.matchStart());
-    // for (int n = 0; n < availableValues; n++) {
-    //
-    // // Process needed only for identifiers and indexes
-    // Expression declaredVar = (Expression) left.getStatements().get(n);
-    // Expression assignedValue = (Expression) right.getStatements()
-    // .get(n);
-    //
-    // // Get variable name
-    // String varName = NameFinder.extractName(declaredVar);
-    //
-    // // Declare Identifier as Arguments
-    // int idStart = declaredVar.matchStart() - 1;
-    // int idEnd = declaredVar.matchStart() + declaredVar.matchLength();
-    //
-    // /*
-    // * Deal with table declarations, they will be represented as Classes
-    // * in outline.
-    // */
-    // if (assignedValue instanceof Table) {
-    // /*
-    // * Make table declaration as type
-    // */
-    // TableDeclaration table = new TableDeclaration(varName, idStart,
-    // idEnd, start, end);
-    //
-    // // Append current statement to declaration
-    // Chunk body = new Chunk(assignedValue.matchStart(),
-    // assignedValue.matchStart()
-    // + assignedValue.matchLength());
-    // body.addStatement(assignedValue);
-    // table.setBody(body);
-    //
-    // // Insert declaration in AST
-    // castedRight.addStatement(table);
-    // } else if (assignedValue instanceof Function) {
-    // /*
-    // * Deal with function declarations
-    // */
-    // FunctionDeclaration function = new FunctionDeclaration(varName,
-    // idStart, idEnd, start, end);
-    // // Append function body to function declaration
-    // function.acceptBody((Function) assignedValue);
-    //
-    // // Associate function's arguments to function declaration
-    // function.acceptArguments(((Function) assignedValue)
-    // .getArguments());
-    //
-    // // Insert declaration in AST
-    // castedRight.addStatement(function);
-    // } else if (declaredVar instanceof Index) {
-    // /*
-    // * Deal with fields, they are index of a table that aren't
-    // * functions.
-    // */
-    // FieldDeclaration field = new FieldDeclaration(varName, idStart,
-    // idEnd, declaredVar.matchStart(), declaredVar
-    // .matchStart()
-    // + declaredVar.matchLength());
-    // field.setModifier(Declaration.AccGlobal);
-    // castedRight.addStatement(field);
-    // castedRight.addStatement(assignedValue);
-    // if (DLTKCore.DEBUG) {
-    // System.err.println("attribute : " + varName);
-    // }
-    // } else {
-    // // Add casted if needed statement to chunk
-    // castedRight.addStatement(assignedValue);
-    // }
-    // }
-    //
-    // // Instantiate "Set" nodes with casted chunks
-    // return new Set(start, end, left, castedRight);
-    // }
+	/**
+	 * Convert to string in pattern: "left = right".
+	 * 
+	 * @return the string
+	 */
+	public String toString() {
+		return getLeft().toString() + '=' + getRight().toString();
+	}
 
-    /**
-     * Convert to string in pattern: "left = right".
-     * 
-     * @return the string
-     */
-    public String toString() {
-	return getLeft().toString() + '=' + getRight().toString();
-    }
-
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // *
-    // com.anwrt.ldt.parser.ast.expressions.BinaryExpression#traverse(org.eclipse
-    // * .dltk.ast.ASTVisitor)
-    // */
-    // public void traverse(ASTVisitor visitor) throws Exception {
-    // if (visitor.visit(this)) {
-    // super.traverse(visitor);
-    // visitor.endvisit(this);
-    // }
-    // }
+	/**
+	 * Traversing child nodes, except right side one when they are used as initialization for {@link Declaration}s . This is a
+	 * <strong>workaround</strong>.
+	 */
+	@Override
+	public void traverse(ASTVisitor visitor) throws Exception {
+		if (visitor.visit(this)) {
+			if (getLeft() != null) {
+				getLeft().traverse(visitor);
+			}
+			if (getRight() != null) {
+				@SuppressWarnings("rawtypes")
+				List left = getLeft().getChilds();
+				@SuppressWarnings("rawtypes")
+				List right = getRight().getChilds();
+				for (int i = 0; i < right.size(); i++) {
+					boolean associatedToDeclaration = left.get(i) instanceof Declaration;
+					if (right.get(i) instanceof ASTNode && !associatedToDeclaration) {
+						((ASTNode) right.get(i)).traverse(visitor);
+					}
+				}
+			}
+			visitor.endvisit(this);
+		}
+	}
 }

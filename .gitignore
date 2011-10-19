@@ -1,4 +1,6 @@
-target/
+target-platform/
 bin/
 .DS_Store
 /.project
+target/
+

@@ -1,17 +1,20 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: LuaEclipse DLTK compliant Lua Parser (incubator)
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt.parser;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.eclipse.koneki.ldt.parser.Activator
-Bundle-Vendor: Sierra Wireless
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.koneki.ldt;bundle-version="1.0.0",
- org.eclipse.dltk.core;bundle-version="[2.0.0,3.0.0)",
+ org.eclipse.dltk.core;bundle-version="[2.0.0,4.0.0)",
  org.eclipse.koneki.ldt.metalua;bundle-version="1.0.0",
- com.naef.jnlua;bundle-version="0.9.0"
+ com.naef.jnlua;bundle-version="0.9.0",
+ org.eclipse.core.resources;bundle-version="3.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.koneki.ldt.parser,
+Export-Package: org.eclipse.koneki.ldt.internal.parser,
+ org.eclipse.koneki.ldt.parser,
+ org.eclipse.koneki.ldt.parser.ast,
  org.eclipse.koneki.ldt.parser.ast.declarations,
  org.eclipse.koneki.ldt.parser.ast.expressions,
  org.eclipse.koneki.ldt.parser.ast.statements

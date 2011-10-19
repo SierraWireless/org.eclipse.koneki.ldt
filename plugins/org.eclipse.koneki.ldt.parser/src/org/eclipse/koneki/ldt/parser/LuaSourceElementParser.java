@@ -26,7 +26,7 @@ public class LuaSourceElementParser extends AbstractSourceElementParser {
 	 * @see org.eclipse.dltk.core.AbstractSourceElementParser#createVisitor()
 	 */
 	public SourceElementRequestVisitor createVisitor() {
-		return new LuaSourceElementRequestor(getRequestor());
+		return new LuaSourceElementRequestorVisitor(getRequestor());
 	}
 
 	/*

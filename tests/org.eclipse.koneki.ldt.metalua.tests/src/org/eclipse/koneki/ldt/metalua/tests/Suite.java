@@ -9,26 +9,24 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 package org.eclipse.koneki.ldt.metalua.tests;
-
-import org.eclipse.koneki.ldt.metalua.tests.internal.cases.TestMetalua;
-import org.eclipse.koneki.ldt.metalua.tests.internal.cases.TestMetaluaStateFactory;
 
 import junit.framework.TestSuite;
 
+import org.eclipse.koneki.ldt.metalua.tests.internal.cases.TestMetalua;
+import org.eclipse.koneki.ldt.metalua.tests.internal.cases.TestMetaluaStateFactory;
 
 /** Gathers tests about Metalua */
 public class Suite extends TestSuite {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.metalua.tests";
+	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.metalua.tests"; //$NON-NLS-1$
 
 	/** Registers all tests to run */
-	public Suite(){
+	public Suite() {
 		super();
 		addTestSuite(TestMetaluaStateFactory.class);
 		addTestSuite(TestMetalua.class);
-		setName("Metalua");
+		setName("Metalua"); //$NON-NLS-1$
 	}
 }

@@ -13,19 +13,22 @@ package org.eclipse.koneki.ldt.parser.ast.statements;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.statements.Statement;
+import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Return.
  */
-public class Return extends Statement {
+public class Return extends Statement implements INavigableNode {
 
 	/** The expressions contained in return {@link Statement} */
 	private Chunk returnValues;
+	private ASTNode parentNode;
 
-    /**
+	/**
 	 * Instantiates a new return.
 	 * 
 	 * @param start
@@ -36,56 +39,69 @@ public class Return extends Statement {
 	 *            {@link Statement}
 	 */
 	public Return(int start, int end, List<Statement> values) {
+		this(start, end, new Chunk(start, end, values));
+	}
+
+	public Return(int start, int end, Chunk values) {
 		super(start, end);
-		this.returnValues = new Chunk(start, end, values);
-    }
+		this.returnValues = values;
+	}
 
-    /**
-     * Instantiates a new return.
-     * 
-     * @param start
-     *            the start
-     * @param end
-     *            the end
-     */
-    public Return(int start, int end) {
+	/**
+	 * Instantiates a new return.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public Return(int start, int end) {
 		this(start, end, new ArrayList<Statement>());
-    }
+	}
 
-    /**
+	/**
 	 * Adds one of {@link Return} values
 	 * 
 	 * @param value
-	 *            Statement contained in {@link Return}
-	 * 
-	 * @return true, if successful
+	 *            {@link Statement} contained in {@link Return}
 	 */
 	public void addReturnValue(Statement value) {
 		this.returnValues.addStatement(value);
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.dltk.ast.statements.Statement#getKind()
-     */
-    @Override
-    public int getKind() {
+	/**
+	 * @see org.eclipse.dltk.ast.statements.Statement#getKind()
+	 */
+	@Override
+	public int getKind() {
 		return LuaStatementConstants.S_RETURN;
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast
-     * .ASTVisitor)
-     */
-    public void traverse(ASTVisitor visitor) throws Exception {
+	/**
+	 * @see org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast .ASTVisitor)
+	 */
+	@Override
+	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			super.traverse(visitor);
 			returnValues.traverse(visitor);
 			visitor.endvisit(this);
 		}
-    }
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#getParent()
+	 */
+	@Override
+	public ASTNode getParent() {
+		return parentNode;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.internal.parser.INavigableNode#setParent(org.eclipse.dltk.ast.ASTNode)
+	 */
+	@Override
+	public void setParent(ASTNode parent) {
+		parentNode = parent;
+	}
 }

@@ -21,9 +21,21 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.eclipse.koneki.ldt.ui.interpreter.preferences.LuaInterpreterPreferencePage"
+            class="org.eclipse.koneki.ldt.ui.preferences.GlobalLuaPreferencePage"
+            id="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            name="%preference.page.name.lua">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.ui.preferences.LuaInterpreterPreferencePage"
             id="org.eclipse.koneki.ldt.ui.interpreter.preferences"
-            name="Lua interpreters">
+            name="%page.name">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.ui.preferences.LuaUserLibraryPreferencePage"
+            id="org.eclipse.koneki.ldt.ui.userlibrarypath"
+            name="%preference.page.name.userlib">
       </page>
    </extension>
       <extension
@@ -34,4 +46,69 @@
             natureId="org.eclipse.koneki.ldt.nature">
       </image>
    </extension>
+   <extension
+         point="org.eclipse.dltk.ui.search">
+      <occurrencesFinder
+            class="org.eclipse.koneki.ldt.ui.search.LuaModelElementOccurrencesFinder"
+            nature="org.eclipse.koneki.ldt.nature">
+      </occurrencesFinder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.koneki.ldt.ui.luaviewcategory"
+            name="%view.category.name.lua">
+      </category>
+   </extension>
+     <extension
+       point="org.eclipse.ui.propertyPages">
+    <page
+          category="org.eclipse.koneki.ldt.ui.luaembeddedpage"
+          class="org.eclipse.koneki.ldt.ui.properties.LuaBuildPathPropertyPage"
+          id="org.eclipse.koneki.ldt.ui.BuildpathProperties"
+          name="%properties.page.name.buildpath">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
+        </adapt>         
+      </enabledWhen>
+    </page>    
+    <page
+      name="%properties.page.name.lua"
+      class="org.eclipse.koneki.ldt.ui.properties.LuaPropertyPage"
+      id="org.eclipse.koneki.ldt.ui.luaembeddedpage">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
+        </adapt>         
+      </enabledWhen>
+    </page>          
+ </extension>
+     <extension
+           point="org.eclipse.dltk.ui.buildpathContainerPage">
+        <buildpathContainerPage
+              class="org.eclipse.dltk.internal.ui.wizards.buildpath.UserLibraryWizardPage"
+              id="org.eclipse.koneki.ldt.ui.luauserlibrariespage"
+              name="Lua User Libraries"
+              nature="org.eclipse.koneki.ldt.nature">
+        </buildpathContainerPage>
+        </extension>
+     <extension
+           point="org.eclipse.dltk.ui.scriptDocumentationProviders">
+        <provider
+              class="org.eclipse.koneki.ldt.ui.internal.documentation.LuaDocumentationProvider"
+              nature="org.eclipse.koneki.ldt.nature">
+        </provider>
+     </extension>
+     <extension
+           point="org.eclipse.ui.views">
+        <view
+              category="org.eclipse.koneki.ldt.ui.luaviewcategory"
+              class="org.eclipse.koneki.ldt.ui.internal.views.LuaDocView"
+              icon="img/luadoc_view.gif"
+              id="org.eclipse.koneki.ldt.ui.luadoc"
+              name="%view.luadoc.name"
+              restorable="true">
+        </view>
+     </extension>
 </plugin>

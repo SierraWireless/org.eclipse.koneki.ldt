@@ -17,25 +17,18 @@
  */
 package org.eclipse.koneki.ldt.parser.ast.statements;
 
-import org.eclipse.dltk.ast.expressions.Expression;
+import org.eclipse.dltk.ast.ASTVisitor;
+import org.eclipse.dltk.ast.declarations.Declaration;
+import org.eclipse.dltk.ast.expressions.Literal;
+import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.ast.statements.StatementConstants;
 import org.eclipse.dltk.utils.CorePrinter;
-import org.eclipse.koneki.ldt.parser.ast.expressions.Identifier;
-import org.eclipse.koneki.ldt.parser.internal.IndexedNode;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Local.
  */
-public class Local extends BinaryStatement implements StatementConstants, IndexedNode {
-
-	/** The identifiers. */
-	// private Chunk identifiers;
-
-	/** The expressions. */
-	// private Chunk expressions;
-
-	private long id;
+public class Local extends BinaryStatement implements StatementConstants {
 
 	/**
 	 * Instantiates a new local.
@@ -67,85 +60,51 @@ public class Local extends BinaryStatement implements StatementConstants, Indexe
 		this(start, end, identifiers, null);
 	}
 
-	/**
-	 * Gets the identifiers.
-	 * 
-	 * @return the identifiers
-	 */
-	// TODO: Remove
-	// public Chunk getIdentifiers() {
-	// return identifiers;
-	// }
-
-	/**
-	 * Gets the expressions.
-	 * 
-	 * @return the expressions
-	 */
-	// TODO: Remove
-	// public Chunk getExpressions() {
-	// return expressions;
-	// }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.dltk.ast.statements.Statement#getKind()
-	 */
 	@Override
-	// TODO: Remove
-	// public int getKind() {
-	// return D_VAR_DECL;
-	// }
-	public long getID() {
-		return id;
-	}
-
-	public void setID(long id) {
-		this.id = id;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.dltk.ast.statements.Statement#traverse(org.eclipse.dltk.ast
-	 * .ASTVisitor)
-	 */
-	// public void traverse(ASTVisitor visitor) throws Exception {
-	// if (visitor.visit(this)) {
-	// super.traverse(visitor);
-	// if (getRight() != null) {
-	// getRight().traverse(visitor);
-	// }
-	// getLeft().traverse(visitor);
-	// visitor.endvisit(this);
-	// }
-	// }
-
 	public void printNode(CorePrinter output) {
-		String varList = new String();
-		String valueList = new String();
+		StringBuffer varList = new StringBuffer();
+		StringBuffer valueList = new StringBuffer();
+		final String comma = ", "; //$NON-NLS-1$
 		Chunk chunk = (Chunk) getLeft();
 		for (Object var : chunk.getStatements()) {
-			Identifier id = (Identifier) var;
-			varList += id.getStringRepresentation() + ", ";
-		}
-		if (varList.length() > 0) {
-			varList = varList.substring(0, varList.length() - 2);
+			Statement state = (Statement) var;
+			varList.append(state.toString());
+			varList.append(comma);
 		}
 		if (getRight() != null) {
 			chunk = (Chunk) getRight();
 			for (Object e : chunk.getStatements()) {
-				Expression expr = (Expression) e;
-				valueList += expr.toString() + ", ";
-			}
-			if (valueList.length() > 0) {
-				valueList = " = "
-						+ valueList.substring(0, valueList.length() - 2);
+				Statement statement = (Statement) e;
+				if (e instanceof Literal) {
+					Literal literal = (Literal) e;
+					valueList.append(literal.getValue());
+				} else {
+					valueList.append(statement.toString());
+				}
+				valueList.append(comma);
 			}
 		}
+		if (valueList.length() > 0) {
+			valueList.insert(0, "= "); //$NON-NLS-1$
+		}
+		output.formatPrintLn("local " + varList + valueList); //$NON-NLS-1$  
+	}
 
-		output.formatPrintLn("local " + varList + valueList); //$NON-NLS-1$ //$NON-NLS-2$
+	/**
+	 * <strong> Only parse nodes on left sides</strong>. They are {@link Declaration}s which contains nodes on the right as initialisation. This is a
+	 * <strong>workaround</strong>.
+	 * 
+	 * @param visitor
+	 *            Browse current AST
+	 * @see org.eclipse.koneki.ldt.parser.ast.expressions.BinaryExpression#traverse(org.eclipse.dltk.ast.ASTVisitor)
+	 */
+	@Override
+	public void traverse(ASTVisitor visitor) throws Exception {
+		if (visitor.visit(this)) {
+			if (getLeft() != null) {
+				getLeft().traverse(visitor);
+			}
+			visitor.endvisit(this);
+		}
 	}
 }

@@ -9,13 +9,14 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 
-
 /**
  * @author	Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  * @date 
  */
 package org.eclipse.koneki.ldt.tests;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -27,12 +28,11 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	/** The Constant PLUGIN_ID. */
-	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.tests";
-	
+	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.tests"; //$NON-NLS-1$
+
 	/** The Constant EXTENSION_POINT. */
-	public static final String EXTENSION_POINT = Activator.PLUGIN_ID
-			+ ".testSuites";
-	
+	public static final String EXTENSION_POINT = Activator.PLUGIN_ID + ".testSuites"; //$NON-NLS-1$
+
 	/** The Constant EXTENSION_POINT_ID. */
 	public static final int EXTENSION_POINT_ID = 0;
 
@@ -49,9 +49,7 @@ public class Activator extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-	 * )
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext )
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -61,9 +59,7 @@ public class Activator extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext )
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -77,6 +73,53 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	/**
+	 * Log a error message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the error
+	 */
+	public static void logError(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a simple warning message
+	 * 
+	 * @param message
+	 *            message to log
+	 */
+	public static void logWarning(final String message) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a warning message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the warning
+	 */
+	public static void logWarning(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log the given status
+	 * 
+	 * @param status
+	 *            status to log
+	 */
+	public static void log(final IStatus status) {
+		getDefault().getLog().log(status);
 	}
 
 }
