@@ -91,7 +91,7 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
-					<configLocation>http://tooling.anyware/checkstyle/checkstyle.xml</configLocation>
+					<configLocation>http://download.eclipse.org/koneki/releng/checkstyle.xml</configLocation>
 					<sourceDirectory>src</sourceDirectory>
 					<excludes>**/com/naef/jnlua/**/*</excludes>
 				</configuration>
