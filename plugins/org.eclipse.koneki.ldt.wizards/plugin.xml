@@ -19,7 +19,7 @@
       </category>
       <wizard
             category="org.eclipse.koneki.ldt.category"
-            class="org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard:org.eclipse.koneki.ldt.nature"
+            class="org.eclipse.koneki.ldt.wizards.LuaProjectWizard:org.eclipse.koneki.ldt.nature"
             icon="img/lua_newprj_wiz.gif"
             id="org.eclipse.koneki.ldt.wizard"
             name="%wizard.name"
