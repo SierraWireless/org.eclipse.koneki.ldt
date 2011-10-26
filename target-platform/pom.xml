@@ -29,9 +29,9 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>luaeclipse2.target</file>
+									<file>ldt.target</file>
 									<type>target</type>
-									<classifier>luaeclipse2</classifier>
+									<classifier>ldt</classifier>
 								</artifact>
 							</artifacts>
 						</configuration>
