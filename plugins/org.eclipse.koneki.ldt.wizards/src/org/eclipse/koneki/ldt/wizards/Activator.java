@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.wizards;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -59,4 +62,58 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+	 */
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		reg.put(ImageConstants.LUA_WIZARD_BAN, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_WIZARD_BAN));
+	}
+
+	/**
+	 * Log a error message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the error
+	 */
+	public static void logError(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a simple warning message
+	 * 
+	 * @param message
+	 *            message to log
+	 */
+	public static void logWarning(final String message) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a warning message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the warning
+	 */
+	public static void logWarning(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log the given status
+	 * 
+	 * @param status
+	 *            status to log
+	 */
+	public static void log(final IStatus status) {
+		getDefault().getLog().log(status);
+	}
 }

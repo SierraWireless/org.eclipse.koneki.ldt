@@ -13,11 +13,11 @@ package org.eclipse.koneki.ldt.wizards;
 /**
  * Common values used across Lua wizards
  */
-public class LuaWizardContants {
-	private LuaWizardContants() {
-	}
-
+public final class LuaWizardContants {
 	public static final String DEFAULT_MAIN_FILE = "main.lua"; //$NON-NLS-1$
 	public static final String MAIN_FILE_CONTENT = "local function main()\n\nend\nmain()\n"; //$NON-NLS-1$
 	public static final String SOURCE_FOLDER = "src"; //$NON-NLS-1$
+
+	private LuaWizardContants() {
+	}
 }

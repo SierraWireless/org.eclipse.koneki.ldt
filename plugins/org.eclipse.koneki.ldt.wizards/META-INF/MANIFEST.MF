@@ -14,4 +14,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.koneki.ldt;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.koneki.ldt.wizards
+Export-Package: org.eclipse.koneki.ldt.wizards,
+ org.eclipse.koneki.ldt.wizards.pages

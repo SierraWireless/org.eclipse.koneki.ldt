@@ -12,9 +12,7 @@ package org.eclipse.koneki.ldt.wizards;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * TODO Comment this class
- */
+//CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.wizards.messages"; //$NON-NLS-1$
 	public static String LuaProjectCreatorInitializingSourceFolder;
@@ -27,3 +25,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE NLS: ON

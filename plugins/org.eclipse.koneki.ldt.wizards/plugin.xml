@@ -20,11 +20,20 @@
       <wizard
             category="org.eclipse.koneki.ldt.category"
             class="org.eclipse.koneki.ldt.wizards.LuaProjectWizard:org.eclipse.koneki.ldt.nature"
-            icon="img/lua_newprj_wiz.gif"
+            icon="icons/obj16/lua_newprj_wiz.gif"
             id="org.eclipse.koneki.ldt.wizard"
             name="%wizard.name"
             project="true">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.koneki.ldt.ui.luaperspective">
+         <newWizardShortcut
+               id="org.eclipse.koneki.ldt.wizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
    </extension>
 
 </plugin>

@@ -12,6 +12,7 @@ package org.eclipse.koneki.ldt.wizards.pages;
 
 import org.eclipse.osgi.util.NLS;
 
+//CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.wizards.pages.messages"; //$NON-NLS-1$
@@ -25,3 +26,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE NLS: ON

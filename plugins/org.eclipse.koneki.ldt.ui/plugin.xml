@@ -25,12 +25,12 @@
             id="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             name="%preference.page.name.lua">
       </page>
-      <page
+      <!--<page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.ui.preferences.LuaInterpreterPreferencePage"
             id="org.eclipse.koneki.ldt.ui.interpreter.preferences"
             name="%page.name">
-      </page>
+      </page>-->
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.ui.preferences.LuaUserLibraryPreferencePage"
@@ -41,7 +41,7 @@
       <extension
          point="org.eclipse.ui.ide.projectNatureImages">
       <image
-            icon="img/lua_nature.png"
+            icon="icons/ovr16/lua_nature.png"
             id="org.eclipse.koneki.ldt.nature.ui.luanatureimage"
             natureId="org.eclipse.koneki.ldt.nature">
       </image>
@@ -105,10 +105,19 @@
         <view
               category="org.eclipse.koneki.ldt.ui.luaviewcategory"
               class="org.eclipse.koneki.ldt.ui.internal.views.LuaDocView"
-              icon="img/luadoc_view.gif"
+              icon="icons/eview/luadoc_view.gif"
               id="org.eclipse.koneki.ldt.ui.luadoc"
               name="%view.luadoc.name"
               restorable="true">
         </view>
+     </extension>
+       <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.koneki.ldt.ui.perspectives.LuaPerspectiveFactory"
+            icon="icons/obj16/lua_pers.png"
+            id="org.eclipse.koneki.ldt.ui.luaperspective"
+            name="%perspective.name">
+      </perspective>
      </extension>
 </plugin>
