@@ -26,5 +26,7 @@
     <module>org.eclipse.koneki.ldt.parser</module>
     <module>org.eclipse.koneki.ldt.ui</module>
     <module>org.eclipse.koneki.ldt.wizards</module>
+    <module>org.eclipse.koneki.ldt.debug.core</module>
+    <module>org.eclipse.koneki.ldt.debug.ui</module>
   </modules>
 </project>

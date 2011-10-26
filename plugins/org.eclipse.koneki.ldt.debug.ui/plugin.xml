@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?><!--
+    Copyright (c) 2009, 2011 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        Sierra Wireless - initial API and implementation
+ -->
+<plugin>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.koneki.ldt.debug.ui.LuaAttachLaunchConfigurationTabGroup"
+            description="%LuaAttachLaunchConfigurationTabGroup.description"
+            id="org.eclipse.koneki.ldt.debug.ui.luaAttachLaunchConfigurationTabGroup"
+            type="org.eclipse.koneki.ldt.debug.core.luaattachdebug">
+         <launchMode
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension point="org.eclipse.debug.ui.debugModelPresentations">
+		<debugModelPresentation
+			class="org.eclipse.koneki.ldt.debug.ui.LuaDebugModelPresentation"
+			id="org.eclipse.koneki.ldt.nature.debugModel">
+		</debugModelPresentation>
+   </extension>
+   <extension
+           point="org.eclipse.dltk.debug.ui.language">
+        <language
+              class="org.eclipse.koneki.ldt.debug.ui.LuaDebugUILanguageToolkit"
+              nature="org.eclipse.koneki.ldt.nature"
+		priority="0">
+      </language>
+   </extension>
+   
+    <extension
+    point="org.eclipse.ui.popupMenus">
+    <viewerContribution
+      id="org.eclipse.koneki.embedded.lua.ui.rulerContribution"
+     targetID="#RulerContext">
+      <action
+        class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+        id="org.eclipse.koneki.embedded.lua.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+        label="%action.label.enablebreakpoint"
+        menubarPath="debug" />
+      <action
+        class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+        id="org.eclipse.koneki.embedded.lua.ui.actions.RulerToggleBreakpointActionDelegate"
+        label="%action.label.togglebreakpoint"
+        menubarPath="debug" />
+      <action
+        class="org.eclipse.dltk.debug.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+        id="org.eclipse.koneki.embedded.lua.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+        label="%action.label.breakpointproperties"
+        menubarPath="group.properties" />
+    </viewerContribution>
+    <objectContribution
+          adaptable="false"
+          id="org.eclipse.koneki.embedded.lua.ui.debug.contextExtensions"
+          objectClass="org.eclipse.dltk.debug.core.model.IScriptVariable">
+       <action
+             class="org.eclipse.koneki.ldt.debug.ui.actions.GotoFunctionDefinitionAction"
+             enablesFor="1"
+             id="org.eclipse.koneki.embedded.lua.ui.debug.GotoFunctionDefinitionAction"
+             label="%action.label.GotoFunctionDefinitionAction">
+       </action>
+    </objectContribution>
+  </extension>
+      <extension 
+    point="org.eclipse.core.runtime.adapters">
+    <factory
+      adaptableType="org.eclipse.koneki.ldt.editor.LuaEditor"
+      class="org.eclipse.koneki.ldt.debug.ui.LuaEditorDebugAdapterFactory">
+      <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
+      <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+    </factory>         
+  </extension>
+      <extension
+    point="org.eclipse.ui.editorActions">
+    <editorContribution
+      id="org.eclipse.koneki.embedded.lua.ui.BreakpointRulerActions"
+      targetID="org.eclipse.koneki.ldt.editor">
+      <action
+        actionID="RulerDoubleClick"
+        class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+        id="LuaEditor.doubleClickBreakpointAction"
+        label="%action.label.doubleclicktogglebreakpoint"
+        style="push" />
+    </editorContribution>
+  </extension>
+      <extension
+            point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+         <launchConfigurationTypeImage
+               configTypeID="org.eclipse.koneki.ldt.debug.core.luaattachdebug"
+               icon="icons/obj16/lua_attach.gif"
+               id="org.eclipse.koneki.ldt.debug.ui.luaattachdebug.image">
+         </launchConfigurationTypeImage>
+      </extension>
+      <extension
+            point="org.eclipse.ui.perspectiveExtensions">
+         <perspectiveExtension
+               targetID="org.eclipse.koneki.ldt.ui.luaperspective">
+            <perspectiveShortcut
+                  id="org.eclipse.debug.ui.DebugPerspective">
+            </perspectiveShortcut>
+            <actionSet
+                  id="org.eclipse.debug.ui.launchActionSet">
+            </actionSet>
+         </perspectiveExtension>
+      </extension>
+</plugin>
