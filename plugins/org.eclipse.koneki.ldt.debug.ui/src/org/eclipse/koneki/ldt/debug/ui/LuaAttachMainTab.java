@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.SWTFactory;
@@ -21,7 +20,6 @@ import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationT
 import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
-import org.eclipse.dltk.ui.preferences.FieldValidators;
 import org.eclipse.koneki.ldt.core.LuaLanguageToolkit;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -33,10 +31,8 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("restriction")
 public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
-	private static int DEFAULT_PORT = 10000;
 	private static String DEFAULT_IDEKEY = "idekey"; //$NON-NLS-1$
 
-	protected Text port;
 	protected Text ideKey;
 	protected Text timeoutText;
 	protected Text remoteWorkingDir;
@@ -63,24 +59,13 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	/*
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab #doInitializeForm(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
-	@SuppressWarnings("deprecation")
 	protected void doInitializeForm(ILaunchConfiguration config) {
-		port.setText(LaunchConfigurationUtils.getString(config, ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT,
-				Integer.toString(getDefaultPort())));
-
 		ideKey.setText(LaunchConfigurationUtils.getString(config, ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID, getDefaultIDEKey()));
 
 		timeoutText.setText(Integer.toString(LaunchConfigurationUtils.getConnectionTimeout(config, getDefaultRemoteTimeout()) / 1000));
 
 		remoteWorkingDir.setText(LaunchConfigurationUtils.getString(config, ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE_WORKING_DIR,
 				getDefaultRemoteWorkingDir()));
-	}
-
-	/**
-	 * Override this method to configure other default port.
-	 */
-	protected int getDefaultPort() {
-		return DEFAULT_PORT;
 	}
 
 	/**
@@ -101,9 +86,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab
 	 * #doPerformApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
-	@SuppressWarnings("deprecation")
 	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_PORT, port.getText().trim());
 		config.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_SESSION_ID, ideKey.getText().trim());
 		int timeout;
 		try {
@@ -121,18 +104,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	}
 
 	protected boolean validate() {
-		return super.validate() && validatePort() && validateIdeKey() && validateRemoteWorkingDir();
-	}
-
-	protected boolean validatePort() {
-		IStatus result = FieldValidators.PORT_VALIDATOR.validate(port.getText());
-
-		if (!result.isOK()) {
-			setErrorMessage(result.getMessage());
-			return false;
-		}
-
-		return true;
+		return super.validate() && validateIdeKey() && validateRemoteWorkingDir();
 	}
 
 	protected boolean validateIdeKey() {
@@ -155,10 +127,6 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	protected void doCreateControl(Composite composite) {
 		Group group = SWTFactory.createGroup(composite, DLTKLaunchConfigurationsMessages.remoteTab_connectionProperties, 2, 1,
 				GridData.FILL_HORIZONTAL);
-
-		SWTFactory.createLabel(group, DLTKLaunchConfigurationsMessages.remoteTab_connectionPort, 1);
-		port = SWTFactory.createText(group, SWT.BORDER, 1, EMPTY_STRING);
-		port.addModifyListener(getWidgetListener());
 
 		SWTFactory.createLabel(group, DLTKLaunchConfigurationsMessages.remoteTab_connectionIdeKey, 1);
 		ideKey = SWTFactory.createText(group, SWT.BORDER, 1, EMPTY_STRING);
