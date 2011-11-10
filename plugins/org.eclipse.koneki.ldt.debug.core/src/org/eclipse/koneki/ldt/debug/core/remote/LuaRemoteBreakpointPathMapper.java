@@ -53,10 +53,21 @@ public class LuaRemoteBreakpointPathMapper implements IScriptBreakpointPathMappe
 		}
 
 		// compute distant path
+		URI result;
+		// get path from uri
 		final IPath path = new Path(uri.getPath());
-		IPath temp = stripSourceFolders(path);
-		final IPath outgoing = new Path(mapTo).append(temp);
-		final URI result = ScriptLineBreakpoint.makeUri(outgoing);
+		// search path in workspace and strip source folder
+		IPath strippedPath = stripSourceFolders(path);
+		if (strippedPath != null) {
+			// if found add remote working directory path to stripped path to find the absolute remote path
+			IPath outgoing = new Path(mapTo).append(strippedPath);
+			// translate path in uri
+			result = ScriptLineBreakpoint.makeUri(outgoing);
+
+		} else {
+			// else return the given uri
+			result = uri;
+		}
 		cache.put(uri, result);
 		return result;
 	}
@@ -104,6 +115,6 @@ public class LuaRemoteBreakpointPathMapper implements IScriptBreakpointPathMappe
 			Activator.logError("Breakpoint path mapper failed to map this path :" + path, e); //$NON-NLS-1$
 		}
 
-		return path;
+		return null;
 	}
 }
