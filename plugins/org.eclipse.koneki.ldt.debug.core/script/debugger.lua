@@ -75,12 +75,114 @@ end
 -- TODO complete the stdlib access
 local debug_getinfo, corunning, cocreate, cowrap, coyield = debug.getinfo, coroutine.running, coroutine.create, coroutine.wrap, coroutine.yield
 
--- TODO Currently, the debugger targets only Linux systems and does assumptions that avoids LFS/APR dependency
-local path_sep = package.config:sub(1,1)
+
+-- "BEGIN PLATFORM DEPENDENT CODE"
+-- Get the execution plaform os (could be win or unix)
+-- Used to manage file path difference between the 2 platform
+local platform = "unix"
+do 
+    local function iswindows()
+        local p = io.popen("echo %os%")
+        if p then 
+            local result =p:read("*l")
+            p:close()
+            return result == "Windows_NT"
+        end
+        return false
+    end
+    local function setplatform()
+        if iswindows() then
+            platform = "win"
+        end 
+    end
+    pcall(setplatform)
+end
+ 
+-- The Path separator character
+local path_sep = (platform == "unix" and "/" or "\\")
+
 -- TODO the way to get the absolute path can be wrong if the program loads new source files by relative path after a cd.
 -- currently, the directory is registered on start, this allows program to load any source file and then change working dir,
 -- which is the most common use case.
-local base_dir = assert(os.getenv("PWD")) -- FIXME Unix only (lfs?)
+local base_dir  
+if platform == "unix" then 
+   base_dir = os.getenv("PWD")
+else
+   local p = io.popen("echo %cd%")
+   if p then 
+       base_dir = p:read("*l")
+       base_dir = string.gsub(base_dir,"\\","/")
+       p:close()
+   end
+end
+if not base_dir then error("Unable to determine the working directory.")end
+
+
+-- return true is the path is absolute
+-- the path must be normalized
+-- test if it begin by / for unix and X:/ for windows
+local is_path_absolute
+if platform == "unix" then  
+   is_path_absolute = function (path) return path:sub(1,1) == "/" end
+else
+   is_path_absolute = function (path) return path:match("^%a:/") end
+end
+
+-- return a clean path with / as separator (without double path separator) 
+local normalize
+if platform == "unix" then  
+   normalize = function (path) return path:gsub("//","/") end
+else
+   normalize = function (path)
+        return path:gsub("\\","/"):gsub("//","/")
+   end
+end
+
+-- parse a normalized path and return a table of each segment
+-- you could precise the path seperator, '/' is the default one.
+local function break_path(path,separator)
+  local sep = separator or "/" 
+  local paths = {}
+  for w in string.gfind(path, "[^/]+") do
+    table.insert(paths, w)
+  end
+  return paths
+end
+
+-- merge an asbolute and a relative path in an absolute path
+-- you could precise the path seperator, '/' is the default one.
+local function merge_paths(absolutepath, relativepath,separator)
+  local sep = separator or "/"
+  local absolutetable = break_path(absolutepath)
+  local relativetable = break_path(relativepath)
+  for i, path in ipairs(relativetable) do
+    if path == ".." then
+      table.remove(absolutetable, table.getn(absolutetable))
+    elseif path ~= "." then
+      table.insert(absolutetable, path)
+    end
+  end
+  return sep .. table.concat(absolutetable, sep) 
+end
+
+
+-- convert absolute normalized path file to uri 
+local to_file_uri
+if platform == "unix" then  
+   to_file_uri = function (path) return url.build{scheme="file",authority="", path=path} end
+else
+   to_file_uri = function (path) return url.build{scheme="file",authority="", path="/"..path} end
+end
+
+-- convert parsed URL table to file path  for the current OS (see url.parse from luasocket)
+local to_path
+if platform == "unix" then  
+   to_path = function (url) return url.path end
+else
+   to_path = function (url) return url.path:gsub("^/", "") end
+end
+-- "END PLATFORM DEPENDENT CODE"
+
 
 -- register the URI of the debugger, to not jump into with redefined function or coroutine bootstrap stuff
 local debugger_uri = nil -- set in init function
@@ -196,32 +298,8 @@ local function read_packet(skt)
     return table.concat(size)
 end
 
-local function break_dir(path) 
-  local paths = {}
-  path = string.gsub(path, "\\", "/")
-  for w in string.gfind(path, "[^/]+") do
-    table.insert(paths, w)
-  end
-  return paths
-end
-
-local function merge_paths(path1, path2)
-  local paths1 = break_dir(path1)
-  local paths2 = break_dir(path2)
-  for i, path in ipairs(paths2) do
-    if path == ".." then
-      table.remove(paths1, table.getn(paths1))
-    elseif path ~= "." then
-      table.insert(paths1, path)
-    end
-  end
-  return path_sep .. table.concat(paths1, path_sep) -- FIXME Unix only
-end
-
--- FIXME Unix only (Windows paths startx with 'X:\')
-local function is_path_absolute(path) return path:sub(1,1) == path_sep end
+-- get uri from source debug info
 local get_uri
-
 do
     local cache = { }
     --- Returns a RFC2396 compliant URI for given source, or false if the mapping failed
@@ -230,15 +308,25 @@ do
         if uri ~= nil then return uri end
         
         if source:sub(1,1) == "@" then -- real source file
-            uri = source:sub(2)
-            if not is_path_absolute(uri) then uri = merge_paths(base_dir, uri) end
-            uri = url.build{ scheme="file", authority="", path=uri }
+            sourcepath = source:sub(2)
+            normalizedpath = normalize(sourcepath)
+            if not is_path_absolute(normalizedpath) then 
+               normalizedpath = merge_paths(base_dir, normalizedpath)
+            end
+            uri = to_file_uri(normalizedpath)
         else -- dynamic code, stripped bytecode, tail return, ...
             uri = false
         end
         cache[source] = uri
         return uri
     end
+end
+
+-- get path file from uri 
+local function get_path(uri)
+    local parsed_path = assert(url.parse(uri))
+    assert(parsed_path.scheme == "file")
+    return to_path(parsed_path)        
 end
 
 -- Used to store complex keys (other than string and number) as they cannot be passed in text
@@ -1166,9 +1254,7 @@ commands = {
     source = function(self, args)
         local path
         if args.f then
-            local parsed_path = assert(url.parse(args.f))
-            assert(parsed_path.scheme == "file")
-            path = parsed_path.path
+            path = get_path(args.f)
         else
             path = debug.getinfo(get_script_level(0), "S").source
             assert(path:sub(1,1) == "@")
