@@ -29,6 +29,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 
 public class LuaProjectCreator extends ProjectCreator {
 
+	private ILocationGroup locationGroup; // purpose of this field is simply to "gain" visibility on fLocationGroup private field (sigh...)
+
 	/**
 	 * Adds a step for creating default file in default source folder.
 	 * 
@@ -39,6 +41,7 @@ public class LuaProjectCreator extends ProjectCreator {
 	 */
 	public LuaProjectCreator(IProjectWizard owner, ILocationGroup locationGroup) {
 		super(owner, locationGroup);
+		this.locationGroup = locationGroup;
 		addStep(IProjectCreateStep.KIND_FINISH, 0, new CreateDefaultSourceFolderProjectCreateStep(), (IWizardPage) locationGroup);
 	}
 
@@ -47,11 +50,18 @@ public class LuaProjectCreator extends ProjectCreator {
 	 */
 	@Override
 	protected List<IBuildpathEntry> getDefaultBuildpathEntries() {
-		// Creating source folder
-		final IFolder sourcefolder = getProject().getFolder(LuaWizardContants.SOURCE_FOLDER);
-		final IBuildpathEntry newSourceEntry = DLTKCore.newSourceEntry(sourcefolder.getFullPath());
-		final List<IBuildpathEntry> buildPath = new ArrayList<IBuildpathEntry>();
-		buildPath.add(newSourceEntry);
+		List<IBuildpathEntry> buildPath = new ArrayList<IBuildpathEntry>(/* super.getDefaultBuildpathEntries() */); // we'll make the call to
+																													// super.getDefaultBuildpathEntries()
+																													// when we will support
+																													// interpreters
+
+		if (!locationGroup.isExistingLocation()) {
+			// Create a source folder and add it to build path
+			final IFolder sourcefolder = getProject().getFolder(LuaWizardContants.SOURCE_FOLDER);
+			final IBuildpathEntry newSourceEntry = DLTKCore.newSourceEntry(sourcefolder.getFullPath());
+			buildPath.add(newSourceEntry);
+		}
+
 		return buildPath;
 	}
 
@@ -76,7 +86,7 @@ public class LuaProjectCreator extends ProjectCreator {
 		public void execute(IProject project, IProgressMonitor monitor) throws CoreException, InterruptedException {
 			monitor.beginTask(Messages.LuaProjectCreatorInitializingSourceFolder, 1);
 			final IFolder sourcefolder = project.getFolder(LuaWizardContants.SOURCE_FOLDER);
-			if (sourcefolder.exists()) {
+			if (sourcefolder.exists() && !locationGroup.isExistingLocation()) {
 				// Create main file for application project
 				final byte[] bytes = LuaWizardContants.MAIN_FILE_CONTENT.getBytes();
 				final IFile mainFile = sourcefolder.getFile(LuaWizardContants.DEFAULT_MAIN_FILE);
