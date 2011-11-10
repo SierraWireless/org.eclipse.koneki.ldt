@@ -41,32 +41,32 @@
     <extension
     point="org.eclipse.ui.popupMenus">
     <viewerContribution
-      id="org.eclipse.koneki.embedded.lua.ui.rulerContribution"
+      id="org.eclipse.koneki.ldt.ui.rulerContribution"
      targetID="#RulerContext">
       <action
         class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
-        id="org.eclipse.koneki.embedded.lua.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+        id="org.eclipse.koneki.ldt.ui.actions.RulerEnableDisableBreakpointActionDelegate"
         label="%action.label.enablebreakpoint"
         menubarPath="debug" />
       <action
         class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-        id="org.eclipse.koneki.embedded.lua.ui.actions.RulerToggleBreakpointActionDelegate"
+        id="org.eclipse.koneki.ldt.ui.actions.RulerToggleBreakpointActionDelegate"
         label="%action.label.togglebreakpoint"
         menubarPath="debug" />
       <action
         class="org.eclipse.dltk.debug.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
-        id="org.eclipse.koneki.embedded.lua.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
+        id="org.eclipse.koneki.ldt.ui.actions.ScriptBreakpointPropertiesRulerActionDelegate"
         label="%action.label.breakpointproperties"
         menubarPath="group.properties" />
     </viewerContribution>
     <objectContribution
           adaptable="false"
-          id="org.eclipse.koneki.embedded.lua.ui.debug.contextExtensions"
+          id="org.eclipse.koneki.ldt.ui.debug.contextExtensions"
           objectClass="org.eclipse.dltk.debug.core.model.IScriptVariable">
        <action
              class="org.eclipse.koneki.ldt.debug.ui.actions.GotoFunctionDefinitionAction"
              enablesFor="1"
-             id="org.eclipse.koneki.embedded.lua.ui.debug.GotoFunctionDefinitionAction"
+             id="org.eclipse.koneki.ldt.ui.debug.GotoFunctionDefinitionAction"
              label="%action.label.GotoFunctionDefinitionAction">
        </action>
     </objectContribution>
@@ -83,7 +83,7 @@
       <extension
     point="org.eclipse.ui.editorActions">
     <editorContribution
-      id="org.eclipse.koneki.embedded.lua.ui.BreakpointRulerActions"
+      id="org.eclipse.koneki.ldt.ui.BreakpointRulerActions"
       targetID="org.eclipse.koneki.ldt.editor">
       <action
         actionID="RulerDoubleClick"

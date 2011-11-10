@@ -24,7 +24,7 @@ import org.eclipse.dltk.internal.debug.core.model.ScriptLineBreakpoint;
 import org.eclipse.koneki.ldt.debug.core.Activator;
 
 /**
- * Breakpoint path mapper for lua embedded project use to translate uri of breakpoint from ide file system to target file system
+ * Breakpoint path mapper for lua project use to translate uri of breakpoint from ide file system to remote file system
  */
 public class LuaRemoteBreakpointPathMapper implements IScriptBreakpointPathMapperExtension {
 	private HashMap<URI, URI> cache;

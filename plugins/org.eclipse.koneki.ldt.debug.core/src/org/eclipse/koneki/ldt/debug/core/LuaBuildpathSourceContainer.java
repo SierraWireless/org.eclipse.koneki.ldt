@@ -29,7 +29,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 /**
- * A source path container which searches in a luaEmbedded project buildpath
+ * A source path container which searches in a lua project buildpath
  */
 public class LuaBuildpathSourceContainer extends AbstractSourceContainer {
 
@@ -102,7 +102,7 @@ public class LuaBuildpathSourceContainer extends AbstractSourceContainer {
 	 */
 	@Override
 	public String getName() {
-		return "Lua Embedded Buildpath Source Container"; //$NON-NLS-1$
+		return "Lua Buildpath Source Container"; //$NON-NLS-1$
 	}
 
 	/**

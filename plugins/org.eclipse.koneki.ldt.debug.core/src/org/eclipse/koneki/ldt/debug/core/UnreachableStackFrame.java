@@ -11,9 +11,10 @@
 package org.eclipse.koneki.ldt.debug.core;
 
 import org.eclipse.dltk.debug.core.model.IScriptStackFrame;
+import org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteSourceLookupDirector;
 
 /**
- * Returned by {@link LuaEmbeddedSourceLookupDirector#getSourceElement(Object)} to identify stack frames that are unreachable for some reason.
+ * Returned by {@link LuaRemoteSourceLookupDirector#getSourceElement(Object)} to identify stack frames that are unreachable for some reason.
  */
 public class UnreachableStackFrame {
 	public static final String TAIL_RETURN_SCHEME = "tailreturn"; //$NON-NLS-1$

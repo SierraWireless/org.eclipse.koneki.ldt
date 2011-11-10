@@ -33,7 +33,7 @@ import org.eclipse.koneki.ldt.debug.core.UnreachableStackFrame;
 @SuppressWarnings("restriction")
 public class LuaRemoteSourceLookupDirector extends AbstractSourceLookupDirector {
 
-	private static class LuaEmbeddedSourceLookupParticipant extends AbstractSourceLookupParticipant {
+	private static class LuaSourceLookupParticipant extends AbstractSourceLookupParticipant {
 		/**
 		 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant#getSourceName(java.lang.Object)
 		 */
@@ -61,7 +61,7 @@ public class LuaRemoteSourceLookupDirector extends AbstractSourceLookupDirector 
 	 */
 	@Override
 	public void initializeParticipants() {
-		addParticipants(new ISourceLookupParticipant[] { new LuaEmbeddedSourceLookupParticipant() });
+		addParticipants(new ISourceLookupParticipant[] { new LuaSourceLookupParticipant() });
 	}
 
 	/**
