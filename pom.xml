@@ -11,6 +11,7 @@
 		<module>plugins</module>
 		<module>features</module>
 		<module>tests</module>
+		<module>repository</module>
 	</modules>
 
 	<properties>
