@@ -10,8 +10,20 @@
 -------------------------------------------------------------------------------
 -- Debugger using DBGp protocol.
 -------------------------------------------------------------------------------
--- The module returns a single init function which takes IDE host and port as parameters.
--- Both of these are optional and defaults to DBGP_IDEHOST and DBGP_IDEPORT environment variables.
+-- The module returns a single init function which takes 3 parameters (HOST, PORT, IDEKEY).
+
+-- HOST: the host name or the ip address of the DBGP server (so your ide)
+-- if HOST is nil, the DBGP_IDEHOST env var is used.
+-- if the env var is nil, the default value '127.0.0.1' is used.
+
+-- PORT: the port of the DBGP server (must be configure in the IDE) 
+-- if PORT is nil, the DBGP_IDEPORT env var is used.
+-- if the env var is nil, the default value '10000' is used.
+
+-- IDEKEY: a string which is used as session key
+-- if IDEKEY is nil, the DBGP_IDEKEY env var is used.
+-- if the env var is nil, the default value 'luaidekey' is used.
+
 -------------------------------------------------------------------------------
 -- Known Issues:
 --   * Functions cannot be created using the debugger and then called in program because their environment is mapped directly to
@@ -1376,9 +1388,11 @@ local function debugger_hook(event, line)
     end
 end
 
-local function init(host, port)
-    host = host or os.getenv "DBGP_IDEHOST"
-    port = port or os.getenv "DBGP_IDEPORT"
+local function init(host, port,idekey)
+    host = host or os.getenv "DBGP_IDEHOST" or "127.0.0.1"
+    port = port or os.getenv "DBGP_IDEPORT" or "10000"
+    idekey = idekey or os.getenv("DBGP_IDEKEY") or "luaidekey"
+    
     local skt = assert(socket.tcp())
     blockingtcp.settimeout(skt, nil)
     
@@ -1410,7 +1424,7 @@ local function init(host, port)
     
     send_xml(skt, { name="init", attrs = {
         appid = "Lua DBGp", 
-        idekey = os.getenv("DBGP_IDEKEY") or "",
+        idekey = idekey,
         session = sessionid,
         thread = tostring(thread),
         parent = "",
