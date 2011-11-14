@@ -12,6 +12,7 @@ package org.eclipse.koneki.ldt.debug.core.remote;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
 import org.eclipse.dltk.debug.core.IDbgpService;
 import org.eclipse.koneki.ldt.debug.core.LuaDebugTarget;
 
@@ -24,5 +25,15 @@ public abstract class LuaRemoteDebugTarget extends LuaDebugTarget {
 	@Override
 	public boolean isRemote() {
 		return true;
+	}
+
+	/**
+	 * For Remote Debug Target we show the idekey and the port used as the user must managed this at client side
+	 * 
+	 * @see org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Debugging engine (idekey = " + getSessionId() + ", port =" + DLTKDebugPlugin.getDefault().getDbgpService().getPort() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }
