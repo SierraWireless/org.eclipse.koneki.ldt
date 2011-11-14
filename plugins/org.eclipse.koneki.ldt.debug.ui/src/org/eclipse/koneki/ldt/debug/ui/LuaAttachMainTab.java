@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Text;
 @SuppressWarnings("restriction")
 public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
-	private static String DEFAULT_IDEKEY = "idekey"; //$NON-NLS-1$
+	private static String DEFAULT_IDEKEY = "luaidekey"; //$NON-NLS-1$
 
 	protected Text ideKey;
 	protected Text timeoutText;
