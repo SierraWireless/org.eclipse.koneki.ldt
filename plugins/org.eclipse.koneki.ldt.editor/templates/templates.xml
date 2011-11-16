@@ -26,28 +26,28 @@ end</template>
 	id="org.eclipse.koneki.templates.foripairs"
 	context="LuaUniversalTemplateContextType"
 	description="%template.ipairs"
-	name="fori">for ${var} in ipairs(${table}) do
+	name="fori">for ${key}, ${var} in ipairs(${table}) do
 	${cursor}
 end</template>
 <template
 	id="org.eclipse.koneki.templates.forpairs"
 	context="LuaUniversalTemplateContextType"
 	description="%template.pairs"
-	name="forp">for ${var} in pairs(${table}) do
+	name="forp">for ${key}, ${var} in pairs(${table}) do
 	${cursor}
 end</template>
 <template
 	id="org.eclipse.koneki.templates.fornumeric"
 	context="LuaUniversalTemplateContextType"
 	description="%template.fornumeric"
-	name="forn">for ${var}=${exp},${exp} do
+	name="forn">for ${var}=${init}, ${limit} do
 	${cursor}
 end</template>
 <template
 	id="org.eclipse.koneki.templates.forrange"
 	context="LuaUniversalTemplateContextType"
 	description="%template.fornumeric.range"
-	name="forr">for ${var}=${exp},${exp},${exp} do
+	name="forr">for ${var}=${init}, ${limit}, ${range} do
 	${cursor}
 end</template>
 <template
@@ -70,7 +70,7 @@ end</template>
 	description="%template.repeat"
 	name="repeat">repeat
 	${cursor}
-until ${exp} 
+until ${exp}
 </template>
 <template
 	id="org.eclipse.koneki.templates.while"
@@ -94,7 +94,7 @@ ${cursor}</template>
 	id="org.eclipse.koneki.templates.pcall"
 	context="LuaUniversalTemplateContextType"
 	description="%template.pcall"
-	name="pcall">local ${status}, ${result} = pcall(${function}, ${param})
+	name="pcall">local ${status}, ${result} = pcall(${functionNameOrBody}, ${param})
 if not ${status} then
 	${cursor}
 end</template>
