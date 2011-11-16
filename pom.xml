@@ -17,6 +17,7 @@
 	<properties>
 		<tycho-version>0.12.0</tycho-version>
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
+	    <download-publish-path>/home/data/httpd/download.eclipse.org/koneki/updates-nightly</download-publish-path>
 	</properties>
 
     <repositories>
