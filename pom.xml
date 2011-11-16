@@ -122,6 +122,10 @@
 			<id>sonatype-staging</id>
   			<url>https://repository.sonatype.org/content/repositories/forge</url>
 		</pluginRepository>
+		<pluginRepository>
+			<id>maven.eclipse.org</id>
+			<url>http://maven.eclipse.org/nexus/content/groups/public/</url>
+		</pluginRepository>		
 	</pluginRepositories>
 
 </project>
