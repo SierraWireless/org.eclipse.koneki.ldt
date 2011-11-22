@@ -81,6 +81,19 @@
             id="org.eclipse.koneki.ldt.templates.Template"
             name="%page.name">
       </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferencePage"
+            id="org.eclipse.koneki.ldt.formatter.preferences"
+            name="%formatter.name">
+      </page>
+      
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferenceInitializer">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.dltk.ui.language">
@@ -105,5 +118,22 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+SHIFT+C">
       </key>
+      <key
+            commandId="org.eclipse.dltk.ui.edit.text.script.format"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+SHIFT+F">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.formatterFactory">
+      <engineContribution
+            natureId="org.eclipse.koneki.ldt.nature">
+         <formatterFactory
+               class="org.eclipse.koneki.ldt.editor.formatter.LuaFormatterFactory"
+               id="org.eclipse.koneki.ldt.editor.LuaFormatterFactory"
+               priority="10">
+         </formatterFactory>
+      </engineContribution>
    </extension>
 </plugin>

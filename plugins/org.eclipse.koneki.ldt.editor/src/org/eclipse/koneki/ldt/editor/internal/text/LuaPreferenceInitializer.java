@@ -12,7 +12,6 @@
 package org.eclipse.koneki.ldt.editor.internal.text;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -51,11 +50,7 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(ILuaColorConstants.LUA_KEYWORD + PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
 		store.setDefault(ILuaColorConstants.LUA_KEYWORD + PreferenceConstants.EDITOR_ITALIC_SUFFIX, false);
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
-		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
 
-		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.SPACE);
-		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, "4"); //$NON-NLS-1$
-		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "4"); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);
 		store.setDefault(PreferenceConstants.EDITOR_DOCS_FOLDING_ENABLED, true);
 

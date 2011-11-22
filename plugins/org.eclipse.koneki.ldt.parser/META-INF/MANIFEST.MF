@@ -17,5 +17,7 @@ Export-Package: org.eclipse.koneki.ldt.internal.parser,
  org.eclipse.koneki.ldt.parser.ast,
  org.eclipse.koneki.ldt.parser.ast.declarations,
  org.eclipse.koneki.ldt.parser.ast.expressions,
- org.eclipse.koneki.ldt.parser.ast.statements
+ org.eclipse.koneki.ldt.parser.ast.statements,
+ org.eclipse.koneki.ldt.parser.ast.visitor,
+ org.eclipse.koneki.ldt.parser.format
 Bundle-ActivationPolicy: lazy
