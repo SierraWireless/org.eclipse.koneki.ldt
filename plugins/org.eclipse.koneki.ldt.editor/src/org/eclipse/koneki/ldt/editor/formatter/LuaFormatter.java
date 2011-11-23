@@ -26,12 +26,12 @@ import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 
 public class LuaFormatter extends AbstractScriptFormatter {
-	final static String ID = "org.eclipse.koneki.ldt.formatter"; //$NON-NLS-1$
-	final private String tabPolicy;
-	final private int tabSize;
-	final private int indentationSize;
-	final private String delimiter;
-	final private String tabulation;
+	static final String ID = "org.eclipse.koneki.ldt.formatter"; //$NON-NLS-1$
+	private final String tabPolicy;
+	private final int tabSize;
+	private final int indentationSize;
+	private final String delimiter;
+	private final String tabulation;
 
 	protected LuaFormatter(final String lineDelimiter, final Map<String, String> preferences) {
 		super(preferences);

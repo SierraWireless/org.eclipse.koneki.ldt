@@ -29,9 +29,9 @@ import com.naef.jnlua.LuaState;
  * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
 public final class LuaSourceFormat {
-	final public static String FORMATTER_PATH = "/scripts/"; //$NON-NLS-1$
-	final public static String FORMATTER_LIB_NAME = "format"; //$NON-NLS-1$
-	final public static String INDENTATION_FUNTION = "indentCode"; //$NON-NLS-1$
+	public static final String FORMATTER_PATH = "/scripts/"; //$NON-NLS-1$
+	public static final String FORMATTER_LIB_NAME = "format"; //$NON-NLS-1$
+	public static final String INDENTATION_FUNTION = "indentCode"; //$NON-NLS-1$
 
 	private LuaSourceFormat() {
 	}
@@ -70,18 +70,18 @@ public final class LuaSourceFormat {
 	 *            Line delimiter, <code>\n</code> for Linux and Unix
 	 * @param tabulation
 	 *            String used as tabulation, it could be one or several white space character like <code>' '</code> of <code>'\t'</code>
-	 * @param originalInentationLevel
+	 * @param originalIndentationLevel
 	 *            Indicates original semantic depth, useful for selections
 	 * @return Indented Lua source code
 	 */
-	public static String indent(String source, final String delimiter, final String tabulation, final int originalInentationLevel) {
+	public static String indent(String source, final String delimiter, final String tabulation, final int originalIndentationLevel) {
 		// Load function
 		final LuaState lua = loadState();
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
 		lua.pushString(delimiter);
 		lua.pushString(tabulation);
-		lua.pushInteger(originalInentationLevel);
+		lua.pushInteger(originalIndentationLevel);
 		lua.call(4, 1);
 		final String formattedCode = lua.toString(-1);
 		lua.close();

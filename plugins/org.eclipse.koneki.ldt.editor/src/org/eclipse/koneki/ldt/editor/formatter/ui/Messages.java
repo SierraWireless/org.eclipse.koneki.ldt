@@ -12,9 +12,7 @@ package org.eclipse.koneki.ldt.editor.formatter.ui;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * TODO Comment this class
- */
+//CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.editor.formatter.ui.messages"; //$NON-NLS-1$
 	public static String LuaFormatterModifyDialogIndentation;
@@ -26,3 +24,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE NLS: ON

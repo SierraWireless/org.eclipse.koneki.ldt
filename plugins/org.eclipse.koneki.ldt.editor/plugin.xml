@@ -116,13 +116,13 @@
             commandId="org.eclipse.dltk.ui.edit.text.script.toggle.comment"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+SHIFT+C">
+            sequence="M1+M2+C">
       </key>
       <key
             commandId="org.eclipse.dltk.ui.edit.text.script.format"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+SHIFT+F">
+            sequence="M1+M2+F">
       </key>
    </extension>
    <extension

@@ -15,18 +15,18 @@ import org.eclipse.koneki.ldt.editor.Activator;
 import org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterModifyDialog;
 
 public class LuaFormatterFactory extends AbstractScriptFormatterFactory {
-	private static String SAMPLE_FILE_PATH = "/sample/formatter.lua"; //$NON-NLS-1$
-	private final String[] PREFERENCES_KEY = { LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE, LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR,
-			LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE };
+	private static final String SAMPLE_FILE_PATH = "/sample/formatter.lua"; //$NON-NLS-1$
+	private final String[] preferenceKeys = new String[] { LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE,
+			LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE, };
 
 	public LuaFormatterFactory() {
 	}
 
 	@Override
 	public PreferenceKey[] getPreferenceKeys() {
-		final PreferenceKey[] preferences = new PreferenceKey[PREFERENCES_KEY.length];
+		final PreferenceKey[] preferences = new PreferenceKey[preferenceKeys.length];
 		for (int p = 0; p < preferences.length; p++) {
-			preferences[p] = new PreferenceKey(Activator.PLUGIN_ID, PREFERENCES_KEY[p]);
+			preferences[p] = new PreferenceKey(Activator.PLUGIN_ID, preferenceKeys[p]);
 		}
 		return preferences;
 	}
