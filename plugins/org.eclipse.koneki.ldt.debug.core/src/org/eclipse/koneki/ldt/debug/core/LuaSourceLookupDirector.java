@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.debug.core.remote;
+package org.eclipse.koneki.ldt.debug.core;
 
 import java.net.URI;
 
@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
@@ -26,15 +25,16 @@ import org.eclipse.dltk.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.dltk.internal.core.ScriptProject;
 import org.eclipse.dltk.internal.debug.core.model.ScriptStackFrame;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
-import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.launching.sourcelookup.DBGPSourceModule;
-import org.eclipse.koneki.ldt.debug.core.UnreachableStackFrame;
 
 @SuppressWarnings("restriction")
-public class LuaRemoteSourceLookupDirector extends AbstractSourceLookupDirector {
+public class LuaSourceLookupDirector extends AbstractSourceLookupDirector {
 
 	private static class LuaSourceLookupParticipant extends AbstractSourceLookupParticipant {
 		/**
+		 * Extract the source name from the selected debug model element (stackframe, thread ...). This source name will be used by SourcePathComputer
+		 * to retrieve the SourceElement.
+		 * 
 		 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant#getSourceName(java.lang.Object)
 		 */
 		@Override
@@ -47,12 +47,7 @@ public class LuaRemoteSourceLookupDirector extends AbstractSourceLookupDirector 
 			} else {
 				return null;
 			}
-
-			String path = uri.getPath();
-			ILaunchConfiguration configuration = getDirector().getLaunchConfiguration();
-			String remotePrefix = configuration.getAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE_WORKING_DIR, ""); //$NON-NLS-1$
-
-			return path.startsWith(remotePrefix) ? path.substring(remotePrefix.length() + 1) : null;
+			return uri.toString();
 		}
 	}
 
@@ -73,34 +68,45 @@ public class LuaRemoteSourceLookupDirector extends AbstractSourceLookupDirector 
 	 */
 	@Override
 	public Object getSourceElement(Object element) {
-		// source element was found inside the project
+		// if the element is an unreachable stack frame we don't need to search trough the source path computer.
+		if (element instanceof ScriptStackFrame) {
+			ScriptStackFrame frame = (ScriptStackFrame) element;
+			UnreachableStackFrame unreachableStackFrame = UnreachableStackFrame.checkReachable(frame);
+			if (unreachableStackFrame != null) {
+				return unreachableStackFrame;
+			}
+		}
+
+		// search in all container of the source path computer.
 		Object o = super.getSourceElement(element);
+
+		// a file or a IStorage was found, we return it, we can display it.
 		if (o instanceof IFile || o instanceof IStorage) {
 			return o;
-		} else if (!(element instanceof ScriptStackFrame)) {
-			return null;
 		}
 
-		// time to ask for it remotely
-		ScriptStackFrame frame = (ScriptStackFrame) element;
+		// at this time, if we still have a ScriptStackFrame
+		// we could have a fallback and create a DBGPSourceModule
+		// (the source code will be return by the DBGP client via the command "source"
+		if (element instanceof ScriptStackFrame) {
+			ScriptStackFrame frame = (ScriptStackFrame) element;
 
-		UnreachableStackFrame unreachableStackFrame = UnreachableStackFrame.checkReachable(frame);
-		if (unreachableStackFrame != null) {
-			return unreachableStackFrame;
+			URI uri = frame.getSourceURI();
+			String path = uri.getPath();
+			IProject project = LaunchConfigurationUtils.getProject(getLaunchConfiguration());
+			if (project == null) {
+				return null;
+			}
+			IScriptProject scriptProject = DLTKCore.create(project);
+
+			/*
+			 * XXX: this should probably use some kind of IStorable implementation instead of directly relying on the stack frame - that allows for
+			 * re-use of the ExternalStorageEditorInput object
+			 */
+			return new DBGPSourceModule((ScriptProject) scriptProject, path, DefaultWorkingCopyOwner.PRIMARY, frame);
 		}
 
-		URI uri = frame.getSourceURI();
-		String path = uri.getPath();
-		IProject project = LaunchConfigurationUtils.getProject(getLaunchConfiguration());
-		if (project == null) {
-			return null;
-		}
-		IScriptProject scriptProject = DLTKCore.create(project);
-
-		/*
-		 * XXX: this should probably use some kind of IStorable implementation instead of directly relying on the stack frame - that allows for re-use
-		 * of the ExternalStorageEditorInput object
-		 */
-		return new DBGPSourceModule((ScriptProject) scriptProject, path, DefaultWorkingCopyOwner.PRIMARY, frame);
+		// we not managed the other case, so return null
+		return null;
 	}
 }

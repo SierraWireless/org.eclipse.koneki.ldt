@@ -37,14 +37,14 @@
     <extension
         point="org.eclipse.debug.core.sourceLocators">
         <sourceLocator
-           class="org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteSourceLookupDirector"
+           class="org.eclipse.koneki.ldt.debug.core.LuaSourceLookupDirector"
            id="org.eclipse.koneki.ldt.debug.core.SourceLookup"
            name="%LuaSourceLocator.name" />
    </extension>
    <extension 
         point="org.eclipse.debug.core.sourcePathComputers">
         <sourcePathComputer
-            class="org.eclipse.koneki.ldt.debug.core.LuaSourcePathComputer"
+            class="org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteSourcePathComputer"
             id="org.eclipse.koneki.ldt.debug.core.SourcePathComputer"/>
    </extension>
     <extension

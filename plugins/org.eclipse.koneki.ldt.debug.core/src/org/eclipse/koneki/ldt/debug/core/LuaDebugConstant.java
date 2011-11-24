@@ -10,11 +10,22 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.core;
 
-
 /**
  * Constant for attribute of Lua launch configuration
  */
 public interface LuaDebugConstant {
+
+	/**
+	 * Launch Configuration constant
+	 */
+	String ATTR_LUA_SOURCE_MAPPING_TYPE = "source_mapping_type"; //$NON-NLS-1$
+
+	/**
+	 * Source mapping type
+	 */
+	String LOCAL_MAPPING_TYPE = "local"; //$NON-NLS-1$
+	String MODULE_MAPPING_TYPE = "module"; //$NON-NLS-1$
+	String REPLACE_PATH_MAPPING_TYPE = "replace_path"; //$NON-NLS-1$
 
 	/**
 	 * Type name constants

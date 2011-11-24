@@ -22,26 +22,17 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.dltk.debug.core.IDbgpService;
-import org.eclipse.dltk.debug.core.model.IScriptBreakpointPathMapper;
 import org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget;
-import org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteBreakpointPathMapper;
 
-public abstract class LuaDebugTarget extends ScriptDebugTarget {
+public class LuaDebugTarget extends ScriptDebugTarget {
 	private enum ChangeType {
 		ADD, UPDATE, REMOVE;
 	}
 
 	public LuaDebugTarget(String modelId, IDbgpService dbgpService, String sessionId, ILaunch launch, IProcess process) {
 		super(modelId, dbgpService, sessionId, launch, process);
-	}
 
-	/**
-	 * This method is abstract as a <strong>workaround</strong>. {@link #createPathMapper()} is called in
-	 * {@link ScriptDebugTarget#ScriptDebugTarget(String, IDbgpService, String, ILaunch, IProcess)} before end of current object contruction.
-	 * 
-	 * @return folder name on remote
-	 */
-	abstract protected String folder();
+	}
 
 	/**
 	 * Just a job performing operations on {@link IBreakpoint}.
@@ -74,15 +65,6 @@ public abstract class LuaDebugTarget extends ScriptDebugTarget {
 	public void runToLine(URI uri, final int lineNumber) throws DebugException {
 		URI remoteUri = getPathMapper().map(uri);
 		super.runToLine(remoteUri, lineNumber);
-	}
-
-	/**
-	 * @see org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget#createPathMapper()
-	 */
-	@SuppressWarnings("deprecation")
-	@Override
-	protected IScriptBreakpointPathMapper createPathMapper() {
-		return new LuaRemoteBreakpointPathMapper(getScriptProject(), folder());
 	}
 
 	private void breakpoint(final ChangeType changeType, final IBreakpoint bp, final IMarkerDelta markerDelta) {

@@ -150,23 +150,23 @@ else
    end
 end
 
+
 -- parse a normalized path and return a table of each segment
--- you could precise the path seperator, '/' is the default one.
-local function break_path(path,separator)
-  local sep = separator or "/" 
-  local paths = {}
-  for w in string.gfind(path, "[^/]+") do
-    table.insert(paths, w)
+-- you could precise the path seperator.
+local function split(path,sep)
+  local t = {}
+  for w in string.gfind(path, "[^"..sep.."]+")do
+    table.insert(t, w)
   end
-  return paths
+  return t
 end
 
 -- merge an asbolute and a relative path in an absolute path
 -- you could precise the path seperator, '/' is the default one.
 local function merge_paths(absolutepath, relativepath,separator)
   local sep = separator or "/"
-  local absolutetable = break_path(absolutepath)
-  local relativetable = break_path(relativepath)
+  local absolutetable = split(absolutepath,sep)
+  local relativetable = split(relativepath,sep)
   for i, path in ipairs(relativetable) do
     if path == ".." then
       table.remove(absolutetable, table.getn(absolutetable))
@@ -234,6 +234,7 @@ local variable_features = setmetatable({ }, {
         max_data = 0xFFFF,
         max_depth = 1,
         show_hidden = 1,
+        uri = "file"
     },
     __newindex = function(self, k, v)
         local mt = getmetatable(self)
@@ -312,33 +313,84 @@ end
 
 -- get uri from source debug info
 local get_uri
+local get_path
 do
     local cache = { }
     --- Returns a RFC2396 compliant URI for given source, or false if the mapping failed
-    get_uri = function(source)
-        local uri = cache[source]
-        if uri ~= nil then return uri end
-        
-        if source:sub(1,1) == "@" then -- real source file
-            sourcepath = source:sub(2)
-            normalizedpath = normalize(sourcepath)
-            if not is_path_absolute(normalizedpath) then 
-               normalizedpath = merge_paths(base_dir, normalizedpath)
-            end
-            uri = to_file_uri(normalizedpath)
-        else -- dynamic code, stripped bytecode, tail return, ...
-            uri = false
+    function get_abs_file_uri (source)
+      local uri
+      if source:sub(1,1) == "@" then -- real source file
+        local sourcepath = source:sub(2)
+        local normalizedpath = normalize(sourcepath)
+        if not is_path_absolute(normalizedpath) then 
+          normalizedpath = merge_paths(base_dir, normalizedpath)
         end
-        cache[source] = uri
-        return uri
+        return to_file_uri(normalizedpath)
+      else -- dynamic code, stripped bytecode, tail return, ...
+        return false
+      end
     end
-end
-
--- get path file from uri 
-local function get_path(uri)
-    local parsed_path = assert(url.parse(uri))
-    assert(parsed_path.scheme == "file")
-    return to_path(parsed_path)        
+    
+    function get_module_uri (source)
+      local uri
+      if source:sub(1,1) == "@" then -- real source file
+        local sourcepath = source:sub(2)
+        local normalizedpath = normalize(sourcepath)
+        local normalizedluapath = normalize(package.path)
+        local luapathtable = split (normalizedluapath,";")
+        -- workarround : Add always the ?.lua entry to support
+        -- the case where file was loaded by : "lua myfile.lua"
+        table.insert(luapathtable,"?.lua")
+        for i,var in ipairs(luapathtable) do
+          local escaped = string.gsub(var,"[%^%$%(%)%%%.%[%]%*%+%-%?]",function(c) return "%"..c end)        
+          local pattern = string.gsub(escaped,"%%%?","(.+)")
+          local modulename = string.match(normalizedpath,pattern);
+          if modulename then
+            modulename = string.gsub(modulename,"/",".");
+            -- if we find more than 1 possible modulename return the shorter
+            if not uri or string.len(uri)>string.len(modulename) then 
+              uri = modulename
+            end
+          end
+        end
+        if uri then return "module:///"..uri end
+      end
+      return false
+    end
+    
+    get_uri = function (source)
+      -- search in cache
+      local uri = cache[source]
+      if uri ~= nil then return uri end
+      
+      -- not found, create uri
+      if variable_features.uri == "module" then
+         uri = get_module_uri(source)
+         if not uri then uri = get_abs_file_uri (source) end
+      else
+         uri =  get_abs_file_uri (source)
+      end
+      
+      cache[source] = uri
+      return uri
+    end
+    
+  -- get path file from uri 
+  get_path=  function (uri)
+      local parsed_path = assert(url.parse(uri))
+      if parsed_path.scheme == "file" then
+         return to_path(parsed_path)
+      else
+         -- search in cache 
+         -- we should surely calculate it instead of find in cache
+         for k,v in pairs(cache)do
+           if v == uri then
+           assert(k:sub(1,1) == "@")
+           return k:sub(2)
+           end
+         end   
+      end
+   end
 end
 
 -- Used to store complex keys (other than string and number) as they cannot be passed in text
