@@ -171,8 +171,8 @@ function M.indentCode(source, delimiter, ...)
 	end
 	-- Delimiter position table
 	-- Initialisation represent string start offset
-	local positions = {0}
 	local delimiterLength = delimiter:len()
+	local positions = {1-delimiterLength}
 	--
 	-- Seek for delimiters
 	--
