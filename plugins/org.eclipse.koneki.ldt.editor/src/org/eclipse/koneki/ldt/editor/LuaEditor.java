@@ -12,7 +12,8 @@
 package org.eclipse.koneki.ldt.editor;
 
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.internal.ui.editor.BracketInserter;
+import org.eclipse.dltk.internal.ui.editor.BracketInserter;import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -27,6 +28,7 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.koneki.ldt.core.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.editor.internal.text.ILuaPartitions;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaASTFoldingStructureProvider;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaTextTools;
@@ -118,6 +120,23 @@ public class LuaEditor extends ScriptEditor {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		setEditorContextMenuId(EDITOR_CONTEXT);
+	}
+	/**	 * @see org.eclipse.ui.part.EditorPart#setPartName(java.lang.String)
+	 */
+	@Override
+	protected void setPartName(String partName) {
+		// search moduleName
+		String moduleFullName = null;
+		IModelElement input = getInputModelElement();
+		if (input instanceof ISourceModule) {
+			moduleFullName = LuaUtils.getModuleFullName((ISourceModule) input);
+		}
+
+		// use module as title if is find else use the previous one
+		if (moduleFullName != null)
+			super.setPartName(moduleFullName);
+		else
+			super.setPartName(partName);
 	}
 
 	/**

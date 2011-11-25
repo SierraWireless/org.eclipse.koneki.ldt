@@ -67,7 +67,10 @@ public final class LuaUtils {
 		}
 
 		if (prefix != null)
-			return prefix + "." + moduleName; //$NON-NLS-1$
+			if ("init".equalsIgnoreCase(moduleName))//$NON-NLS-1$
+				return prefix;
+			else
+				return prefix + "." + moduleName; //$NON-NLS-1$
 		else
 			return moduleName;
 	}
