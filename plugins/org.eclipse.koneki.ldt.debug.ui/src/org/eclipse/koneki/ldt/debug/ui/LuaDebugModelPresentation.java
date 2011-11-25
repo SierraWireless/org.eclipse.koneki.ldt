@@ -23,6 +23,7 @@ import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.dltk.debug.core.DLTKDebugConstants;
 import org.eclipse.dltk.debug.core.model.IScriptStackFrame;
+import org.eclipse.dltk.debug.core.model.IScriptThread;
 import org.eclipse.dltk.debug.core.model.IScriptVariable;
 import org.eclipse.dltk.debug.ui.ScriptDebugModelPresentation;
 import org.eclipse.dltk.internal.debug.core.model.ScriptVariableWrapper;
@@ -31,6 +32,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.koneki.ldt.debug.core.LuaCoroutine;
 import org.eclipse.koneki.ldt.debug.core.LuaDebugConstant;
 import org.eclipse.koneki.ldt.debug.core.LuaModuleURIUtil;
 import org.eclipse.koneki.ldt.debug.core.UnreachableStackFrame;
@@ -200,8 +202,26 @@ public class LuaDebugModelPresentation extends ScriptDebugModelPresentation {
 			if (variable.getReferenceTypeName().equals(LuaDebugConstant.TYPE_SPECIAL)) {
 				return Activator.getDefault().getImageRegistry().get(ImageConstants.LUA_DEBUG_SPECIAL_VAR);
 			}
+			// CHECKSTYLE:OFF
 		} catch (DebugException e) {
+			// do nothing and so return variable image
+			// CHECKSTYLE:ON
 		}
 		return super.getVariableImage(variable);
+	}
+
+	/**
+	 * @see org.eclipse.dltk.debug.ui.ScriptDebugModelPresentation#getThreadText(org.eclipse.dltk.debug.core.model.IScriptThread)
+	 */
+	@Override
+	protected String getThreadText(IScriptThread thread) {
+		if (thread instanceof LuaCoroutine) {
+			try {
+				return NLS.bind(Messages.LuaDebugModelPresentation_pause_coroutine, thread.getName());
+			} catch (DebugException e) {
+				Activator.logError("Cannot get name of coroutine", e); //$NON-NLS-1$
+			}
+		}
+		return NLS.bind(Messages.LuaDebugModelPresentation_running_coroutine, (thread.isSuspended() ? SUSPENDED_LABEL : RUNNING_LABEL));
 	}
 }

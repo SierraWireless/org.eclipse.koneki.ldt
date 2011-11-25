@@ -15,6 +15,7 @@ import org.eclipse.osgi.util.NLS;
 // CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.debug.core.messages"; //$NON-NLS-1$
+	public static String LuaDebugTarget_error_coro_list;
 	public static String LuaDebugTargetAdd;
 	public static String LuaDebugTargetRemove;
 	public static String LuaDebugTargetUpdate;

@@ -16,10 +16,13 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.debug.ui.messages"; //$NON-NLS-1$
 	public static String LuaDebugModelPresentation_ccode;
+	public static String LuaDebugModelPresentation_pause_coroutine;
+	public static String LuaDebugModelPresentation_running_coroutine;
 	public static String LuaDebugModelPresentation_tail_return;
 	public static String LuaDebugModelPresentation_unknown;
 	public static String LuaDebugModelPresentation_upvalues;
 
+	public static String LuaAttachMainTab_documentation_intro;
 	public static String LuaAttachMainTab_connection_properties_group;
 	public static String LuaAttachMainTab_documentation_link;
 	public static String LuaAttachMainTab_idekey_label;

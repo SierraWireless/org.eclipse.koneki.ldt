@@ -46,9 +46,9 @@ import org.eclipse.ui.PlatformUI;
 
 public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
-	private static String DEFAULT_IDEKEY = "luaidekey"; //$NON-NLS-1$
-	private static String DEFAULT_REPLACE_PATH = ""; //$NON-NLS-1$
-	private static String DEFAULT_MAPPING_TYPE = LuaDebugConstant.LOCAL_MAPPING_TYPE;
+	private static final String DEFAULT_IDEKEY = "luaidekey"; //$NON-NLS-1$
+	private static final String DEFAULT_REPLACE_PATH = ""; //$NON-NLS-1$
+	private static final String DEFAULT_MAPPING_TYPE = LuaDebugConstant.LOCAL_MAPPING_TYPE;
 
 	private Text txtIdeKey;
 	private Text txtTimeout;
@@ -109,8 +109,8 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
 		txtTimeout.setText(Integer.toString(LaunchConfigurationUtils.getConnectionTimeout(config, getDefaultRemoteTimeout()) / 1000));
 
-		String mapping_type = LaunchConfigurationUtils.getString(config, LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE, DEFAULT_MAPPING_TYPE);
-		selectSourceMapping(mapping_type);
+		String mappingType = LaunchConfigurationUtils.getString(config, LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE, DEFAULT_MAPPING_TYPE);
+		selectSourceMapping(mappingType);
 
 		txtReplacePath.setText(LaunchConfigurationUtils.getString(config, ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE_WORKING_DIR,
 				DEFAULT_REPLACE_PATH));
@@ -119,10 +119,10 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	/**
 	 * select the source mapping graphicaly
 	 */
-	private void selectSourceMapping(String mapping_type) {
-		if (mapping_type.equals(LuaDebugConstant.MODULE_MAPPING_TYPE)) {
+	private void selectSourceMapping(String mappingType) {
+		if (mappingType.equals(LuaDebugConstant.MODULE_MAPPING_TYPE)) {
 			btnModuleResolution.setSelection(true);
-		} else if (mapping_type.equals(LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE)) {
+		} else if (mappingType.equals(LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE)) {
 			btnReplacePathResolution.setSelection(true);
 
 		} else {
@@ -241,7 +241,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
 		Label lblsourcemappingintro = new Label(grpSourceMapping, SWT.NONE);
 		generalInfoGridDataFactory.applyTo(lblsourcemappingintro);
-		lblsourcemappingintro.setText("Define the stategy to identify source file in your workspace :");
+		lblsourcemappingintro.setText(Messages.LuaAttachMainTab_documentation_intro);
 
 		// Local Resolution
 		btnLocalResolution = new Button(grpSourceMapping, SWT.RADIO);

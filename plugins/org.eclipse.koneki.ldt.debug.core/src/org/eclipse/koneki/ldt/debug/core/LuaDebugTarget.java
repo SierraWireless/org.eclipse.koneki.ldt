@@ -11,26 +11,79 @@
 package org.eclipse.koneki.ldt.debug.core;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.IThread;
+import org.eclipse.dltk.dbgp.DbgpBaseCommands;
+import org.eclipse.dltk.dbgp.DbgpRequest;
+import org.eclipse.dltk.dbgp.exceptions.DbgpException;
 import org.eclipse.dltk.debug.core.IDbgpService;
+import org.eclipse.dltk.debug.core.model.IScriptThread;
 import org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class LuaDebugTarget extends ScriptDebugTarget {
 	private enum ChangeType {
 		ADD, UPDATE, REMOVE;
 	}
 
+	private List<LuaCoroutine> coroutines = new ArrayList<LuaCoroutine>();
+
 	public LuaDebugTarget(String modelId, IDbgpService dbgpService, String sessionId, ILaunch launch, IProcess process) {
 		super(modelId, dbgpService, sessionId, launch, process);
+		DebugPlugin.getDefault().addDebugEventListener(new IDebugEventSetListener() {
+
+			protected List<LuaCoroutine> parseCoroutineList(Element response) throws DbgpException, CoreException {
+				NodeList xmlNodes = response.getElementsByTagName("coroutine"); //$NON-NLS-1$
+				// TODO recycle LuaCoroutine instances to avoid flickering (may also require to modify stack)
+				List<LuaCoroutine> coroList = new ArrayList<LuaCoroutine>(xmlNodes.getLength());
+				for (int i = 0; i < xmlNodes.getLength(); i++) {
+					Element coro = (Element) xmlNodes.item(i);
+					if (coro.getAttribute("running").equals("0")) { //$NON-NLS-1$ //$NON-NLS-2$
+						coroList.add(new LuaCoroutine(LuaDebugTarget.this, coro.getAttribute("id"), coro.getAttribute("name"))); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				return coroList;
+			}
+
+			@Override
+			public void handleDebugEvents(DebugEvent[] events) {
+				for (DebugEvent event : events) {
+					if (event.getKind() == DebugEvent.SUSPEND) {
+						IScriptThread thread = (IScriptThread) event.getSource();
+						DbgpRequest listRequest = DbgpBaseCommands.createRequest("coroutine_list"); //$NON-NLS-1$
+						try {
+							Element response = thread.getDbgpSession().getCommunicator().communicate(listRequest);
+							LuaDebugTarget.this.coroutines = parseCoroutineList(response);
+						} catch (DbgpException e) {
+							Activator.logError(Messages.LuaDebugTarget_error_coro_list, e);
+							LuaDebugTarget.this.coroutines.clear();
+						} catch (CoreException e) {
+							Activator.logError(Messages.LuaDebugTarget_error_coro_list, e);
+							LuaDebugTarget.this.coroutines.clear();
+						}
+					} else if (event.getKind() == DebugEvent.TERMINATE) {
+						DebugPlugin.getDefault().removeDebugEventListener(this);
+					}
+				}
+			}
+		});
 
 	}
 
@@ -120,5 +173,30 @@ public class LuaDebugTarget extends ScriptDebugTarget {
 		final ChangeJob job = new ChangeJob(Messages.LuaDebugTargetRemove, breakpoint, delta, ChangeType.REMOVE);
 		job.setSystem(true);
 		job.schedule();
+	}
+
+	/**
+	 * Returns the "main" thread of the instance. This is the only thread which is really mapped to a debug socket, others are just coroutines.
+	 * 
+	 * @return Main thread if any, null otherwise.
+	 */
+	public IScriptThread getMainThread() {
+		IThread[] threads = super.getThreads();
+		return threads.length > 0 ? (IScriptThread) threads[0] : null;
+	}
+
+	/**
+	 * @see org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget#getThreads()
+	 */
+	@Override
+	public IThread[] getThreads() {
+		// TODO: is rebuild thread list each call is expansive ?
+		List<IThread> threads = new ArrayList<IThread>();
+		threads.addAll(Arrays.asList(super.getThreads()));
+		// coroutines are shown only when main thread is suspended (while thread is running, it is pointless to show them)
+		if (threads.size() > 0 && threads.get(0).isSuspended()) {
+			threads.addAll(coroutines);
+		}
+		return threads.toArray(new IThread[threads.size()]);
 	}
 }

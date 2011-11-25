@@ -85,8 +85,13 @@ if type(log) == "string" then
 end
 
 -- TODO complete the stdlib access
-local debug_getinfo, corunning, cocreate, cowrap, coyield = debug.getinfo, coroutine.running, coroutine.create, coroutine.wrap, coroutine.yield
+local debug_getinfo, corunning, cocreate, cowrap, coyield, coresume, costatus = debug.getinfo, coroutine.running, coroutine.create, coroutine.wrap, coroutine.yield, coroutine.resume, coroutine.status
 
+-- correct function debug.getinfo behavior regarding first argument (sometimes nil in our case)
+local function getinfo(coro, level, what)
+    if coro then return debug_getinfo(coro, level, what)
+    else return debug_getinfo(level + 1, what) end
+end
 
 -- "BEGIN PLATFORM DEPENDENT CODE"
 -- Get the execution plaform os (could be win or unix)
@@ -202,6 +207,9 @@ local debugger_uri = nil -- set in init function
 -- will contain the session object, and eventually a list of all sessions if a multi-threaded model is adopted
 -- this is only used for async commands.
 local active_session = nil
+
+-- tracks all active coroutines and associate an id to them, the table from_id is the id=>coro mapping, the table from_coro is the reverse
+local active_coroutines = { n = 0, from_id = setmetatable({ }, { __mode = "v" }), from_coro = setmetatable({ }, { __mode = "k" }) }
 
 -------------------------------------------------------------------------------
 --  Debugger features & configuration
@@ -680,6 +688,19 @@ do
     -- make unique object to access contexts
     local LOCAL, UPVAL, GLOBAL, STORE, HANDLE = {}, {}, {}, {}, {}
     
+    -- create debug functions depending on coroutine context
+    local foreign_coro_debug = { -- bare Lua functions are fine here because all parameters will be provided
+        getlocal = debug.getlocal,
+        setlocal = debug.setlocal,
+        getinfo  = debug.getinfo,
+    }
+    
+    local current_coro_debug = {
+        getlocal = function(_, level, index)        return debug.getlocal(get_script_level(level), index) end,
+        setlocal = function(_, level, index, value) return debug.setlocal(get_script_level(level), index, value) end,
+        getinfo  = function(_, level, what)         return debug.getinfo(get_script_level(level), what) end,
+    }
+    
     --- Captures variables for given stack level. The capture contains local, upvalues and global variables.
     -- The capture can be seen as a proxy table to the stack level: any value can be queried or set no matter
     -- it is a local or an upvalue.
@@ -708,11 +729,14 @@ do
             __index = function(self, k)
                 local index = self[STORE][k]
                 if not index then error("The local "..tostring(k).." does not exitsts.") end
-                return select(2, debug.getlocal(get_script_level(self[HANDLE]), index))
+                local handle = self[HANDLE]
+                return select(2, handle.callbacks.getlocal(handle.coro, handle.level, index))
             end,
             __newindex = function(self, k, v)
                 local index = self[STORE][k]
-                if index then debug.setlocal(get_script_level(self[HANDLE]), index, v)
+                if index then
+                    local handle = self[HANDLE]
+                    handle.callbacks.setlocal(handle.coro, handle.level, index, v)
                 else error("Cannot set local " .. k) end
             end,
             -- Lua 5.2 ready :)
@@ -743,15 +767,16 @@ do
         },
         
         --- Context constructor
+        -- @param coro  (coroutine or nil) coroutine to map to (or nil for current coroutine)
         -- @param level (number) stack level do dump (script stack level)
-        new = function(cls, level)
-            local stack_level = get_script_level(level)
+        new = function(cls, coro, level)
             local locals, upvalues = {}, {}
-            local func = (debug.getinfo(stack_level, "f") or dbgp_error(301, "No such stack level: "..tostring(level))).func
+            local debugcallbacks = coro and foreign_coro_debug or current_coro_debug
+            local func = (debugcallbacks.getinfo(coro, level, "f") or dbgp_error(301, "No such stack level: "..tostring(level))).func
             
             -- local variables
             for i=1, math.huge do
-                local name, val = debug.getlocal(stack_level, i)
+                local name, val = debugcallbacks.getlocal(coro, level, i)
                 if not name then break
                 elseif name:sub(1,1) ~= "(" then -- skip internal values
                     locals[name] = i
@@ -765,24 +790,37 @@ do
                 upvalues[name] = i
             end
             
-            locals = setmetatable({ [STORE] = locals, [HANDLE] = level }, cls.LocalContext)
+            locals = setmetatable({ [STORE] = locals, [HANDLE] = { callbacks = debugcallbacks, level = level, coro = coro } }, cls.LocalContext)
             upvalues = setmetatable({ [STORE] = upvalues, [HANDLE] = func }, cls.UpvalContext)
             return setmetatable({ [LOCAL] = locals, [UPVAL] = upvalues, [GLOBAL] = debug.getfenv(func) }, cls)
         end,
     }
 end
 
---- Contains contexts for different stack level and transparently create then on-the-fly
-local ContextManager = {
-    __index = function(self, level)
-        local ok, cxt = pcall(Context.new, Context, level)
-        if ok then
-            rawset(self, level, cxt)
-            return cxt
-        else return nil end -- no such context (inexistant or unreachable)
-    end,
-    new = function(cls) return setmetatable({ }, cls) end,
-}
+--- Handle caching of all instantiated context. 
+-- Returns a function which takes 2 parameters: thread and stack level and returns the corresponding context. If this 
+-- context has been already queried there is no new instantiation. A ContextManager is valid only during the debug loop 
+-- on which it has been instantiated. References to a ContextManager must be lost after the end of debug loop (so 
+-- threads can be collected).
+-- If a context cannot be instantiated, an 301 DBGP error is thrown.
+local function ContextManager()
+    local cache = { }
+    return function(thread, level)
+        local thread_contexts = cache[thread or true] -- true is used to identify current thread (as nil is not a valid table key)
+        if not thread_contexts then
+            thread_contexts = { }
+            cache[thread or true] = thread_contexts
+        end
+        
+        local context = thread_contexts[level]
+        if not context then
+            context = Context:new(thread, level)
+            thread_contexts[level] = context
+        end
+        
+        return context
+    end
+end
 
 -------------------------------------------------------------------------------
 --  Property_* environment handling
@@ -808,7 +846,7 @@ property_evaluation_environment.__index = property_evaluation_environment
 --  Breakpoint registry
 -------------------------------------------------------------------------------
 -- Registry of current stack levels of all running threads
-local stack_levels = { }
+local stack_levels = setmetatable( { }, { __mode = "k" } )
 
 -- File/line mapping for breakpoints (BP). For a given file/line, a list of BP is associated (DBGp specification section 7.6.1
 -- require that multiple BP at same place must be handled)
@@ -875,7 +913,7 @@ do
                 local match = true
                 if bp.condition then
                     -- TODO: this is not the optimal solution because Context can be instantiated twice if the breakpoint matches
-                    local success, result = pcall(setfenv(bp.condition, Context:new(0)))
+                    local success, result = pcall(setfenv(bp.condition, Context:new(nil, 0)))
                     if not success then log("DEBUGGER", "ERROR", "Condition evaluation failed for breakpoint at %s:%d", file, line) end
                     -- debugger always stops if an error occurs
                     match = (not success) or result
@@ -990,6 +1028,19 @@ local function previous_context_response(self, reason)
     self.previous_context.reason = reason or "ok"
     send_xml(self.skt, { name="response", attrs = self.previous_context } )
     self.previous_context = nil
+end
+
+--- Gets the coroutine behind an id
+-- Throws errors on unknown identifiers
+-- @param  coro_id  (string or nil) Coroutine identifier or nil
+-- @return Coroutine instance or nil (if coro_id was nil or if coroutine is the current coroutine)
+local function get_coroutine(coro_id)
+    if coro_id then
+        coro = dbgp_assert(399, active_coroutines.from_id[tonumber(coro_id)], "No such coroutine")
+        dbgp_assert(399, coroutine.status(coro) ~= "dead", "Coroutine is dead")
+        return coro ~= corunning() and coro or nil
+    end
+    return nil
 end
 
 -- Debugger command functions. Each function handle a different command.
@@ -1110,7 +1161,7 @@ commands = {
         
         if func then
             -- DBGp does not support stack level here, see http://bugs.activestate.com/show_bug.cgi?id=81178
-            setfenv(func, self.stack[0])
+            setfenv(func, self.stack(nil, 0))
             success, result = packpcall(pcall(func))
             if not success then err = result end
         end
@@ -1190,8 +1241,9 @@ commands = {
     
     stack_depth = function(self, args)
         local depth = 0
-        for level = get_script_level(0), math.huge do
-            local info = debug.getinfo(level, "S")
+        local coro = get_coroutine(args.o)
+        for level = coro and 0 or get_script_level(0), math.huge do
+            local info = getinfo(coro, level, "S")
             if not info then break end -- end of stack
             depth = depth + 1
             if info.what == "main" then break end -- levels below main chunk are not interesting
@@ -1220,13 +1272,15 @@ commands = {
         end
         
         local children = { }
-        local level = get_script_level(0)
+        local coro = get_coroutine(args.o)
+        local level = coro and 0 or get_script_level(0)
+        
         if args.d then
             local stack_level = tonumber(args.d)
-            children[#children+1] = make_level(debug.getinfo(stack_level + level, "nSl"), stack_level)
+            children[#children+1] = make_level(getinfo(coro, stack_level + level, "nSl"), stack_level)
         else
             for i=level, math.huge do
-                local info = debug.getinfo(i, "nSl")
+                local info = getinfo(coro, i, "nSl")
                 if not info then break end
                 children[#children+1] = make_level(info, i-level)
                 if info.what == "main" then break end -- levels below main chunk are not interesting
@@ -1236,9 +1290,37 @@ commands = {
         send_xml(self.skt, { name = "response", attrs = { command = "stack_get", transaction_id = args.i}, children = children } )
     end,
     
+    --- Lists all active coroutines.
+    -- Returns a list of active coroutines with their id (an arbitrary string) to query stack and properties. The id is 
+    -- guaranteed to be unique and stable for all coroutine life (they can be reused as long as coroutine exists).
+    -- Others commands such as stack_get or property_* commands takes an additional -o switch to query a particular cOroutine.
+    -- If the switch is not given, running coroutine will be used.
+    -- In case of error on coroutines (most likely coroutine not found or dead), an error 399 is thrown.
+    -- Note there is an important limitation due to Lua 5.1 coroutine implementation: you cannot query main "coroutine" from
+    -- another one, so main coroutine is not in returned list (this will change with Lua 5.2).
+    -- 
+    -- This is a non-standard command. The returned XML has the following strucuture:
+    --     <response command="coroutine_list" transaction_id="0">
+    --       <coroutine name="<some printtable name>" id="<coroutine id>" running="0|1" />
+    --       ...
+    --     </response>
+    coroutine_list = function(self, args)
+        local running = coroutine.running()
+        local coroutines = {  }
+        -- as any operation on main coroutine will fail, it is not yet listed
+        -- coroutines[1] = { name = "coroutine", attrs = { id = 0, name = "main", running = (running == nil) and "1" or "0" } }
+        for id, coro in pairs(active_coroutines.from_id) do
+            if id ~= "n" then
+                coroutines[#coroutines + 1] = { name = "coroutine", attrs = { id = id, name = tostring(coro), running = (coro == running) and "1" or "0" } }
+            end
+        end
+        send_xml(self.skt, { name = "response", attrs = { command = "coroutine_list", transaction_id = args.i}, children = coroutines } )
+    end,
+    
     context_names = function(self, args)
-        local level = get_script_level(tonumber(args.d or 0))
-        local info = debug.getinfo(level, "f") or dbgp_error(301, "No such stack level "..tostring(level))
+        local coro = get_coroutine(args.o)
+        local level = tonumber(args.d or 0)
+        local info = getinfo(coro, coro and level or get_script_level(level), "f") or dbgp_error(301, "No such stack level "..tostring(level))
         
         -- All contexts are always passed, even if empty. This is how DLTK expect context, what about others ?
         local contexts = {
@@ -1254,7 +1336,8 @@ commands = {
         local context = tonumber(args.c or 0)
         local cxt_id = Context[context] or dbgp_error(302, "No such context: "..tostring(args.c))
         local level = tonumber(args.d or 0)
-        local cxt = self.stack[level] or dbgp_error(302, "No context at level "..tostring(args.d))
+        local coro = get_coroutine(args.o)
+        local cxt = self.stack(coro, level)
         
         local properties = { }
         -- iteration over global is different (this could be unified in Lua 5.2 thanks to __pairs metamethod)
@@ -1275,10 +1358,11 @@ commands = {
         context = tonumber(args.c or context)
         local cxt_id = Context[context] or dbgp_error(302, "No such context: "..tostring(args.c))
         local level = tonumber(args.d or 0)
+        local coro = get_coroutine(args.o)
         local size = tonumber(args.m or variable_features.max_data)
         if size < 0 then size = nil end -- call from property_value
         local page = tonumber(args.p or 0)
-        local cxt = self.stack[level]
+        local cxt = self.stack(coro, level)
         local chunk = dbgp_assert(206, loadstring("return "..name))
         setfenv(chunk, property_evaluation_environment)
         local prop = select(2, dbgp_assert(300, pcall(chunk, cxt[cxt_id])))
@@ -1302,7 +1386,8 @@ commands = {
         context = tonumber(args.c or context)
         local cxt_id = Context[context] or dbgp_error(302, "No such context: "..tostring(args.c))
         local level = tonumber(args.d or 0)
-        local cxt = self.stack[level]
+        local coro = get_coroutine(args.o)
+        local cxt = self.stack(coro, level)
         
         -- evaluate the new value in the local context
         local value = select(2, dbgp_assert(206, pcall(setfenv(dbgp_assert(206, loadstring("return "..data)), cxt))))
@@ -1364,7 +1449,7 @@ local function debugger_loop(self, async_packet)
         self.state = "break"
         previous_context_response(self)
     end
-    self.stack = ContextManager:new() -- will be used to mutualize context allocation for each loop
+    self.stack = ContextManager() -- will be used to mutualize context allocation for each loop
     
     while true do
         -- reads packet
@@ -1492,21 +1577,44 @@ local function init(host, port,idekey)
     -- set debug hooks
     debug.sethook(debugger_hook, "rlc")
     
-    -- overloads coroutine creation to automatically set hooks to new coroutines
-    function coroutine.create(...)
-        local coro = cocreate(...)
-        debug.sethook(coro, debugger_hook, "rlc")
-        stack_levels[coro] = 0
-        return coro
+    -- install coroutine collecting functions.
+    -- TODO: maintain a list of *all* coroutines can be overkill (for example, the ones created by copcall), make a extension point to
+    -- customize debugged coroutines
+    -- coroutines are referenced during their first resume (so we are sure that they always have a stack frame)
+    local function resume_handler(coro, ...)
+        if costatus(coro) == "dead" then
+            local coro_id = active_coroutines.from_coro[coro]
+            active_coroutines.from_id[coro_id] = nil
+            active_coroutines.from_coro[coro] = nil
+            stack_levels[coro] = nil
+        end
+        return ...
+    end
+    
+    function coroutine.resume(coro, ...)
+        if not stack_levels[coro] then
+            -- first time referenced
+            stack_levels[coro] = 0
+            active_coroutines.n = active_coroutines.n + 1
+            active_coroutines.from_id[active_coroutines.n] = coro
+            active_coroutines.from_coro[coro] = active_coroutines.n
+            debug.sethook(coro, debugger_hook, "rlc")
+        end
+        return resume_handler(coro, coresume(coro, ...))
+    end
+    
+    -- coroutine.wrap uses directly C API for coroutines and does not trigger our overridden coroutine.resume
+    -- so this is an implementation of wrap in pure Lua
+    local function wrap_handler(status, ...)
+        if not status then error((...)) end
+        return ...
     end
 
     function coroutine.wrap(f)
-        -- there is no way to get the coroutine from outside here (but this adds one extra stack level)
-        return cowrap(function(...)
-            stack_levels[coroutine.running()] = 0
-            debug.sethook(debugger_hook, "rlc")
-            return f(...)
-        end)
+        local coro = coroutine.create(f)
+        return function(...)
+            return wrap_handler(coroutine.resume(coro, ...))
+        end
     end
 
     return sess

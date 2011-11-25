@@ -21,6 +21,7 @@ import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.debug.core.model.IScriptStackFrame;
 import org.eclipse.dltk.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.dltk.internal.core.ScriptProject;
 import org.eclipse.dltk.internal.debug.core.model.ScriptStackFrame;
@@ -69,8 +70,8 @@ public class LuaSourceLookupDirector extends AbstractSourceLookupDirector {
 	@Override
 	public Object getSourceElement(Object element) {
 		// if the element is an unreachable stack frame we don't need to search trough the source path computer.
-		if (element instanceof ScriptStackFrame) {
-			ScriptStackFrame frame = (ScriptStackFrame) element;
+		if (element instanceof IScriptStackFrame) {
+			IScriptStackFrame frame = (ScriptStackFrame) element;
 			UnreachableStackFrame unreachableStackFrame = UnreachableStackFrame.checkReachable(frame);
 			if (unreachableStackFrame != null) {
 				return unreachableStackFrame;
