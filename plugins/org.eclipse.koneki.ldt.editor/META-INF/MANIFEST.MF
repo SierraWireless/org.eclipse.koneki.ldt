@@ -27,4 +27,5 @@ Export-Package: org.eclipse.koneki.ldt.editor,
  org.eclipse.koneki.ldt.editor.internal.navigation;x-internal:=true,
  org.eclipse.koneki.ldt.editor.internal.partition;x-internal:=true,
  org.eclipse.koneki.ldt.editor.internal.text,
+ org.eclipse.koneki.ldt.editor.preference.internal.ui;x-internal:=true,
  org.eclipse.koneki.ldt.editor.templates

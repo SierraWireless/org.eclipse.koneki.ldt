@@ -17,37 +17,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class SimpleLuaSourceViewerConfiguration extends LuaSourceViewerConfiguration {
 
-	private boolean fConfigureFormatter;
-
-	public SimpleLuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor,
-			String partitioning, boolean configureFormatter) {
+	public SimpleLuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning,
+			boolean configureFormatter) {
 		super(colorManager, preferenceStore, editor, partitioning);
-		fConfigureFormatter = configureFormatter;
 	}
-	/*
-	 * public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) { return null; }
-	 * 
-	 * public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) { return null; }
-	 * 
-	 * public IAnnotationHover getOverviewRulerAnnotationHover(ISourceViewer sourceViewer) { return null; }
-	 * 
-	 * public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) { return null; }
-	 * 
-	 * public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) { return null; }
-	 * 
-	 * public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) { return null; }
-	 * 
-	 * public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) { if (fConfigureFormatter) return
-	 * super.getContentFormatter(sourceViewer); else return null; }
-	 * 
-	 * public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) { return null; }
-	 * 
-	 * public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) { return null; }
-	 * 
-	 * public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) { return null; }
-	 * 
-	 * public IInformationPresenter getHierarchyPresenter(ISourceViewer sourceViewer, boolean doCodeResolve) { return null; }
-	 * 
-	 * public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) { return null; }
-	 */
+
 }

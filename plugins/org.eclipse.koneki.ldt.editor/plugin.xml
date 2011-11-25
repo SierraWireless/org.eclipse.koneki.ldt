@@ -30,6 +30,9 @@
       <initializer
             class="org.eclipse.koneki.ldt.editor.internal.text.LuaPreferenceInitializer">
       </initializer>
+      <initializer
+            class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferenceInitializer">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.dltk.ui.modelLabelProvider">
@@ -87,13 +90,13 @@
             id="org.eclipse.koneki.ldt.formatter.preferences"
             name="%formatter.name">
       </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaSmartTypingPreferencePage"
+            id="org.eclipse.koneki.ldt.typing.preferences"
+            name="%typing.name">
+      </page>
       
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferenceInitializer">
-      </initializer>
    </extension>
    <extension
          point="org.eclipse.dltk.ui.language">

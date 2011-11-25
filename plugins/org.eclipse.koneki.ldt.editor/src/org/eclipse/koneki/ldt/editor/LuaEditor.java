@@ -12,6 +12,7 @@
 package org.eclipse.koneki.ldt.editor;
 
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -20,11 +21,16 @@ import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.ITextViewerExtension;
+import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.koneki.ldt.core.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.editor.internal.text.ILuaPartitions;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaASTFoldingStructureProvider;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaTextTools;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
@@ -40,8 +46,11 @@ public class LuaEditor extends ScriptEditor {
 	private IFoldingStructureProvider foldingStructureProvider = null;
 
 	/**
-	 * Connects partitions used to deal with comments or strings in editor.
+	 * Will inspect typed character to close automatically string, brackets and braces
 	 */
+	private BracketInserter bracketInserter = new LuaBracketInserter(this, getPreferenceStore());
+
+	/** Connects partitions used to deal with comments or strings in editor. */
 	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 		if (document instanceof IDocumentExtension3) {
 			IDocumentExtension3 extension = (IDocumentExtension3) document;
@@ -109,5 +118,24 @@ public class LuaEditor extends ScriptEditor {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		setEditorContextMenuId(EDITOR_CONTEXT);
+	}
+
+	/**
+	 * @return Bracket matcher for Lua
+	 * @see ScriptEditor#createBracketMatcher()
+	 */
+	@Override
+	protected ICharacterPairMatcher createBracketMatcher() {
+		return new DefaultCharacterPairMatcher("()[]{}".toCharArray(), ILuaPartitions.LUA_PARTITIONING); //$NON-NLS-1$
+	}
+
+	@Override
+	public void createPartControl(final Composite parent) {
+		super.createPartControl(parent);
+		final ISourceViewer sourceViewer = getSourceViewer();
+		if (sourceViewer instanceof ITextViewerExtension)
+			// Pass typed character to auto insert object
+			((ITextViewerExtension) sourceViewer).prependVerifyKeyListener(bracketInserter);
+
 	}
 }
