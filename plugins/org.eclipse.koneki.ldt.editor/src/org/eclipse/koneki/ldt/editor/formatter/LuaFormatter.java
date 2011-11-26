@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.eclipse.dltk.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
+import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -27,7 +28,7 @@ import org.eclipse.text.edits.TextEdit;
 
 public class LuaFormatter extends AbstractScriptFormatter {
 	static final String ID = "org.eclipse.koneki.ldt.formatter"; //$NON-NLS-1$
-	private final String tabPolicy;
+	private final TabStyle tabPolicy;
 	private final int tabSize;
 	private final int indentationSize;
 	private final String delimiter;
@@ -39,7 +40,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		/*
 		 * Get formatting constants from preferences
 		 */
-		tabPolicy = preferences.get(LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR);
+		tabPolicy = TabStyle.forName(preferences.get(LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR));
 		String string = preferences.get(LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE);
 		tabSize = string == null || string.isEmpty() ? 0 : Integer.parseInt(string);
 		string = preferences.get(LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE);
@@ -48,7 +49,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		 * Build separator character
 		 */
 		// Concatenate spaces
-		if ("space".equals(tabPolicy)) { //$NON-NLS-1$
+		if (tabPolicy == TabStyle.SPACES) {
 			final char space = ' ';
 			// Create tabulation
 			final StringBuilder sb = new StringBuilder(tabSize);
@@ -66,13 +67,13 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	 * @see org.eclipse.dltk.ui.formatter.IScriptFormatter#format(String, int, int, int)
 	 */
 	@Override
-	public TextEdit format(String source, int offset, int length, int indentationLevel) throws FormatterException {
+	public TextEdit format(final String source, final int offset, final int length, final int indentationLevel) throws FormatterException {
 		/*
 		 * Format given source code
 		 */
 		final String formatted;
 		// With mixed white spaces
-		if ("mixed".equals(tabPolicy)) { //$NON-NLS-1$
+		if (tabPolicy == TabStyle.MIXED) {
 			formatted = LuaSourceFormat.indent(source, delimiter, tabSize, indentationSize, 0);
 		} else {
 			// With one type of tabulation

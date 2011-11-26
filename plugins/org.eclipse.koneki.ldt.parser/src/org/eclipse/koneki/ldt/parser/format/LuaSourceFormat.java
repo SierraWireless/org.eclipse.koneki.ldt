@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.koneki.ldt.metalua.MetaluaStateFactory;
 import org.eclipse.koneki.ldt.parser.Activator;
 
+import com.naef.jnlua.LuaRuntimeException;
 import com.naef.jnlua.LuaState;
 
 /**
@@ -55,7 +56,12 @@ public final class LuaSourceFormat {
 		lua.pushInteger(offset);
 
 		// Call with parameters count and return values count
-		lua.call(2, 1);
+		try {
+			lua.call(2, 1);
+		} catch (final LuaRuntimeException e) {
+			Activator.logWarning(Messages.LuaSourceFormatDepthError, e);
+			return 0;
+		}
 		final int result = lua.toInteger(-1);
 		lua.close();
 		return result > 0 ? result - 1 : result;
@@ -74,7 +80,7 @@ public final class LuaSourceFormat {
 	 *            Indicates original semantic depth, useful for selections
 	 * @return Indented Lua source code
 	 */
-	public static String indent(String source, final String delimiter, final String tabulation, final int originalIndentationLevel) {
+	public static String indent(final String source, final String delimiter, final String tabulation, final int originalIndentationLevel) {
 		// Load function
 		final LuaState lua = loadState();
 		lua.getField(-1, INDENTATION_FUNTION);
@@ -82,7 +88,12 @@ public final class LuaSourceFormat {
 		lua.pushString(delimiter);
 		lua.pushString(tabulation);
 		lua.pushInteger(originalIndentationLevel);
-		lua.call(4, 1);
+		try {
+			lua.call(4, 1);
+		} catch (final LuaRuntimeException e) {
+			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
+			return source;
+		}
 		final String formattedCode = lua.toString(-1);
 		lua.close();
 		return formattedCode;
@@ -113,7 +124,12 @@ public final class LuaSourceFormat {
 		lua.pushInteger(tabSize);
 		lua.pushInteger(indentationSize);
 		lua.pushInteger(originalInentationLevel);
-		lua.call(5, 1);
+		try {
+			lua.call(5, 1);
+		} catch (final LuaRuntimeException e) {
+			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
+			return source;
+		}
 		final String formattedCode = lua.toString(-1);
 		lua.close();
 		return formattedCode;

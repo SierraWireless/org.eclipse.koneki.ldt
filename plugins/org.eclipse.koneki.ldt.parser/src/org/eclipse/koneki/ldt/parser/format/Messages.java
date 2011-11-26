@@ -15,6 +15,8 @@ import org.eclipse.osgi.util.NLS;
 //CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.parser.format.messages"; //$NON-NLS-1$
+	public static String LuaSourceFormatDepthError;
+	public static String LuaSourceFormatIndentationError;
 	public static String LuaSourceFormatUnableToLoad;
 	static {
 		// initialize resource bundle
