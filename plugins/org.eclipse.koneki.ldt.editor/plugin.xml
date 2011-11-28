@@ -139,4 +139,13 @@
          </formatterFactory>
       </engineContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="org.eclipse.koneki.ldt.ui.lua.page"
+            class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferencePage"
+            id="org.eclipse.koneki.ldt.editor.propertyPage.formatter"
+            name="%formatter.name">
+      </page>
+   </extension>
 </plugin>

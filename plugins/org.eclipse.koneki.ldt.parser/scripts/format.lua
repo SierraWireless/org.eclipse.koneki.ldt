@@ -186,7 +186,7 @@ function M.indentCode(source, delimiter, ...)
 		end
 	until not delimiterPosition
 	-- No need for indentation, while no delimiters has been found
-	if #positions == 0 then
+	if #positions < 2 then
 		return source
 	end
 	-- Concatenate string with right identation
