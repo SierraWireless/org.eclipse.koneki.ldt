@@ -31,14 +31,14 @@
 
     <repositories>
               <repository>
-                      <id>helios</id>
+                      <id>juno</id>
                       <layout>p2</layout>
-                      <url>http://download.eclipse.org/releases/helios</url>
+                      <url>http://download.eclipse.org/releases/juno</url>
               </repository>
               <repository>
                       <id>dltk</id>
                       <layout>p2</layout>
-                      <url>http://download.eclipse.org/technology/dltk/updates-dev/3.0/</url>
+                      <url>http://download.eclipse.org/technology/dltk/updates-dev/4.0-nightly/</url>
               </repository>
               <repository>
                       <id>wikitext</id>
