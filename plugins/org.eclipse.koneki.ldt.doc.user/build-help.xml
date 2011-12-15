@@ -22,19 +22,30 @@
 
 
 	<target name="default" description="Generate Eclipse help content for the LDT documentation">
-		<mediawiki-to-eclipse-help wikiBaseUrl="http://wiki.eclipse.org" validate="true"
-			failonvalidationerror="true" prependImagePrefix="images" formatoutput="true"
-			defaultAbsoluteLinkTarget="doc_external" dest="${basedir}/help" helpPrefix="help"
-			generateUnifiedToc="false" navigationimages="true">
-			<path name="Koneki/LDT/User_Guide" title="LDT User Guide" generateToc="true" />
-			<pageAppendum>
+		<sequential>
+			<delete failonerror="false">
+				<fileset dir="${basedir}/help/images" />
+			</delete>
 
-				= Updating This Document =
+			<mediawiki-to-eclipse-help wikiBaseUrl="http://wiki.eclipse.org" validate="true"
+				failonvalidationerror="true" prependImagePrefix="images" formatoutput="true"
+				defaultAbsoluteLinkTarget="doc_external" dest="${basedir}/help" helpPrefix="help"
+				generateUnifiedToc="false" navigationimages="true">
+				<path name="Koneki/LDT/User_Guide" title="LDT User Guide" generateToc="true" />
+				<pageAppendum>
 
-				This document is maintained in a collaborative wiki. If you wish to
-				update or modify this document please visit
-				{url}</pageAppendum>
-		</mediawiki-to-eclipse-help>
+					= Updating This Document =
+
+					This document is maintained in a collaborative wiki. If you wish to
+					update or modify this document please visit
+					{url}</pageAppendum>
+			</mediawiki-to-eclipse-help>
+
+			<mkdir dir="help/images" />
+			<copy todir="${basedir}/help/images" overwrite="true">
+				<fileset dir="images" />
+			</copy>
+		</sequential>
 	</target>
 
 </project>
