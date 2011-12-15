@@ -19,6 +19,7 @@
     <module>com.naef.jnlua.windows</module>
     <module>com.naef.jnlua.windows64</module>
     <module>org.eclipse.koneki.ldt</module>
+    <module>org.eclipse.koneki.ldt.doc.user</module>
     <module>org.eclipse.koneki.ldt.editor</module>
     <module>org.eclipse.koneki.ldt.metalua</module>
     <module>org.eclipse.koneki.ldt.metalua.32bits</module>
