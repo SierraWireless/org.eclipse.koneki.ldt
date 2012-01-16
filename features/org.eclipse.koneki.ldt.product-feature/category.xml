@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.koneki.ldt_2.0.0.qualifier.jar" id="org.eclipse.koneki.ldt" version="2.0.0.qualifier">
+      <category name="Programming Languages"/>
+   </feature>
+   <category-def name="Programming Languages" label="Programming Languages"/>
+</site>

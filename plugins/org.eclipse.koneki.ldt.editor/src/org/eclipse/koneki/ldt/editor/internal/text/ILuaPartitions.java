@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,5 +29,6 @@ public interface ILuaPartitions {
 	public static final String LUA_SINGLE_QUOTE_STRING = "__lua_single_quote_string"; //$NON-NLS-1$
 
 	public static final String[] LUA_PARTITION_TYPES = new String[] { IDocument.DEFAULT_CONTENT_TYPE, ILuaPartitions.LUA_COMMENT,
-			ILuaPartitions.LUA_COMMENT, ILuaPartitions.LUA_STRING, ILuaPartitions.LUA_SINGLE_QUOTE_STRING, ILuaPartitions.LUA_MULTI_LINE_COMMENT };
+			ILuaPartitions.LUA_COMMENT, ILuaPartitions.LUA_STRING, ILuaPartitions.LUA_SINGLE_QUOTE_STRING, ILuaPartitions.LUA_MULTI_LINE_COMMENT,
+			ILuaPartitions.LUA_NUMBER };
 }

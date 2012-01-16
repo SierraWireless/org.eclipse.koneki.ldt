@@ -13,9 +13,10 @@
 	</description>
 
 	<path id="wikitext.tasks.classpath">
-		<pathelement path="${compile_classpath}"/>
+		<fileset dir="lib/">
+			<include name="org.eclipse.mylyn.wikitext.*core*.jar"/>
+		</fileset>
 	</path>
-    <echo message="compile classpath: ${compile_classpath}"/>
 
 	<taskdef classpathref="wikitext.tasks.classpath" resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties" />
 	<taskdef classpathref="wikitext.tasks.classpath" resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
