@@ -81,7 +81,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 	/**
 	 * Indicates if argument is a white space
-	 *
+	 * 
 	 * @param char Tested character
 	 */
 	public class LuaWhitespaceDetector implements IWhitespaceDetector {
@@ -93,7 +93,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	public class LuaWordDetector implements IWordDetector {
 		/**
 		 * Indicates if argument is part of a word
-		 *
+		 * 
 		 * @param char Tested character
 		 */
 		public boolean isWordPart(char character) {
@@ -102,14 +102,13 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		/**
 		 * Indicates if argument starts of a word
-		 *
+		 * 
 		 * @param char Tested character
 		 */
 		public boolean isWordStart(char character) {
 			return Character.isJavaIdentifierStart(character);
 		}
 	}
-
 
 	public class LuaNumberRule extends NumberRule {
 		public LuaNumberRule(IToken token) {
@@ -119,7 +118,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		public IToken evaluate(ICharacterScanner scanner) {
 			int c = scanner.read();
 			int p = c;
-			if (Character.isDigit((char) c) || c == '.') {
+			if (Character.isDigit((char) c) || c == '.' || c == '-') {
 				boolean hex = false;
 				if (fColumn == UNDEFINED || (fColumn == scanner.getColumn() - 1)) {
 					do {
