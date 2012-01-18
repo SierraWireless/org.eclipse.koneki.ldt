@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,7 +81,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 	/**
 	 * Indicates if argument is a white space
-	 * 
+	 *
 	 * @param char Tested character
 	 */
 	public class LuaWhitespaceDetector implements IWhitespaceDetector {
@@ -93,7 +93,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	public class LuaWordDetector implements IWordDetector {
 		/**
 		 * Indicates if argument is part of a word
-		 * 
+		 *
 		 * @param char Tested character
 		 */
 		public boolean isWordPart(char character) {
@@ -102,13 +102,14 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		/**
 		 * Indicates if argument starts of a word
-		 * 
+		 *
 		 * @param char Tested character
 		 */
 		public boolean isWordStart(char character) {
 			return Character.isJavaIdentifierStart(character);
 		}
 	}
+
 
 	public class LuaNumberRule extends NumberRule {
 		public LuaNumberRule(IToken token) {
@@ -119,23 +120,20 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			int c = scanner.read();
 			int p = c;
 			if (Character.isDigit((char) c) || c == '.') {
+				boolean hex = false;
 				if (fColumn == UNDEFINED || (fColumn == scanner.getColumn() - 1)) {
 					do {
 						p = c;
 						c = scanner.read();
-					} while (Character.isDigit((char) c));
-
-					switch (c) {
-					case '-':
-					case 'e':
-					case 'E':
-					case 'x':
-					case 'X':
-						break;
-					default:
+						if (c == 'x' || c == 'X' && !hex) {
+							hex = true;
+							p = c;
+							c = scanner.read();
+						}
+					} while (Character.isDigit((char) c) || (hex && Character.digit((char) c, 16) != -1));
+					if (c != 'e' && c != 'E') {
 						scanner.unread();
 					}
-
 					if (p == '.') {
 						scanner.unread();
 						return Token.UNDEFINED;
@@ -147,5 +145,4 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			return Token.UNDEFINED;
 		}
 	}
-
 }
