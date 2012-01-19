@@ -14,7 +14,6 @@ package org.eclipse.koneki.ldt.branding.splash.internal;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.koneki.ldt.branding.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -27,7 +26,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.branding.IProductConstants;
 import org.eclipse.ui.splash.BasicSplashHandler;
-import org.osgi.framework.Bundle;
 
 /**
  * Our custom Splash Handler that shows a ProgressBar and the version number
@@ -44,46 +42,34 @@ public class SplashHandler extends BasicSplashHandler {
 		String foregroundColorString = null;
 		IProduct product = Platform.getProduct();
 		if (product != null) {
-			progressRectString = product
-					.getProperty(IProductConstants.STARTUP_PROGRESS_RECT);
-			messageRectString = product
-					.getProperty(IProductConstants.STARTUP_MESSAGE_RECT);
-			foregroundColorString = product
-					.getProperty(IProductConstants.STARTUP_FOREGROUND_COLOR);
+			progressRectString = product.getProperty(IProductConstants.STARTUP_PROGRESS_RECT);
+			messageRectString = product.getProperty(IProductConstants.STARTUP_MESSAGE_RECT);
+			foregroundColorString = product.getProperty(IProductConstants.STARTUP_FOREGROUND_COLOR);
 		}
-		Rectangle progressRect = StringConverter.asRectangle(
-				progressRectString, new Rectangle(10, 150, 100, 15));
+		Rectangle progressRect = StringConverter.asRectangle(progressRectString, new Rectangle(10, 150, 100, 15));
 		setProgressRect(progressRect);
 
-		Rectangle messageRect = StringConverter.asRectangle(messageRectString,
-				new Rectangle(10, 35, 300, 15));
+		Rectangle messageRect = StringConverter.asRectangle(messageRectString, new Rectangle(10, 35, 300, 15));
 		setMessageRect(messageRect);
 
 		int foregroundColorInteger;
 		try {
-			foregroundColorInteger = Integer
-					.parseInt(foregroundColorString, 16);
+			foregroundColorInteger = Integer.parseInt(foregroundColorString, 16);
 		} catch (NumberFormatException ex) {
 			foregroundColorInteger = 0xD2D7FF; // off white
 		}
 
-		setForeground(new RGB((foregroundColorInteger & 0xFF0000) >> 16,
-				(foregroundColorInteger & 0xFF00) >> 8,
-				foregroundColorInteger & 0xFF));
+		setForeground(new RGB((foregroundColorInteger & 0xFF0000) >> 16, (foregroundColorInteger & 0xFF00) >> 8, foregroundColorInteger & 0xFF));
 
-		Bundle bundle = Activator.getDefault().getBundle();
-		String version = (String) bundle.getHeaders().get(
-				org.osgi.framework.Constants.BUNDLE_VERSION);
+		String version = (String) Platform.getBundle("org.eclipse.koneki.ldt").getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION); //$NON-NLS-1$
 		// version = version.substring(0, 3);
 		//final String buildId = System.getProperty("eclipse.buildId", "Version : " + version); //$NON-NLS-1$ //$NON-NLS-2$
 
 		final String buildId = "Version: " + version;
 		String buildIdLocString = product.getProperty("buildIdLocation"); //$NON-NLS-1$
-		final Point buildIdPoint = StringConverter.asPoint(buildIdLocString,
-				new Point(280, 150));
+		final Point buildIdPoint = StringConverter.asPoint(buildIdLocString, new Point(280, 150));
 
-		font = new Font(Display.getDefault(), new FontData("Helvetica",
-				(Platform.getOS().equals(Platform.OS_WIN32) ? 7 : 9), SWT.BOLD));
+		font = new Font(Display.getDefault(), new FontData("Helvetica", (Platform.getOS().equals(Platform.OS_MACOSX) ? 9 : 7), SWT.BOLD));
 		getContent().addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
 				e.gc.setForeground(getForeground());

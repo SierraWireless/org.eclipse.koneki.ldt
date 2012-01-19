@@ -32,6 +32,7 @@ Visit http://www.eclipse.org/koneki/ldt for more information.
       startupMessageRect="7,260,350,20"
       startupForegroundColor="D4BAA9" />
    <launcher name="LuaDevelopmentTools">
+      <linux icon="../../../../plugins/org.eclipse.koneki.ldt.branding/icons/ldt.xpm"/>
       <macosx icon="../../../../plugins/org.eclipse.koneki.ldt.branding/icons/ldt.icns"/>
       <solaris/>
       <win useIco="true">
@@ -39,7 +40,6 @@ Visit http://www.eclipse.org/koneki/ldt for more information.
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
