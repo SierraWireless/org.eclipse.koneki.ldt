@@ -16,8 +16,7 @@ import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.editor.Activator;
 
-public class LuaASTFoldingStructureProvider extends
-		AbstractASTFoldingStructureProvider {
+public class LuaASTFoldingStructureProvider extends AbstractASTFoldingStructureProvider {
 
 	@Override
 	protected String getCommentPartition() {
@@ -41,7 +40,7 @@ public class LuaASTFoldingStructureProvider extends
 
 	@Override
 	protected IPartitionTokenScanner getPartitionScanner() {
-		return Activator.getDefault().getTextTools().getPartitionScanner();
+		return Activator.getDefault().getTextTools().createPartitionScanner();
 	}
 
 	@Override

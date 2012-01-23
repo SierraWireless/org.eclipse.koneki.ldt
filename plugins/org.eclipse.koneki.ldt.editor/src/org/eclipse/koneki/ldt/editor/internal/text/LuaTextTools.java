@@ -20,29 +20,23 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaTextTools extends ScriptTextTools {
 
-	private final static String[] LEGAL_CONTENT_TYPES = new String[] {
-			ILuaPartitions.LUA_STRING, ILuaPartitions.LUA_COMMENT,
-			ILuaPartitions.LUA_SINGLE_QUOTE_STRING,
-			ILuaPartitions.LUA_MULTI_LINE_COMMENT, ILuaPartitions.LUA_NUMBER };
-
-	private IPartitionTokenScanner fPartitionScanner;
+	private final static String[] LEGAL_CONTENT_TYPES = new String[] { ILuaPartitions.LUA_STRING, ILuaPartitions.LUA_COMMENT,
+			ILuaPartitions.LUA_SINGLE_QUOTE_STRING, ILuaPartitions.LUA_MULTI_LINE_COMMENT, ILuaPartitions.LUA_NUMBER };
 
 	public LuaTextTools(boolean autoDisposeOnDisplayDispose) {
-		super(ILuaPartitions.LUA_PARTITIONING, LEGAL_CONTENT_TYPES,
-				autoDisposeOnDisplayDispose);
-		fPartitionScanner = new LuaPartitionScanner();
+		super(ILuaPartitions.LUA_PARTITIONING, LEGAL_CONTENT_TYPES, autoDisposeOnDisplayDispose);
 	}
 
 	@Override
-	public ScriptSourceViewerConfiguration createSourceViewerConfiguraton(
-			IPreferenceStore preferenceStore, ITextEditor editor,
-			String partitioning) {
-		return new LuaSourceViewerConfiguration(getColorManager(),
-				preferenceStore, editor, partitioning);
+	public ScriptSourceViewerConfiguration createSourceViewerConfiguraton(IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
+		return new LuaSourceViewerConfiguration(getColorManager(), preferenceStore, editor, partitioning);
 	}
 
+	/**
+	 * @see org.eclipse.dltk.ui.text.ScriptTextTools#createPartitionScanner()
+	 */
 	@Override
-	public IPartitionTokenScanner getPartitionScanner() {
-		return fPartitionScanner;
+	public IPartitionTokenScanner createPartitionScanner() {
+		return new LuaPartitionScanner();
 	}
 }
