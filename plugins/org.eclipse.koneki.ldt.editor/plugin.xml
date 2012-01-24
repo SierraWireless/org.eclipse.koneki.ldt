@@ -127,6 +127,12 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+F">
       </key>
+      <key
+            commandId="org.eclipse.dltk.ui.edit.text.script.show.outline"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+O">
+      </key>
    </extension>
    <extension
          point="org.eclipse.dltk.ui.formatterFactory">

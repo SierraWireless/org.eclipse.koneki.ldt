@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,11 @@
  *
  * Contributors:
  *     Sierra Wireless - initial API and implementation
+ *     Marc-André Laperle - bug 369557
  *******************************************************************************/
 
 package org.eclipse.koneki.ldt.editor.internal.text;
 
-import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
@@ -22,8 +22,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -33,7 +31,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.koneki.ldt.editor.completion.LuaCompletionProcessor;
 import org.eclipse.koneki.ldt.parser.LuaConstants;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
@@ -61,26 +58,6 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	protected ContentAssistPreference getContentAssistPreference() {
 		return LuaContentAssistPreference.getDefault();
-	}
-
-	@Override
-	protected IInformationControlCreator getOutlinePresenterControlCreator(ISourceViewer sourceViewer, final String commandId) {
-		return new IInformationControlCreator() {
-
-			/**
-			 * Returns empty object
-			 */
-			@Override
-			public IInformationControl createInformationControl(Shell parent) {
-				return new HierarchyInformationControl(parent, 0, 0) {
-
-					@Override
-					protected IPreferenceStore getPreferenceStore() {
-						return null;
-					}
-				};
-			}
-		};
 	}
 
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
