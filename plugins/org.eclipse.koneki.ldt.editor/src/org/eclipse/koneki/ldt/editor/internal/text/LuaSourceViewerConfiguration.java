@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     Sierra Wireless - initial API and implementation
- *     Marc-André Laperle - bug 369557
+ *     Marc-André Laperle - bug 369557, 363501
  *******************************************************************************/
 
 package org.eclipse.koneki.ldt.editor.internal.text;
@@ -22,6 +22,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -46,6 +47,11 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		super(colorManager, preferenceStore, editor, partitioning);
 	}
 
+	@Override
+	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
+		return new LuaDoubleClickSelector();
+	}
+	
 	protected void alterContentAssistant(ContentAssistant assistant) {
 		IContentAssistProcessor scriptProcessor = new LuaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
