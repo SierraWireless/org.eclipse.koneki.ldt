@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?><!--
-    Copyright (c) 2009, 2011 Sierra Wireless and others.
+    Copyright (c) 2009, 2012 Sierra Wireless and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.eclipse.koneki.ldt.editor.LuaEditor"
+            contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
             default="false"
             extensions="lua"
             icon="img/lua-logo.gif"
@@ -158,5 +159,14 @@
 			</adapt>         
 		</enabledWhen>
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
+         <part
+               id="org.eclipse.koneki.ldt.editor">
+         </part>
+      </actionSetPartAssociation>
    </extension>
 </plugin>
