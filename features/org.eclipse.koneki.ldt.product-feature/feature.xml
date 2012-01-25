@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.koneki.ldt.product"
-      label="Lua Development Tools All-in-one Product (Incubator)"
+      label="Lua Development Tools - branding (Incubator)"
       version="0.1.0.qualifier"
       provider-name="Koneki"
       plugin="org.eclipse.koneki.ldt.branding">
@@ -99,10 +99,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </url>
 
    <includes
-         id="org.eclipse.koneki.ldt"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.rcp"
          version="0.0.0"/>
 
@@ -121,6 +117,10 @@ This Agreement is governed by the laws of the State of New York and the intellec
    <includes
          id="org.eclipse.dltk.core"
          version="0.0.0"/>
+
+   <requires>
+      <import feature="org.eclipse.koneki.ldt" version="0.1.0" match="compatible"/>
+   </requires>
 
    <plugin
          id="org.eclipse.koneki.ldt.branding"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Lua Development Tools" uid="org.eclipse.koneki.ldt.product-product" id="org.eclipse.koneki.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="0.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Lua Development Tools Product (Incubator)" uid="org.eclipse.koneki.ldt.product-product" id="org.eclipse.koneki.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="0.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.eclipse.koneki.ldt.branding/ldt_about.png"/>
@@ -20,6 +20,12 @@ Visit http://www.eclipse.org/koneki/ldt for more information.
    </configIni>
 
    <launcherArgs>
+      <programArgsLin>-startup
+plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsLin>
+      <programArgsMac>-startup
+../../../plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsMac>
+      <programArgsWin>-startup
+plugins\org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar</programArgsWin>
       <vmArgs>-XX:PermSize=512M -XX:MaxPermSize=512M -Xms40m -Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
