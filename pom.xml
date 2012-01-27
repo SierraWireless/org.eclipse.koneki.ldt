@@ -12,7 +12,6 @@
 		<module>features</module>
 		<module>tests</module>
 		<module>repository</module>
-		<module>product</module>
 	</modules>
 
 	<properties>
@@ -20,6 +19,15 @@
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 	    <download-publish-path>/home/data/httpd/download.eclipse.org/koneki/updates-nightly</download-publish-path>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>build-product</id>
+ 			<modules>
+				<module>product</module>
+			</modules>
+		</profile>
+	</profiles>
 
     <repositories>
               <repository>
