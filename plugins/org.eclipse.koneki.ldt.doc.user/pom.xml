@@ -22,7 +22,6 @@
   <version>0.1.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
-
   <build>
     <plugins>
       <plugin>
@@ -39,7 +38,6 @@
             <phase>generate-sources</phase>
             <configuration>
                 <tasks>
-                  <property name="compile_classpath" refid="maven.compile.classpath"/>
                   <ant target="default" inheritRefs="true" antfile="build-help.xml"/>
               </tasks>
             </configuration>

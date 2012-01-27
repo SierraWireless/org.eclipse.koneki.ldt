@@ -15,10 +15,19 @@
 	</modules>
 
 	<properties>
-		<tycho-version>0.12.0</tycho-version>
+		<tycho-version>0.13.0</tycho-version>
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 	    <download-publish-path>/home/data/httpd/download.eclipse.org/koneki/updates-nightly</download-publish-path>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>build-product</id>
+ 			<modules>
+				<module>product</module>
+			</modules>
+		</profile>
+	</profiles>
 
     <repositories>
               <repository>
