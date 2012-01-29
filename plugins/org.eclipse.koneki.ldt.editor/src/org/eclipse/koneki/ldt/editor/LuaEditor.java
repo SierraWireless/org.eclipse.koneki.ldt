@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,11 @@
 package org.eclipse.koneki.ldt.editor;
 
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.internal.ui.editor.BracketInserter;import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
@@ -121,7 +123,9 @@ public class LuaEditor extends ScriptEditor {
 		super.initializeEditor();
 		setEditorContextMenuId(EDITOR_CONTEXT);
 	}
-	/**	 * @see org.eclipse.ui.part.EditorPart#setPartName(java.lang.String)
+
+	/**
+	 * @see org.eclipse.ui.part.EditorPart#setPartName(java.lang.String)
 	 */
 	@Override
 	protected void setPartName(String partName) {
@@ -146,6 +150,11 @@ public class LuaEditor extends ScriptEditor {
 	@Override
 	protected ICharacterPairMatcher createBracketMatcher() {
 		return new DefaultCharacterPairMatcher("()[]{}".toCharArray(), ILuaPartitions.LUA_PARTITIONING); //$NON-NLS-1$
+	}
+
+	@Override
+	protected ScriptOutlinePage doCreateOutlinePage() {
+		return new LuaOutlinePage(this, Activator.getDefault().getPreferenceStore());
 	}
 
 	@Override
