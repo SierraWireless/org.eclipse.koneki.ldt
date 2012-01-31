@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2011, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ public class Messages extends NLS {
 	public static String LuaSmartConfigurationBlockTitle;
 	public static String LuaSmartTypingPreferencePageDescription;
 	public static String LuaSmartTypingPreferencePageDescriptionLabel;
+	public static String LuaEditorPreferencePageDescription;
+	public static String LuaEditorColoringPreferencePage_multiLineComment;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

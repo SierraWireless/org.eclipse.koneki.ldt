@@ -1,3 +1,4 @@
+-- single-line comment
 local M = {
 field = 1
 }

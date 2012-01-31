@@ -5,7 +5,7 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Sierra Wireless - initial API and implementation
  -->
@@ -83,21 +83,30 @@
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.editor.templates.LuaTemplatePreferencePage"
             id="org.eclipse.koneki.ldt.templates.Template"
-            name="%page.name">
+            name="%preference.templates.name">
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferencePage"
             id="org.eclipse.koneki.ldt.formatter.preferences"
-            name="%formatter.name">
+            name="%preference.formatter.name">
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaSmartTypingPreferencePage"
             id="org.eclipse.koneki.ldt.typing.preferences"
-            name="%typing.name">
+            name="%preference.typing.name">
       </page>
-      
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+	        class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaEditorPreferencePage"
+            id="org.eclipse.koneki.ldt.editor.preferences"
+	        name="%preference.editor.name"/>
+	  <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+	        class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaEditorSyntaxColoringPreferencePage"
+            id="org.eclipse.koneki.ldt.syntaxcoloring.preferences"
+	        name="%preference.syntaxcoloring.name"/>
    </extension>
    <extension
          point="org.eclipse.dltk.ui.language">
@@ -156,7 +165,7 @@
 		<enabledWhen>
 			<adapt type="org.eclipse.core.resources.IProject">
 				<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
-			</adapt>         
+			</adapt>
 		</enabledWhen>
       </page>
    </extension>
