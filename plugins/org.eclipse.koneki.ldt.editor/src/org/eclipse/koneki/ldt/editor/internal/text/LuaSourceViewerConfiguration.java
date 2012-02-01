@@ -118,11 +118,21 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		if (this.fSingleQuoteStringScanner.affectsBehavior(event)) {
 			this.fSingleQuoteStringScanner.adaptToPreferenceChange(event);
 		}
+		if (this.fMultilineCommentScanner.affectsBehavior(event)) {
+			this.fMultilineCommentScanner.adaptToPreferenceChange(event);
+		}
+		if (this.fCommentScanner.affectsBehavior(event)) {
+			this.fCommentScanner.adaptToPreferenceChange(event);
+		}
+		if (this.fNumberScanner.affectsBehavior(event)) {
+			this.fNumberScanner.adaptToPreferenceChange(event);
+		}
 	}
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return this.fCodeScanner.affectsBehavior(event) || this.fStringScanner.affectsBehavior(event)
-				|| this.fSingleQuoteStringScanner.affectsBehavior(event);
+				|| this.fSingleQuoteStringScanner.affectsBehavior(event) || this.fMultilineCommentScanner.affectsBehavior(event)
+				|| this.fCommentScanner.affectsBehavior(event) || this.fNumberScanner.affectsBehavior(event);
 	}
 
 	/**
