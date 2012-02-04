@@ -124,27 +124,6 @@
       </proposalLabelProvider>
    </extension>
    <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.eclipse.dltk.ui.edit.text.script.toggle.comment"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+C">
-      </key>
-      <key
-            commandId="org.eclipse.dltk.ui.edit.text.script.format"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+F">
-      </key>
-      <key
-            commandId="org.eclipse.dltk.ui.edit.text.script.show.outline"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+O">
-      </key>
-   </extension>
-   <extension
          point="org.eclipse.dltk.ui.formatterFactory">
       <engineContribution
             natureId="org.eclipse.koneki.ldt.nature">
@@ -177,5 +156,14 @@
                id="org.eclipse.koneki.ldt.editor">
          </part>
       </actionSetPartAssociation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="%context.name"
+            description="%context.description"
+            parentId="org.eclipse.dltk.ui.scriptEditorScope"
+            id="org.eclipse.dltk.ui.luaEditorScope">
+      </context>
    </extension>
 </plugin>

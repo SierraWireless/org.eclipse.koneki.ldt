@@ -144,6 +144,14 @@ public class LuaEditor extends ScriptEditor {
 	}
 
 	/**
+	 * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#initializeKeyBindingScopes()
+	 */
+	@Override
+	protected void initializeKeyBindingScopes() {
+		setKeyBindingScopes(new String[] { "org.eclipse.dltk.ui.luaEditorScope" }); //$NON-NLS-1$
+	}
+
+	/**
 	 * @return Bracket matcher for Lua
 	 * @see ScriptEditor#createBracketMatcher()
 	 */
