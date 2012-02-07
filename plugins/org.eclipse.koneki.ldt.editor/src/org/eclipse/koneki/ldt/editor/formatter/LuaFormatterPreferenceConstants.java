@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2011, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ public interface LuaFormatterPreferenceConstants {
 	public static final String FORMATTER_TAB_SIZE = CodeFormatterConstants.FORMATTER_TAB_SIZE;
 	/** Count of character needed for indenting code */
 	public static final String FORMATTER_INDENTATION_SIZE = CodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
+	public static final String FORMATTER_INDENT_TABLE_VALUES = "formatter.indentation.indentTables"; //$NON-NLS-1$
 	public static final String FORMATTER_PROFILES = "formatter.profiles"; //$NON-NLS-1$
 	public static final String FORMATTER_ACTIVE_PROFILE = "formatter.profiles.active"; //$NON-NLS-1$
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2011, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,11 +76,14 @@ public final class LuaSourceFormat {
 	 *            Line delimiter, <code>\n</code> for Linux and Unix
 	 * @param tabulation
 	 *            String used as tabulation, it could be one or several white space character like <code>' '</code> of <code>'\t'</code>
+	 * @param indentInTable
+	 *            Indicates if formating is required for table values
 	 * @param originalIndentationLevel
 	 *            Indicates original semantic depth, useful for selections
 	 * @return Indented Lua source code
 	 */
-	public static String indent(final String source, final String delimiter, final String tabulation, final int originalIndentationLevel) {
+	public static String indent(final String source, final String delimiter, final String tabulation, final boolean indentInTable,
+			final int originalIndentationLevel) {
 		// Load function
 		final LuaState lua = loadState();
 		lua.getField(-1, INDENTATION_FUNTION);
@@ -88,8 +91,9 @@ public final class LuaSourceFormat {
 		lua.pushString(delimiter);
 		lua.pushString(tabulation);
 		lua.pushInteger(originalIndentationLevel);
+		lua.pushBoolean(indentInTable);
 		try {
-			lua.call(4, 1);
+			lua.call(5, 1);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;
@@ -110,22 +114,25 @@ public final class LuaSourceFormat {
 	 *            Count of spaces a tabulation mean
 	 * @param indentationSizeCount
 	 *            of spaces an indentation mean
-	 * @param originalInentationLevel
+	 * @param indentInTable
+	 *            Indicates if formating is required for table values
+	 * @param originalIndentationLevel
 	 *            Indicates original semantic depth, useful for selections
 	 * @return indented Lua source code
 	 * @see #indent(String, String, String, int)
 	 */
 	public static String indent(final String source, final String delimiter, final int tabSize, final int indentationSize,
-			final int originalInentationLevel) {
+			final boolean indentInTable, final int originalIndentationLevel) {
 		final LuaState lua = loadState();
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
 		lua.pushString(delimiter);
 		lua.pushInteger(tabSize);
 		lua.pushInteger(indentationSize);
-		lua.pushInteger(originalInentationLevel);
+		lua.pushInteger(originalIndentationLevel);
+		lua.pushBoolean(indentInTable);
 		try {
-			lua.call(5, 1);
+			lua.call(6, 1);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;

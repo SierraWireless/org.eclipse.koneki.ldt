@@ -27,7 +27,8 @@ import org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterModifyDialog;
 public class LuaFormatterFactory extends AbstractScriptFormatterFactory {
 	private static final String SAMPLE_FILE_PATH = "/sample/formatter.lua"; //$NON-NLS-1$
 	private final String[] preferenceKeys = new String[] { LuaFormatterPreferenceConstants.FORMATTER_INDENTATION_SIZE,
-			LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE, };
+			LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, LuaFormatterPreferenceConstants.FORMATTER_TAB_SIZE,
+			LuaFormatterPreferenceConstants.FORMATTER_INDENT_TABLE_VALUES };
 
 	public LuaFormatterFactory() {
 	}

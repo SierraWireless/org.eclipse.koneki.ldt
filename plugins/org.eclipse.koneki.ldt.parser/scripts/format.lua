@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2011 Sierra Wireless and others.
+-- Copyright (c) 2011, 2012 Sierra Wireless and others.
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
 -- which accompanies this distribution, and is available at
@@ -23,10 +23,11 @@ require 'metalua.compiler'
 -- @param Source code to analyze
 -- @param Source offset of depth to compute
 -- @param Flush previously computed AST
+-- @param Indicates if code in table definitions should be indented
 -- @result Semantic depth of source at given offset
 -- @usage local depth = format.indentLevel("local var", 3)
 local parsedSources = {}
-function M.indentLevel(source, offset, flush)
+function M.indentLevel(source, offset, flush, indenttable)
 	---
 	-- Indicates whether an offset is included in node offsets
 	-- @param node Metalua node
@@ -63,6 +64,7 @@ function M.indentLevel(source, offset, flush)
 	flush = flush or false
 	local walker = {
 	block       = {},
+	expr		= {},
 	depth       = 0,     -- Current depth while walking
 	nodeDepth   = 0,     -- Depth of node at required offset
 	offset      = offset -- Sought offset
@@ -75,6 +77,19 @@ function M.indentLevel(source, offset, flush)
 	end
 	function walker.block.up(node, ...)
 		walker.depth = walker.depth - 1
+	end
+	function walker.expr.down(node, parent, ...)
+		if indenttable and parent and parent.tag == 'Table' then
+			walker.depth = walker.depth + 1
+			if isIncluded(node, walker.offset) then
+				walker.nodeDepth = walker.depth
+			end
+		end
+	end
+	function walker.expr.up(node, parent, ...)
+		if indenttable and parent and parent.tag == 'Table' then
+			walker.depth = walker.depth - 1
+		end
 	end
 	-- Fetch previous ast from those sources
 	if not parsedSources[source] or flush then
@@ -148,10 +163,12 @@ function M.indentCode(source, delimiter, ...)
 	-- Create function which will generate indentation
 	--
 	local tabulation, initialDepth
-	if select('#', ...) > 2 then
+	local indenttable
+	if select('#', ...) > 3 then
 		local tabSize = select(1, ...)
 		local indentationSize = select(2, ...)
 		initialDepth = select(3, ...)
+		indenttable = select(4, ...)
 		-- When tabulation size and indentation size is given, tabulation is
 		-- composed of tabulation and spaces
 		tabulation = function(depth)
@@ -165,6 +182,7 @@ function M.indentCode(source, delimiter, ...)
 	else
 		local char = select(1, ...)
 		initialDepth = select(2, ...)
+		indenttable = select(3, ...)
 		-- When tabulation character is given, this character will be ducplicated
 		-- according to length
 		tabulation = function (depth) return char:rep(depth) end
@@ -212,7 +230,8 @@ function M.indentCode(source, delimiter, ...)
 			-- Compute next real depth related offset
 			-- As is offset is pointing a white space before first statement of block,
 			-- We will work with parent node depth
-			local indentCount = M.indentLevel(source, offset + delimiterLength + rawline:validOffset()) + initialDepth
+			local depthoffset = offset + delimiterLength + rawline:validOffset()
+			local indentCount = M.indentLevel(source, depthoffset, false, indenttable) + initialDepth
 			indented[#indented+1] = tabulation( indentCount )
 		end
 		-- Append timmed source code
