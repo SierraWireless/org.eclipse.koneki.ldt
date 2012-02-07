@@ -118,22 +118,6 @@ end
 -- The Path separator character
 local path_sep = (platform == "unix" and "/" or "\\")
 
--- TODO the way to get the absolute path can be wrong if the program loads new source files by relative path after a cd.
--- currently, the directory is registered on start, this allows program to load any source file and then change working dir,
--- which is the most common use case.
-local base_dir  
-if platform == "unix" then 
-   base_dir = os.getenv("PWD")
-else
-   local p = io.popen("echo %cd%")
-   if p then 
-       base_dir = p:read("*l")
-       base_dir = string.gsub(base_dir,"\\","/")
-       p:close()
-   end
-end
-if not base_dir then error("Unable to determine the working directory.")end
-
 
 -- return true is the path is absolute
 -- the path must be normalized
@@ -151,9 +135,25 @@ if platform == "unix" then
    normalize = function (path) return path:gsub("//","/") end
 else
    normalize = function (path)
-        return path:gsub("\\","/"):gsub("//","/")
+        return path:gsub("\\","/"):gsub("//","/"):lower()
    end
 end
+
+-- TODO the way to get the absolute path can be wrong if the program loads new source files by relative path after a cd.
+-- currently, the directory is registered on start, this allows program to load any source file and then change working dir,
+-- which is the most common use case.
+local base_dir  
+if platform == "unix" then 
+   base_dir = os.getenv("PWD")
+else
+   local p = io.popen("echo %cd%")
+   if p then 
+       base_dir = p:read("*l")
+       base_dir = normalize(base_dir)
+       p:close()
+   end
+end
+if not base_dir then error("Unable to determine the working directory.")end
 
 
 -- parse a normalized path and return a table of each segment
@@ -881,7 +881,7 @@ do
         bp.id = bpid
         -- re-encode the URI to avoid any mismatch (with authority for example)
         local uri = url.parse(bp.filename)
-        bp.filename = url.build{ scheme=uri.scheme, authority="", path=uri.path }
+        bp.filename = url.build{ scheme=uri.scheme, authority="", path=normalize(uri.path)}
         
         local filereg = file_mapping[bp.filename]
         if not filereg then
