@@ -31,9 +31,14 @@
 
     <repositories>
               <repository>
+                      <id>junoI</id>
+                      <layout>p2</layout>
+                      <url>http://download.eclipse.org/eclipse/updates/3.8-I-builds</url>
+              </repository>
+              <repository>
                       <id>juno</id>
                       <layout>p2</layout>
-                      <url>http://download.eclipse.org/releases/juno</url>
+                      <url>http://download.eclipse.org/releases/juno/</url>
               </repository>
               <repository>
                       <id>dltk</id>

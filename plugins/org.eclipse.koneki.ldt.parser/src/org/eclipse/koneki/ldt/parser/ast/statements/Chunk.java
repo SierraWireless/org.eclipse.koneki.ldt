@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.statements.Block;
-import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.koneki.ldt.internal.parser.INavigableNode;
 
 // TODO: Auto-generated Javadoc
@@ -42,7 +41,7 @@ public class Chunk extends Block implements INavigableNode {
 	 * @param statems
 	 *            the statems
 	 */
-	public Chunk(int start, int end, List<Statement> statems) {
+	public Chunk(int start, int end, List<ASTNode> statems) {
 		super(start, end, statems);
 	}
 

@@ -38,7 +38,7 @@ public class Return extends Statement implements INavigableNode {
 	 * @param values
 	 *            {@link Statement}
 	 */
-	public Return(int start, int end, List<Statement> values) {
+	public Return(int start, int end, List<ASTNode> values) {
 		this(start, end, new Chunk(start, end, values));
 	}
 
@@ -56,7 +56,7 @@ public class Return extends Statement implements INavigableNode {
 	 *            the end
 	 */
 	public Return(int start, int end) {
-		this(start, end, new ArrayList<Statement>());
+		this(start, end, new ArrayList<ASTNode>());
 	}
 
 	/**
