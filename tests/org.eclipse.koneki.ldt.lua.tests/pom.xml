@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.koneki.ldt</groupId>
   <artifactId>org.eclipse.koneki.ldt.lua.tests</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.8.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 </project>

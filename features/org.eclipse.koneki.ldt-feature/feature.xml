@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.koneki.ldt"
       label="Lua Development Tools (Incubator)"
-      version="0.1.0.qualifier"
+      version="0.8.0.qualifier"
       provider-name="Koneki">
 
 
@@ -94,10 +94,6 @@ Everyone is permitted to copy and distribute copies of this Agreement, but in or
 
 This Agreement is governed by the laws of the State of New York and the intellectual property laws of the United States of America. No party to this Agreement will bring a legal action under this Agreement more than one year after the cause of action arose. Each party waives its rights to a jury trial in any resulting litigation.
    </license>
-
-   <url>
-      <discovery label="Kevin KIN-FOO dev repostitory" url="http://github.com/KINFOO/LuaEclipse/"/>
-   </url>
 
    <requires>
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>

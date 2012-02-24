@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt.metalua.64bits
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: org.eclipse.koneki.ldt.metalua;bundle-version="0.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
