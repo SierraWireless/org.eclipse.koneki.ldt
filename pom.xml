@@ -27,23 +27,50 @@
 				<module>product</module>
 			</modules>
 		</profile>
+	    <profile>
+	      <id>platform-indigo</id>
+	      <activation>
+	        <activeByDefault>true</activeByDefault>
+	        <property>
+	          <name>platform-version-name</name>
+	          <value>indigo</value>
+	        </property>
+	      </activation>
+	      <properties>
+	        <eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
+	      </properties>
+	    </profile>
+	    <profile>
+	      <id>platform-juno</id>
+	      <activation>
+	        <property>
+	          <name>platform-version-name</name>
+	          <value>juno</value>
+	        </property>
+	      </activation>
+	      <properties>
+	        <eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
+	      </properties>
+	    </profile>
+	    <profile>
+	      <id>platform-juno-staging</id>
+	      <activation>
+	        <property>
+	          <name>platform-version-name</name>
+	          <value>juno</value>
+	        </property>
+	      </activation>
+	      <properties>
+	        <eclipse-site>http://download.eclipse.org/releases/staging</eclipse-site>
+	      </properties>
+	    </profile>
 	</profiles>
 
     <repositories>
               <repository>
-                      <id>junoI</id>
+                      <id>eclipse</id>
                       <layout>p2</layout>
-                      <url>http://download.eclipse.org/eclipse/updates/3.8-I-builds</url>
-              </repository>
-              <repository>
-                      <id>juno</id>
-                      <layout>p2</layout>
-                      <url>http://download.eclipse.org/releases/juno/</url>
-              </repository>
-              <repository>
-                      <id>dltk</id>
-                      <layout>p2</layout>
-                      <url>http://download.eclipse.org/technology/dltk/updates-dev/4.0-nightly/</url>
+                      <url>${eclipse-site}</url>
               </repository>
               <repository>
                       <id>wikitext</id>
