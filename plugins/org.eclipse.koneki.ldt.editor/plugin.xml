@@ -70,7 +70,7 @@
       <contextType
             class="org.eclipse.koneki.ldt.editor.templates.LuaUniversalTemplateContextType"
             id="LuaUniversalTemplateContextType"
-            name="%page.name">
+            name="%templates.context.lua">
       </contextType>
        <include
           file="templates/templates.xml"
@@ -140,7 +140,7 @@
             category="org.eclipse.koneki.ldt.ui.lua.page"
             class="org.eclipse.koneki.ldt.editor.formatter.ui.LuaFormatterPreferencePage"
             id="org.eclipse.koneki.ldt.editor.propertyPage.formatter"
-            name="%formatter.name">
+            name="%preference.formatter.name">
 		<enabledWhen>
 			<adapt type="org.eclipse.core.resources.IProject">
 				<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>

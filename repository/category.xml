@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.koneki.ldt_0.1.0.qualifier.jar" id="org.eclipse.koneki.ldt" version="0.1.0.qualifier">
+   <feature url="features/org.eclipse.koneki.ldt_0.8.0.qualifier.jar" id="org.eclipse.koneki.ldt" version="0.8.0.qualifier">
       <category name="ldt"/>
    </feature>
    <category-def name="ldt" label="Lua Development Tools - Koneki (Incubator)"/>
