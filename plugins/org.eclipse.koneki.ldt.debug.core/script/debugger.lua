@@ -71,13 +71,12 @@ local url = require"socket.url"
 local mime = require"mime"
 local ltn12 = require"ltn12"
 
--- Load ReadyAgent logging framework, else fallback to a stub
-local log = select(2, pcall(require, "log"))
-if type(log) == "string" then
+local log
+do
     -- make a bare minimal log system
     local LEVELS = { ERROR = 0, WARNING = 1, INFO = 2, DETAIL = 3, DEBUG = 4 }
-    local LOG_LEVEL = -1 -- no log at all
-    log = function(mod, level, msg, ...) -- define stub otherwise
+    local LOG_LEVEL = 1 -- log only errors and warnings
+    log = function(mod, level, msg, ...)
         if (LEVELS[level] or -1) > LOG_LEVEL then return end
         if select("#", ...) > 0 then msg = msg:format(...) end
         io.base.stderr:write(string.format("%s\t%s\t%s\n", mod, level, msg))
