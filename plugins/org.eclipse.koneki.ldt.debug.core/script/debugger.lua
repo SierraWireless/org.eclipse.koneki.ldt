@@ -325,7 +325,7 @@ local get_path
 do
     local cache = { }
     --- Returns a RFC2396 compliant URI for given source, or false if the mapping failed
-    function get_abs_file_uri (source)
+    local function get_abs_file_uri (source)
       local uri
       if source:sub(1,1) == "@" then -- real source file
         local sourcepath = source:sub(2)
@@ -339,7 +339,7 @@ do
       end
     end
     
-    function get_module_uri (source)
+    local function get_module_uri (source)
       local uri
       if source:sub(1,1) == "@" then -- real source file
         local sourcepath = source:sub(2)
@@ -1036,7 +1036,7 @@ end
 -- @return Coroutine instance or nil (if coro_id was nil or if coroutine is the current coroutine)
 local function get_coroutine(coro_id)
     if coro_id then
-        coro = dbgp_assert(399, active_coroutines.from_id[tonumber(coro_id)], "No such coroutine")
+        local coro = dbgp_assert(399, active_coroutines.from_id[tonumber(coro_id)], "No such coroutine")
         dbgp_assert(399, coroutine.status(coro) ~= "dead", "Coroutine is dead")
         return coro ~= corunning() and coro or nil
     end
