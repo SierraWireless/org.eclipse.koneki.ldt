@@ -46,7 +46,7 @@ public class LuaTodoTaskPreferencePage extends AbstractConfigurationBlockPropert
 	}
 
 	protected void setPreferenceStore() {
-		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.PLUGIN_ID));
+		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.PLUGIN_ID));
 	}
 
 	protected String getPreferencePageId() {
