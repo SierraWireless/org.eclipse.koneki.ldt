@@ -20,4 +20,6 @@ public interface ILuaColorConstants {
 	public static final String LUA_NUMBER = DLTKColorConstants.DLTK_NUMBER;
 	public static final String LUA_KEYWORD = DLTKColorConstants.DLTK_KEYWORD;
 	public static final String LUA_DEFAULT = DLTKColorConstants.DLTK_DEFAULT;
+
+	public static final String COMMENT_TASK_TAGS = DLTKColorConstants.TASK_TAG;
 }

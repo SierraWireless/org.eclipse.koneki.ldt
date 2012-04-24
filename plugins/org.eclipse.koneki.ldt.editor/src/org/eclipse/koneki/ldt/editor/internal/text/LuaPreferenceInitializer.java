@@ -12,6 +12,7 @@
 package org.eclipse.koneki.ldt.editor.internal.text;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.dltk.compiler.task.TaskTagUtils;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -40,6 +41,7 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_KEYWORD, new RGB(127, 0, 85));
 		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_STRING, new RGB(42, 0, 255));
 		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_NUMBER, new RGB(185, 20, 20));
+		PreferenceConverter.setDefault(store, ILuaColorConstants.COMMENT_TASK_TAGS, new RGB(127, 159, 191));
 
 		store.setDefault(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT + PreferenceConstants.EDITOR_BOLD_SUFFIX, false);
 		store.setDefault(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT + PreferenceConstants.EDITOR_ITALIC_SUFFIX, false);
@@ -49,6 +51,7 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(ILuaColorConstants.LUA_KEYWORD + PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
 		store.setDefault(ILuaColorConstants.LUA_KEYWORD + PreferenceConstants.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(ILuaColorConstants.COMMENT_TASK_TAGS + PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
 
 		// Enable code folding
@@ -59,6 +62,8 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACES, true);
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_STRINGS, true);
+
+		TaskTagUtils.initializeDefaultValues(org.eclipse.koneki.ldt.Activator.getDefault().getPluginPreferences());
 
 	}
 

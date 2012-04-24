@@ -5,7 +5,7 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         Sierra Wireless - initial API and implementation
  -->
@@ -31,6 +31,11 @@
             id="org.eclipse.koneki.ldt.ui.userlibrarypath"
             name="%preference.page.name.userlib">
       </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.ui.preferences.LuaTodoTaskPreferencePage"
+            id="org.eclipse.koneki.ldt.ui.todo"
+            name="%preference.page.name.todotasks"/>
    </extension>
       <extension
          point="org.eclipse.ui.ide.projectNatureImages">
@@ -64,9 +69,9 @@
       <enabledWhen>
         <adapt type="org.eclipse.core.resources.IProject">
           <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
-        </adapt>         
+        </adapt>
       </enabledWhen>
-    </page>    
+    </page>
     <page
           class="org.eclipse.koneki.ldt.ui.properties.LuaPropertyPage"
           id="org.eclipse.koneki.ldt.ui.lua.page"
@@ -74,9 +79,20 @@
       <enabledWhen>
         <adapt type="org.eclipse.core.resources.IProject">
           <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
-        </adapt>         
+        </adapt>
       </enabledWhen>
-    </page>          
+    </page>
+    <page
+          category="org.eclipse.koneki.ldt.ui.lua.page"
+          class="org.eclipse.koneki.ldt.ui.preferences.LuaTodoTaskPreferencePage"
+          id="org.eclipse.koneki.ldt.ui.todo.propertyPage"
+          name="%properties.page.name.todotask">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
+        </adapt>
+      </enabledWhen>
+    </page>
  </extension>
      <extension
            point="org.eclipse.dltk.ui.buildpathContainerPage">

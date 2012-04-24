@@ -12,8 +12,10 @@
 
 package org.eclipse.koneki.ldt.editor.internal.text;
 
+import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
+import org.eclipse.dltk.ui.text.ScriptCommentScanner;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
@@ -51,7 +53,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
 		return new LuaDoubleClickSelector();
 	}
-	
+
 	protected void alterContentAssistant(ContentAssistant assistant) {
 		IContentAssistProcessor scriptProcessor = new LuaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
@@ -110,7 +112,9 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		this.fSingleQuoteStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
 		this.fMultilineCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
 				ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
-		this.fCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
+		this.fCommentScanner = createCommentScanner(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT, ILuaColorConstants.COMMENT_TASK_TAGS);
+		// this.fCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
+		// ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
 		this.fNumberScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_NUMBER);
 	}
 
@@ -154,5 +158,29 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	public String[] getConfiguredContentTypes(final ISourceViewer sourceViewer) {
 		return ILuaPartitions.LUA_PARTITION_TYPES;
+	}
+
+	protected AbstractScriptScanner createCommentScanner(String commentColor, String tagColor, ITodoTaskPreferences taskPrefs) {
+		return new ScriptCommentScanner(getColorManager(), fPreferenceStore, commentColor, tagColor, taskPrefs) {
+			/**
+			 * @see org.eclipse.dltk.ui.text.ScriptCommentScanner#skipCommentChars()
+			 */
+			@Override
+			protected int skipCommentChars() {
+				if (read() == '-') {
+					if (read() == '-') {
+						return 2;
+					} else {
+						unread();
+						unread();
+						return 0;
+					}
+				} else {
+					unread();
+					return 0;
+				}
+			}
+
+		};
 	}
 }
