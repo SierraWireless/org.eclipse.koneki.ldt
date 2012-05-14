@@ -22,7 +22,7 @@ public class LuaInterpreterInstall extends AbstractInterpreterInstall {
 
 	@Override
 	public String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 }

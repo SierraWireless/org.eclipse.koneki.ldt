@@ -68,7 +68,7 @@ public class LuaLanguageToolkit extends AbstractLanguageToolkit {
 	 */
 	@Override
 	public String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 	/**

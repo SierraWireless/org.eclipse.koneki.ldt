@@ -22,7 +22,9 @@ public class Messages extends NLS {
 	public static String LuaSmartTypingPreferencePageDescription;
 	public static String LuaSmartTypingPreferencePageDescriptionLabel;
 	public static String LuaEditorPreferencePageDescription;
-	public static String LuaEditorColoringPreferencePage_multiLineComment;
+	public static String LuaEditorColoringConfigurationBlock_multiLineComment;
+	public static String LuaEditorColoringConfigurationBlock_localVariable;
+	public static String LuaEditorColoringConfigurationBlock_globalVariable;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

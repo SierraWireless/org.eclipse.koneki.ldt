@@ -24,6 +24,6 @@ public class LuaCompletionProcessor extends ScriptCompletionProcessor {
 
 	@Override
 	protected String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 }

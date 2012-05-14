@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import org.eclipse.dltk.core.ScriptContentDescriber;
 public class LuaContentDescriber extends ScriptContentDescriber {
 
 	/** Accepted patterns for headers. */
-	protected static Pattern[] header_patterns = { Pattern.compile("^#!.*lua.*", Pattern.MULTILINE) };//$NON-NLS-1$
+	private static final Pattern[] HEADER_PATTERNS = { Pattern.compile("^#!.*lua.*", Pattern.MULTILINE) };//$NON-NLS-1$
 
 	/**
 	 * Instantiates a new Lua content describer.
@@ -40,6 +40,6 @@ public class LuaContentDescriber extends ScriptContentDescriber {
 	 */
 	@Override
 	protected Pattern[] getHeaderPatterns() {
-		return header_patterns;
+		return HEADER_PATTERNS;
 	}
 }

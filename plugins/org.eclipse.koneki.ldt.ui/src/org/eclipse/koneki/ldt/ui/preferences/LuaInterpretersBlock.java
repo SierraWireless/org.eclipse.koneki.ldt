@@ -27,6 +27,6 @@ public class LuaInterpretersBlock extends InterpretersBlock {
 
 	@Override
 	protected String getCurrentNature() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 }

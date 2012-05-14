@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class SpyVisitor extends ASTVisitor {
 
 	private void countType(String typeName) {
 		int count = _types.containsKey(typeName) ? _types.get(typeName) : 0;
-		_types.put(typeName, new Integer(count + 1));
+		_types.put(typeName, Integer.valueOf(count + 1));
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class SpyVisitor extends ASTVisitor {
 	 * @return String Error message when available, empty string else way.
 	 */
 	public String getErrorMessage() {
-		return _error == null ? new String() : _error;
+		return _error == null ? "" : _error; //$NON-NLS-1$
 	}
 
 	/**

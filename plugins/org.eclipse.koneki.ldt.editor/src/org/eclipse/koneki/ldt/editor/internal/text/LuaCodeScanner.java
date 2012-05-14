@@ -31,6 +31,7 @@ import org.eclipse.jface.text.rules.WordRule;
 
 public class LuaCodeScanner extends AbstractScriptScanner {
 
+	@SuppressWarnings("nls")
 	private static String[] fgKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
 			"not", "or", "repeat", "return", "then", "true", "until", "while" };
 
@@ -55,10 +56,10 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
 
 		// Add rule for multi-line comments
-		rules.add(new MultiLineRule("--[[", "]]", multiline));
+		rules.add(new MultiLineRule("--[[", "]]", multiline)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Add rule for single line comments.
-		rules.add(new EndOfLineRule("--", comment));
+		rules.add(new EndOfLineRule("--", comment)); //$NON-NLS-1$
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
@@ -84,13 +85,13 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	 * 
 	 * @param char Tested character
 	 */
-	public class LuaWhitespaceDetector implements IWhitespaceDetector {
+	private static class LuaWhitespaceDetector implements IWhitespaceDetector {
 		public boolean isWhitespace(char character) {
 			return Character.isWhitespace(character);
 		}
 	}
 
-	public class LuaWordDetector implements IWordDetector {
+	private static class LuaWordDetector implements IWordDetector {
 		/**
 		 * Indicates if argument is part of a word
 		 * 
@@ -110,7 +111,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		}
 	}
 
-	public class LuaNumberRule extends NumberRule {
+	private static class LuaNumberRule extends NumberRule {
 		public LuaNumberRule(IToken token) {
 			super(token);
 		}

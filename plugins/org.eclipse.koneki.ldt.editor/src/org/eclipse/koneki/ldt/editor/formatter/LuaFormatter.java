@@ -21,7 +21,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.koneki.ldt.editor.Activator;
-import org.eclipse.koneki.ldt.parser.format.LuaSourceFormat;
+import org.eclipse.koneki.ldt.parser.format.LuaFormatterModule;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -34,6 +34,8 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	private final String delimiter;
 	private final String tabulation;
 	private final boolean formatTableValues;
+
+	private final LuaFormatterModule formatLuaModule = new LuaFormatterModule();
 
 	protected LuaFormatter(final String lineDelimiter, final Map<String, String> preferences) {
 		super(preferences);
@@ -78,10 +80,10 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		final String formatted;
 		// With mixed white spaces
 		if (tabPolicy == TabStyle.MIXED) {
-			formatted = LuaSourceFormat.indent(source, delimiter, tabSize, indentationSize, formatTableValues, 0);
+			formatted = formatLuaModule.indent(source, delimiter, tabSize, indentationSize, formatTableValues, 0);
 		} else {
 			// With one type of tabulation
-			formatted = LuaSourceFormat.indent(source, delimiter, tabulation, formatTableValues, 0);
+			formatted = formatLuaModule.indent(source, delimiter, tabulation, formatTableValues, 0);
 		}
 		if (length < source.length()) {
 			final Document doc = new Document(source);
@@ -125,6 +127,6 @@ public class LuaFormatter extends AbstractScriptFormatter {
 
 	@Override
 	public int detectIndentationLevel(final IDocument document, final int offset) {
-		return LuaSourceFormat.depth(document.get(), offset);
+		return formatLuaModule.depth(document.get(), offset);
 	}
 }

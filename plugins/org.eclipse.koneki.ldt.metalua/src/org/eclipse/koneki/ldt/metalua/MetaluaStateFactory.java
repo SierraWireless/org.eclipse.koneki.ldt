@@ -34,7 +34,7 @@ import com.naef.jnlua.LuaState;
  * 
  * @author Kévin KIN-FOO <kkinfoo@anwyware-tech.com> {@linkplain http ://metalua.luaforge.net/manual000.html}
  */
-public class MetaluaStateFactory {
+public final class MetaluaStateFactory {
 
 	private static String sourcePath = null;
 
@@ -54,7 +54,7 @@ public class MetaluaStateFactory {
 	 * @see {@link LuaState}
 	 * @since 1.0
 	 */
-	public static LuaState newLuaState() throws LuaException {
+	public static LuaState newLuaState() {
 
 		/*
 		 * Create a regular LuaState, then enable it to run Metalua
@@ -101,15 +101,15 @@ public class MetaluaStateFactory {
 				 * A folder called as below is available only from fragments, it contains Metalua files.
 				 */
 				URL ressource = bundle.getResource("/lib"); //$NON-NLS-1$
-				String _sourcePath = FileLocator.toFileURL(ressource).getPath();
+				String path = FileLocator.toFileURL(ressource).getPath();
 
 				/*
 				 * Remove folder name at the end of path in order to obtain fragment location on disk. It is the real Metalua path.
 				 */
-				_sourcePath = new File(_sourcePath).getPath() + File.separator;
-				sourcePath = _sourcePath;
+				path = new File(path).getPath() + File.separator;
+				sourcePath = path;
 			} catch (IOException e) {
-				return new String();
+				return ""; //$NON-NLS-1$
 			}
 		}
 		return sourcePath;

@@ -33,6 +33,12 @@
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.ui.preferences.LuaExecutionEnvironmentPreferencePage"
+            id="org.eclipse.koneki.ldt.ui.executionenvironmentpreferencepage"
+            name="%preference.page.name.executionenvironment">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.ui.preferences.LuaTodoTaskPreferencePage"
             id="org.eclipse.koneki.ldt.ui.todo"
             name="%preference.page.name.todotasks"/>
@@ -102,6 +108,12 @@
               name="Lua User Libraries"
               nature="org.eclipse.koneki.ldt.nature">
         </buildpathContainerPage>
+        <buildpathContainerPage
+              class="org.eclipse.koneki.ldt.ui.buildpath.LuaExecutionEnvironmentWizardPage"
+              id="org.eclipse.koneki.ldt.ui.luaexecutionenvironmentpage"
+              name="Lua Execution Environment"
+              nature="org.eclipse.koneki.ldt.nature">
+        </buildpathContainerPage>
         </extension>
      <extension
            point="org.eclipse.dltk.ui.scriptDocumentationProviders">
@@ -130,4 +142,54 @@
             name="%perspective.name">
       </perspective>
      </extension>
+       <extension
+             point="org.eclipse.ui.commands">
+          <command
+                description="%handler.documentation.description"
+                id="org.eclipse.koneki.ldt.ui.buildpathcontainer.documentation"
+                name="%handler.documentation.label">
+          </command>
+       </extension>
+       <extension
+             point="org.eclipse.ui.handlers">
+          <handler
+                class="org.eclipse.koneki.ldt.ui.handlers.LuaExecutionEnvironmentBuildpathContainerDocumentationCommandHandler"
+                commandId="org.eclipse.koneki.ldt.ui.buildpathcontainer.documentation">
+          </handler>
+       </extension>
+       <extension
+             point="org.eclipse.ui.menus">
+          <menuContribution
+                locationURI="popup:org.eclipse.ui.popup.any?before=org.eclipse.dltk.ui.source.menu">
+             <command
+                   commandId="org.eclipse.koneki.ldt.ui.buildpathcontainer.documentation"
+                   label="%handler.documentation.label"
+                   style="push">
+                <visibleWhen>
+                   <with
+                         variable="selection">
+                      <count
+                            value="1">
+                      </count>
+                      <iterate>
+                         <test
+                               property="org.eclipse.koneki.ldt.ui.namespace.containsLuaExecutionEnvironmentContainer"
+                               value="TRUE">
+                         </test>
+                      </iterate>
+                   </with>
+                </visibleWhen>
+             </command>
+          </menuContribution>
+       </extension>
+       <extension
+             point="org.eclipse.core.expressions.propertyTesters">
+          <propertyTester
+                class="org.eclipse.koneki.ldt.ui.propertytesters.LuaExecutionEnvironmentContainerPropertyTester"
+                id="org.eclipse.koneki.ldt.ui.documentation.propertytestter"
+                namespace="org.eclipse.koneki.ldt.ui.namespace"
+                properties="containsLuaExecutionEnvironmentContainer"
+                type="org.eclipse.dltk.internal.ui.scriptview.BuildPathContainer">
+          </propertyTester>
+       </extension>
 </plugin>

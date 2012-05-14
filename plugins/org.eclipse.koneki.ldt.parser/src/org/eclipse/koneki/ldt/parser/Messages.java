@@ -12,13 +12,9 @@ package org.eclipse.koneki.ldt.parser;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * TODO Comment this class
- */
+// CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.parser.messages"; //$NON-NLS-1$
-	public static String AlternativeLuaSourceParserUnableToBuild;
-	public static String LuaASTCacheNoSourceProvided;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -27,3 +23,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE NLS: ON

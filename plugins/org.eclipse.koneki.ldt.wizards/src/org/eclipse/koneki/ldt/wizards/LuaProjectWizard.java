@@ -11,7 +11,6 @@
 package org.eclipse.koneki.ldt.wizards;
 
 import org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard;
-import org.eclipse.dltk.ui.wizards.ILocationGroup;
 import org.eclipse.dltk.ui.wizards.ProjectCreator;
 import org.eclipse.dltk.ui.wizards.ProjectWizardSecondPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -32,13 +31,13 @@ public class LuaProjectWizard extends GenericDLTKProjectWizard {
 
 	@Override
 	public void addPages() {
-		addPage(firstPage);
-		addPage(new ProjectWizardSecondPage(firstPage));
+		addPage(getFirstPage());
+		addPage(new ProjectWizardSecondPage(getFirstPage()));
 	}
 
 	@Override
 	public String getScriptNature() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class LuaProjectWizard extends GenericDLTKProjectWizard {
 	}
 
 	@Override
-	protected ILocationGroup getFirstPage() {
+	protected LuaProjectSettingsPage getFirstPage() {
 		return firstPage;
 	}
 

@@ -40,5 +40,12 @@
             priority="0">
       </language>
    </extension>
+   <extension
+         point="org.eclipse.dltk.core.buildpathContainerInitializer">
+      <buildpathContainerInitializer
+            class="org.eclipse.koneki.ldt.core.buildpath.LuaExecutionEnvironmentBuildpathContainerInitializer"
+            id="org.eclipse.koneki.ldt.ExecutionEnvironmentContainer">
+      </buildpathContainerInitializer>
+   </extension>
 
 </plugin>

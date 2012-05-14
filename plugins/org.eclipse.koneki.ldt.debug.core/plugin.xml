@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteLaunchConfigurationDelegate"
+            delegate="org.eclipse.koneki.ldt.debug.core.attach.LuaAttachLaunchConfigurationDelegate"
             id="org.eclipse.koneki.ldt.debug.core.luaattachdebug"
             modes="debug"
             name="%RemoteLuaLaunchConfigurationType.name"
@@ -44,7 +44,7 @@
    <extension 
         point="org.eclipse.debug.core.sourcePathComputers">
         <sourcePathComputer
-            class="org.eclipse.koneki.ldt.debug.core.remote.LuaRemoteSourcePathComputer"
+            class="org.eclipse.koneki.ldt.debug.core.attach.LuaAttachSourcePathComputer"
             id="org.eclipse.koneki.ldt.debug.core.SourcePathComputer"/>
    </extension>
     <extension

@@ -166,4 +166,11 @@
             id="org.eclipse.dltk.ui.luaEditorScope">
       </context>
    </extension>
+   <extension point="org.eclipse.dltk.ui.highlighting">
+   <highlighter
+      class="org.eclipse.koneki.ldt.editor.internal.text.LuaSemanticUpdateWorker"
+      nature="org.eclipse.koneki.ldt.nature">
+   </highlighter>
+</extension>
+
 </plugin>

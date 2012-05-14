@@ -8,7 +8,7 @@ import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.koneki.ldt.editor.Activator;
 import org.eclipse.koneki.ldt.editor.internal.navigation.Messages;
-import org.eclipse.koneki.ldt.parser.LuaASTUtils;
+import org.eclipse.koneki.ldt.parser.LuaDLTKModelUtils;
 
 //TODO factorize some code with LuaLabelProvider
 public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelProvider {
@@ -28,14 +28,14 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 				// Special icon for private type
 				if (member.exists()) {
 					if (member instanceof IType) {
-						if (LuaASTUtils.isModule(member)) {
+						if (LuaDLTKModelUtils.isModule(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/module.gif"); //$NON-NLS-1$
-						} else if (LuaASTUtils.isGlobalTable(member)) {
+						} else if (LuaDLTKModelUtils.isGlobalTable(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/global_table.gif"); //$NON-NLS-1$
-						} else if (LuaASTUtils.isLocalTable(member)) {
+						} else if (LuaDLTKModelUtils.isLocalTable(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/local_table.gif"); //$NON-NLS-1$
 						}
-					} else if (LuaASTUtils.isModuleFunction(member)) {
+					} else if (LuaDLTKModelUtils.isModuleFunction(member)) {
 						return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/module_function.gif"); //$NON-NLS-1$
 					}
 				}
@@ -59,14 +59,14 @@ public class LuaCompletionProposalLabelProvide extends CompletionProposalLabelPr
 				// Special icon for private type
 				if (member.exists()) {
 					if (member instanceof IType) {
-						if (LuaASTUtils.isModule(member)) {
+						if (LuaDLTKModelUtils.isModule(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/module.gif"); //$NON-NLS-1$
-						} else if (LuaASTUtils.isGlobalTable(member)) {
+						} else if (LuaDLTKModelUtils.isGlobalTable(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/global_table.gif"); //$NON-NLS-1$
-						} else if (LuaASTUtils.isLocalTable(member)) {
+						} else if (LuaDLTKModelUtils.isLocalTable(member)) {
 							return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/local_table.gif"); //$NON-NLS-1$
 						}
-					} else if (LuaASTUtils.isModuleFunction(member)) {
+					} else if (LuaDLTKModelUtils.isModuleFunction(member)) {
 						return Activator.getImageDescriptor(Activator.PLUGIN_ID, "/img/module_function.gif"); //$NON-NLS-1$
 					}
 				}

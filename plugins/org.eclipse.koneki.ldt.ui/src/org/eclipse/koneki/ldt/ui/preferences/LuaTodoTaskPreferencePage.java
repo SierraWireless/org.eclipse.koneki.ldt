@@ -38,7 +38,7 @@ public class LuaTodoTaskPreferencePage extends AbstractConfigurationBlockPropert
 	}
 
 	protected String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 	protected String getProjectHelpId() {

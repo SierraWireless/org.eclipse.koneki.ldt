@@ -21,7 +21,7 @@ import org.eclipse.koneki.ldt.editor.Activator;
  * 
  */
 public class LuaTemplateAccess extends ScriptTemplateAccess {
-	private static final String CUSTOM_TEMPLATES_KEY = LuaNature.LUA_NATURE + ".Templates"; //$NON-NLS-1$
+	private static final String CUSTOM_TEMPLATES_KEY = LuaNature.ID + ".Templates"; //$NON-NLS-1$
 	private static LuaTemplateAccess instance;
 
 	public static LuaTemplateAccess getInstance() {

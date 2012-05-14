@@ -15,7 +15,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.koneki.ldt.editor.Activator;
-import org.eclipse.koneki.ldt.parser.LuaASTUtils;
+import org.eclipse.koneki.ldt.parser.LuaDLTKModelUtils;
 import org.eclipse.swt.graphics.Image;
 
 public class LuaLabelProvider extends LabelProvider {
@@ -34,14 +34,14 @@ public class LuaLabelProvider extends LabelProvider {
 			// Special icon for private type
 			if (member.exists()) {
 				if (member instanceof IType) {
-					if (LuaASTUtils.isModule(member)) {
+					if (LuaDLTKModelUtils.isModule(member)) {
 						return Activator.getImage("/img/module.gif"); //$NON-NLS-1$
-					} else if (LuaASTUtils.isGlobalTable(member)) {
+					} else if (LuaDLTKModelUtils.isGlobalTable(member)) {
 						return Activator.getImage("/img/global_table.gif"); //$NON-NLS-1$
-					} else if (LuaASTUtils.isLocalTable(member)) {
+					} else if (LuaDLTKModelUtils.isLocalTable(member)) {
 						return Activator.getImage("/img/local_table.gif"); //$NON-NLS-1$
 					}
-				} else if (LuaASTUtils.isModuleFunction(member)) {
+				} else if (LuaDLTKModelUtils.isModuleFunction(member)) {
 					return Activator.getImage("/img/module_function.gif"); //$NON-NLS-1$
 				}
 			}

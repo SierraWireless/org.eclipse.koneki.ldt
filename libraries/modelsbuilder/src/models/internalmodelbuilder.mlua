@@ -1,0 +1,371 @@
+--------------------------------------------------------------------------------
+--	Copyright (c) 2011-2012 Sierra Wireless.
+--	All rights reserved. This program and the accompanying materials
+--	are made available under the terms of the Eclipse Public License v1.0
+--	which accompanies this distribution, and is available at
+--	http://www.eclipse.org/legal/epl-v10.html
+-- 
+--	Contributors:
+--			Simon BERNARD <sbernard@sierrawireless.com>
+--					- initial API and implementation and initial documentation
+--------------------------------------------------------------------------------
+-{ extension 'match' }
+local Q = require 'metalua.treequery'
+require 'metalua.walk'
+require 'metalua.walk.bindings'
+
+local internalmodel = require 'models.internalmodel'
+local apimodel = require 'models.apimodel'
+
+local M = {}
+
+----------------------------------------
+-- debug function : To delete
+local function pdown (node,parent)
+		print (tostring(parent and parent.tag or nil )..' ' .. tostring(node.tag) .. " down")
+end
+	
+local function pup (node, parent)
+	print (tostring(parent and parent.tag or nil) .. ' ' .. tostring(node.tag).. " up")		
+end
+----------------------------------------
+
+
+------------------------------------------------------------
+-- return true if this node is a block for the internal representation
+local function supportedblock(node,parent)
+	return	node.tag == "Function" or
+					node.tag == "Do" or
+					node.tag == "While" or
+					node.tag == "Fornum" or
+					node.tag == "Forin" or
+					node.tag == "Repeat" or
+					(parent and parent.tag == "If" and node.tag == nil)
+end
+
+------------------------------------------------------------
+-- create a block from the	metalua node
+local function createblock(block,parent)
+	local _block =	internalmodel._block()
+	match block with
+		| `Function{param, body} ->
+				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.max = block.lineinfo.last.offset
+		| `Do{...} ->
+				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.max = block.lineinfo.last.offset
+		| `While {expr, body} ->
+				_block.sourcerange.min = body.lineinfo.first.facing.offset - 1
+				_block.sourcerange.max = body.lineinfo.last.facing.offset
+		| `Fornum {identifier, min, max, body} ->
+				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.max = block.lineinfo.last.offset
+		| `Forin {identifiers, exprs, body} ->
+				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.max = block.lineinfo.last.offset
+		| `Repeat {body, expr}	->
+				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.max = block.lineinfo.last.offset
+		| _ ->
+				if parent and parent.tag == "If" and block.tag == nil then
+					_block.sourcerange.min = block.lineinfo.first.facing.offset - 1
+					_block.sourcerange.max = block.lineinfo.last.facing.offset
+				end
+	end
+	return _block
+end
+
+------------------------------------------------------------
+-- return true if this node is a expression in the internal representation
+local function supportedexpr(node)
+	return node.tag =="Index" or node.tag =="Id" or node.tag=="Call" or node.tag == "Invoke"
+end
+
+
+local idto_block = {} -- cache from metalua id to internal model block 
+local idto_identifier = {} -- cache from	metalua id to internal model indentifier
+local expreto_expression = {} -- cache from	metalua expression to internal model expression
+------------------------------------------------------------
+-- create an expression from a metalua node
+local function createexpr(expr,_block)
+	local _expr = nil 
+	
+	match expr with
+		| `Id { name } ->
+				-- we store the block which hold this node 
+				-- to be able to define	
+				idto_block[expr]= _block
+	
+				-- if expr has not line info, it means expr has no representation in the code
+				-- so we don't need it.
+				if not expr.lineinfo then	return nil end
+				
+				-- create identifier
+				local _identifier = internalmodel._identifier()
+				idto_identifier[expr]= _identifier
+				_expr =	_identifier
+		| `Index { innerexpr, `String{fieldname} } ->
+				if not expr.lineinfo then	return nil end
+				-- create index
+				local _expression = createexpr(innerexpr,_block)
+				if _expression then _expr =	internalmodel._index(_expression,fieldname) end
+		| `Call{innerexpr, ...} ->
+				if not expr.lineinfo then	return nil end
+				-- create call 
+				local _expression = createexpr(innerexpr,_block)
+				if _expression then _expr =	internalmodel._call(_expression) end
+		| `Invoke{innerexpr,`String{functionname},...} ->
+				if not expr.lineinfo then	return nil end
+				-- create invoke
+				local _expression = createexpr(innerexpr,_block)
+				if _expression then _expr = internalmodel._invoke(functionname,_expression) end
+		| _ ->
+	end
+	
+	if _expr then
+		_expr.sourcerange.min = expr.lineinfo.first.offset - 1
+		_expr.sourcerange.max = expr.lineinfo.last.offset -1
+
+		expreto_expression[expr] = _expr
+	end
+	
+	
+	return _expr
+end
+
+
+
+
+------------------------------------------------------------
+-- create block and expression node
+local function createtreestructure(ast)
+	-- create internal content 
+	local _internalcontent = internalmodel._internalcontent()
+
+	-- create root block
+	local _block = internalmodel._block()
+	local _blocks = { _block }
+	_block.sourcerange.min = ast.lineinfo.first.facing.offset-1
+	-- TODO remove the math.max when we support partial AST
+	_block.sourcerange.max = math.max(ast.lineinfo.last.facing.offset-1,10000)
+
+	_internalcontent.content = _block
+	
+	-- visitor function (down)
+	local function down (node,parent)
+		if supportedblock(node,parent) then
+			-- create the block
+			local _block = createblock(node,parent)
+			-- add it to parent block
+			table.insert(_blocks[#_blocks].content, _block) 
+			-- enqueue the last block to know the "current" block
+			table.insert(_blocks,_block)
+		elseif supportedexpr(node) then
+			-- we handle expression only if it was not already do
+			if not	expreto_expression[node] then
+				-- create expr
+				local _expression = createexpr(node,_blocks[#_blocks])
+				-- add it to parent block
+				if _expression then
+					table.insert(_blocks[#_blocks].content, _expression)
+				end	
+			end
+		end
+	end
+	
+	-- visitor function (up)
+	local function up (node, parent)
+		if supportedblock(node,parent) then
+			-- dequeue the last block to know the "current" block
+			table.remove(_blocks,#_blocks)
+		end		
+	end
+ 
+	-- visit ast and build internal model	
+	Q(ast):foreach(down,up)
+			
+	return _internalcontent
+end
+
+
+------------------------------------------------------------
+-- create the type from the node and position
+local function createtype(node,position)
+	-- create module type ref
+	match node with
+		| `Call{ `Id "require", `String {modulename}} ->
+				return apimodel._moduletyperef(modulename,position)
+		| _ ->
+	end
+	-- if node is an expression supported
+	local supportedexpr = expreto_expression[node]
+	if supportedexpr then
+		-- create expression type ref
+		return apimodel._exprtyperef(supportedexpr,position)
+	end
+	
+end
+
+------------------------------------------------------------
+-- extract the type and the id with the name itemname 
+-- which could be considered as definition from the binder
+local function extracttype(binder, itemname)
+	match binder with
+	| `Local {ids, inits} ->
+			local init,returnposition = nil,1
+			for i,id in ipairs(ids) do
+				-- calculate the current return position
+				if init and (init.tag == "Call" or init.tag == "Invoke") then
+					-- if previous init was a call or an invoke
+					-- we increment the returnposition
+					returnposition= returnposition+1
+				else
+					-- if init is not a function call
+					-- we change the init used to determine the type 
+					init = inits[i]									
+				end
+				
+				-- get the name of the current id
+				local idname = id[1] 
+				
+				-- if this is the good id
+				if itemname == idname then
+				-- create type from init node and return position
+					local type = createtype(init,returnposition)
+					-- return data
+					return id, type 
+				end
+			end
+	| `Function {params, body} ->
+			for i,id in ipairs(params) do
+				-- get the name of the current id
+				local idname = id[1]
+				-- if this is the good id
+				if itemname == idname then
+					-- return data : we can not guess the type for now
+					return id, nil 
+				end
+			end
+	| `Forin {ids, expr, body} ->
+			for i,id in ipairs(ids) do
+					-- get the name of the current id
+					local idname = id[1]
+					-- if this is the good id
+					if itemname == idname then
+						-- return data : we can not guess the type for now
+						return id, nil 
+					end
+			end	
+	| `Fornum {id, min, max, body} ->
+			-- get the name of the current id
+			local idname = id[1]
+			-- if this is the good id
+			if itemname == idname then
+					-- return data : we can not guess the type for now
+					return id, nil 
+			end					
+	| `Localrec {{id}, ...} ->
+			-- get the name of the current id
+			local idname = id[1]
+			-- if this is the good id
+			if itemname == idname then
+					-- return data : we can not guess the type for now
+					return id, nil 
+			end						
+	| _ ->
+	end
+end
+
+------------------------------------------------------------
+-- create local vars, global vars and linked it with theirs occurences
+local function createvardefinitions(_internalcontent,ast)
+	-- use bindings to get locals and globals definition
+	local locals, globals = bindings( ast )
+	
+	-- create locals var
+	for binder, namesAndOccurrences in pairs(locals) do
+		for name, occurrences in pairs(namesAndOccurrences) do
+			-- create item
+			local _item = apimodel._item(name)
+			-- get type and id 
+			local id, _type = extracttype(binder, name)
+			if id then
+				if _type then _item.type = _type end
+				-- add definition as occurence
+				-- we consider the identifier in the binder as an occurence
+				local _identifierdef = idto_identifier[id]
+				if _identifierdef then
+					table.insert(_item.occurrences, _identifierdef)
+					_identifierdef.definition = _item
+				end
+					
+				-- add occurences
+				for _,occurrence in ipairs(occurrences) do
+					local _identifier = idto_identifier[occurrence]
+					if _identifier then
+						table.insert(_item.occurrences, _identifier)
+						_identifier.definition = _item 
+					end 
+				end
+				
+				-- get sourcerange (sourcerange of a local var is the sourcerange of the first occurence)
+				local _firstoccurrence = _item.occurrences[1]
+				if _firstoccurrence then
+					_item.sourcerange.min = _firstoccurrence.sourcerange.min
+					_item.sourcerange.max = _firstoccurrence.sourcerange.max
+				end
+			
+				-- add item to block
+				local _block = idto_block[id]
+				table.insert(_block.localvars,{item=_item,scope = {min=0,max=0}})
+			end	
+		end
+	end
+	
+	-- create globals var
+	for name, occurrences in pairs( globals ) do
+		local _item = apimodel._item()
+		_item.name = name
+		table.insert(_internalcontent.unknownglobalvars,_item)
+		-- add occurences
+		for _,occurence in ipairs(occurrences) do
+			local _identifier = idto_identifier[occurence]
+			if _identifier then
+				table.insert(_item.occurrences, _identifier)
+				_identifier.definition = _item 
+			end 
+		end
+		
+		-- get sourcerange (sourcerange of a local var is the sourcerange of the first occurence)
+		local _firstoccurrence = _item.occurrences[1]
+		if _firstoccurrence then
+			_item.sourcerange.min = _firstoccurrence.sourcerange.min
+			_item.sourcerange.max = _firstoccurrence.sourcerange.max
+		end
+	end
+end
+
+
+------------------------------------------------------------
+-- create the internalcontent from an ast metalua 
+function M.createinternalcontent (ast)
+	-- init cache
+	idto_block = {}	
+	idto_identifier = {} 
+	expreto_expression = {}
+	
+	-- create block and expression node
+	local internalcontent = createtreestructure(ast)
+	
+	-- create Local vars, global vars and linked occurences (Items)
+	createvardefinitions(internalcontent,ast)
+	
+	-- clean cache
+	idto_block = {}	
+	idto_identifier = {} 
+	expreto_expression = {}
+	
+	return internalcontent
+end
+
+return M 

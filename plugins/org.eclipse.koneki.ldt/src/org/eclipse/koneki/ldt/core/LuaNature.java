@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,5 +32,5 @@ public class LuaNature extends ScriptNature {
 	 * 
 	 * @return String
 	 */
-	public static final String LUA_NATURE = Activator.PLUGIN_ID + ".nature"; //$NON-NLS-1$
+	public static final String ID = Activator.PLUGIN_ID + ".nature"; //$NON-NLS-1$
 }

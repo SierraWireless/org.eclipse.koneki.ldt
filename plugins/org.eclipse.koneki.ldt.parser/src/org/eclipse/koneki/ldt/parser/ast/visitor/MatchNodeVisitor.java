@@ -13,10 +13,6 @@ package org.eclipse.koneki.ldt.parser.ast.visitor;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.dltk.ast.declarations.Declaration;
-import org.eclipse.dltk.ast.references.SimpleReference;
-import org.eclipse.dltk.ast.statements.Block;
-import org.eclipse.koneki.ldt.parser.ast.declarations.LuaModuleDeclaration;
 
 /**
  * Visits ASTs in order to find node under start and end offsets.
@@ -24,9 +20,10 @@ import org.eclipse.koneki.ldt.parser.ast.declarations.LuaModuleDeclaration;
  * @author Kevin KIN-FOO <kkinfoo@sierrawireless.com>
  */
 public class MatchNodeVisitor extends ASTVisitor {
-	private ASTNode result = null;
 	private final int end;
 	private final int start;
+	private ASTNode result;
+	private Class<?> clazz;
 
 	/**
 	 * Constructor initialized with offsets to seek for
@@ -36,9 +33,10 @@ public class MatchNodeVisitor extends ASTVisitor {
 	 * @param end
 	 *            offset
 	 */
-	public MatchNodeVisitor(int start, int end) {
+	public MatchNodeVisitor(int start, int end, Class<?> clazz) {
 		this.end = end;
 		this.start = start;
+		this.clazz = clazz;
 	}
 
 	/**
@@ -63,28 +61,18 @@ public class MatchNodeVisitor extends ASTVisitor {
 	public boolean visitGeneral(ASTNode s) throws Exception {
 		int realStart = s.sourceStart();
 		int realEnd = s.sourceEnd();
-		if (s instanceof Block) {
-			// Ignore composite nodes like Chunk and Block
-			return true;
-		} else if (s.getClass() == SimpleReference.class) {
-			// Ignore SimpleReference because we need the parent node.
-			return true;
-		} else if (s instanceof LuaModuleDeclaration) {
-			// Ignore SimpleReference because we need the parent node.
-			return true;
-		} else if (s instanceof Declaration) {
-			Declaration declaration = (Declaration) s;
-			realStart = declaration.getNameStart();
-			realEnd = declaration.getNameEnd();
-		}
 		if (realStart <= start && realEnd >= end) {
-			if (getNode() == null) {
-				setNode(s);
-			} else if (s.sourceStart() >= getNode().sourceStart() && s.sourceEnd() <= getNode().sourceEnd()) {
-				setNode(s);
+			if (clazz.isInstance(s)) {
+				if (getNode() == null) {
+					setNode(s);
+				} else if (s.sourceStart() >= getNode().sourceStart() && s.sourceEnd() <= getNode().sourceEnd()) {
+					setNode(s);
+				}
 			}
+			return true;
+		} else {
+			return false;
 		}
-		return true;
-	}
 
+	}
 }

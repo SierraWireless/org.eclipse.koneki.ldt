@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.koneki.ldt"
-      label="Lua Development Tools (Incubator)"
+      label="Lua Development Tools (Incubation)"
       version="0.8.0.qualifier"
-      provider-name="Koneki">
-
+      provider-name="Eclipse Koneki">
 
    <description>
-      Enable Lua development with source code files edition, lua project,
-syntax highlight and even function folding.
+      Lua Development Tools. (Binary runtime and user documentation)
    </description>
 
    <copyright>

@@ -25,7 +25,7 @@ import com.naef.jnlua.LuaState;
 public class ConcurrencyTest extends TestCase {
 
 	/** Quantity of thread to perform calls on LuaJava simultaneously */
-	private final static int THREAD_COUNT = 5;
+	private static final int THREAD_COUNT = 5;
 
 	/**
 	 * Internal definition of thread for the only purpose to perform a function call using LuaJava

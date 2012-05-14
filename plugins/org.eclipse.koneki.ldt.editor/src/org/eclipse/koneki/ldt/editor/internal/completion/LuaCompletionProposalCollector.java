@@ -51,7 +51,7 @@ public class LuaCompletionProposalCollector extends ScriptCompletionProposalColl
 
 	@Override
 	protected String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 }

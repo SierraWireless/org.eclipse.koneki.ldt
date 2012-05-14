@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.dltk.compiler.task.TaskTagUtils;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
+import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlightingUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.koneki.ldt.editor.Activator;
@@ -65,6 +66,12 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 
 		TaskTagUtils.initializeDefaultValues(org.eclipse.koneki.ldt.Activator.getDefault().getPluginPreferences());
 
+		// Semantic highlighting preferences initialization
+		SemanticHighlightingUtils.initializeDefaultValues(store, Activator.getDefault().getTextTools().getSemanticHighlightings());
+
+		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_LOCAL_VARIABLE, new RGB(103, 103, 103));
+		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_GLOBAL_VARIABLE, new RGB(0, 0, 0));
+		store.setDefault(ILuaColorConstants.LUA_GLOBAL_VARIABLE + PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
 	}
 
 }

@@ -31,8 +31,8 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.koneki.ldt.editor.Activator;
 import org.eclipse.koneki.ldt.editor.internal.text.ILuaColorConstants;
 import org.eclipse.koneki.ldt.editor.internal.text.ILuaPartitions;
-import org.eclipse.koneki.ldt.editor.internal.text.LuaSourceViewerConfiguration;
 import org.eclipse.koneki.ldt.editor.internal.text.LuaTextTools;
+import org.eclipse.koneki.ldt.editor.templates.SimpleLuaSourceViewerConfiguration;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -42,11 +42,13 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 
 	private static final String[][] fSyntaxColorListModel = new String[][] {
 			{ PreferencesMessages.DLTKEditorPreferencePage_singleLineComment, ILuaColorConstants.LUA_SINGLE_LINE_COMMENT, sCommentsCategory },
-			{ Messages.LuaEditorColoringPreferencePage_multiLineComment, ILuaColorConstants.LUA_MULTI_LINE_COMMENT, sCommentsCategory },
+			{ Messages.LuaEditorColoringConfigurationBlock_multiLineComment, ILuaColorConstants.LUA_MULTI_LINE_COMMENT, sCommentsCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_keywords, ILuaColorConstants.LUA_KEYWORD, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_strings, ILuaColorConstants.LUA_STRING, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_others, ILuaColorConstants.LUA_DEFAULT, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers, ILuaColorConstants.LUA_NUMBER, sCoreCategory },
+			{ Messages.LuaEditorColoringConfigurationBlock_localVariable, ILuaColorConstants.LUA_LOCAL_VARIABLE, sCoreCategory },
+			{ Messages.LuaEditorColoringConfigurationBlock_globalVariable, ILuaColorConstants.LUA_GLOBAL_VARIABLE, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_CommentTaskTags, ILuaColorConstants.COMMENT_TASK_TAGS, sCommentsCategory } };
 
 	public LuaEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
@@ -64,7 +66,7 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 
 	protected ScriptSourceViewerConfiguration createSimpleSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore,
 			ITextEditor editor, boolean configureFormatter) {
-		return new LuaSourceViewerConfiguration(colorManager, preferenceStore, editor, ILuaPartitions.LUA_PARTITIONING);
+		return new SimpleLuaSourceViewerConfiguration(colorManager, preferenceStore, editor, ILuaPartitions.LUA_PARTITIONING, configureFormatter);
 	}
 
 	protected void setDocumentPartitioning(IDocument document) {
@@ -91,4 +93,11 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 		return Activator.getDefault().getTextTools();
 	}
 
+	@Override
+	protected String getNatureId() {
+		return null;
+		// replace the line above with the line below as soon as org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager
+		// v1.11 is released
+		// return LuaNature.ID;
+	}
 }

@@ -12,20 +12,19 @@ package org.eclipse.koneki.ldt.ui.search;
 
 import java.util.ArrayList;
 
-import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.Declaration;
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.search.ModelElementOccurrencesFinder;
-import org.eclipse.koneki.ldt.internal.parser.IOccurrenceHolder;
-import org.eclipse.koneki.ldt.parser.LuaSelectionEngine;
+import org.eclipse.koneki.ldt.parser.LuaASTUtils;
+import org.eclipse.koneki.ldt.parser.api.external.Item;
+import org.eclipse.koneki.ldt.parser.ast.Identifier;
+import org.eclipse.koneki.ldt.parser.ast.LuaExpression;
 import org.eclipse.koneki.ldt.parser.ast.LuaSourceRoot;
-import org.eclipse.koneki.ldt.parser.ast.expressions.Identifier;
 
 public class LuaModelElementOccurrencesFinder extends ModelElementOccurrencesFinder {
 
-	private Declaration declaration;
+	private Item definition;
 
 	/**
 	 * Browses {@link IModuleDeclaration} in order to find a {@link Declaration} or an {@link Identifier} able to provides references to a
@@ -37,21 +36,14 @@ public class LuaModelElementOccurrencesFinder extends ModelElementOccurrencesFin
 	 */
 	@Override
 	public String initialize(final ISourceModule module, final IModuleDeclaration root, final int offset, final int length) {
-		declaration = null;
-		// Unable to find right positions when file contains errors
+		definition = null;
 		if (root instanceof LuaSourceRoot && ((LuaSourceRoot) root).hasError()) {
 			return null;
 		}
-		ASTNode node = LuaSelectionEngine.findNodeAt((ModuleDeclaration) root, offset, offset + length - 1);
-		if (node instanceof Identifier) {
-			Identifier id = (Identifier) node;
-			if (id.hasDeclaration()) {
-				declaration = id.getDeclaration();
-				return null;
-			}
-		} else if (node instanceof Declaration) {
-			declaration = (Declaration) node;
-			return null;
+
+		LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt((LuaSourceRoot) root, offset, offset + length - 1);
+		if (luaExpression instanceof Identifier) {
+			definition = ((Identifier) luaExpression).getDefinition();
 		}
 		return null;
 	}
@@ -59,17 +51,14 @@ public class LuaModelElementOccurrencesFinder extends ModelElementOccurrencesFin
 	@Override
 	public OccurrenceLocation[] getOccurrences() {
 		// Clean file from occurrences if not relevant
-		if (declaration == null || !(declaration instanceof IOccurrenceHolder)) {
+		if (definition == null) {
 			return new OccurrenceLocation[0];
 		}
-		// Highlight declaration itself
-		ArrayList<OccurrenceLocation> list = new ArrayList<OccurrenceLocation>();
-		list.add(new OccurrenceLocation(declaration.getNameStart(), declaration.getNameEnd() - declaration.getNameStart(), declaration.getName()));
 
 		// Highlight occurrences
-		IOccurrenceHolder holder = (IOccurrenceHolder) declaration;
-		for (ASTNode node : holder.getOccurrences()) {
-			list.add(new OccurrenceLocation(node.sourceStart(), node.matchLength(), node.toString()));
+		ArrayList<OccurrenceLocation> list = new ArrayList<OccurrenceLocation>();
+		for (Identifier identifier : definition.getOccurrences()) {
+			list.add(new OccurrenceLocation(identifier.sourceStart(), identifier.matchLength() + 1, definition.getName()));
 		}
 		return list.toArray(new OccurrenceLocation[list.size()]);
 	}

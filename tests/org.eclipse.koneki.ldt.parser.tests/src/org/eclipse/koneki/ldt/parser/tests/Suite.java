@@ -13,11 +13,7 @@ package org.eclipse.koneki.ldt.parser.tests;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.eclipse.koneki.ldt.parser.internal.modules.tests.TestModuleReference;
-import org.eclipse.koneki.ldt.parser.internal.modules.tests.TestModules;
 import org.eclipse.koneki.ldt.parser.internal.tables.tests.TestTables;
-import org.eclipse.koneki.ldt.parser.internal.tests.TestASTValidity;
-import org.eclipse.koneki.ldt.parser.internal.tests.TestDeclarations;
 import org.eclipse.koneki.ldt.parser.internal.tests.TestExpressions;
 import org.eclipse.koneki.ldt.parser.internal.tests.TestLuaBinaryOperations;
 import org.eclipse.koneki.ldt.parser.internal.tests.TestLuaSourceParser;
@@ -41,8 +37,6 @@ public class Suite extends TestSuite {
 	 */
 	public Suite() {
 		setName("Lua Source parser"); //$NON-NLS-1$
-		addTestSuite(TestASTValidity.class);
-		addTestSuite(TestDeclarations.class);
 		addTestSuite(TestExpressions.class);
 		addTestSuite(TestLuaBinaryOperations.class);
 		addTestSuite(TestLuaSourceParser.class);
@@ -52,8 +46,6 @@ public class Suite extends TestSuite {
 		addTestSuite(TestUnaryOperations.class);
 		addTestSuite(TestVisitor.class);
 		addTestSuite(TestMultipleParsing.class);
-		addTestSuite(TestModuleReference.class);
-		addTestSuite(TestModules.class);
 		addTestSuite(TestTables.class);
 	}
 }

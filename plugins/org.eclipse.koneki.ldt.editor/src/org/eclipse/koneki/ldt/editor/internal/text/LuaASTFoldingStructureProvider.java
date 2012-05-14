@@ -30,7 +30,7 @@ public class LuaASTFoldingStructureProvider extends AbstractASTFoldingStructureP
 
 	@Override
 	protected String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 	@Override

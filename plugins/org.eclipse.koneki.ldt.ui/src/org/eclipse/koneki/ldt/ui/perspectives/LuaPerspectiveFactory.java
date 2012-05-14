@@ -1,5 +1,6 @@
 package org.eclipse.koneki.ldt.ui.perspectives;
 
+import org.eclipse.koneki.ldt.ui.Activator;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -78,6 +79,6 @@ public class LuaPerspectiveFactory implements IPerspectiveFactory {
 
 		bottomRight.addView(IPageLayout.ID_PROBLEM_VIEW);
 		bottomRight.addView(IPageLayout.ID_TASK_LIST);
-		// bottomRight.addView(Activator.LUA_DOC_VIEWID);
+		bottomRight.addView(Activator.LUA_DOC_VIEWID);
 	}
 }

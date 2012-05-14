@@ -21,13 +21,13 @@ import com.naef.jnlua.LuaState;
  * 
  * @author Kevin KIN-FOO <kkinfoo@anyware-tech.com>
  */
-final public class Metalua {
+public final class Metalua {
 
 	private Metalua() {
 	}
 
 	/** Provides a new LuaState with Metalua capabilities */
-	public static synchronized LuaState newState() throws LuaException {
+	public static synchronized LuaState newState() {
 		return MetaluaStateFactory.newLuaState();
 	}
 
@@ -40,7 +40,7 @@ final public class Metalua {
 	 * @throws LuaException
 	 *             the lua exception
 	 */
-	public static void raise(LuaState l) throws LuaException {
+	public static void raise(LuaState l) {
 
 		// Get message at top of stack
 		String msg = l.toString(-1);

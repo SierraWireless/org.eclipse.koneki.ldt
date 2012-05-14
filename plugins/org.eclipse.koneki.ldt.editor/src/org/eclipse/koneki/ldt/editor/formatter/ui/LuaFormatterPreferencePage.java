@@ -23,7 +23,7 @@ public class LuaFormatterPreferencePage extends AbstractFormatterPreferencePage 
 	 */
 	@Override
 	protected String getNatureId() {
-		return LuaNature.LUA_NATURE;
+		return LuaNature.ID;
 	}
 
 	/**

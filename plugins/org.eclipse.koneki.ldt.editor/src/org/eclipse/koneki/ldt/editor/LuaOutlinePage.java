@@ -33,7 +33,7 @@ public class LuaOutlinePage extends ScriptOutlinePage {
 		super(editor, store);
 	}
 
-	private class LocalFunctionFilter extends AbstractModelElementFilter {
+	private static class LocalFunctionFilter extends AbstractModelElementFilter {
 
 		public String getFilteringType() {
 			return "LocalFunctionFilter"; //$NON-NLS-1$

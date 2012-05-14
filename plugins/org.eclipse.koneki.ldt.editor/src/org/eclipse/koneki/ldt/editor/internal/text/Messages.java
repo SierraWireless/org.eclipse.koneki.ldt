@@ -14,7 +14,7 @@ package org.eclipse.koneki.ldt.editor.internal.text;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.internal.editor.text.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.editor.internal.text.messages"; //$NON-NLS-1$
 	// CHECKSTYLE NLS: OFF
 	public static String LuaEditor_matchingBracketIsOutsideSelectedElement;
 	public static String LuaEditor_nobracketSelected;

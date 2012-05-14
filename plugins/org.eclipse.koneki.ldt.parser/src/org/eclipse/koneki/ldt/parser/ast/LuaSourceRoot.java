@@ -17,61 +17,42 @@
  */
 package org.eclipse.koneki.ldt.parser.ast;
 
-import java.util.Map;
-
-import org.eclipse.dltk.ast.declarations.FieldDeclaration;
-import org.eclipse.dltk.ast.declarations.MethodDeclaration;
+import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ast.declarations.TypeDeclaration;
-import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
 import org.eclipse.dltk.compiler.problem.DefaultProblemIdentifier;
 import org.eclipse.dltk.compiler.problem.IProblemIdentifier;
 import org.eclipse.dltk.compiler.problem.ProblemSeverity;
-import org.eclipse.dltk.utils.CorePrinter;
-import org.eclipse.koneki.ldt.parser.ast.declarations.DeclarationsContainer;
+import org.eclipse.koneki.ldt.parser.api.external.LuaASTNode;
+import org.eclipse.koneki.ldt.parser.api.external.LuaFileAPI;
 
 /**
  * The Root AST Node of a lua source file.
  */
 public class LuaSourceRoot extends ModuleDeclaration {
 
-	/** Indicates if any problem occurred during parsing */
 	private DefaultProblem problem = null;
-
-	/** documentation information */
-	private String documentation;
-	private Map<String, String> memberDocumentation;
-
-	/** contains declaration of this source 'file' */
-	private DeclarationsContainer declarationscontainer;
-
+	private LuaFile luaFile;
 	private boolean error;
 
-	/**
-	 * Instantiates a new Lua module declaration.
-	 * 
-	 * @param sourceLength
-	 *            the source length
-	 */
 	public LuaSourceRoot(final int sourceLength) {
 		super(sourceLength);
-		declarationscontainer = new DeclarationsContainer();
-		addStatement(declarationscontainer);
+		luaFile = new LuaFile();
+		addStatement(luaFile);
 	}
 
-	/**
-	 * Instantiates a new Lua module declaration.
-	 * 
-	 * @param length
-	 *            the length
-	 * @param rebuild
-	 *            the rebuild
-	 */
 	public LuaSourceRoot(final int length, final boolean rebuild) {
 		super(length, rebuild);
-		declarationscontainer = new DeclarationsContainer();
-		addStatement(declarationscontainer);
+		luaFile = new LuaFile();
+		addStatement(luaFile);
+	}
+
+	public LuaFileAPI getFileapi() {
+		return luaFile.getApi();
+	}
+
+	public LuaInternalContent getInternalContent() {
+		return luaFile.getInternalContent();
 	}
 
 	public void setProblem(final int line, final int column, final int offset, final String message) {
@@ -80,79 +61,80 @@ public class LuaSourceRoot extends ModuleDeclaration {
 		setError(true);
 	}
 
-	public boolean hasError() {
-		return error;
-	}
-
 	public DefaultProblem getProblem() {
 		return problem;
 	}
 
-	@Override
-	public void printNode(final CorePrinter output) {
-		final MethodDeclaration[] functions = this.getFunctions();
-		if (functions.length > 0) {
-			output.print("functions: ");
-			for (MethodDeclaration function : functions) {
-				output.print(function.getName());
-				output.print(' ');
-			}
-			output.println();
-		}
-		final FieldDeclaration[] fields = this.getVariables();
-		if (fields.length > 0) {
-			output.print("fields: ");
-			for (FieldDeclaration field : fields) {
-				output.print(field.getName());
-				output.print(' ');
-			}
-			output.println();
-		}
-		final TypeDeclaration[] types = this.getTypes();
-		if (fields.length > 0) {
-			output.print("types: ");
-			for (TypeDeclaration type : types) {
-				output.print(type.getName());
-				output.print(' ');
-			}
-			output.println();
-		}
-		output.indent();
-		for (final Object o : getStatements()) {
-			if (o instanceof Statement) {
-				((Statement) o).printNode(output);
-			}
-		}
-		output.dedent();
+	public boolean hasError() {
+		return error;
 	}
 
-	public void setGlobalDocumentation(final String doc) {
-		documentation = doc;
-	}
-
-	public String getGlobalDocumentation() {
-		return documentation;
-	}
-
-	public void setMembersDocumentation(final Map<String, String> doc) {
-		memberDocumentation = doc;
-	}
-
-	public String getMemberDocumentation(final String memberIdentifier) {
-		if (memberDocumentation != null) {
-			return memberDocumentation.get(memberIdentifier);
-		}
-		return null;
-	}
-
-	public DeclarationsContainer getDeclarationsContainer() {
-		return declarationscontainer;
-	}
-
-	/**
-	 * @param status
-	 */
 	public void setError(final boolean status) {
 		error = status;
+	}
+
+	public void setLuaFileApi(final LuaFileAPI api) {
+		luaFile.setApi(api);
+	}
+
+	public void setInternalContent(final LuaInternalContent content) {
+		luaFile.setInternalContent(content);
+	}
+
+	@Override
+	public int hashCode() {
+		// we do this only to avoid findbug errors.
+		// findbugs detects that ASTNode override equals but not hashcode
+		// but equals is override by super.equals ...
+		return super.hashCode();
+	}
+
+	/********************************************************
+	 * this is a complete representation of a lua file <br/>
+	 * External API + Local AST
+	 */
+	private static class LuaFile extends LuaASTNode {
+
+		// this is the API of the current Lua file.
+		private LuaFileAPI fileAPI;
+
+		// this is the internal representation of code
+		private LuaInternalContent internalContent;
+
+		public LuaFile() {
+			internalContent = new LuaInternalContent();
+			fileAPI = new LuaFileAPI();
+		}
+
+		public LuaInternalContent getInternalContent() {
+			return internalContent;
+		}
+
+		public void setInternalContent(LuaInternalContent internalContent) {
+			this.internalContent = internalContent;
+		}
+
+		public void setApi(final LuaFileAPI file) {
+			fileAPI = file;
+		}
+
+		public LuaFileAPI getApi() {
+			return fileAPI;
+		}
+
+		/**
+		 * @see org.eclipse.dltk.ast.ASTNode#traverse(org.eclipse.dltk.ast.ASTVisitor)
+		 */
+		@Override
+		public void traverse(ASTVisitor visitor) throws Exception {
+			if (visitor.visit(this)) {
+				if (getApi() != null) {
+					fileAPI.traverse(visitor);
+					internalContent.traverse(visitor);
+				}
+				visitor.endvisit(this);
+			}
+
+		}
 	}
 }
