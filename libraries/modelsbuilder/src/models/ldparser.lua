@@ -153,9 +153,17 @@ local paramparsers = {
 								return { name = result[1].name}
 							end,
 		'@','param', idparser
-		})
-	}
-
+	}),
+	
+	-- Parser for `Dots
+	gg.sequence({
+		builder = function (result)
+				raiserror(result)
+				return { name = '...' }
+			end,
+		'@','param', '...'
+	}),
+}
 ------------------------------------------------------
 -- parse a field tag
 local fieldparsers = {
@@ -290,8 +298,10 @@ local function initparser()
 		"extract_symbol"
 	}
 
-	-- add tag name as key word
-	local tagnames = {}
+	-- Add dots as keyword
+	local tagnames = { '...' }
+
+	-- Add tag names as key word
 	for tagname, _ in pairs(registeredparsers) do
 		table.insert(tagnames,tagname)
 	end
@@ -353,7 +363,7 @@ local function parsethirdtag( part )
 		return nil, "Unable to parse given string."
 	end
 
-	-- Define tagname	
+	-- Define tagname
 	parsedtag.tagname = parsedtag.name
 	
 	-- Retrive description
@@ -371,7 +381,7 @@ local function split(stringcomment,commentstart)
 	local result = {}
 
 	-- manage case where the comment start by @
-	-- (we must ignore the inline see tag @{..})
+	-- (we must ignore the inline see tag @{...})
 	local at_startoffset, at_endoffset = stringcomment:find("^%s+@[^{]",partstart)
 	if at_endoffset then
 		partstart = at_endoffset-1
