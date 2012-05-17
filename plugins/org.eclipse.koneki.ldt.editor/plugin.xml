@@ -80,7 +80,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            category="org.eclipse.koneki.ldt.editor.preferences"
             class="org.eclipse.koneki.ldt.editor.templates.LuaTemplatePreferencePage"
             id="org.eclipse.koneki.ldt.templates.Template"
             name="%preference.templates.name">
@@ -92,7 +92,7 @@
             name="%preference.formatter.name">
       </page>
       <page
-            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            category="org.eclipse.koneki.ldt.editor.preferences"
             class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaSmartTypingPreferencePage"
             id="org.eclipse.koneki.ldt.typing.preferences"
             name="%preference.typing.name">
@@ -103,10 +103,16 @@
             id="org.eclipse.koneki.ldt.editor.preferences"
 	        name="%preference.editor.name"/>
 	  <page
-            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            category="org.eclipse.koneki.ldt.editor.preferences"
 	        class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaEditorSyntaxColoringPreferencePage"
             id="org.eclipse.koneki.ldt.syntaxcoloring.preferences"
 	        name="%preference.syntaxcoloring.name"/>
+	  <page
+            category="org.eclipse.koneki.ldt.editor.preferences"
+	        class="org.eclipse.koneki.ldt.editor.preference.internal.ui.LuaEditorAssistancePreferencePage"
+            id="org.eclipse.koneki.ldt.codeassistance.preferences"
+	        name="%preference.codeassistance.name"/>
+
    </extension>
    <extension
          point="org.eclipse.dltk.ui.language">

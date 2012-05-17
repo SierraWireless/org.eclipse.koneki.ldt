@@ -22,6 +22,7 @@ public class Messages extends NLS {
 	public static String LuaSmartTypingPreferencePageDescription;
 	public static String LuaSmartTypingPreferencePageDescriptionLabel;
 	public static String LuaEditorPreferencePageDescription;
+	public static String LuaEditorAssistancePreferencePageDescription;
 	public static String LuaEditorColoringConfigurationBlock_multiLineComment;
 	public static String LuaEditorColoringConfigurationBlock_localVariable;
 	public static String LuaEditorColoringConfigurationBlock_globalVariable;

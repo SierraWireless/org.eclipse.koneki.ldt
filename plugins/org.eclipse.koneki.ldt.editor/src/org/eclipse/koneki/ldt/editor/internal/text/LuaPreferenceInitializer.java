@@ -64,6 +64,9 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
 		store.setDefault(PreferenceConstants.EDITOR_CLOSE_STRINGS, true);
 
+		// Content-assist related preferences
+		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".:"); //$NON-NLS-1$
+
 		TaskTagUtils.initializeDefaultValues(org.eclipse.koneki.ldt.Activator.getDefault().getPluginPreferences());
 
 		// Semantic highlighting preferences initialization
