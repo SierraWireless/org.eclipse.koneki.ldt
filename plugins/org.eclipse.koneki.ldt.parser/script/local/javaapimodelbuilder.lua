@@ -11,17 +11,17 @@
 --------------------------------------------------------------------------------
 local M = {}
 
-local itemclass							= java.require("org.eclipse.koneki.ldt.parser.api.external.Item")
-local returnclass						= java.require("org.eclipse.koneki.ldt.parser.api.external.Return")
-local recordtypedefclass		= java.require("org.eclipse.koneki.ldt.parser.api.external.RecordTypeDef")
-local functiontypedefclass	= java.require("org.eclipse.koneki.ldt.parser.api.external.FunctionTypeDef")
-local parameterclass				= java.require("org.eclipse.koneki.ldt.parser.api.external.Parameter")
-local externaltyperefclass	= java.require("org.eclipse.koneki.ldt.parser.api.external.ExternalTypeRef")
-local internaltyperefclass	= java.require("org.eclipse.koneki.ldt.parser.api.external.InternalTypeRef")
-local primitivetyperefclass	= java.require("org.eclipse.koneki.ldt.parser.api.external.PrimitiveTypeRef")
-local luafileapiclass				= java.require("org.eclipse.koneki.ldt.parser.api.external.LuaFileAPI")
-local moduletyperefclass		= java.require("org.eclipse.koneki.ldt.parser.api.external.ModuleTypeRef")
-local exprtyperefclass			= java.require("org.eclipse.koneki.ldt.parser.api.external.ExprTypeRef")
+local itemclass             = java.require("org.eclipse.koneki.ldt.parser.api.external.Item")
+local returnclass           = java.require("org.eclipse.koneki.ldt.parser.api.external.Return")
+local recordtypedefclass    = java.require("org.eclipse.koneki.ldt.parser.api.external.RecordTypeDef")
+local functiontypedefclass  = java.require("org.eclipse.koneki.ldt.parser.api.external.FunctionTypeDef")
+local parameterclass        = java.require("org.eclipse.koneki.ldt.parser.api.external.Parameter")
+local externaltyperefclass  = java.require("org.eclipse.koneki.ldt.parser.api.external.ExternalTypeRef")
+local internaltyperefclass  = java.require("org.eclipse.koneki.ldt.parser.api.external.InternalTypeRef")
+local primitivetyperefclass = java.require("org.eclipse.koneki.ldt.parser.api.external.PrimitiveTypeRef")
+local luafileapiclass       = java.require("org.eclipse.koneki.ldt.parser.api.external.LuaFileAPI")
+local moduletyperefclass    = java.require("org.eclipse.koneki.ldt.parser.api.external.ModuleTypeRef")
+local exprtyperefclass      = java.require("org.eclipse.koneki.ldt.parser.api.external.ExprTypeRef")
 
 local print = function (string) print(string) io.flush() end
 
@@ -32,15 +32,39 @@ local templateengine = require 'templateengine'
 --
 local templateengineenv = require 'template.utils'
 
--- Remove default implementation not supported form IDE
+-- Remove default implementation not supported from IDE
 templateengineenv.anchortypes['externaltyperef'] = nil
 templateengineenv.linktypes['externaltyperef'] = nil
+
+--
+-- So far, documentation embedded in the IDE does not support links very well.
+-- To circumvent this, we will need to desactivate link generation while
+-- generation documentation.
+
+-- Cache of link generation
+local originallinkto = templateengineenv.linkto
+
+-- Restore link generators
+local function enablelinks()
+	templateengine.env.linkto = originallinkto
+end
+
+-- Disable link generators
+local function disablelinks()
+	templateengine.env.linkto = function()
+		return nil, 'Link generation is disabled.'
+	end
+end
+
+-- Links are disabled by default
+disablelinks()
+
 -- Handle only local item references
 templateengineenv.linktypes['item'] = function(item)
 	if item.parent and item.parent.tag == 'recordtypedef' then
-		return '#'..templateengineenv.anchor( item.parent ) ..'.'.. item.name
+		return string.format('#%s.%s', templateengineenv.anchor(item.parent), item.name)
 	end
-	return '#'..templateengineenv.anchor( item )
+	return string.format('#%s', templateengineenv.anchor(item))
 end
 
 -- Perform actual environment update
@@ -119,9 +143,14 @@ end
 
 -- create lua file api
 function M._file(_file)
+
 	-- Fill file object
 	local jfile = luafileapiclass:new()
+
+	-- Enable links just for module file objects 
+	enablelinks()
 	jfile:setDocumentation(templateengine.applytemplate(_file))
+	disablelinks()
 
 	-- Adding gloval variables
 	for _, _item in pairs(_file.globalvars) do
@@ -137,10 +166,12 @@ function M._file(_file)
 		end
 		jfile:addReturns(jreturn)
 	end
+
 	-- Adding types defined in files
 	for _, _typedef in pairs(_file.types) do
 		jfile:addType(_typedef.name, M._typedef(_typedef))
 	end
+
 	return jfile
 end
 return M

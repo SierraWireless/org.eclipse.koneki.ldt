@@ -10,6 +10,7 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 local apimodel = require 'models.apimodel'
+
 ---
 -- @module docutils
 -- Handles link generation, node quick description.
@@ -27,16 +28,22 @@ end
 ---
 -- Provide a handling function for all supported anchor types
 M.anchortypes = {
-	file = function(o) return o.name..'.html' end,
-	internaltyperef = function(o) return '#('..o.typename..')' end,
-	recordtypedef = function (o) 	return '#('..o.name..')' end,
+	file = function(o) return string.format('%s.html', o.name) end,
+	internaltyperef = function(o) return string.format('#(%s)', o.typename) end,
+	recordtypedef = function (o) return string.format('#(%s)', o.name) end,
 	item = function(modelobject)
 		-- Handle items referencing globals
 		if not modelobject.parent or modelobject.parent.tag == 'file' then
 			return modelobject.name
 		else
 			-- Prefix item name with parent anchor
-			return M.anchor(modelobject.parent)..'.'..modelobject.name
+			local parent = modelobject.parent
+			local parentanchor = M.anchor(parent)
+			if not parentanchor then
+				return nil, string.format('Unable to generate anchor for `%s parent.',
+					parent and parent.tag or 'nil')
+			end
+			return string.format('%s.%s', parentanchor, modelobject.name)
 		end
 	end
 }
@@ -54,28 +61,67 @@ function M.anchor( modelobject )
 	if M.anchortypes[ tag ] then
 		return M.anchortypes[ tag ](modelobject)
 	end
-	return nil, 'No anchor available for '..tag
+	return nil, string.format('No anchor available for `%s', tag)
 end
 M.linktypes = {
-	internaltyperef	= function(o) return '##(' .. o.typename..')' end,
-	externaltyperef	= function(o) return o.modulename..'.html##('..o.typename..')' end,
+	internaltyperef	= function(o) return string.format('##(%s)', o.typename) end,
+	externaltyperef	= function(o) return string.format('%s.html##(%s)', o.modulename, o.typename) end,
 	index = function() return 'index.html' end,
-	recordtypedef = function(o) return M.anchor(o) end,
+	recordtypedef = function(o)
+		local anchor = M.anchor(o)
+		return anchor or nil, 'Unable to generate anchor for `recordtypedef.'
+	end,
 	item = function( apiobject )
+
+		-- This item may be related to ...
+		if apiobject.parent.tag == 'recordtypedef' then
+
+			-- A type
+			
+			-- Fetch parent type
+			local parent = apiobject.parent
+			local parentanchor = M.anchor( parent )
+			if not parentanchor then
+				return nil, string.format('Unable to generate anchor for `%s parent.',
+					parentanchor and parentanchor.tag or 'nil')
+			end
+			
+			-- Fetch file containing parent type
+			local parentfile = apiobject.parent.parent
+			if parentfile then
+				local parentfileanchor = M.anchor( parentfile )
+				if not parentfileanchor then
+					return nil, string.format('Unable to generate anchor for `%s parent.',
+						parentfile.tag or 'nil')
+				end
+				return string.format('%s#%s.%s', parentfileanchor, parentanchor, apiobject.name)
+			end
+			return string.format('#%s.%s', parentanchor, apiobject.name)
+		end
+
+		-- Create anchor for current object
+		local currentapiobjectanchor = M.anchor( apiobject )
+		if not currentapiobjectanchor then
+			return nil, string.format('Unable to generate anchor for `%s object.', apiobject.tag)
+		end
+
 		-- This item may be related to ...
 		if apiobject.parent and apiobject.parent.tag == 'file' then
-			-- a global defined in another module
-			return M.linkto( apiobject.parent ) ..'#'.. M.anchor( apiobject )
-		elseif apiobject.parent.tag == 'recordtypedef' then
-			-- a type
-			local parentfile =  apiobject.parent.parent
-			if parentfile then
-				return  M.anchor( parentfile ) ..'#'.. M.anchor( apiobject.parent ) ..'.'.. apiobject.name
+
+			-- A global defined in another module
+			local linktoparent = M.linkto( apiobject.parent )
+
+			-- Check if it is possible to create a link
+			if not linktoparent then
+				return nil, string.format('Unable to generate link for `%s parent.', apiobject.parent.tag)
 			end
-			return '#'..M.anchor( apiobject.parent ) ..'.'.. apiobject.name
+
+			-- Create actual link
+			return string.format('%s#%s', linktoparent, currentapiobjectanchor)
 		end
+
 		-- This item reference a global definition
-		return '#'..M.anchor( apiobject )
+		return string.format('#%s', currentapiobjectanchor)
 	end
 }
 ---
@@ -95,11 +141,11 @@ function M.linkto( apiobject )
 	if not tag then
 		return nil, 'Link generation is impossible as no tag has been provided.'
 	end
-	return nil, 'No link generation available for `'..tag..'.'
+	return nil, string.format('No link generation available for `%s.', tag)
 end
 M.prettynametypes = {
-	primitivetyperef = function(o) return '#'..o.typename end,
-	externaltyperef = function(o) return o.modulename..'#'..o.typename end,
+	primitivetyperef = function(o) return string.format('#%s', o.typename) end,
+	externaltyperef = function(o) return string.format('%s#%s', o.modulename, o.typename) end,
 	file = function(o) return o.name end,
 	item = function( apiobject )
 
@@ -129,7 +175,7 @@ M.prettynametypes = {
 			if not file then
 				-- This type has no container,
 				-- it may be created from a shorcut notation
-				return '#'..parent.name..'.'..apiobject.name
+				return string.format('#%s.%s', parent.name, apiobject.name)
 			end
 			definition = file.types[ apiobject.type.typename ]
 		end
@@ -137,13 +183,13 @@ M.prettynametypes = {
 		-- When type is not available, just provide item name prefixed with parent
 		if not definition then
 			local prefix = ( typefield and parent.name ) and parent.name.. '.' or '' 
-			return prefix .. apiobject.name
+			return string.format('%s%s', prefix, apiobject.name)
 		elseif definition.tag == 'recordtypedef' then
 			-- In case of record return item name prefixed with module name if available
 			if global then
 				return apiobject.name
 			else
-				return parent.name ..'.'..apiobject.name
+				return string.format('%s.%s', parent.name, apiobject.name)
 			end
 		else
 			--
@@ -171,7 +217,7 @@ M.prettynametypes = {
 				fname = fname .. parent.name ..( hasfirstself and ':' or '.' )
 			end
 			-- Append function parameters
-			return fname .. apiobject.name .. '(' .. table.concat( paramlist ) ..')'
+			return string.format('%s%s(%s)', fname, apiobject.name, table.concat(paramlist))
 		end
 	end
 }
@@ -194,7 +240,7 @@ function M.prettyname( apiobject )
 	elseif not tag then
 		return nil, 'No pretty name available as no tag has been provided.'
 	end
-	return nil, 'No pretty name for `'..tag..'.'
+	return nil, string.format('No pretty name for `%s.', tag)
 end
 ---
 -- Just make a string print table in HTML.
