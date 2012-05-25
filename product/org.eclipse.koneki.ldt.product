@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Lua Development Tools Product (Incubator)" uid="org.eclipse.koneki.ldt.product-product" id="org.eclipse.koneki.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="0.8.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Lua Development Tools Product (Incubation)" uid="org.eclipse.koneki.ldt.product-product" id="org.eclipse.koneki.ldt.branding.product" application="org.eclipse.ui.ide.workbench" version="0.8.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.eclipse.koneki.ldt.branding/ldt_about.png"/>
