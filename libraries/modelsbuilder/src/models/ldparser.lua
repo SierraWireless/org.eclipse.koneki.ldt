@@ -371,6 +371,7 @@ local function parsethirdtag( part )
 	parsedtag.description =  cleandescription(part.comment:sub(endoffset+2,-1))
 	return parsedtag
 end
+
 ------------------------------------------------------------
 -- split string comment in several part
 -- return list of {comment = string, offset = number}
@@ -381,24 +382,26 @@ local function split(stringcomment,commentstart)
 	local result = {}
 
 	-- manage case where the comment start by @
-	-- (we must ignore the inline see tag @{...})
-	local at_startoffset, at_endoffset = stringcomment:find("^%s+@[^{]",partstart)
+	-- (we must ignore the inline see tag @{..})
+	local at_startoffset, at_endoffset = stringcomment:find("^%s*@[^{]",partstart)
 	if at_endoffset then
-		partstart = at_endoffset-1
+		partstart = at_endoffset-1 -- we start before the @ and the non '{' character
 	end
 
 	-- split comment
 	-- (we must ignore the inline see tag @{..})
 	repeat
-		at_startoffset, at_endoffset = stringcomment:find("[\n\r]%s+@[^{]",partstart)
-		local partend = (at_endoffset or #stringcomment+1) -2
-		table.insert(result,
-								{ comment = stringcomment:sub (partstart,partend) ,
-									offset = partstart}
-								)
+		at_startoffset, at_endoffset = stringcomment:find("[\r\n]%s*@[^{]",partstart)
+		local partend
+		if at_endoffset then
+			partend= at_endoffset - 2 -- we start before the @ and the non '{' character
+		else
+			partend = #stringcomment -- we don't find any pattern so the end is the end of the string
+		end
+		table.insert(result, { comment = stringcomment:sub (partstart,partend) ,
+								offset = partstart})
 		partstart = partend+1
 	until not at_endoffset
-
 	return result
 end
 
