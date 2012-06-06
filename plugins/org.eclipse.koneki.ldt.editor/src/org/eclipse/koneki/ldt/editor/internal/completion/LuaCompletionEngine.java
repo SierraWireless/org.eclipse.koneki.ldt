@@ -195,6 +195,7 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 		// search the begin on the string sequence to autocomplete
 		int currentPosition = position;
 		int lastValidPosition = position;
+		boolean lastCharIsIndex = false;
 		boolean finish = false;
 		do {
 			currentPosition--;
@@ -204,10 +205,16 @@ public class LuaCompletionEngine extends ScriptCompletionEngine {
 			final boolean isIdentifierPart = Character.isLetterOrDigit(currentChar) || currentChar == '_';
 
 			// we stop if we found a character which is neiter a identifier part or an operator
-			if (isIdentifierPart || isIndexChar || isInvokeChar)
-				lastValidPosition = currentPosition;
-			else
+			// or if we found the concatenation character (..)
+			if (lastCharIsIndex && isIndexChar) { // we found a the .. char
+				lastValidPosition = lastValidPosition + 1;
 				finish = true;
+			} else if (isIdentifierPart || isIndexChar || isInvokeChar) { // we found a valid char
+				lastValidPosition = currentPosition;
+				lastCharIsIndex = isIndexChar;
+			} else {
+				finish = true;
+			}
 
 			// if we are at the end of the file it's finish too
 		} while (!finish && currentPosition > 0);
