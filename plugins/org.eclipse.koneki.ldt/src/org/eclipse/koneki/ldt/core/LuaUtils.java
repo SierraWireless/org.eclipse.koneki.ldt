@@ -16,10 +16,13 @@ import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -393,5 +396,34 @@ public final class LuaUtils {
 			final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
 			throw new CoreException(status);
 		}
+	}
+
+	/**
+	 * @return all Open Lua project in the workspace
+	 */
+	public static final IProject[] getLuaProjects() {
+		List<IProject> luaProjects = new LinkedList<IProject>();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		for (IProject iProject : projects) {
+			try {
+				if (iProject.isAccessible() && iProject.hasNature(LuaNature.ID)) {
+					luaProjects.add(iProject);
+				}
+			} catch (CoreException e) {
+				// must not append
+				Activator.logWarning("Unexcepted error when collecting Lua project", e); //$NON-NLS-1$
+			}
+		}
+		return luaProjects.toArray(new IProject[luaProjects.size()]);
+	}
+
+	public static boolean isLuaProject(IProject project) {
+		try {
+			return project.hasNature(LuaNature.ID);
+		} catch (CoreException e) {
+			// must not append
+			Activator.logWarning("Unexcepted error when checking if project is a Lua project", e); //$NON-NLS-1$
+		}
+		return false;
 	}
 }
