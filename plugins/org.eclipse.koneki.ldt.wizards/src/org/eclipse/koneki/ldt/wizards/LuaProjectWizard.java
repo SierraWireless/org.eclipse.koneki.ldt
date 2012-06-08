@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.wizards;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard;
 import org.eclipse.dltk.ui.wizards.ProjectCreator;
 import org.eclipse.dltk.ui.wizards.ProjectWizardSecondPage;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.wizards.pages.LuaProjectSettingsPage;
@@ -32,7 +35,25 @@ public class LuaProjectWizard extends GenericDLTKProjectWizard {
 	@Override
 	public void addPages() {
 		addPage(getFirstPage());
-		addPage(new ProjectWizardSecondPage(getFirstPage()));
+		addPage(new ProjectWizardSecondPage(getFirstPage()) {
+			@Override
+			protected void updateStatus(IStatus status) {
+				super.updateStatus(status);
+
+				// when the buildpath change, check if there are at least one folder in the source path
+				IBuildpathEntry[] rawBuildPath = getRawBuildPath();
+				boolean sourcepathfound = false;
+				for (IBuildpathEntry buildpathEntry : rawBuildPath) {
+					if (buildpathEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE) {
+						sourcepathfound = true;
+						break;
+					}
+				}
+				if (!sourcepathfound) {
+					setMessage(Messages.LuaProjectWizard_warning_noSourceFolder, IMessageProvider.WARNING);
+				}
+			}
+		});
 	}
 
 	@Override

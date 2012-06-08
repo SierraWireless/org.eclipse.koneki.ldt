@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.wizards.pages;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
 import org.eclipse.koneki.ldt.core.buildpath.LuaExecutionEnvironment;
 import org.eclipse.swt.widgets.Composite;
@@ -21,9 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  * <li>hosts</li>
  * </ul>
  */
-public class LuaProjectSettingsPage extends ProjectWizardFirstPage
-// implements Observer
-{
+public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Observer {
 
 	private LuaExecutionEnvironmentGroup luaExecutionEnvironmentGroup;
 
@@ -58,8 +59,6 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage
 
 	protected LuaExecutionEnvironmentGroup createExecutionEnvironmentGroup(final Composite composite) {
 		final LuaExecutionEnvironmentGroup eeGroup = new LuaExecutionEnvironmentGroup(composite);
-		// Listen to Execution Environment list changes
-		// eeGroup.addObserver(this);
 		return eeGroup;
 	}
 
@@ -80,14 +79,29 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage
 		return null;
 	}
 
-	// @Override
-	// public boolean isPageComplete() {
-	// return super.isPageComplete() && getExecutionEnvironment() != null;
-	// }
-	//
-	// @Override
-	// public void update(Observable o, Object arg) {
-	// getContainer().updateButtons();
-	// validateProject();
-	// }
+	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+		fLocationGroup.addObserver(this);
+	}
+
+	@Override
+	public boolean isPageComplete() {
+		// we override it to :
+		// not allow to finish the wizard when the user choose to create a project from an existing location
+		// The goal is to force the user to go to the buildpath page to set its sourcepath.
+		return super.isPageComplete() && (!fLocationGroup.isExternalProject() || !isCurrentPage());
+	}
+
+	@Override
+	public boolean canFlipToNextPage() {
+		// we override to use the parent isCompletePage method.
+		// (to be able to go next page even if an existing location for the project is chosen)
+		return super.isPageComplete() && getNextPage() != null;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		getContainer().updateButtons();
+	}
 }

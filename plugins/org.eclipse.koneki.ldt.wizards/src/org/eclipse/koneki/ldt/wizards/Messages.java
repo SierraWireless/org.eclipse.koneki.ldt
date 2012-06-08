@@ -16,6 +16,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.wizards.messages"; //$NON-NLS-1$
 	public static String LuaProjectCreatorInitializingSourceFolder;
+	public static String LuaProjectWizard_warning_noSourceFolder;
 	public static String LuaProjectWizardProjectWindowTitle;
 	static {
 		// initialize resource bundle
