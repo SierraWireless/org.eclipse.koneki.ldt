@@ -12,7 +12,9 @@ package org.eclipse.koneki.ldt.debug.core;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -48,6 +50,9 @@ public class LuaAbsoluteFileURIBuildpathSourceContainer extends AbstractSourceCo
 			return new Object[0];
 		}
 
+		// -----------------------------------------------------------------
+		// In a first time, we search in the build path of the workspace
+
 		// get launch configuration
 		final ILaunchConfiguration configuration = getDirector().getLaunchConfiguration();
 		String projectName;
@@ -65,7 +70,11 @@ public class LuaAbsoluteFileURIBuildpathSourceContainer extends AbstractSourceCo
 		if (moduleSource != null && moduleSource.getModelElement() != null && moduleSource.getModelElement().getResource() instanceof IStorage)
 			return new Object[] { moduleSource.getModelElement().getResource() };
 
-		return new Object[0];
+		// -----------------------------------------------------------------
+		// In we don't find resource we search in all workspace
+		IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(sourceURI);
+		Object[] result = Arrays.copyOf(files, files.length, Object[].class);
+		return result;
 	}
 
 	/**

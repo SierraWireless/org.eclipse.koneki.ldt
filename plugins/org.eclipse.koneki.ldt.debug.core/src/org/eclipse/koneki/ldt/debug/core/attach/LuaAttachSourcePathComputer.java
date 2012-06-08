@@ -21,6 +21,11 @@ import org.eclipse.koneki.ldt.debug.core.LuaDebugConstant;
 import org.eclipse.koneki.ldt.debug.core.LuaModuleURIBuildpathSourceContainer;
 import org.eclipse.koneki.ldt.debug.core.LuaReplacePathSourceContainer;
 
+/**
+ * This class is responsible to find the object (in most of case IResource) for a given sourcename.<br>
+ * The sourceName is calculated by the ISourceLookupDirector (LuaSourceLookupDirector)<br>
+ * In our case this sourceName is always a string with the URI format.
+ */
 public class LuaAttachSourcePathComputer extends ScriptSourcePathComputer {
 
 	@Override
