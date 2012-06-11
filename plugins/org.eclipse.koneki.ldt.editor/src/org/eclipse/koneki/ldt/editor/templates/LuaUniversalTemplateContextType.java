@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,13 @@ public class LuaUniversalTemplateContextType extends ScriptTemplateContextType {
 	public static final String CONTEXT_TYPE_ID = "LuaUniversalTemplateContextType"; //$NON-NLS-1$
 
 	public LuaUniversalTemplateContextType() {
+		super();
+		setupLuaResolvers();
+	}
+
+	private void setupLuaResolvers() {
+		addResolver(new LuaScriptTemplateVariables.SourceModuleTemplateVariableResolver());
+		addResolver(new LuaScriptTemplateVariables.FullSourceModuleTemplateVariableResolver());
 	}
 
 	public LuaUniversalTemplateContextType(String id, String name) {

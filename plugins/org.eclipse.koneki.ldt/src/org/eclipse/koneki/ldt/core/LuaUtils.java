@@ -54,7 +54,30 @@ public final class LuaUtils {
 	}
 
 	/**
-	 * @return full name of a module with dot syntax <br>
+	 * @return name of the module (without package qualifier) (no support of init.lua)
+	 */
+	public static String getModuleName(ISourceModule module) {
+		String moduleName = module.getElementName();
+		if (moduleName.endsWith(".lua")) { //$NON-NLS-1$
+			moduleName = moduleName.replaceFirst("\\.lua$", ""); //$NON-NLS-1$//$NON-NLS-2$
+		}
+		return moduleName;
+	}
+
+	/**
+	 * @return name of the module (without package qualifier) (no support of init.lua)
+	 */
+	public static String getModuleName(final IModuleSource module) {
+		final IModelElement modelElement = module.getModelElement();
+		if (modelElement instanceof ISourceModule) {
+			return getModuleName((ISourceModule) modelElement);
+		} else {
+			return module.getFileName();
+		}
+	}
+
+	/**
+	 * @return full name of a module with dot syntax (support init.lua case)<br>
 	 * 
 	 *         e.g. : socket.core
 	 */
@@ -68,16 +91,12 @@ public final class LuaUtils {
 	}
 
 	/**
-	 * @return full name of a module with dot syntax <br>
+	 * @return full name of a module with dot syntax (support init.lua case) <br>
 	 * 
 	 *         e.g. : socket.core
 	 */
 	public static String getModuleFullName(final ISourceModule module) {
-		// get module name
-		String moduleName = module.getElementName();
-		if (moduleName.endsWith(".lua")) { //$NON-NLS-1$
-			moduleName = moduleName.replaceFirst("\\.lua$", ""); //$NON-NLS-1$//$NON-NLS-2$
-		}
+		String moduleName = getModuleName(module);
 
 		// get prefix
 		String prefix = null;
