@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.eclipse.koneki.ldt.debug.core.attach.LuaAttachLaunchConfigurationDelegate"
+            delegate="org.eclipse.koneki.ldt.debug.core.internal.attach.LuaAttachLaunchConfigurationDelegate"
             id="org.eclipse.koneki.ldt.debug.core.luaattachdebug"
             modes="debug"
             name="%RemoteLuaLaunchConfigurationType.name"
@@ -26,25 +26,25 @@
       <debugModel
             debugModelId="org.eclipse.koneki.ldt.nature.debugModel"
             natureId="org.eclipse.koneki.ldt.nature"
-            typeFactory="org.eclipse.koneki.ldt.debug.core.LuaTypeFactory"
-            variableNameComparator="org.eclipse.koneki.ldt.debug.core.LuaVariableComparator">
+            typeFactory="org.eclipse.koneki.ldt.debug.core.internal.LuaTypeFactory"
+            variableNameComparator="org.eclipse.koneki.ldt.debug.core.internal.LuaVariableComparator">
       </debugModel>
    </extension>
    <extension point="org.eclipse.core.runtime.preferences">
       <initializer 
-        class="org.eclipse.koneki.ldt.debug.core.LuaDebugPreferenceInitializer"/>
+        class="org.eclipse.koneki.ldt.debug.core.internal.LuaDebugPreferenceInitializer"/>
   </extension>
     <extension
         point="org.eclipse.debug.core.sourceLocators">
         <sourceLocator
-           class="org.eclipse.koneki.ldt.debug.core.LuaSourceLookupDirector"
+           class="org.eclipse.koneki.ldt.debug.core.internal.LuaSourceLookupDirector"
            id="org.eclipse.koneki.ldt.debug.core.SourceLookup"
            name="%LuaSourceLocator.name" />
    </extension>
    <extension 
         point="org.eclipse.debug.core.sourcePathComputers">
         <sourcePathComputer
-            class="org.eclipse.koneki.ldt.debug.core.attach.LuaAttachSourcePathComputer"
+            class="org.eclipse.koneki.ldt.debug.core.internal.attach.LuaAttachSourcePathComputer"
             id="org.eclipse.koneki.ldt.debug.core.SourcePathComputer"/>
    </extension>
     <extension

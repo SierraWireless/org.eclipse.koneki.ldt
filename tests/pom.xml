@@ -11,11 +11,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.eclipse.koneki.ldt.lua.tests</module>
+		<module>org.eclipse.koneki.ldt.jnlua.tests</module>
 		<module>org.eclipse.koneki.ldt.metalua.tests</module>
-		<module>org.eclipse.koneki.ldt.parser.tests</module>
-		<module>org.eclipse.koneki.ldt.editor.tests</module>
-		<module>org.eclipse.koneki.ldt.tests</module>
+		<module>org.eclipse.koneki.ldt.core.tests</module>
+		<module>org.eclipse.koneki.ldt.ui.tests</module>
 	</modules>
 	<build>
 		<plugins>

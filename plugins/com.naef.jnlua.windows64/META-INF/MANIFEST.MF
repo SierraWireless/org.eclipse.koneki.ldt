@@ -8,3 +8,4 @@ Fragment-Host: com.naef.jnlua;bundle-version="0.9.1"
 Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86_64))
 Bundle-NativeCode: lib/lua5.1.dll ; lib/jnlua5.1.dll
 Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

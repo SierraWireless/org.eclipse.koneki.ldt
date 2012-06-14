@@ -1,7 +1,7 @@
-#Tue Feb 08 11:11:27 CET 2011
+#Wed Jun 13 16:57:10 CEST 2012
 compilers.f.unresolved-features=1
 compilers.f.unresolved-plugins=1
-compilers.incompatible-environment=1
+compilers.incompatible-environment=2
 compilers.p.build=1
 compilers.p.build.bin.includes=1
 compilers.p.build.encodings=1

@@ -19,8 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.koneki.ldt.metalua.Metalua;
-import org.eclipse.koneki.ldt.metalua.tests.Suite;
+import org.eclipse.koneki.ldt.metalua.internal.Metalua;
+import org.eclipse.koneki.ldt.metalua.tests.AllMetaluaTests;
 import org.osgi.framework.Bundle;
 
 import com.naef.jnlua.LuaException;
@@ -33,9 +33,9 @@ import com.naef.jnlua.LuaState;
  * 
  */
 public class TestMetalua extends TestCase {
-	private static Bundle BUNDLE;
+	private static final Bundle BUNDLE;
 	static {
-		BUNDLE = Platform.getBundle(Suite.PLUGIN_ID);
+		BUNDLE = Platform.getBundle(AllMetaluaTests.PLUGIN_ID);
 	}
 
 	private LuaState state = null;
@@ -51,7 +51,7 @@ public class TestMetalua extends TestCase {
 	/** Make sure that syntax errors are catchable by Lua exception */
 	public void testHandleErrors() {
 		boolean error = false;
-		String message = new String();
+		String message = ""; //$NON-NLS-1$
 		try {
 			LuaState s = Metalua.newState();
 			s.load("for", "badForStatement"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -81,6 +81,7 @@ public class TestMetalua extends TestCase {
 			state.call(0, 0);
 			fail("Able to load invalid code: " + invalidCode); //$NON-NLS-1$
 		} catch (LuaException e) {
+			assertTrue(true);
 		}
 	}
 
@@ -112,18 +113,24 @@ public class TestMetalua extends TestCase {
 		}
 	}
 
-	/** Run Metalua source file */
-	public void testRunMetaluaFile() {
+	/**
+	 * Run Metalua source file
+	 */
+	public void testRunMetaluaFile() throws IOException {
 		// Proofing valid file
+		FileInputStream input = null;
 		try {
 			File file = new File(path("/scripts/introspection.mlua")); //$NON-NLS-1$
-			FileInputStream input = new FileInputStream(file);
+			input = new FileInputStream(file);
 			state.load(input, "metaluaFile"); //$NON-NLS-1$
 			state.call(0, 0);
 		} catch (LuaException e) {
 			fail(e.getMessage());
 		} catch (IOException e) {
 			fail(e.getMessage());
+		} finally {
+			if (input != null)
+				input.close();
 		}
 	}
 

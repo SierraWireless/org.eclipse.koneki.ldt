@@ -12,34 +12,27 @@
 
 <plugin>
    <extension
-         point="org.eclipse.dltk.launching.interpreterInstallTypes">
-      <interpreterInstallType
-            class="org.eclipse.koneki.ldt.ui.internal.interpreter.LuaInterpreterInstallType"
-            id="org.eclipse.koneki.ldt.interpreterInstallType">
-      </interpreterInstallType>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.eclipse.koneki.ldt.ui.preferences.GlobalLuaPreferencePage"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.GlobalLuaPreferencePage"
             id="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             name="%preference.page.name.lua">
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
-            class="org.eclipse.koneki.ldt.ui.preferences.LuaUserLibraryPreferencePage"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaUserLibraryPreferencePage"
             id="org.eclipse.koneki.ldt.ui.userlibrarypath"
             name="%preference.page.name.userlib">
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
-            class="org.eclipse.koneki.ldt.ui.preferences.LuaExecutionEnvironmentPreferencePage"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaExecutionEnvironmentPreferencePage"
             id="org.eclipse.koneki.ldt.ui.executionenvironmentpreferencepage"
             name="%preference.page.name.executionenvironment">
       </page>
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
-            class="org.eclipse.koneki.ldt.ui.preferences.LuaTodoTaskPreferencePage"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaTodoTaskPreferencePage"
             id="org.eclipse.koneki.ldt.ui.todo"
             name="%preference.page.name.todotasks"/>
    </extension>
@@ -54,7 +47,7 @@
    <extension
          point="org.eclipse.dltk.ui.search">
       <occurrencesFinder
-            class="org.eclipse.koneki.ldt.ui.search.LuaModelElementOccurrencesFinder"
+            class="org.eclipse.koneki.ldt.ui.internal.search.LuaModelElementOccurrencesFinder"
             nature="org.eclipse.koneki.ldt.nature">
       </occurrencesFinder>
    </extension>
@@ -69,7 +62,7 @@
        point="org.eclipse.ui.propertyPages">
     <page
           category="org.eclipse.koneki.ldt.ui.lua.page"
-          class="org.eclipse.koneki.ldt.ui.properties.LuaBuildPathPropertyPage"
+          class="org.eclipse.koneki.ldt.ui.internal.properties.LuaBuildPathPropertyPage"
           id="org.eclipse.koneki.ldt.ui.BuildpathProperties"
           name="%properties.page.name.buildpath">
       <enabledWhen>
@@ -79,7 +72,7 @@
       </enabledWhen>
     </page>
     <page
-          class="org.eclipse.koneki.ldt.ui.properties.LuaPropertyPage"
+          class="org.eclipse.koneki.ldt.ui.internal.properties.LuaPropertyPage"
           id="org.eclipse.koneki.ldt.ui.lua.page"
           name="%properties.page.name.lua">
       <enabledWhen>
@@ -90,7 +83,7 @@
     </page>
     <page
           category="org.eclipse.koneki.ldt.ui.lua.page"
-          class="org.eclipse.koneki.ldt.ui.preferences.LuaTodoTaskPreferencePage"
+          class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaTodoTaskPreferencePage"
           id="org.eclipse.koneki.ldt.ui.todo.propertyPage"
           name="%properties.page.name.todotask">
       <enabledWhen>
@@ -103,13 +96,13 @@
      <extension
            point="org.eclipse.dltk.ui.buildpathContainerPage">
         <buildpathContainerPage
-              class="org.eclipse.dltk.internal.ui.wizards.buildpath.UserLibraryWizardPage"
+              class="org.eclipse.dltk.internal.ui.internal.wizards.buildpath.UserLibraryWizardPage"
               id="org.eclipse.koneki.ldt.ui.luauserlibrariespage"
               name="Lua User Libraries"
               nature="org.eclipse.koneki.ldt.nature">
         </buildpathContainerPage>
         <buildpathContainerPage
-              class="org.eclipse.koneki.ldt.ui.buildpath.LuaExecutionEnvironmentWizardPage"
+              class="org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentWizardPage"
               id="org.eclipse.koneki.ldt.ui.luaexecutionenvironmentpage"
               name="Lua Execution Environment"
               nature="org.eclipse.koneki.ldt.nature">
@@ -136,7 +129,7 @@
        <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.eclipse.koneki.ldt.ui.perspectives.LuaPerspectiveFactory"
+            class="org.eclipse.koneki.ldt.ui.internal.LuaPerspectiveFactory"
             icon="icons/obj16/lua_pers.png"
             id="org.eclipse.koneki.ldt.ui.luaperspective"
             name="%perspective.name">
@@ -153,7 +146,7 @@
        <extension
              point="org.eclipse.ui.handlers">
           <handler
-                class="org.eclipse.koneki.ldt.ui.handlers.LuaExecutionEnvironmentBuildpathContainerDocumentationCommandHandler"
+                class="org.eclipse.koneki.ldt.ui.internal.handlers.LuaExecutionEnvironmentBuildpathContainerDocumentationCommandHandler"
                 commandId="org.eclipse.koneki.ldt.ui.buildpathcontainer.documentation">
           </handler>
        </extension>
@@ -185,11 +178,203 @@
        <extension
              point="org.eclipse.core.expressions.propertyTesters">
           <propertyTester
-                class="org.eclipse.koneki.ldt.ui.propertytesters.LuaExecutionEnvironmentContainerPropertyTester"
+                class="org.eclipse.koneki.ldt.ui.internal.propertytesters.LuaExecutionEnvironmentContainerPropertyTester"
                 id="org.eclipse.koneki.ldt.ui.documentation.propertytestter"
                 namespace="org.eclipse.koneki.ldt.ui.namespace"
                 properties="containsLuaExecutionEnvironmentContainer"
                 type="org.eclipse.dltk.internal.ui.scriptview.BuildPathContainer">
           </propertyTester>
        </extension>
+          <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.koneki.ldt.category"
+            name="%category.name">
+      </category>
+      <wizard
+            category="org.eclipse.koneki.ldt.category"
+            class="org.eclipse.koneki.ldt.ui.wizards.LuaProjectWizard:org.eclipse.koneki.ldt.nature"
+            finalPerspective="org.eclipse.koneki.ldt.ui.luaperspective"
+            icon="icons/obj16/lua_newprj_wiz.gif"
+            id="org.eclipse.koneki.ldt.wizard"
+            name="%wizard.name"
+            project="true">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.koneki.ldt.ui.luaperspective">
+         <newWizardShortcut
+               id="org.eclipse.koneki.ldt.wizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
+    <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.koneki.ldt.ui.internal.editor.LuaEditor"
+            contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
+            default="false"
+            extensions="lua"
+            icon="icons/obj16/lua-logo.gif"
+            id="org.eclipse.koneki.ldt.ui.editor"
+            name="%editor.name">
+         <contentTypeBinding
+               contentTypeId="org.eclipse.koneki.ldt.content-type">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.koneki.ldt.ui.internal.LuaPreferenceInitializer">
+      </initializer>
+      <initializer
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaFormatterPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.modelLabelProvider">
+      <modelLabelProvider
+            class="org.eclipse.koneki.ldt.ui.internal.editor.navigation.LuaLabelProvider"
+            id="org.eclipse.koneki.ldt.editor.modelLabelProvider"
+            language="org.eclipse.koneki.ldt.nature">
+      </modelLabelProvider>
+   </extension>
+ <extension
+         point="org.eclipse.dltk.core.completionEngine">
+      <completionEngine
+            class="org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaCompletionEngine"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </completionEngine>
+   </extension>
+   <extension
+         id="LuaTypeCompletionProposalComputer"
+         name="%extension.name"
+         point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+      <scriptCompletionProposalComputer
+            activate="true"
+            categoryId="org.eclipse.dltk.ui.scriptTypeProposalCategory"
+            class="org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaCompletionProposalComputer"
+            toolkitId="org.eclipse.koneki.ldt.nature">
+         <partition
+               type="__dftl_partition_content_type">
+         </partition>
+      </scriptCompletionProposalComputer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <contextType
+            class="org.eclipse.koneki.ldt.ui.internal.editor.templates.LuaUniversalTemplateContextType"
+            id="LuaUniversalTemplateContextType"
+            name="%templates.context.lua">
+      </contextType>
+       <include
+          file="templates/templates.xml"
+          translations="templates/templates.properties">
+       </include>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.koneki.ldt.editor.preferences"
+            class="org.eclipse.koneki.ldt.ui.internal.editor.templates.LuaTemplatePreferencePage"
+            id="org.eclipse.koneki.ldt.templates.Template"
+            name="%preference.templates.name">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaFormatterPreferencePage"
+            id="org.eclipse.koneki.ldt.formatter.preferences"
+            name="%preference.formatter.name">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.editor.preferences"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaSmartTypingPreferencePage"
+            id="org.eclipse.koneki.ldt.typing.preferences"
+            name="%preference.typing.name">
+      </page>
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+	        class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaEditorPreferencePage"
+            id="org.eclipse.koneki.ldt.editor.preferences"
+	        name="%preference.editor.name"/>
+	  <page
+            category="org.eclipse.koneki.ldt.editor.preferences"
+	        class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaEditorSyntaxColoringPreferencePage"
+            id="org.eclipse.koneki.ldt.syntaxcoloring.preferences"
+	        name="%preference.syntaxcoloring.name"/>
+	  <page
+            category="org.eclipse.koneki.ldt.editor.preferences"
+	        class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaEditorAssistancePreferencePage"
+            id="org.eclipse.koneki.ldt.codeassistance.preferences"
+	        name="%preference.codeassistance.name"/>
+
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.language">
+      <language
+            class="org.eclipse.koneki.ldt.ui.internal.LuaUILanguageToolkit"
+            nature="org.eclipse.koneki.ldt.nature"
+            priority="0">
+      </language>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.completion">
+      <proposalLabelProvider
+            class="org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaCompletionProposalLabelProvide"
+            nature="org.eclipse.koneki.ldt.nature">
+      </proposalLabelProvider>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.formatterFactory">
+      <engineContribution
+            natureId="org.eclipse.koneki.ldt.nature">
+         <formatterFactory
+               class="org.eclipse.koneki.ldt.ui.internal.editor.formatter.LuaFormatterFactory"
+               id="org.eclipse.koneki.ldt.editor.LuaFormatterFactory"
+               priority="10">
+         </formatterFactory>
+      </engineContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="org.eclipse.koneki.ldt.ui.lua.page"
+            class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaFormatterPreferencePage"
+            id="org.eclipse.koneki.ldt.editor.propertyPage.formatter"
+            name="%preference.formatter.name">
+		<enabledWhen>
+			<adapt type="org.eclipse.core.resources.IProject">
+				<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.koneki.ldt.nature"/>
+			</adapt>
+		</enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
+         <part
+               id="org.eclipse.koneki.ldt.editor">
+         </part>
+      </actionSetPartAssociation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            name="%context.name"
+            description="%context.description"
+            parentId="org.eclipse.dltk.ui.scriptEditorScope"
+            id="org.eclipse.dltk.ui.luaEditorScope">
+      </context>
+   </extension>
+   <extension point="org.eclipse.dltk.ui.highlighting">
+   <highlighter
+      class="org.eclipse.koneki.ldt.ui.internal.editor.text.LuaSemanticUpdateWorker"
+      nature="org.eclipse.koneki.ldt.nature">
+   </highlighter>
+  </extension> 
 </plugin>

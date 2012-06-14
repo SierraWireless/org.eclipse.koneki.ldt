@@ -14,7 +14,7 @@ import org.eclipse.osgi.util.NLS;
 
 // CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "com.swir.linux.ide.embedded.lua.ui.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.messages"; //$NON-NLS-1$
 	public static String LuaDialogUtil_message;
 	public static String LuaDialogUtil_title;
 	static {

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.core;
 
-/**
- * Common values used across Lua wizards
- */
 public final class LuaConstants {
 	public static final String DEFAULT_MAIN_FILE = "main.lua"; //$NON-NLS-1$
 	public static final String MAIN_FILE_CONTENT = "local function main()\n\nend\nmain()\n"; //$NON-NLS-1$
 	public static final String SOURCE_FOLDER = "src"; //$NON-NLS-1$
+
+	public static final String COMMENT_STRING = "--"; //$NON-NLS-1$
+	public static final String SELF_PARAMETER = "self"; //$NON-NLS-1$
 
 	private LuaConstants() {
 	}

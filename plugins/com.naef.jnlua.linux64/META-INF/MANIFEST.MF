@@ -9,3 +9,4 @@ Eclipse-PlatformFilter: (&(osgi.os=linux)(osgi.arch=x86_64))
 Bundle-NativeCode: lib/libjnlua5.1.so ; lib/liblua5.1.so
 Bundle-ClassPath: lib/,
   .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

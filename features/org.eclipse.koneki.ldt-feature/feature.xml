@@ -34,21 +34,7 @@
    </requires>
 
    <plugin
-         id="org.eclipse.koneki.ldt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.koneki.ldt.doc.user"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.koneki.ldt.editor"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -60,12 +46,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.koneki.ldt.parser"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.koneki.ldt.ui"
@@ -89,13 +69,6 @@
          install-size="0"
          version="0.0.0"
          fragment="true"/>
-
-   <plugin
-         id="org.eclipse.koneki.ldt.wizards"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="com.naef.jnlua"
@@ -163,6 +136,13 @@
 
    <plugin
          id="org.eclipse.koneki.ldt.debug.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.koneki.ldt"
          download-size="0"
          install-size="0"
          version="0.0.0"

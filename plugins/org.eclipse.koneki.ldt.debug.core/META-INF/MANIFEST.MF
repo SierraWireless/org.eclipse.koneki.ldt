@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt.debug.core;singleton:=true
 Bundle-Version: 0.8.0.qualifier
-Bundle-Activator: org.eclipse.koneki.ldt.debug.core.Activator
+Bundle-Activator: org.eclipse.koneki.ldt.debug.core.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.dltk.launching;bundle-version="3.0.0",
@@ -12,6 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.debug;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.koneki.ldt.debug.core,
- org.eclipse.koneki.ldt.debug.core.attach
+Export-Package: org.eclipse.koneki.ldt.debug.core.internal,
+ org.eclipse.koneki.ldt.debug.core.internal.attach
 Bundle-Vendor: %Bundle-Vendor

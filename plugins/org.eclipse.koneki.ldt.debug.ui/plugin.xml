@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="org.eclipse.koneki.ldt.debug.ui.LuaAttachLaunchConfigurationTabGroup"
+            class="org.eclipse.koneki.ldt.debug.ui.internal.LuaAttachLaunchConfigurationTabGroup"
             description="%LuaAttachLaunchConfigurationTabGroup.description"
             id="org.eclipse.koneki.ldt.debug.ui.luaAttachLaunchConfigurationTabGroup"
             type="org.eclipse.koneki.ldt.debug.core.luaattachdebug">
@@ -25,14 +25,14 @@
    </extension>
    <extension point="org.eclipse.debug.ui.debugModelPresentations">
 		<debugModelPresentation
-			class="org.eclipse.koneki.ldt.debug.ui.LuaDebugModelPresentation"
+			class="org.eclipse.koneki.ldt.debug.ui.internal.LuaDebugModelPresentation"
 			id="org.eclipse.koneki.ldt.nature.debugModel">
 		</debugModelPresentation>
    </extension>
    <extension
            point="org.eclipse.dltk.debug.ui.language">
         <language
-              class="org.eclipse.koneki.ldt.debug.ui.LuaDebugUILanguageToolkit"
+              class="org.eclipse.koneki.ldt.debug.ui.internal.LuaDebugUILanguageToolkit"
               nature="org.eclipse.koneki.ldt.nature"
 		priority="0">
       </language>
@@ -64,7 +64,7 @@
           id="org.eclipse.koneki.ldt.ui.debug.contextExtensions"
           objectClass="org.eclipse.dltk.debug.core.model.IScriptVariable">
        <action
-             class="org.eclipse.koneki.ldt.debug.ui.actions.GotoFunctionDefinitionAction"
+             class="org.eclipse.koneki.ldt.debug.ui.internal.actions.GotoFunctionDefinitionAction"
              enablesFor="1"
              id="org.eclipse.koneki.ldt.ui.debug.GotoFunctionDefinitionAction"
              label="%action.label.GotoFunctionDefinitionAction">
@@ -74,8 +74,8 @@
       <extension 
     point="org.eclipse.core.runtime.adapters">
     <factory
-      adaptableType="org.eclipse.koneki.ldt.editor.LuaEditor"
-      class="org.eclipse.koneki.ldt.debug.ui.LuaEditorDebugAdapterFactory">
+      adaptableType="org.eclipse.koneki.ldt.ui.internal.editor.LuaEditor"
+      class="org.eclipse.koneki.ldt.debug.ui.internal.LuaEditorDebugAdapterFactory">
       <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
       <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
     </factory>         
@@ -84,7 +84,7 @@
     point="org.eclipse.ui.editorActions">
     <editorContribution
       id="org.eclipse.koneki.ldt.ui.BreakpointRulerActions"
-      targetID="org.eclipse.koneki.ldt.editor">
+      targetID="org.eclipse.koneki.ldt.ui.editor">
       <action
         actionID="RulerDoubleClick"
         class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
@@ -117,7 +117,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.eclipse.core.commands.IHandler2"
+            class="org.eclipse.koneki.ldt.debug.ui.internal.actions.DoNothingHandler"
             commandId="org.eclipse.debug.ui.actions.WatchCommand">
          <activeWhen>
 			<iterate>

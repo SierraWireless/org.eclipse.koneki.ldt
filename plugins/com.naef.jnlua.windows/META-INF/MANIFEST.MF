@@ -9,3 +9,4 @@ Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86))
 Bundle-NativeCode: lib/lua5.1.dll ; lib/jnlua5.1.dll
 Bundle-ClassPath: lib/,
   .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

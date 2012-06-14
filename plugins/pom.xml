@@ -21,13 +21,10 @@
     <module>org.eclipse.koneki.ldt</module>
     <module>org.eclipse.koneki.ldt.branding</module>
     <module>org.eclipse.koneki.ldt.doc.user</module>
-    <module>org.eclipse.koneki.ldt.editor</module>
     <module>org.eclipse.koneki.ldt.metalua</module>
     <module>org.eclipse.koneki.ldt.metalua.32bits</module>
     <module>org.eclipse.koneki.ldt.metalua.64bits</module>
-    <module>org.eclipse.koneki.ldt.parser</module>
     <module>org.eclipse.koneki.ldt.ui</module>
-    <module>org.eclipse.koneki.ldt.wizards</module>
     <module>org.eclipse.koneki.ldt.debug.core</module>
     <module>org.eclipse.koneki.ldt.debug.ui</module>
   </modules>

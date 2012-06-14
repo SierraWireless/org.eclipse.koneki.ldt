@@ -20,23 +20,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The activator class controls the plug-in life cycle.
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	/** The Constant PLUGIN_ID. */
 	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.metalua"; //$NON-NLS-1$
 
-	// The shared instance
-	/** The plugin. */
 	private static Activator plugin;
 
-	/**
-	 * The constructor.
-	 */
 	public Activator() {
 	}
 

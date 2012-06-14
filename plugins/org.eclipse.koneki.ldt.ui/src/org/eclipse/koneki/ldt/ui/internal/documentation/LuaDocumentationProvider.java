@@ -25,10 +25,10 @@ import org.eclipse.dltk.ui.documentation.IScriptDocumentationProvider;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension2;
 import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
-import org.eclipse.koneki.ldt.Activator;
-import org.eclipse.koneki.ldt.internal.parser.IDocumentationHolder;
-import org.eclipse.koneki.ldt.parser.LuaASTModelUtils;
-import org.eclipse.koneki.ldt.parser.ast.LuaSourceRoot;
+import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
+import org.eclipse.koneki.ldt.core.internal.ast.models.common.IDocumentationHolder;
+import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 
 /**
  * In charge to find the documentation for a given "lua element" Use to feed Luadoc view and tooltip in LuaEditor

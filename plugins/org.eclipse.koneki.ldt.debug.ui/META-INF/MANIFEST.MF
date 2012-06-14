@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.koneki.ldt.debug.ui;singleton:=true
 Bundle-Version: 0.8.0.qualifier
-Bundle-Activator: org.eclipse.koneki.ldt.debug.ui.Activator
+Bundle-Activator: org.eclipse.koneki.ldt.debug.ui.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
@@ -11,16 +11,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.dltk.debug.ui;bundle-version="3.0.0",
  org.eclipse.koneki.ldt;bundle-version="0.1.0",
  org.eclipse.dltk.core;bundle-version="3.0.0",
- org.eclipse.koneki.ldt.editor;bundle-version="0.1.0",
  org.eclipse.dltk.debug;bundle-version="3.0.0",
- org.eclipse.koneki.ldt.debug.core;bundle-version="0.1.0",
  org.eclipse.ui.workbench.texteditor;bundle-version="3.6.0",
  org.eclipse.jface.text;bundle-version="3.6.0",
  org.eclipse.dltk.ui;bundle-version="3.0.0",
  org.eclipse.dltk.launching;bundle-version="3.0.0",
- org.eclipse.ui.ide;bundle-version="3.6.0"
+ org.eclipse.ui.ide;bundle-version="3.6.0",
+ org.eclipse.koneki.ldt.ui;bundle-version="0.8.0",
+ org.eclipse.koneki.ldt.debug.core;bundle-version="0.8.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.koneki.ldt.debug.ui,
- org.eclipse.koneki.ldt.debug.ui.actions
+Export-Package: org.eclipse.koneki.ldt.debug.ui.internal,
+ org.eclipse.koneki.ldt.debug.ui.internal.actions
 Bundle-Vendor: %Bundle-Vendor

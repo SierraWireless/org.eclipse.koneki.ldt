@@ -30,6 +30,7 @@ import org.eclipse.ui.splash.BasicSplashHandler;
 /**
  * Our custom Splash Handler that shows a ProgressBar and the version number
  */
+// TODO clean this class see (sierra AAF) splashHandler
 public class SplashHandler extends BasicSplashHandler {
 
 	private Font font;
@@ -65,19 +66,21 @@ public class SplashHandler extends BasicSplashHandler {
 		// version = version.substring(0, 3);
 		//final String buildId = System.getProperty("eclipse.buildId", "Version : " + version); //$NON-NLS-1$ //$NON-NLS-2$
 
-		final String buildId = "Version: " + version;
-		String buildIdLocString = product.getProperty("buildIdLocation"); //$NON-NLS-1$
-		final Point buildIdPoint = StringConverter.asPoint(buildIdLocString, new Point(280, 150));
+		final String buildId = "Version: " + version; //$NON-NLS-1$
+		if (product != null) {
+			String buildIdLocString = product.getProperty("buildIdLocation"); //$NON-NLS-1$
+			final Point buildIdPoint = StringConverter.asPoint(buildIdLocString, new Point(280, 150));
 
-		font = new Font(Display.getDefault(), new FontData("Helvetica", (Platform.getOS().equals(Platform.OS_MACOSX) ? 9 : 7), SWT.BOLD));
-		getContent().addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
-				e.gc.setForeground(getForeground());
-				e.gc.setFont(font);
-				// e.gc.setAntialias(SWT.ON);
-				e.gc.drawText(buildId, buildIdPoint.x, buildIdPoint.y, true);
-			}
-		});
+			font = new Font(Display.getDefault(), new FontData("Helvetica", (Platform.getOS().equals(Platform.OS_MACOSX) ? 9 : 7), SWT.BOLD)); //$NON-NLS-1$
+			getContent().addPaintListener(new PaintListener() {
+				public void paintControl(PaintEvent e) {
+					e.gc.setForeground(getForeground());
+					e.gc.setFont(font);
+					// e.gc.setAntialias(SWT.ON);
+					e.gc.drawText(buildId, buildIdPoint.x, buildIdPoint.y, true);
+				}
+			});
+		}
 	}
 
 	@Override

@@ -13,7 +13,7 @@ package org.eclipse.koneki.ldt.metalua.tests.internal.cases;
 
 import junit.framework.TestCase;
 
-import org.eclipse.koneki.ldt.metalua.Metalua;
+import org.eclipse.koneki.ldt.metalua.internal.Metalua;
 
 import com.naef.jnlua.LuaException;
 import com.naef.jnlua.LuaState;
@@ -23,7 +23,7 @@ public class TestMetaluaStateFactory extends TestCase {
 	/** Detect error at LuaState allocation */
 	public void testLoadable() {
 		boolean loaded = true;
-		String message = new String();
+		String message = ""; //$NON-NLS-1$
 		try {
 			LuaState state = Metalua.newState();
 			message = state.getClass().getName();
@@ -44,7 +44,7 @@ public class TestMetaluaStateFactory extends TestCase {
 	 */
 	public void testFreeStack() {
 		boolean fine = true;
-		String msg = new String();
+		String msg = ""; //$NON-NLS-1$
 
 		try {
 			fine = Metalua.newState().getTop() == 0;

@@ -6,3 +6,4 @@ Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: org.eclipse.koneki.ldt.metalua;bundle-version="0.1.0"
 Eclipse-PlatformFilter: (osgi.arch=x86)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
