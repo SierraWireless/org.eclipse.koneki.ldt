@@ -275,7 +275,7 @@ public class LuaCoroutineDbgpSession implements IDbgpSession {
 		 */
 		@Override
 		public IDbgpProperty getProperty(String name, int stackDepth, int contextId) throws DbgpException {
-			return getProperty(name, stackDepth, contextId);
+			return getProperty(null, name, stackDepth, contextId);
 		}
 
 		/**
