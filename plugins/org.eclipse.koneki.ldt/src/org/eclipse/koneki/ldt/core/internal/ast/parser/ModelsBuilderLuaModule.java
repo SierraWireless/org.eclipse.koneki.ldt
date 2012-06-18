@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.koneki.ldt.core.internal.ast.models.APIModelFactory;
+import org.eclipse.koneki.ldt.core.internal.ast.models.InternalModelFactory;
+import org.eclipse.koneki.ldt.core.internal.ast.models.ModelFactory;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.metalua.AbstractMetaLuaModule;
 
@@ -52,11 +55,14 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 	}
 
 	/**
-	 * @see org.eclipse.koneki.ldt.metalua.AbstractMetaLuaModule#loadLuaModule()
+	 * @see org.eclipse.koneki.ldt.metalua.AbstractMetaLuaModule#createLuaState()
 	 */
 	@Override
-	protected LuaState loadLuaModule() {
-		LuaState luaState = super.loadLuaModule();
+	protected LuaState createLuaState() {
+		LuaState luaState = super.createLuaState();
+		InternalModelFactory.registerInternalModelFactory(luaState);
+		APIModelFactory.registerAPIModelFactory(luaState);
+		ModelFactory.registerModelFactory(luaState);
 		return luaState;
 	}
 

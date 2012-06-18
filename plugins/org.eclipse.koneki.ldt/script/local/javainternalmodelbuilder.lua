@@ -12,34 +12,28 @@
 local J = {}
 local javaapimodelbuilder = require 'javaapimodelbuilder'
 
-local blockclass =           java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.Block'
-local callclass  =           java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.Call'
-local identifierclass =      java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier'
-local indexclass =           java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.Index'
-local invokeclass =          java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.Invoke'
-local internalcontentclass = java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaInternalContent'
-local localvarclass =        java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.file.LocalVar'
+local javainternalmodelfactory =  require 'javainternalmodelfactory'
+local javaapimodelfactory =  require 'javaapimodelfactory'  
 
 --------------------------------------
 -- create internal content java object
 function J._internalcontent(_internalcontent)
-	local jinternalcontent = internalcontentclass:new()
 
 	-- Setting body
 	local handledexpr ={}
 	local jblock = J._block(_internalcontent.content,handledexpr)
-	jinternalcontent:setContent(jblock)
+	local jinternalcontent = javainternalmodelfactory.newinternalmodel(jblock)
 
 	-- Appending global variables
 	for _, _item in ipairs(_internalcontent.unknownglobalvars) do
 		local jitem = javaapimodelbuilder._item(_item)
-		jinternalcontent:addUnknownglobalvar(jitem)
+		javainternalmodelfactory.addunknownglobalvar(jinternalcontent,jitem)
 
 		-- add occurrences
 		for _,_occurrence in ipairs(_item.occurrences) do
 			jidentifier = handledexpr[_occurrence]
 			if jidentifier then
-				jitem:addOccurrence(jidentifier)
+				javaapimodelfactory.addoccurrence(jitem,jidentifier)
 			end
 		end
 	end
@@ -51,34 +45,33 @@ end
 -- create block java object
 function J._block(_block,handledexpr)
 	-- Setting source range
-	local jblock = blockclass:new()
-	jblock:setStart(_block.sourcerange.min)
-	jblock:setEnd(_block.sourcerange.max)
+	local jblock = javainternalmodelfactory.newblock(_block.sourcerange.min,
+																						 _block.sourcerange.max)
 
 	-- Append nodes to block
 	for _, _expr in pairs(_block.content) do
 		local jexpr = J._expression(_expr,handledexpr)
-		jblock:addContent(jexpr)
+		javainternalmodelfactory.addcontent(jblock,jexpr)
 	end
 
 	for _, _localvar in pairs(_block.localvars) do
 		-- Create Java item
-		local jitem = javaapimodelbuilder._item(_localvar.item)
+		local jitem = javaapimodelbuilder._item(_localvar.item,true)
 		if _localvar.item.type and _localvar.item.type.tag == "exprtyperef" then
-			jitem:getType():setExpression(handledexpr[_localvar.item.type.expression])
+			javaapimodelfactory.setexpression(jitem,handledexpr[_localvar.item.type.expression])
 		end
 
 		-- add occurrence
 		for _,_occurrence in ipairs(_localvar.item.occurrences) do
 			jidentifier = handledexpr[_occurrence]
 			if jidentifier then
-				jitem:addOccurrence(jidentifier)
+				javaapimodelfactory.addoccurrence(jitem,jidentifier)
 			end
 		end
 
 		-- Append Java local variable definition
-		local jlocalvar  = localvarclass:new(jitem, _localvar.scope.min, _localvar.scope.max)
-		jblock:addLocalVar(jlocalvar)
+		local jlocalvar = javainternalmodelfactory.newlocalvar(jitem, _localvar.scope.min, _localvar.scope.max) 
+		javainternalmodelfactory.addlocalvar(jblock,jlocalvar)
 	end
 	return jblock
 end
@@ -103,11 +96,9 @@ end
 
 --------------------------------------
 -- create identifier java object
-function J._identifier(_identifier,handledexpr)
-	local jidentifier = identifierclass:new()
-	jidentifier:setStart(_identifier.sourcerange.min)
-	jidentifier:setEnd  (_identifier.sourcerange.max)
-
+ function J._identifier(_identifier,handledexpr)
+	local jidentifier = javainternalmodelfactory.newidentifier(_identifier.sourcerange.min,
+																												_identifier.sourcerange.max)
 	handledexpr[_identifier] =jidentifier
 	return jidentifier
 end
@@ -115,11 +106,10 @@ end
 --------------------------------------
 -- create index java object
 function J._index(_index,handledexpr)
-	local jindex = indexclass:new()
-	jindex:setStart(_index.sourcerange.min)
-	jindex:setEnd  (_index.sourcerange.max)
-	jindex:setLeft (J._expression(_index.left,handledexpr))
-	jindex:setRight(_index.right)
+  local jindex = javainternalmodelfactory.newindex(_index.sourcerange.min,
+																							_index.sourcerange.max,
+																							J._expression(_index.left,handledexpr),
+																							_index.right)
 
 	handledexpr[_index] =jindex
 	return jindex
@@ -128,10 +118,9 @@ end
 --------------------------------------
 -- create call java object
 function J._call(_call,handledexpr)
-	local jcall = callclass:new()
-	jcall:setStart(_call.sourcerange.min)
-	jcall:setEnd  (_call.sourcerange.max)
-	jcall:setFunction(J._expression(_call.func,handledexpr))
+	local jcall = javainternalmodelfactory.newcall(_call.sourcerange.min,
+																						 _call.sourcerange.max,
+																						 J._expression(_call.func,handledexpr))
 
 	handledexpr[_call] =jcall
 	return jcall
@@ -140,12 +129,11 @@ end
 --------------------------------------
 -- create invoke java object
 function J._invoke(_invoke,handledexpr)
-	local jinvoke = invokeclass:new()
-	jinvoke:setStart(_invoke.sourcerange.min)
-	jinvoke:setEnd  (_invoke.sourcerange.max)
-	jinvoke:setFunctionName(_invoke.functionname)
-	jinvoke:setRecord(J._expression(_invoke.record,handledexpr))
-
+	local jinvoke = javainternalmodelfactory.newinvoke(_invoke.sourcerange.min,
+																						 	  _invoke.sourcerange.max,
+																						    _invoke.functionname,
+																						    J._expression(_invoke.record,handledexpr))
+																						 
 	handledexpr[_invoke] =jinvoke
 	return jinvoke
 end

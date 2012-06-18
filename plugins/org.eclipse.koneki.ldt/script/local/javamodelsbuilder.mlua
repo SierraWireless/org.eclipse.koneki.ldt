@@ -9,7 +9,7 @@
 --       Kevin KIN-FOO <kkinfoo@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
-local luasourcerootclass = java.require 'org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot'
+local javamodelfactory = require "javamodelfactory"
 
 -- Just redefining classic print, as there is a flush problem calling it from Java
 local print = function (string) print(string) io.flush() end
@@ -29,7 +29,7 @@ function M.build(source)
 	-- Build AST
 	require 'errnode'
 	local ast = getast( source )
-	local root = luasourcerootclass:new(#source, true)
+	local root = javamodelfactory.newsourceroot(#source)
 
 	-- Check if an error occurred
 	local aststatus, error = pcall(mlc.check_ast, ast)
@@ -42,24 +42,22 @@ function M.build(source)
 		if errornode and errornode.lineinfo then
 			local line, column = errornode.lineinfo.first.line or 1, errornode.lineinfo.first.column or 1
 			local offset = errornode.lineinfo.first.offset or 1
-			root:setProblem(line, column, offset, error)
+			javamodelfactory.setproblem(root,line, column, offset, error)
 		else
-			root:setProblem(1, 1, 0, error)
+			javamodelfactory.setproblem(root,1, 1, 0, error)
 		end
 		return root
 	elseif ast.tag == 'Error' then
 		-- Dealing with error generated from errnode#getast
 		local line, column, offset = ast.lineinfo.first[1] or 1, ast.lineinfo.first[2] or 1, ast.lineinfo.first[3] or 1
 		local errorMessage = ast[1] or 'Unable to determine error'
-		root:setProblem(line, column, offset, errorMessage )
+		javamodelfactory.setproblem(root,line, column, offset, errorMessage )
 		return root
 	end
 
 	-- create api model
 	local apimodelbuilder = require "models.apimodelbuilder"
 	local _file = apimodelbuilder.createmoduleapi(ast)
-	-- table.print(_file,1)
-	--  io.flush()
 
 	-- Converting api model to java
 	local javaapimodelbuilder = require 'javaapimodelbuilder'
@@ -68,17 +66,13 @@ function M.build(source)
 	-- create internal model
 	local internalmodelbuilder = require "models.internalmodelbuilder"
 	local _internalcontent = internalmodelbuilder.createinternalcontent(ast)
-	--   table.print(_internalcontent,1)
-	--  io.flush()
 
 	-- Converting internal model to java
 	local javainternalmodelbuilder = require 'javainternalmodelbuilder'
 	local jinternalcontent = javainternalmodelbuilder._internalcontent(_internalcontent)
 
-
 	-- Append information from documentation
-	root:setLuaFileApi(jfile)
-	root:setInternalContent(jinternalcontent)
+	javamodelfactory.addcontent(root,jfile,jinternalcontent)
 
 	local handledcomments={}
 	return root

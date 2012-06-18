@@ -37,7 +37,7 @@ public class LuaInternalContent extends LuaASTNode {
 		return unknownglovalvars;
 	}
 
-	public void addUnknownglobalvar(final Item item) {
+	public void addUnknownGlobalVar(final Item item) {
 		unknownglovalvars.add(item);
 		item.setParent(this);
 	}

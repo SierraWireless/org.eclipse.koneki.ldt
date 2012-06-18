@@ -11,17 +11,7 @@
 --------------------------------------------------------------------------------
 local M = {}
 
-local itemclass             = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.Item")
-local returnclass           = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.Return")
-local recordtypedefclass    = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef")
-local functiontypedefclass  = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef")
-local parameterclass        = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter")
-local externaltyperefclass  = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef")
-local internaltyperefclass  = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef")
-local primitivetyperefclass = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.PrimitiveTypeRef")
-local luafileapiclass       = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI")
-local moduletyperefclass    = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.ModuleTypeRef")
-local exprtyperefclass      = java.require("org.eclipse.koneki.ldt.core.internal.ast.models.api.ExprTypeRef")
+local javaapimodelfactory =  require 'javaapimodelfactory'
 
 local print = function (string) print(string) io.flush() end
 
@@ -76,29 +66,31 @@ end
 function M._typeref (_type)
 	if not _type then return nil end
 	if _type.tag == "externaltyperef" then
-		return externaltyperefclass:new(_type.modulename, _type.typename)
+		return javaapimodelfactory.newexternaltyperef(_type.modulename, _type.typename)
 	elseif _type.tag == "internaltyperef" then
-		return internaltyperefclass:new(_type.typename)
+		return javaapimodelfactory.newinternaltyperef(_type.typename)
 	elseif _type.tag == "moduletyperef" then
-		return moduletyperefclass:new(_type.modulename,_type.returnposition)
+		return javaapimodelfactory.newmoduletyperef(_type.modulename,_type.returnposition)
 	elseif _type.tag == "exprtyperef" then
-		return exprtyperefclass:new(_type.returnposition)
+		return javaapimodelfactory.newexprtyperef(_type.returnposition)
 	elseif _type.tag == "primitivetyperef" then
-		return primitivetyperefclass:new(_type.typename)
+		return javaapimodelfactory.newprimitivetyperef(_type.typename)
 	end
 end
 
 -- create item
-function M._item(_item)
-	local jitem = itemclass:new()
-	jitem:setDocumentation(templateengine.applytemplate(_item))
-	jitem:setName(_item.name)
-	jitem:setStart(_item.sourcerange.min)
-	jitem:setEnd(_item.sourcerange.max)
-	-- Define optional type
-	if _item.type then
-		jitem:setType(M._typeref(_item.type))
-	end
+function M._item(_item,notemplate)
+	local description = ""
+	if not notemplate then 
+		description = templateengine.applytemplate(_item)
+	end 
+
+	local jitem = javaapimodelfactory.newitem(_item.name,
+																						description,
+																						_item.sourcerange.min,
+																						_item.sourcerange.max,
+																						M._typeref(_item.type))
+
 	return jitem
 end
 
@@ -108,34 +100,33 @@ function M._typedef(_typedef)
 	-- Dealing with records
 	if _typedef.tag == "recordtypedef" then
 
-		jtypedef = recordtypedefclass:new()
-		jtypedef:setName(_typedef.name)
-		jtypedef:setStart(_typedef.sourcerange.min)
-		jtypedef:setEnd(_typedef.sourcerange.max)
-		jtypedef:setDocumentation(templateengine.applytemplate(_typedef))
+		jtypedef = javaapimodelfactory.newrecordtypedef(_typedef.name,
+		                                                templateengine.applytemplate(_typedef),
+		 																								_typedef.sourcerange.min,
+		 																								_typedef.sourcerange.max)
 
 		-- Appending fields
 		for _, _item in pairs(_typedef.fields) do
 			local jitem =  M._item(_item)
-			jtypedef:addField(_item.name, jitem)
+			javaapimodelfactory.addfield(jtypedef, jitem)
 		end
 
 	elseif _typedef.tag == "functiontypedef" then
 		-- Dealing with function
-		jtypedef = functiontypedefclass:new()
+		jtypedef = javaapimodelfactory.newfunctiontypedef()
 
 		-- Appending parameters
 		for _, _param in ipairs(_typedef.params) do
-			jtypedef:addParameter( parameterclass:new(_param.name, M._typeref(_param.type), _param.description) )
+			javaapimodelfactory.addparam(jtypedef,_param.name, M._typeref(_param.type), _param.description)
 		end
 
 		-- Appending returned types
 		for _, _return in ipairs(_typedef.returns) do
-			local jreturn = returnclass:new()
+			local jreturn = javaapimodelfactory.newreturn()
 			for _, _type in ipairs( _return.types ) do
-				jreturn:addType(M._typeref(_type))
+				javaapimodelfactory.addtype(jreturn,M._typeref(_type))
 			end
-			jtypedef:addReturn(jreturn)
+			javaapimodelfactory.functionaddreturn(jtypedef,jreturn)
 		end
 	end
 	return jtypedef
@@ -144,32 +135,29 @@ end
 -- create lua file api
 function M._file(_file)
 
-	-- Fill file object
-	local jfile = luafileapiclass:new()
-
 	-- Enable links just for module file objects 
 	enablelinks()
-	jfile:setDocumentation(templateengine.applytemplate(_file))
+	local jfile = javaapimodelfactory.newfileapi(templateengine.applytemplate(_file))
 	disablelinks()
 
 	-- Adding gloval variables
 	for _, _item in pairs(_file.globalvars) do
 		-- Fill Java item
-		jfile:addGlobalVar(_item.name, M._item(_item))
+		javaapimodelfactory.addglobalvar(jfile,M._item(_item))
 	end
 
 	-- Adding returned types
 	for _, _return in ipairs(_file.returns) do
-		local jreturn = returnclass:new()
-		for _, _type in ipairs(_return.types) do
-			jreturn:addType(M._typeref(_type))
+		local jreturn = javaapimodelfactory.newreturn()
+		for _, _type in ipairs( _return.types ) do
+			javaapimodelfactory.addtype(jreturn,M._typeref(_type))
 		end
-		jfile:addReturns(jreturn)
+		javaapimodelfactory.fileapiaddreturn(jfile,jreturn)
 	end
 
 	-- Adding types defined in files
 	for _, _typedef in pairs(_file.types) do
-		jfile:addType(_typedef.name, M._typedef(_typedef))
+		javaapimodelfactory.addtypedef(jfile,_typedef.name,M._typedef(_typedef))
 	end
 
 	return jfile
