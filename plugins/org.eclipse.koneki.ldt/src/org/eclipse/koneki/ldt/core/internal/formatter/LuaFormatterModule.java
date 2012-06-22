@@ -30,40 +30,9 @@ import com.naef.jnlua.LuaState;
 public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	public static final String FORMATTER_PATH = "/script/external"; //$NON-NLS-1$
 	public static final String FORMATTER_LIB_NAME = "luaformatter"; //$NON-NLS-1$
-	public static final String INDENTATION_FUNTION = "indentCode"; //$NON-NLS-1$
+	public static final String INDENTATION_FUNTION = "indentcode"; //$NON-NLS-1$
 
 	public LuaFormatterModule() {
-	}
-
-	/**
-	 * Provide semantic depth of a given source code offset.
-	 * 
-	 * @param source
-	 *            Lua source code to analyze
-	 * @param offset
-	 *            Source code position which depth is required
-	 * @return Offset semantic depth
-	 */
-	public int depth(final String source, final int offset) {
-		// Load function
-		final LuaState lua = loadLuaModule();
-		pushLuaModule(lua);
-		lua.getField(-1, "indentLevel"); //$NON-NLS-1$
-
-		// Pass arguments
-		lua.pushString(source);
-		lua.pushInteger(offset);
-
-		// Call with parameters count and return values count
-		try {
-			lua.call(2, 1);
-		} catch (final LuaRuntimeException e) {
-			Activator.logWarning(Messages.LuaSourceFormatDepthError, e);
-			return 0;
-		}
-		final int result = lua.toInteger(-1);
-		lua.close();
-		return result > 0 ? result - 1 : result;
 	}
 
 	/**
@@ -73,27 +42,23 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 *            Lua code to indent
 	 * @param delimiter
 	 *            Line delimiter, <code>\n</code> for Linux and Unix
-	 * @param tabulation
-	 *            String used as tabulation, it could be one or several white space character like <code>' '</code> of <code>'\t'</code>
 	 * @param indentInTable
 	 *            Indicates if formating is required for table values
-	 * @param originalIndentationLevel
-	 *            Indicates original semantic depth, useful for selections
+	 * @param tabulation
+	 *            String used as tabulation, it could be one or several white space character like <code>' '</code> of <code>'\t'</code>
 	 * @return Indented Lua source code
 	 */
-	public String indent(final String source, final String delimiter, final String tabulation, final boolean indentInTable,
-			final int originalIndentationLevel) {
+	public String indent(final String source, final String delimiter, final boolean indentInTable, final String tabulation) {
 		// Load function
 		final LuaState lua = loadLuaModule();
 		pushLuaModule(lua);
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
 		lua.pushString(delimiter);
-		lua.pushString(tabulation);
-		lua.pushInteger(originalIndentationLevel);
 		lua.pushBoolean(indentInTable);
+		lua.pushString(tabulation);
 		try {
-			lua.call(5, 1);
+			lua.call(4, 1);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;
@@ -110,30 +75,26 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 *            Lua Source code to indent
 	 * @param delimiter
 	 *            Line delimiter, <code>\n</code> for Linux and Unix
+	 * @param indentInTable
+	 *            Indicates if formating is required for table values
 	 * @param tabSize
 	 *            Count of spaces a tabulation mean
 	 * @param indentationSizeCount
 	 *            of spaces an indentation mean
-	 * @param indentInTable
-	 *            Indicates if formating is required for table values
-	 * @param originalIndentationLevel
-	 *            Indicates original semantic depth, useful for selections
 	 * @return indented Lua source code
 	 * @see #indent(String, String, String, int)
 	 */
-	public String indent(final String source, final String delimiter, final int tabSize, final int indentationSize, final boolean indentInTable,
-			final int originalIndentationLevel) {
+	public String indent(final String source, final String delimiter, final boolean indentInTable, final int tabSize, final int indentationSize) {
 		final LuaState lua = loadLuaModule();
 		pushLuaModule(lua);
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
 		lua.pushString(delimiter);
+		lua.pushBoolean(indentInTable);
 		lua.pushInteger(tabSize);
 		lua.pushInteger(indentationSize);
-		lua.pushInteger(originalIndentationLevel);
-		lua.pushBoolean(indentInTable);
 		try {
-			lua.call(6, 1);
+			lua.call(5, 1);
 		} catch (final LuaRuntimeException e) {
 			Activator.logWarning(Messages.LuaSourceFormatIndentationError, e);
 			return source;
