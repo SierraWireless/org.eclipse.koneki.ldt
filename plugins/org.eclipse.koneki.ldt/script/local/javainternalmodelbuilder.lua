@@ -12,8 +12,8 @@
 local J = {}
 local javaapimodelbuilder = require 'javaapimodelbuilder'
 
-local javainternalmodelfactory =  require 'javainternalmodelfactory'
-local javaapimodelfactory =  require 'javaapimodelfactory'  
+local javainternalmodelfactory = require 'javainternalmodelfactory'
+local javaapimodelfactory      = require 'javaapimodelfactory'  
 
 --------------------------------------
 -- create internal content java object
@@ -45,8 +45,10 @@ end
 -- create block java object
 function J._block(_block,handledexpr)
 	-- Setting source range
-	local jblock = javainternalmodelfactory.newblock(_block.sourcerange.min,
-																						 _block.sourcerange.max)
+	local jblock = javainternalmodelfactory.newblock(
+		_block.sourcerange.min -1,
+		_block.sourcerange.max
+	)
 
 	-- Append nodes to block
 	for _, _expr in pairs(_block.content) do
@@ -70,7 +72,11 @@ function J._block(_block,handledexpr)
 		end
 
 		-- Append Java local variable definition
-		local jlocalvar = javainternalmodelfactory.newlocalvar(jitem, _localvar.scope.min, _localvar.scope.max) 
+		local jlocalvar = javainternalmodelfactory.newlocalvar(
+			jitem,
+			_localvar.scope.min -1,
+			_localvar.scope.max
+		) 
 		javainternalmodelfactory.addlocalvar(jblock,jlocalvar)
 	end
 	return jblock
@@ -97,8 +103,10 @@ end
 --------------------------------------
 -- create identifier java object
  function J._identifier(_identifier,handledexpr)
-	local jidentifier = javainternalmodelfactory.newidentifier(_identifier.sourcerange.min,
-																												_identifier.sourcerange.max)
+	local jidentifier = javainternalmodelfactory.newidentifier(
+		_identifier.sourcerange.min - 1,
+		_identifier.sourcerange.max
+	)
 	handledexpr[_identifier] =jidentifier
 	return jidentifier
 end
@@ -106,11 +114,12 @@ end
 --------------------------------------
 -- create index java object
 function J._index(_index,handledexpr)
-  local jindex = javainternalmodelfactory.newindex(_index.sourcerange.min,
-																							_index.sourcerange.max,
-																							J._expression(_index.left,handledexpr),
-																							_index.right)
-
+	local jindex = javainternalmodelfactory.newindex(
+  		_index.sourcerange.min -1,
+		_index.sourcerange.max,
+		J._expression(_index.left,handledexpr),
+		_index.right
+	)
 	handledexpr[_index] =jindex
 	return jindex
 end
@@ -118,10 +127,11 @@ end
 --------------------------------------
 -- create call java object
 function J._call(_call,handledexpr)
-	local jcall = javainternalmodelfactory.newcall(_call.sourcerange.min,
-																						 _call.sourcerange.max,
-																						 J._expression(_call.func,handledexpr))
-
+	local jcall = javainternalmodelfactory.newcall(
+		_call.sourcerange.min - 1,
+		_call.sourcerange.max,
+		J._expression(_call.func,handledexpr)
+	)
 	handledexpr[_call] =jcall
 	return jcall
 end
@@ -129,11 +139,12 @@ end
 --------------------------------------
 -- create invoke java object
 function J._invoke(_invoke,handledexpr)
-	local jinvoke = javainternalmodelfactory.newinvoke(_invoke.sourcerange.min,
-																						 	  _invoke.sourcerange.max,
-																						    _invoke.functionname,
-																						    J._expression(_invoke.record,handledexpr))
-																						 
+	local jinvoke = javainternalmodelfactory.newinvoke(
+		_invoke.sourcerange.min - 1,
+		_invoke.sourcerange.max,
+		_invoke.functionname,
+		J._expression(_invoke.record,handledexpr)
+	)
 	handledexpr[_invoke] =jinvoke
 	return jinvoke
 end

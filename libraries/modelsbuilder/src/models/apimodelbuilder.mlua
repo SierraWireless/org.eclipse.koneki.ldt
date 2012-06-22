@@ -234,8 +234,8 @@ function M.createmoduleapi(ast)
 				_file.shortdescription = parsedcomment.shortdescription
 				_file.description = parsedcomment.description
 
-				local sourcerangemin = comment.lineinfo.first.offset-1
-				local sourcerangemax = comment.lineinfo.last.offset-1
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
 				
 				-- manage returns
 				if regulartags ["return"] then
@@ -264,8 +264,8 @@ function M.createmoduleapi(ast)
 			elseif regulartags["type"] and regulartags["type"][1].name and regulartags["type"][1].name ~= "global" then
 				local dt_type = regulartags["type"][1];
 				-- create record type if it doesn't exist
-				local sourcerangemin = comment.lineinfo.first.offset-1
-				local sourcerangemax = comment.lineinfo.last.offset-1
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
 				local _recordtypedef = gettypedef (_file, dt_type.name ,"recordtypedef",sourcerangemin,sourcerangemax)
 				_lastapiobject = _recordtypedef
 				
@@ -292,8 +292,8 @@ function M.createmoduleapi(ast)
 				_lastapiobject = _item
 				
 				-- define sourcerange
-				local sourcerangemin = comment.lineinfo.first.offset-1
-				local sourcerangemax = comment.lineinfo.last.offset-1
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
 				_item.sourcerange.min = sourcerangemin
 				_item.sourcerange.max = sourcerangemax
 
@@ -308,8 +308,8 @@ function M.createmoduleapi(ast)
 				_lastapiobject = _item
 
 				-- define sourcerange
-				local sourcerangemin = comment.lineinfo.first.offset-1
-				local sourcerangemax = comment.lineinfo.last.offset-1
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
 				_item.sourcerange.min = sourcerangemin
 				_item.sourcerange.max = sourcerangemax
 
@@ -346,8 +346,8 @@ function M.createmoduleapi(ast)
 				_item.type=_internaltyperef
 
 				-- add item to its parent
-				local sourcerangemin = comment.lineinfo.first.offset-1
-				local sourcerangemax = comment.lineinfo.last.offset-1
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
 				local scope = regulartags["function"][1].parent
 				additemtoparent(_file,_item,scope,sourcerangemin,sourcerangemax)
 			end

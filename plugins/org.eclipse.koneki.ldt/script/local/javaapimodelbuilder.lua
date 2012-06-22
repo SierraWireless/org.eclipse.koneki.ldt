@@ -86,11 +86,11 @@ function M._item(_item,notemplate)
 	end 
 
 	local jitem = javaapimodelfactory.newitem(_item.name,
-																						description,
-																						_item.sourcerange.min,
-																						_item.sourcerange.max,
-																						M._typeref(_item.type))
-
+		description,
+		_item.sourcerange.min - 1,
+		_item.sourcerange.max,
+		M._typeref(_item.type)
+	)
 	return jitem
 end
 
@@ -101,9 +101,10 @@ function M._typedef(_typedef)
 	if _typedef.tag == "recordtypedef" then
 
 		jtypedef = javaapimodelfactory.newrecordtypedef(_typedef.name,
-		                                                templateengine.applytemplate(_typedef),
-		 																								_typedef.sourcerange.min,
-		 																								_typedef.sourcerange.max)
+		    templateengine.applytemplate(_typedef),
+			_typedef.sourcerange.min - 1,
+			_typedef.sourcerange.max
+		)
 
 		-- Appending fields
 		for _, _item in pairs(_typedef.fields) do

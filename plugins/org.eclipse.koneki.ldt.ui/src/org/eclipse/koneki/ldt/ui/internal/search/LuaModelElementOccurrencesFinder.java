@@ -41,7 +41,7 @@ public class LuaModelElementOccurrencesFinder extends ModelElementOccurrencesFin
 			return null;
 		}
 
-		LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt((LuaSourceRoot) root, offset, offset + length - 1);
+		final LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt((LuaSourceRoot) root, offset, offset + length);
 		if (luaExpression instanceof Identifier) {
 			definition = ((Identifier) luaExpression).getDefinition();
 		}
@@ -56,9 +56,9 @@ public class LuaModelElementOccurrencesFinder extends ModelElementOccurrencesFin
 		}
 
 		// Highlight occurrences
-		ArrayList<OccurrenceLocation> list = new ArrayList<OccurrenceLocation>();
-		for (Identifier identifier : definition.getOccurrences()) {
-			list.add(new OccurrenceLocation(identifier.sourceStart(), identifier.matchLength() + 1, definition.getName()));
+		final ArrayList<OccurrenceLocation> list = new ArrayList<OccurrenceLocation>();
+		for (final Identifier identifier : definition.getOccurrences()) {
+			list.add(new OccurrenceLocation(identifier.sourceStart(), identifier.matchLength(), definition.getName()));
 		}
 		return list.toArray(new OccurrenceLocation[list.size()]);
 	}

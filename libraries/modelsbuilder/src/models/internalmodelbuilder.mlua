@@ -49,26 +49,26 @@ local function createblock(block,parent)
 	local _block =	internalmodel._block()
 	match block with
 		| `Function{param, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| `Do{...} ->
-				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| `While {expr, body} ->
-				_block.sourcerange.min = body.lineinfo.first.facing.offset - 1
+				_block.sourcerange.min = body.lineinfo.first.facing.offset
 				_block.sourcerange.max = body.lineinfo.last.facing.offset
 		| `Fornum {identifier, min, max, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| `Forin {identifiers, exprs, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| `Repeat {body, expr}	->
-				_block.sourcerange.min = block.lineinfo.first.offset - 1
+				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| _ ->
 				if parent and parent.tag == "If" and block.tag == nil then
-					_block.sourcerange.min = block.lineinfo.first.facing.offset - 1
+					_block.sourcerange.min = block.lineinfo.first.facing.offset
 					_block.sourcerange.max = block.lineinfo.last.facing.offset
 				end
 	end
@@ -123,8 +123,8 @@ local function createexpr(expr,_block)
 	end
 	
 	if _expr then
-		_expr.sourcerange.min = expr.lineinfo.first.offset - 1
-		_expr.sourcerange.max = expr.lineinfo.last.offset -1
+		_expr.sourcerange.min = expr.lineinfo.first.offset 
+		_expr.sourcerange.max = expr.lineinfo.last.offset
 
 		expreto_expression[expr] = _expr
 	end
@@ -145,9 +145,9 @@ local function createtreestructure(ast)
 	-- create root block
 	local _block = internalmodel._block()
 	local _blocks = { _block }
-	_block.sourcerange.min = ast.lineinfo.first.facing.offset-1
+	_block.sourcerange.min = ast.lineinfo.first.facing.offset
 	-- TODO remove the math.max when we support partial AST
-	_block.sourcerange.max = math.max(ast.lineinfo.last.facing.offset-1,10000)
+	_block.sourcerange.max = math.max(ast.lineinfo.last.facing.offset, 10000)
 
 	_internalcontent.content = _block
 	
