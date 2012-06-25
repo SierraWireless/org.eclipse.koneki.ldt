@@ -16,6 +16,7 @@
 -- @module luaformatter
 local M = {}
 require 'metalua.compiler'
+local math = require 'math'
 
 ---
 --  calculate all ident level
@@ -166,7 +167,7 @@ function M.indentcode(source, delimiter,indenttable, ...)
 		-- composed of tabulation and spaces
 		tabulation = function(depth)
 			local range = depth * indentationSize
-			local tabCount = range / tabSize
+			local tabCount = math.floor(range / tabSize)
 			local spaceCount = range % tabSize
 			local tab = '\t'
 			local space = ' '
