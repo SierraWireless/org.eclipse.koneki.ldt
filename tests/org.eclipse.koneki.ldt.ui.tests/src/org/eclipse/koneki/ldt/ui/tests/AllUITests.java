@@ -15,9 +15,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * TODO Comment this class
- */
 @RunWith(Suite.class)
 @SuiteClasses({ LuaWordFinderTest.class })
 public class AllUITests {

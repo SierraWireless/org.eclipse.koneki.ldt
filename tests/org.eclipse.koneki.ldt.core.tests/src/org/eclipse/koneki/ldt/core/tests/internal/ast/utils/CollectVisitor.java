@@ -19,9 +19,6 @@ import java.util.Map;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 
-/**
- * TODO Comment this class
- */
 public class CollectVisitor extends ASTVisitor {
 
 	private Map<Class<?>, List<Object>> collection = new HashMap<Class<?>, List<Object>>();

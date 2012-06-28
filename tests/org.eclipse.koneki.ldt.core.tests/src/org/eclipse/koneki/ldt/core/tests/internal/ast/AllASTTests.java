@@ -14,9 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * TODO Comment this class
- */
 @RunWith(Suite.class)
 @SuiteClasses({ TestExpressions.class, TestLuaBinaryOperations.class, TestLuaSourceParser.class, TestModuleDeclaration.class,
 		TestMultipleParsing.class, TestSourceElementRequestVisitor.class, TestStatements.class, TestTables.class, TestUnaryOperations.class,

@@ -15,9 +15,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/**
- * TODO Comment this class
- */
 public class LuaExecutionEnvironmentContentProvider implements ITreeContentProvider {
 
 	@Override

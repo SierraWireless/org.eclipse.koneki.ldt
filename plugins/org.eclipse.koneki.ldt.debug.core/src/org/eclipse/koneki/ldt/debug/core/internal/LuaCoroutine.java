@@ -286,7 +286,6 @@ public class LuaCoroutine extends ScriptThread {
 	 */
 	@Override
 	public int getModificationsCount() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

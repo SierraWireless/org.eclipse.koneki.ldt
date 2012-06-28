@@ -138,7 +138,6 @@ public class LuaCoroutineDbgpSession implements IDbgpSession {
 
 		public CoroutineContextCommands(IDbgpCommunicator communicator) {
 			super(communicator);
-			// TODO Auto-generated constructor stub
 		}
 
 		protected Map parseContextNamesResponse(Element response) throws DbgpException {

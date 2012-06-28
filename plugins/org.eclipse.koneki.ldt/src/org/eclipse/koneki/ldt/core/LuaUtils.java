@@ -345,9 +345,8 @@ public final class LuaUtils {
 	}
 
 	/** Enable to perform operation in all files and directories in project fragments source directories */
-	// TODO make it private
 	@Deprecated
-	public static void visitSourceFiles(final IParent parent, final IProjectSourceVisitor visitor, final IProgressMonitor monitor)
+	private static void visitSourceFiles(final IParent parent, final IProjectSourceVisitor visitor, final IProgressMonitor monitor)
 			throws CoreException {
 		visitSourceFiles(parent, visitor, monitor, Path.EMPTY);
 	}

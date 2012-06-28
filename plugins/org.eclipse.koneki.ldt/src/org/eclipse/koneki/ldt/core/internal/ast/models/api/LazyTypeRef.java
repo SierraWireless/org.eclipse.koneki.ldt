@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.core.internal.ast.models.api;
 
-/**
- * TODO Comment this class
- */
 public class LazyTypeRef extends TypeRef {
 
 	/**
