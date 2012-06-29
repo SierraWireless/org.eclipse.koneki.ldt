@@ -30,6 +30,7 @@ import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
+import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
 
 public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHighlighter, ISemanticHighlighterExtension {
@@ -45,6 +46,10 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 	}
 
 	public boolean visitGeneral(ASTNode node) throws Exception {
+		if (node instanceof LuaSourceRoot) {
+			// no semantic highlighting if the code is in error.
+			return !((LuaSourceRoot) node).hasError();
+		}
 		if (node instanceof LuaFileAPI) {
 			// no need to try to do semantic highlighting for APIs...
 			return false;
@@ -52,9 +57,9 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 		if (node instanceof Identifier) {
 			Item item = ((Identifier) node).getDefinition();
 			if (LuaASTUtils.isLocal(item)) {
-				requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_LOCAL_VARIABLE);
+				requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_LOCAL_VARIABLE);
 			} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
-				requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_GLOBAL_VARIABLE);
+				requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_GLOBAL_VARIABLE);
 			}
 		}
 		return true;
