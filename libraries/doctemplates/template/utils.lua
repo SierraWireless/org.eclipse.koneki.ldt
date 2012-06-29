@@ -66,6 +66,7 @@ end
 M.linktypes = {
 	internaltyperef	= function(o) return string.format('##(%s)', o.typename) end,
 	externaltyperef	= function(o) return string.format('%s.html##(%s)', o.modulename, o.typename) end,
+	file = function(o) return string.format('%s.html', o.name) end,
 	index = function() return 'index.html' end,
 	recordtypedef = function(o)
 		local anchor = M.anchor(o)
@@ -324,6 +325,18 @@ local extern = function (type)
 end
 
 ---
+-- Build an API external reference from a string like: `mod.ule`
+local file = function (type)
+	for modulename in type:gmatch('([%a%.%d_]+)') do
+		local file = apimodel._file()
+		file.name = modulename
+		return file
+	end
+	return nil
+end
+
+
+---
 -- Provide API Model element from a string
 -- @usage local externaltyperef = getelement("somemodule#somefield")
 function M.getelement( str )
@@ -333,7 +346,8 @@ function M.getelement( str )
 		globals,
 		field,
 		extern,
-		internal
+		internal,
+		file
 	}
 	-- Loop over extractors.
 	-- First valid result is used
