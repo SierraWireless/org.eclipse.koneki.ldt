@@ -193,9 +193,9 @@ end
 -- convert parsed URL table to file path  for the current OS (see url.parse from luasocket)
 local to_path
 if platform == "unix" then  
-   to_path = function (url) return url.path end
+   to_path = function (parsedurl) return url.unescape(parsedurl.path) end
 else
-   to_path = function (url) return url.path:gsub("^/", "") end
+   to_path = function (parsedurl) return url.unescape(parsedurl.path):gsub("^/", "") end
 end
 -- "END PLATFORM DEPENDENT CODE"
 
@@ -1402,12 +1402,18 @@ commands = {
     source = function(self, args)
         local path
         if args.f then
-            path = get_path(args.f)
+        		path = get_path(args.f)
+        		print("path")
+        		io.flush()
         else
             path = debug.getinfo(get_script_level(0), "S").source
             assert(path:sub(1,1) == "@")
             path = path:sub(2)
+            print("info")
+        		io.flush()
         end
+        print("========", path)
+        io.flush()
         local file, err = io.open(path)
         if not file then dbgp_error(100, err, { success = 0 }) end
         -- Try to identify compiled files
