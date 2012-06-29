@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.editor.text;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
+import org.eclipse.koneki.ldt.ui.internal.Activator;
 
 public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHighlighter, ISemanticHighlighterExtension {
 
@@ -55,11 +57,18 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 			return false;
 		}
 		if (node instanceof Identifier) {
-			Item item = ((Identifier) node).getDefinition();
-			if (LuaASTUtils.isLocal(item)) {
-				requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_LOCAL_VARIABLE);
-			} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
-				requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_GLOBAL_VARIABLE);
+			// TODO BUG ECLIPSE 381703 every node should have a definition
+			final Item item = ((Identifier) node).getDefinition();
+			if (item != null) {
+				if (LuaASTUtils.isLocal(item)) {
+					requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_LOCAL_VARIABLE);
+				} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
+					requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_GLOBAL_VARIABLE);
+				}
+			} else {
+				final String message = "{0} starting at offset {1} with length {2} has no definition."; //$NON-NLS-1$
+				final String formattedMessage = MessageFormat.format(message, node.getClass().getName(), node.matchStart(), node.matchLength());
+				Activator.logWarning(formattedMessage);
 			}
 		}
 		return true;
