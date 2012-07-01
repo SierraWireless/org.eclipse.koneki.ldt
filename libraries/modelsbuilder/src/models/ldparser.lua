@@ -363,13 +363,12 @@ local function parsethirdtag( part )
 		return nil, "Unable to parse given string."
 	end
 
-	-- Define tagname
-	parsedtag.tagname = parsedtag.name
-	
-	-- Retrive description
+	-- Retrieve description
 	local endoffset = parsedtag.lineinfo.last.offset
-	parsedtag.description =  cleandescription(part.comment:sub(endoffset+2,-1))
-	return parsedtag
+	local tag = {
+		description = cleandescription(part.comment:sub(endoffset+2,-1))
+	}
+	return parsedtag.name, tag
 end
 
 ------------------------------------------------------------
@@ -468,8 +467,8 @@ function M.parse(stringcomment)
 		
 			-- Try user defined tags, so far they will look like
 			-- @identifier description
-			local thirdtag = parsethirdtag( part )
-			if thirdtag then
+			local tagname, thirdtag = parsethirdtag( part )
+			if tagname then
 				--
 				-- Append found tag
 				--
@@ -479,11 +478,11 @@ function M.parse(stringcomment)
 				end
 
 				-- Create specific section for parsed tag
-				if not _comment.unknowntags[thirdtag.tagname] then
-					_comment.unknowntags[thirdtag.tagname] = {}
+				if not _comment.unknowntags[tagname] then
+					_comment.unknowntags[tagname] = {}
 				end
 				-- Append to specific section
-				table.insert(_comment.unknowntags[thirdtag.tagname], thirdtag)
+				table.insert(_comment.unknowntags[tagname], thirdtag)
 			end
 		end
 	end

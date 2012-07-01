@@ -210,7 +210,6 @@ function M.createmoduleapi(ast)
 	resetfunctiontypeidgenerator()
 
 	local _file = apimodel._file()
-
 	local function handlecomment(comment)
 	
 		-- Extract information from tagged comments
@@ -364,7 +363,9 @@ function M.createmoduleapi(ast)
 				-- Loop over user defined tags
 				for usertag, taglist in pairs(thirdtags) do
 					if not _lastapiobject.metadata[ usertag ] then
-						_lastapiobject.metadata[ usertag ] = {}
+						_lastapiobject.metadata[ usertag ] = {
+							tag = usertag
+						}
 					end
 					for _, tag in ipairs( taglist ) do
 						table.insert(_lastapiobject.metadata[usertag], tag)
