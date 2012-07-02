@@ -35,7 +35,7 @@
 							<execution>
 								<id>pack</id>
 								<configuration>
-									<inputFile>${project.build.directory}/repository.zip</inputFile>
+									<inputFile>${project.build.directory}/repository-0.0.1-SNAPSHOT.zip</inputFile>
 								</configuration>
 								<phase>package</phase>
 								<goals>
