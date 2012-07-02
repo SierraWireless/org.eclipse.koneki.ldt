@@ -23,7 +23,7 @@ return[[#
 # if _file.shortdescription then
    $( format(_file.shortdescription) )
 # end
-# if _file.description then
+# if _file.description and #_file.description > 0 then
    <br/>$( format(_file.description) )
 # end
 # --

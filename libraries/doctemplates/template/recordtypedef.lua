@@ -14,10 +14,10 @@ return [[#
 # --
 # -- Descriptions
 # --
-#if _recordtypedef.shortdescription then
+#if _recordtypedef.shortdescription and #_recordtypedef.shortdescription > 0 then
 	<p>$( format( _recordtypedef.shortdescription ) )</p>
 #end
-#if _recordtypedef.description then
+#if _recordtypedef.description and #_recordtypedef.description > 0 then
 	<p>$( format( _recordtypedef.description ) )</p>
 #end
 #--

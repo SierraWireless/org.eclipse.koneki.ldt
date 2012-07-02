@@ -43,7 +43,7 @@ return
 # if _item.shortdescription then
 	$( format(_item.shortdescription) )
 # end
-# if _item.description then
+# if _item.description and #_item.description > 0 then
 	<br/>$( format(_item.description) )
 # end
 #
@@ -71,12 +71,7 @@ return
 #		for position, param in ipairs( fdef.params ) do
 #			if not (position == 1 and param.name == 'self') then
 				<li>
-				<code><em>
-				$(param.name) $(param.optional and 'optional') $(param.hidden and 'hidden')
-				</em></code>:
-#				if param.description then
-					$( format(param.description) )
-#				end
+				<code><em>$(param.name) $(param.optional and 'optional') $(param.hidden and 'hidden')</em></code>: $( format(param.description) )
 				</li>
 #			end
 #		end
@@ -107,7 +102,7 @@ return
 			<ol>
 #			for position, ret in ipairs(fdef.returns) do
 				<li>
-#				if #ret.types > 0 then
+#				if #ret.types > 0 and #niceparmlist(ret.types) > 0 then
 					<em>$( niceparmlist(ret.types) )</em>
 #				end
 				$(ret.description and format(ret.description))
@@ -115,15 +110,21 @@ return
 #			end
 			</ol>
 #		else
-			<p>
+#			local isreturn = fdef.returns and #fdef.returns > 0 and #niceparmlist(fdef.returns[1].types) > 0
+#			local isdescription = fdef.returns and fdef.returns[1].description and #format(fdef.returns[1].description) > 0
+#			if isreturn or isdescription  then
+				<p>
+#			end
 #			-- Show return type if provided
-#			if fdef.returns and #fdef.returns > 0 then
+#			if isreturn then
 				<em>$( niceparmlist(fdef.returns[1].types) )</em>
 #			end
-#			if fdef.returns[1].description then
+#			if isdescription then
 				$( format(fdef.returns[1].description) )
 #			end
-			</p>
+#			if isreturn or isdescription then
+				</p>
+#			end
 #		end
 #	end
 #end
