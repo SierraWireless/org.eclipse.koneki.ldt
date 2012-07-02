@@ -45,7 +45,7 @@
 							<execution>
 								<id>sign</id>
 								<configuration>
-									<inputFile>${project.build.directory}/repository.zip</inputFile>
+									<inputFile>${project.build.directory}/repository-0.0.1-SNAPSHOT.zip</inputFile>
 									<signerInputDirectory>/home/data/httpd/download-staging.priv/technology/koneki</signerInputDirectory>
 								</configuration>
 								<phase>package</phase>
