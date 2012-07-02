@@ -17,6 +17,7 @@
 
 	<properties>
 		<tycho-version>0.14.0</tycho-version>
+		<tycho-extras-version>0.14.0</tycho-extras-version>
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
 	    <download-publish-path>/home/data/httpd/download.eclipse.org/koneki/updates-nightly/ldt</download-publish-path>
 	</properties>
@@ -88,6 +89,19 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+		 				<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>${tycho-groupid}</groupId>
