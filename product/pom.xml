@@ -24,6 +24,12 @@
 						<linux>tar.gz</linux>
 						<macosx>tar.gz</macosx>
 					</formats>
+					<products>
+						<product>
+							<id>org.eclipse.koneki.ldt.product-product</id>			
+							<archiveFileName>org.eclipse.koneki.ldt.product</archiveFileName>
+						</product>
+					</products>
 				</configuration>
 				<executions>
 					<execution>
