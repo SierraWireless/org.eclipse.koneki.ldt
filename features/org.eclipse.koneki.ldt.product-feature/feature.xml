@@ -103,20 +103,20 @@ This Agreement is governed by the laws of the State of New York and the intellec
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.emf.ecore"
+         id="org.eclipse.platform"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.platform"
+         id="org.eclipse.koneki.ldt"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.dltk.core"
          version="0.0.0"/>
 
-   <requires>
-      <import feature="org.eclipse.koneki.ldt" version="0.1.0" match="compatible"/>
-   </requires>
+   <includes
+         id="org.eclipse.emf.ecore"
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.koneki.ldt.branding"
