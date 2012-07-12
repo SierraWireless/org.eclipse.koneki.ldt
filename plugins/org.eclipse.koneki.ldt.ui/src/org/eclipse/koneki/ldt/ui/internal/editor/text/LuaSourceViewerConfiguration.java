@@ -41,6 +41,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	private AbstractScriptScanner fCodeScanner;
 	private AbstractScriptScanner fStringScanner;
 	private AbstractScriptScanner fSingleQuoteStringScanner;
+	private AbstractScriptScanner fMultilineStringScanner;
 	private AbstractScriptScanner fCommentScanner;
 	private AbstractScriptScanner fMultilineCommentScanner;
 	private AbstractScriptScanner fNumberScanner;
@@ -85,6 +86,10 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		reconciler.setDamager(dr, ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
 
+		dr = new DefaultDamagerRepairer(this.fMultilineStringScanner);
+		reconciler.setDamager(dr, ILuaPartitions.LUA_MULTI_LINE_STRING);
+		reconciler.setRepairer(dr, ILuaPartitions.LUA_MULTI_LINE_STRING);
+
 		dr = new DefaultDamagerRepairer(this.fMultilineCommentScanner);
 		reconciler.setDamager(dr, ILuaPartitions.LUA_MULTI_LINE_COMMENT);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_MULTI_LINE_COMMENT);
@@ -110,6 +115,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		// This is default scanners for partitions with same color.
 		this.fStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
 		this.fSingleQuoteStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
+		this.fMultilineStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
 		this.fMultilineCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
 				ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
 		this.fCommentScanner = createCommentScanner(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT, ILuaColorConstants.COMMENT_TASK_TAGS);
@@ -128,6 +134,9 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		if (this.fSingleQuoteStringScanner.affectsBehavior(event)) {
 			this.fSingleQuoteStringScanner.adaptToPreferenceChange(event);
 		}
+		if (this.fMultilineStringScanner.affectsBehavior(event)) {
+			this.fMultilineStringScanner.adaptToPreferenceChange(event);
+		}
 		if (this.fMultilineCommentScanner.affectsBehavior(event)) {
 			this.fMultilineCommentScanner.adaptToPreferenceChange(event);
 		}
@@ -141,8 +150,9 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return this.fCodeScanner.affectsBehavior(event) || this.fStringScanner.affectsBehavior(event)
-				|| this.fSingleQuoteStringScanner.affectsBehavior(event) || this.fMultilineCommentScanner.affectsBehavior(event)
-				|| this.fCommentScanner.affectsBehavior(event) || this.fNumberScanner.affectsBehavior(event);
+				|| this.fSingleQuoteStringScanner.affectsBehavior(event) || this.fMultilineStringScanner.affectsBehavior(event)
+				|| this.fMultilineCommentScanner.affectsBehavior(event) || this.fCommentScanner.affectsBehavior(event)
+				|| this.fNumberScanner.affectsBehavior(event);
 	}
 
 	/**
