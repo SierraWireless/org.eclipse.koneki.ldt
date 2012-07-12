@@ -56,8 +56,10 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 
 				// at this point, the current character should be '[' otherwise it means we are not
 				// detecting a multiline string opening after all
-				if (c != '[')
+				if (c != '[') {
+					scanner.unread();
 					return Token.UNDEFINED;
+				}
 
 				// now read characters until ']' is detected...
 				c = scanner.read();
@@ -93,6 +95,7 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 				}
 			}
 
+			scanner.unread();
 			return Token.UNDEFINED;
 		}
 
