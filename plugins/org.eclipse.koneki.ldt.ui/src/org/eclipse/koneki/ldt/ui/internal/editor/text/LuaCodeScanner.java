@@ -23,7 +23,6 @@ import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
-import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.NumberRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
@@ -56,7 +55,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
 
 		// Add rule for multi-line comments
-		rules.add(new MultiLineRule("--[[", "]]", multiline)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new MultiLineStringOrCommentRule(multiline, true));
 
 		// Add rule for single line comments.
 		rules.add(new EndOfLineRule("--", comment)); //$NON-NLS-1$

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.rules.EndOfLineRule;
-import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.MultiLineRule;
@@ -30,82 +29,6 @@ import org.eclipse.koneki.ldt.core.LuaConstants;
  */
 public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 
-	public class MultiLineStringWithEqualsRule implements IPredicateRule {
-		private IToken fToken;
-
-		public MultiLineStringWithEqualsRule(IToken token) {
-			this.fToken = token;
-		}
-
-		@Override
-		public IToken getSuccessToken() {
-			return fToken;
-		}
-
-		@Override
-		public IToken evaluate(ICharacterScanner scanner, boolean resume) {
-			int c = scanner.read();
-			int equalsNumber = 0;
-			if (c == '[') {
-				// begin parsing what looks like a multiline string
-				c = scanner.read();
-				while (c == '=' && c != EOF) {
-					equalsNumber++;
-					c = scanner.read();
-				}
-
-				// at this point, the current character should be '[' otherwise it means we are not
-				// detecting a multiline string opening after all
-				if (c != '[') {
-					scanner.unread();
-					return Token.UNDEFINED;
-				}
-
-				// now read characters until ']' is detected...
-				c = scanner.read();
-				while (c != ']' && c != EOF) {
-					c = scanner.read();
-				}
-
-				// now, look for the second ']', which may be located after "equalsNumber" '=' signs.
-				// we should retry as many times as we don't encounter the right pattern, or stop if we reach the EOF
-				while (c != EOF) {
-					boolean missed = false;
-					if (c == ']') {
-						c = scanner.read();
-						for (int i = 0; i < equalsNumber; i++) {
-							if (c != '=') {
-								missed = true;
-								break;
-							}
-							c = scanner.read();
-						}
-						// if we exited the loop because there were not enough '=', we need
-						// to start looking for the first ']' again
-						if (missed)
-							continue;
-						// now should be the second ']'
-						if (c == ']')
-							return fToken;
-						// else restart looking for the first ']'
-						c = scanner.read();
-					} else {
-						c = scanner.read();
-					}
-				}
-			}
-
-			scanner.unread();
-			return Token.UNDEFINED;
-		}
-
-		@Override
-		public IToken evaluate(ICharacterScanner scanner) {
-			return evaluate(scanner, false);
-		}
-
-	}
-
 	public LuaPartitionScanner() {
 		super();
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
@@ -116,10 +39,9 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		IToken string = new Token(ILuaPartitions.LUA_STRING);
 		IToken singleQuoteString = new Token(ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
 		IToken multilineString = new Token(ILuaPartitions.LUA_MULTI_LINE_STRING);
-		rules.add(new MultiLineStringWithEqualsRule(multilineString));
+		rules.add(new MultiLineStringOrCommentRule(multilineString, false));
 		rules.add(new MultiLineRule("\'", "\'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 		rules.add(new MultiLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
-		//	rules.add(new MultiLineRule("[[", "]]", multilineString)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		/*
 		 * Deal with comments
@@ -127,7 +49,7 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 
 		// Multi-line
 		IToken multiLineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
-		rules.add(new MultiLineRule("--[[", "]]", multiLineComment));//$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new MultiLineStringOrCommentRule(multiLineComment, true));
 
 		// Single line
 		IToken comment = new Token(ILuaPartitions.LUA_COMMENT);
