@@ -376,5 +376,15 @@
       class="org.eclipse.koneki.ldt.ui.internal.editor.text.LuaSemanticUpdateWorker"
       nature="org.eclipse.koneki.ldt.nature">
    </highlighter>
-  </extension> 
+  </extension>
+<extension point="org.eclipse.dltk.ui.folding">
+  <structureProvider
+   	nature="org.eclipse.koneki.ldt.nature"
+   	class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider">
+  </structureProvider>
+  <blockProvider
+    nature="org.eclipse.koneki.ldt.nature"
+    class="org.eclipse.koneki.ldt.ui.internal.editor.text.folding.LuaCommentFoldingBlockProvider">
+  </blockProvider>
+</extension>
 </plugin>

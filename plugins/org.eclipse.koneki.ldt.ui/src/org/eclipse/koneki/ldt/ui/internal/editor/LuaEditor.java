@@ -34,7 +34,6 @@ import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.navigation.LuaOutlinePage;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.ILuaPartitions;
-import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaASTFoldingStructureProvider;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaBracketInserter;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaTextTools;
 import org.eclipse.swt.widgets.Composite;
@@ -72,14 +71,6 @@ public class LuaEditor extends ScriptEditor {
 	@Override
 	public String getEditorId() {
 		return EDITOR_ID;
-	}
-
-	@Override
-	protected IFoldingStructureProvider getFoldingStructureProvider() {
-		if (foldingStructureProvider == null) {
-			foldingStructureProvider = new LuaASTFoldingStructureProvider();
-		}
-		return foldingStructureProvider;
 	}
 
 	@Override
