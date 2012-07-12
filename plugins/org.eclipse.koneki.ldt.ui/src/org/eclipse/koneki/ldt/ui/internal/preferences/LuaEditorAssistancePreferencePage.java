@@ -11,7 +11,6 @@
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.CodeAssistConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
@@ -29,6 +28,6 @@ public class LuaEditorAssistancePreferencePage extends AbstractConfigurationBloc
 	}
 
 	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new CodeAssistConfigurationBlock(this, overlayPreferenceStore);
+		return new LuaCodeAssistConfigurationBlock(this, overlayPreferenceStore);
 	}
 }

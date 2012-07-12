@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
+import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.EditorConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 
 public class LuaEditorPreferencePage extends AbstractConfigurationBlockPreferencePage {
@@ -30,6 +32,19 @@ public class LuaEditorPreferencePage extends AbstractConfigurationBlockPreferenc
 
 	@Override
 	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new EditorConfigurationBlock(this, overlayPreferenceStore, EditorConfigurationBlock.FLAG_TAB_ALWAYS_INDENT);
+		// Use of the DLTK Editor preference page, where the 0 means we don't want any of optional parameters.
+		return new EditorConfigurationBlock(this, overlayPreferenceStore, 0) {
+
+			// Filter editor color parameters
+			protected EditorColorItem[] createColorListModel() {
+				return new EditorColorItem[] {
+						new EditorColorItem(PreferencesMessages.EditorPreferencePage_matchingBracketsHighlightColor,
+								PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR),
+						new EditorColorItem(PreferencesMessages.EditorPreferencePage_backgroundForMethodParameters,
+								PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND),
+						new EditorColorItem(PreferencesMessages.EditorPreferencePage_foregroundForMethodParameters,
+								PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND), };
+			}
+		};
 	}
 }
