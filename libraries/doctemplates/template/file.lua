@@ -15,7 +15,7 @@ return[[#
 # -- Module name
 # --
 # if _file.name then
-   <h1>Module <code>$(_file.name)</code></h1>
+   <h$(i)>Module <code>$(_file.name)</code></h$(i)>
 # end
 # --
 # -- Descriptions
@@ -29,11 +29,8 @@ return[[#
 # --
 # -- Handle "@usage" special tag
 # --
-#if _file.metadata and _file.metadata.usage and #_file.metadata.usage > 0 then
-	<h2>Usage examples</h2>
-#	for _, usage in ipairs( _file.metadata.usage ) do
-		<pre><code>$( securechevrons(usage.description) )</code></pre>
-#	end
+#if _file.metadata and _file.metadata.usage then
+	$( applytemplate(_file.metadata.usage, i+1) )
 #end
 # --
 # -- Show quick description of current type
@@ -41,7 +38,7 @@ return[[#
 # 
 # -- show quick description for globals
 # if not isempty(_file.globalvars) then
-	<h2>Global(s)</h2>
+	<h$(i+1)>Global(s)</h$(i+1)>
 	<table class="function_list">
 #	for _, item in sortedpairs(_file.globalvars) do
 		<tr>
@@ -66,9 +63,8 @@ return[[#
 #
 # -- show quick description type exposed by module
 # if currenttype then
-	<a id="$(anchor(currenttype))" />
-	<h2>Type <code>$(currenttype.name)</code></h2>
-	$( applytemplate(currenttype, 'index') )
+	<h$(i+1)><a id="$(anchor(currenttype))" >Type <code>$(currenttype.name)</code></a></h$(i+1)>
+	$( applytemplate(currenttype, i+2, 'index') )
 # end
 # --
 # -- Show quick description of other types
@@ -76,9 +72,8 @@ return[[#
 # if _file.types then
 #	for name, type in sortedpairs( _file.types ) do
 #		if type ~= currenttype and type.tag == 'recordtypedef' then
-			<a id="$(anchor(type))" />
-			<h2>Type <code>$(name)</code></h2>
-			$( applytemplate(type, 'index') )
+			<h$(i+1)><a id="$(anchor(type))">Type <code>$(name)</code></a></h$(i+1)>
+			$( applytemplate(type, i+2, 'index') )
 #		end
 #	end
 # end
@@ -86,17 +81,17 @@ return[[#
 # -- Long description of globals
 # --
 # if not isempty(_file.globalvars) then
-	<h2>Global(s)</h2>
+	<h$(i+1)>Global(s)</h$(i+1)>
 #	for name, item in sortedpairs(_file.globalvars) do
-		$( applytemplate(item) )
+		$( applytemplate(item, i+2) )
 #	end
 # end
 # --
 # -- Long description of current type
 # --
 # if currenttype then
-	<h2>Type <code>$(currenttype.name)</code></h2>
-	$( applytemplate(currenttype) )
+	<h$(i+1)>Type <code>$(currenttype.name)</code></h$(i+1)>
+	$( applytemplate(currenttype, i+2) )
 # end
 # --
 # -- Long description of other types
@@ -104,8 +99,8 @@ return[[#
 # if not isempty( _file.types ) then
 #	for name, type in sortedpairs( _file.types ) do
 #		if type ~= currenttype  and type.tag == 'recordtypedef' then
-			<h2>Type <code>$(name)</code></h2>
-			$( applytemplate(type) )
+			<h$(i+1)>Type <code>$(name)</code></h$(i+1)>
+			$( applytemplate(type, i+2) )
 #		end
 #	end
 # end

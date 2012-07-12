@@ -66,7 +66,7 @@ return
 #
 #	-- List parameters
 #	if paramcount > 0 then
-		<h3>Parameter$( paramcount > 1 and 's' )</h3>
+		<h$(i)>Parameter$( paramcount > 1 and 's' )</h$(i)>
 		<ul>
 #		for position, param in ipairs( fdef.params ) do
 #			if not (position == 1 and param.name == 'self') then
@@ -82,7 +82,7 @@ return
 #	-- Describe returns types
 #	--
 #	if fdef and #fdef.returns > 0 then
-		<h3>Return value$(#fdef.returns > 1 and 's')</h3>
+		<h$(i)>Return value$(#fdef.returns > 1 and 's')</h$(i)>
 #		--
 #		-- Format nice type list
 #		--
@@ -132,19 +132,7 @@ return
 #-- Show usage samples
 #--
 #if _item.metadata and _item.metadata.usage then
-	<h3>Usage:</h3>
-	<ul>
-#	if #_item.metadata.usage > 1 then
-#		-- Loop over several usage description
-#		for _, usage in ipairs(_item.metadata.usage) do
-			 <li><pre class="example">$( securechevrons(usage.description) )</pre></li>
-#		end
-# else
-#		-- Show unique usage sample
-#		local usage = _item.metadata.usage[1]
-		<pre class="example">$( securechevrons(usage.description) )</pre>
-# end
-  </ul>
+	$( applytemplate(_item.metadata.usage, i) )
 #end
 </dd>
 </dl>]]

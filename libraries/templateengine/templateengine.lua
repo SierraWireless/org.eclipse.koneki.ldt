@@ -20,9 +20,9 @@ local pltemplate = require 'pl.template'
 local markdown = require 'markdown'
 
 -- apply template to the given element
-function M.applytemplate(elem,templatetype)
+function M.applytemplate(elem, ident, templatetype)
 	-- define environment
-	local env = M.getenv(elem,templatetype)
+	local env = M.getenv(elem, ident)
 
 	-- load template
 	local template = M.gettemplate(elem,templatetype)
@@ -44,12 +44,13 @@ function M.applytemplate(elem,templatetype)
 end
 
 -- get the a new environment for this element
-function M.getenv(elem)
+function M.getenv(elem, ident)
 	local currentenv ={}
 	for k,v in pairs(M.env) do currentenv[k] = v end
 	if elem and elem.tag then
 		currentenv['_'..elem.tag]= elem
 	end
+	currentenv['i']= ident or 1
 	return currentenv
 end
 

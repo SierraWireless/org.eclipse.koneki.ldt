@@ -24,17 +24,14 @@ return [[#
 #-- Describe usage
 #--
 #if _recordtypedef.metadata and _recordtypedef.metadata.usage then
-	<h2>Usage examples</h2>
-#	for _, usage in ipairs(_recordtypedef.metadata.usage) do
-		<pre><code>$( securechevrons(usage.description) )</code></pre>
-#	end
+	$( applytemplate(_recordtypedef.metadata.usage, i) )
 #end
 # --
 # -- Describe type fields
 # --
 #if not isempty( _recordtypedef.fields ) then
-	<h3>Field(s)</h3>
+	<h$(i)>Field(s)</h$(i)>
 #	for name, item in sortedpairs( _recordtypedef.fields ) do
-		$( applytemplate(item) )
+		$( applytemplate(item, i) )
 #	end
 #end ]]
