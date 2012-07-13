@@ -78,6 +78,13 @@
       class="org.eclipse.koneki.ldt.debug.ui.internal.LuaEditorDebugAdapterFactory">
       <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
       <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+    </factory>
+    <factory
+          adaptableType="org.eclipse.dltk.internal.debug.core.model.ScriptVariable"
+          class="org.eclipse.koneki.ldt.debug.ui.internal.LuaDebugElementAdapterFactory">
+       <adapter
+             type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementEditor">
+       </adapter>
     </factory>         
   </extension>
       <extension
