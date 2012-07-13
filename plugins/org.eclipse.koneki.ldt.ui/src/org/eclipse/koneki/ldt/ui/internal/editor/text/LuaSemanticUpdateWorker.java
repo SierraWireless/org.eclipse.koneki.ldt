@@ -61,9 +61,9 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 			final Item item = ((Identifier) node).getDefinition();
 			if (item != null) {
 				if (LuaASTUtils.isLocal(item)) {
-					requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_LOCAL_VARIABLE);
+					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_LOCAL_VARIABLE);
 				} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
-					requestor.addPosition(node.sourceStart(), node.sourceEnd() + 1, HL_GLOBAL_VARIABLE);
+					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_GLOBAL_VARIABLE);
 				}
 			} else {
 				final String message = "{0} starting at offset {1} with length {2} has no definition."; //$NON-NLS-1$
