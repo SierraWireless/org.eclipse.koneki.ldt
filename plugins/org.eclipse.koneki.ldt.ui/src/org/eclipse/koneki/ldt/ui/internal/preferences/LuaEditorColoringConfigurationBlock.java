@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ui.preferences.AbstractScriptEditorColoringConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
@@ -28,6 +29,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.templates.SimpleLuaSourceViewerConfiguration;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.ILuaColorConstants;
@@ -35,6 +37,7 @@ import org.eclipse.koneki.ldt.ui.internal.editor.text.ILuaPartitions;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaTextTools;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.osgi.framework.Version;
 
 public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorColoringConfigurationBlock implements IPreferenceConfigurationBlock {
 
@@ -49,7 +52,9 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers, ILuaColorConstants.LUA_NUMBER, sCoreCategory },
 			{ Messages.LuaEditorColoringConfigurationBlock_localVariable, ILuaColorConstants.LUA_LOCAL_VARIABLE, sCoreCategory },
 			{ Messages.LuaEditorColoringConfigurationBlock_globalVariable, ILuaColorConstants.LUA_GLOBAL_VARIABLE, sCoreCategory },
-			{ PreferencesMessages.DLTKEditorPreferencePage_CommentTaskTags, ILuaColorConstants.COMMENT_TASK_TAGS, sCommentsCategory } };
+			{ PreferencesMessages.DLTKEditorPreferencePage_CommentTaskTags, ILuaColorConstants.COMMENT_TASK_TAGS, sCommentsCategory },
+			{ Messages.LuaEditorColoringConfigurationBlock_luaDocumentor, ILuaColorConstants.LUA_DOC, sDocumentationCategory },
+			{ Messages.LuaEditorColoringConfigurationBlock_luaDocumentorTags, ILuaColorConstants.LUA_DOC_TAGS, sDocumentationCategory }, };
 
 	public LuaEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
 		super(store);
@@ -95,9 +100,10 @@ public class LuaEditorColoringConfigurationBlock extends AbstractScriptEditorCol
 
 	@Override
 	protected String getNatureId() {
-		return null;
-		// replace the line above with the line below as soon as org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager
-		// v1.11 is released
-		// return LuaNature.ID;
+		Version dltkVersion = Platform.getBundle("org.eclipse.dltk.ui").getVersion(); //$NON-NLS-1$
+		if (dltkVersion.getMajor() >= 4)
+			return LuaNature.ID;
+		else
+			return null;
 	}
 }

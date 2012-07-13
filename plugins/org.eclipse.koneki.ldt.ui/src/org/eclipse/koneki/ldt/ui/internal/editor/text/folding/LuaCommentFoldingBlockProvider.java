@@ -26,5 +26,8 @@ public class LuaCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			computeBlocksForPartitionType(content, ILuaPartitions.LUA_COMMENT, LuaFoldingBlockKind.COMMENT, isCollapseComments());
 			computeBlocksForPartitionType(content, ILuaPartitions.LUA_MULTI_LINE_COMMENT, LuaFoldingBlockKind.COMMENT, isCollapseComments());
 		}
+		if (isFoldingDocs()) {
+			computeBlocksForPartitionType(content, ILuaPartitions.LUA_DOC, LuaFoldingBlockKind.DOC, isCollapseDocs());
+		}
 	}
 }

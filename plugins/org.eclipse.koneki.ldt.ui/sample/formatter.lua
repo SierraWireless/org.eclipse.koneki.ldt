@@ -1,18 +1,21 @@
--- single-line comment
+---
+-- Description of the module.
+-- @module moduleName
 local M = {
-field = 1
+	-- single-line comment
+	field = 1
 }
 -- TODO Task in the comment
 function M.sample(...)
---[[
- Long comment
-]]
-local table = {
-foo = 'bar',
-42
-}
-for index=1,select("#", ...) do
-local var = select(index, ...)
-end
+	--[[
+	Long comment
+	]]
+	local table = {
+		foo = 'bar',
+		42
+	}
+	for index=1,select("#", ...) do
+		local var = select(index, ...)
+	end
 end
 return M

@@ -20,6 +20,8 @@ public interface ILuaColorConstants {
 	public static final String LUA_NUMBER = DLTKColorConstants.DLTK_NUMBER;
 	public static final String LUA_KEYWORD = DLTKColorConstants.DLTK_KEYWORD;
 	public static final String LUA_DEFAULT = DLTKColorConstants.DLTK_DEFAULT;
+	public static final String LUA_DOC = DLTKColorConstants.DLTK_DOC;
+	public static final String LUA_DOC_TAGS = "luadoc.tags"; //$NON-NLS-1$
 
 	public static final String LUA_LOCAL_VARIABLE = "variable.local"; //$NON-NLS-1$
 	public static final String LUA_GLOBAL_VARIABLE = "variable.global"; //$NON-NLS-1$

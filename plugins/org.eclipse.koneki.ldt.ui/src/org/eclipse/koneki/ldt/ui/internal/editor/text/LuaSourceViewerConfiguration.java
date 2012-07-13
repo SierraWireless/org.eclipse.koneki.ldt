@@ -45,6 +45,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	private AbstractScriptScanner fCommentScanner;
 	private AbstractScriptScanner fMultilineCommentScanner;
 	private AbstractScriptScanner fNumberScanner;
+	private LuaDocumentorScanner fDocScanner;
 
 	public LuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
@@ -102,6 +103,10 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		reconciler.setDamager(dr, ILuaPartitions.LUA_NUMBER);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_NUMBER);
 
+		dr = new DefaultDamagerRepairer(fDocScanner);
+		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC);
+		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC);
+
 		return reconciler;
 	}
 
@@ -122,6 +127,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		// this.fCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
 		// ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
 		this.fNumberScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_NUMBER);
+		this.fDocScanner = new LuaDocumentorScanner(this);
 	}
 
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
@@ -146,13 +152,16 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		if (this.fNumberScanner.affectsBehavior(event)) {
 			this.fNumberScanner.adaptToPreferenceChange(event);
 		}
+		if (this.fDocScanner.affectsBehavior(event)) {
+			this.fDocScanner.adaptToPreferenceChange(event);
+		}
 	}
 
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return this.fCodeScanner.affectsBehavior(event) || this.fStringScanner.affectsBehavior(event)
 				|| this.fSingleQuoteStringScanner.affectsBehavior(event) || this.fMultilineStringScanner.affectsBehavior(event)
 				|| this.fMultilineCommentScanner.affectsBehavior(event) || this.fCommentScanner.affectsBehavior(event)
-				|| this.fNumberScanner.affectsBehavior(event);
+				|| this.fNumberScanner.affectsBehavior(event) || this.fDocScanner.affectsBehavior(event);
 	}
 
 	/**

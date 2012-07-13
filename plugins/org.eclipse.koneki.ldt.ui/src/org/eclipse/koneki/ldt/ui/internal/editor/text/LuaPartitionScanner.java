@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Sierra Wireless and others.
+ * Copyright (c) 2009, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		IToken string = new Token(ILuaPartitions.LUA_STRING);
 		IToken singleQuoteString = new Token(ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
 		IToken multilineString = new Token(ILuaPartitions.LUA_MULTI_LINE_STRING);
-		rules.add(new MultiLineStringOrCommentRule(multilineString, false));
+		rules.add(new MultiLineStringOrCommentRule(multilineString));
 		rules.add(new SingleLineRule("\'", "\'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 		rules.add(new SingleLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -47,13 +47,18 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		 * Deal with comments
 		 */
 
-		// Multi-line
+		IToken doc = new Token(ILuaPartitions.LUA_DOC);
 		IToken multiLineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
-		rules.add(new MultiLineStringOrCommentRule(multiLineComment, true));
+		IToken singleLineComment = new Token(ILuaPartitions.LUA_COMMENT);
+
+		// Multi-line documentation
+		rules.add(new MultiLineStringOrCommentRule(multiLineComment, doc));
+
+		// Documentation starting with "---"
+		rules.add(new LuaDocSingleCommentSeriesRule(doc));
 
 		// Single line
-		IToken comment = new Token(ILuaPartitions.LUA_COMMENT);
-		rules.add(new EndOfLineRule(LuaConstants.COMMENT_STRING, comment));
+		rules.add(new EndOfLineRule(LuaConstants.COMMENT_STRING, singleLineComment));
 
 		// Apply rules
 		IPredicateRule[] result = new IPredicateRule[rules.size()];

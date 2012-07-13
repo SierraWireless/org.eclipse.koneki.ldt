@@ -51,11 +51,12 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		IToken keyword = this.getToken(ILuaColorConstants.LUA_KEYWORD);
 		IToken comment = this.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
 		IToken multiline = this.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
+		IToken doc = this.getToken(ILuaColorConstants.LUA_DOC);
 		IToken numbers = this.getToken(ILuaColorConstants.LUA_NUMBER);
 		IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
 
 		// Add rule for multi-line comments
-		rules.add(new MultiLineStringOrCommentRule(multiline, true));
+		rules.add(new MultiLineStringOrCommentRule(multiline, doc));
 
 		// Add rule for single line comments.
 		rules.add(new EndOfLineRule("--", comment)); //$NON-NLS-1$
@@ -84,13 +85,13 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	 * 
 	 * @param char Tested character
 	 */
-	private static class LuaWhitespaceDetector implements IWhitespaceDetector {
+	public static class LuaWhitespaceDetector implements IWhitespaceDetector {
 		public boolean isWhitespace(char character) {
 			return Character.isWhitespace(character);
 		}
 	}
 
-	private static class LuaWordDetector implements IWordDetector {
+	public static class LuaWordDetector implements IWordDetector {
 		/**
 		 * Indicates if argument is part of a word
 		 * 

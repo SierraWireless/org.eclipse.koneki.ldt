@@ -16,17 +16,21 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 
 public class MultiLineStringOrCommentRule implements IPredicateRule {
-	private IToken fToken;
-	private boolean fIsComment;
+	private IToken fDefaultToken;
+	private IToken fDocToken;
 
-	public MultiLineStringOrCommentRule(IToken token, boolean isComment) {
-		this.fToken = token;
-		this.fIsComment = isComment;
+	public MultiLineStringOrCommentRule(IToken commentToken) {
+		this.fDefaultToken = commentToken;
+	}
+
+	public MultiLineStringOrCommentRule(IToken commentToken, IToken docToken) {
+		this.fDefaultToken = commentToken;
+		this.fDocToken = docToken;
 	}
 
 	@Override
 	public IToken getSuccessToken() {
-		return fToken;
+		return fDefaultToken;
 	}
 
 	@Override
@@ -34,8 +38,9 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 		int equalsNumber = 0;
 		int c = scanner.read();
 		int readCount = 1;
+		IToken returnToken = fDefaultToken;
 
-		if (fIsComment) {
+		if (fDocToken != null) {
 			if (c == '-') {
 				c = scanner.read();
 				readCount++;
@@ -74,6 +79,11 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 
 			// now read characters until ']' is detected...
 			c = scanner.read();
+			// if the first actual character inside the comment block is a "-", then
+			// we have a LuaDoc block...
+			if (fDocToken != null && c == '-') {
+				returnToken = fDocToken;
+			}
 			readCount++;
 			while (c != ']' && c != LuaPartitionScanner.EOF) {
 				c = scanner.read();
@@ -102,7 +112,7 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 						continue;
 					// now should be the second ']'
 					if (c == ']')
-						return fToken;
+						return returnToken;
 					// else restart looking for the first ']'
 					c = scanner.read();
 					readCount++;

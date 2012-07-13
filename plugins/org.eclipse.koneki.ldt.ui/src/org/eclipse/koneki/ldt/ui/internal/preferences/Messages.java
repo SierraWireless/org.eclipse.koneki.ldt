@@ -31,6 +31,8 @@ public class Messages extends NLS {
 	public static String LuaEditorColoringConfigurationBlock_multiLineComment;
 	public static String LuaEditorColoringConfigurationBlock_localVariable;
 	public static String LuaEditorColoringConfigurationBlock_globalVariable;
+	public static String LuaEditorColoringConfigurationBlock_luaDocumentor;
+	public static String LuaEditorColoringConfigurationBlock_luaDocumentorTags;
 	public static String LuaFormatterIndentationTabPageIndentTableValues;
 	public static String LuaFormatterIndentationTabPageTableIndentationPolicy;
 	public static String LuaFormatterModifyDialogIndentation;

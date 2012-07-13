@@ -13,7 +13,7 @@ package org.eclipse.koneki.ldt.ui.internal.editor.text.folding;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 
 public enum LuaFoldingBlockKind implements IFoldingBlockKind {
-	COMMENT(true);
+	COMMENT(true), DOC(true);
 
 	private final boolean isComment;
 
