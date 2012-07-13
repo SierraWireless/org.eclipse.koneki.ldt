@@ -58,7 +58,7 @@ local function getindentlevel(source,indenttable)
 	--
 	-- Define AST walker
 	--
-	local linetodepth = {}
+	local linetodepth = {0}
 	local walker = {
 		block = {},
 		expr = {},
@@ -72,14 +72,12 @@ local function getindentlevel(source,indenttable)
 		-- get first line of the block
 		local startline,startoffset = getfirstline(node)
 		local endline = getlastline(node)
-		if source:sub(1,startoffset-1):find("[\r\n]%s*$") then
-			for i=startline, endline do
-				linetodepth[i]=walker.depth
-			end
-		else
-			for i=startline+1, endline do
-				linetodepth[i]=walker.depth
-			end
+		-- If the block don't start by a new line, don't indent the first line
+		if not source:sub(1,startoffset-1):find("[\r\n]%s*$") then
+			startline = startline + 1
+		end
+		for i=startline, endline do
+			linetodepth[i]=walker.depth
 		end
 		walker.depth = walker.depth + 1
 	end
@@ -204,7 +202,6 @@ function M.indentcode(source, delimiter,indenttable, ...)
 
 	-- calculate indentation
 	local linetodepth = getindentlevel(source,indenttable)
-
 
 	-- Concatenate string with right identation
 	local indented = {}
