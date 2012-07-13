@@ -15,9 +15,9 @@ import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.actions.variables.details.DetailPaneAssignValueAction;
 import org.eclipse.debug.internal.ui.elements.adapters.DefaultVariableCellModifier;
+import org.eclipse.debug.internal.ui.elements.adapters.VariableColumnPresentation;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementEditor;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -42,8 +42,9 @@ public class LuaVariableEditor implements IElementEditor {
 	@Override
 	public ICellModifier getCellModifier(IPresentationContext context, Object element) {
 		return new DefaultVariableCellModifier() {
+			@SuppressWarnings("deprecation")
 			public Object getValue(Object element, String property) {
-				if (IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE.equals(property)) {
+				if (VariableColumnPresentation.COLUMN_VARIABLE_VALUE.equals(property)) {
 					if (element instanceof IVariable) {
 						IVariable variable = (IVariable) element;
 						try {
@@ -56,10 +57,11 @@ public class LuaVariableEditor implements IElementEditor {
 				return null;
 			}
 
+			@SuppressWarnings("deprecation")
 			public void modify(Object element, String property, Object value) {
 				Object oldValue = getValue(element, property);
 				if (!value.equals(oldValue)) {
-					if (IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE.equals(property)) {
+					if (VariableColumnPresentation.COLUMN_VARIABLE_VALUE.equals(property)) {
 						if (element instanceof IVariable) {
 							if (value instanceof String) {
 								// The value column displays special characters escaped, so encode the string with any special characters escaped
