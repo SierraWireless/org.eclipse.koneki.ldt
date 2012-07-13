@@ -116,33 +116,114 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			super(token);
 		}
 
-		public IToken evaluate(ICharacterScanner scanner) {
-			int c = scanner.read();
-			int p = c;
-			if (Character.isDigit((char) c) || c == '.' || c == '-') {
-				boolean hex = false;
-				if (fColumn == UNDEFINED || (fColumn == scanner.getColumn() - 1)) {
-					do {
-						p = c;
-						c = scanner.read();
-						if (c == 'x' || c == 'X' && !hex) {
-							hex = true;
-							p = c;
-							c = scanner.read();
-						}
-					} while (Character.isDigit((char) c) || (hex && Character.digit((char) c, 16) != -1));
-					if (c != 'e' && c != 'E') {
-						scanner.unread();
-					}
-					if (p == '.') {
-						scanner.unread();
-						return Token.UNDEFINED;
-					}
-					return fToken;
-				}
+		@Override
+		public IToken evaluate(final ICharacterScanner scanner) {
+			if (eatNumber(scanner) > 0) {
+				return fToken;
 			}
-			scanner.unread();
 			return Token.UNDEFINED;
 		}
+
+		private static int eatEuler(final ICharacterScanner scanner) {
+
+			// Find 'e' or 'E'
+			char current = (char) scanner.read();
+			int digits = 0;
+			if (current != 'e' && current != 'E') {
+				scanner.unread();
+				return digits;
+			} else {
+				digits++;
+			}
+
+			// Check for optional sign
+			current = (char) scanner.read();
+			if (current == '-' || current == '+') {
+				if (!followedByDigit(scanner)) {
+					scanner.unread();
+					scanner.unread();
+					return digits;
+				} else {
+					digits++;
+				}
+			}
+			return eatDecimalDigits(scanner) + digits;
+		}
+
+		private static int eatDecimalDigitsFromDot(final ICharacterScanner scanner) {
+			// Handle '.'
+			if (scanner.read() != '.') {
+				scanner.unread();
+				return 0;
+			}
+			return eatDecimalDigits(scanner) + 1;
+		}
+
+		private static int eatDecimalDigits(final ICharacterScanner scanner) {
+			int digits = 0;
+			while (Character.isDigit((char) scanner.read())) {
+				digits++;
+			}
+			scanner.unread();
+			return digits;
+		}
+
+		private static int eatNumber(final ICharacterScanner scanner) {
+			char current = (char) scanner.read();
+			int result = 0;
+			switch (current) {
+			case '-':
+				result = eatNumber(scanner);
+				return result > 0 ? result + 1 : 0;
+			case '.':
+				result = eatDecimalDigits(scanner) + eatEuler(scanner) + 1;
+				return result > 0 ? result + 1 : 0;
+			case '0':
+				// Check hexadecimal
+				if (followedByChar(scanner, 'x') || followedByChar(scanner, 'X')) {
+					return eatHexaecimalDigits(scanner) + eatEuler(scanner) + 1;
+				}
+				// Regular numbers
+				return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatEuler(scanner) + 1;
+			default:
+				if (Character.isDigit(current)) {
+					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatEuler(scanner) + 1;
+				}
+			}
+			return 0;
+		}
+
+		private static int eatHexaecimalDigits(final ICharacterScanner scanner) {
+
+			// Find 'x'
+			int digits = 0;
+			char current = (char) scanner.read();
+			if (current == 'x' || current == 'X') {
+				digits++;
+			} else {
+				scanner.unread();
+				return digits;
+			}
+
+			// Loop over hexadecimal digits
+			while (Character.digit((char) scanner.read(), 16) != -1) {
+				digits++;
+			}
+			scanner.unread();
+			return digits;
+		}
+
+		private static boolean followedByChar(final ICharacterScanner scanner, final char character) {
+			final boolean result = character == (char) scanner.read();
+			scanner.unread();
+			return result;
+		}
+
+		private static boolean followedByDigit(final ICharacterScanner scanner) {
+			final boolean result = Character.isDigit((char) scanner.read());
+			scanner.unread();
+			return result;
+		}
+
 	}
 }
