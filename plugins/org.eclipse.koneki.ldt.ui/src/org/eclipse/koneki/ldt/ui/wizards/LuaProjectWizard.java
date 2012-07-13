@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.wizards;
 
+import java.text.MessageFormat;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.ui.wizards.GenericDLTKProjectWizard;
 import org.eclipse.dltk.ui.wizards.ProjectCreator;
 import org.eclipse.dltk.ui.wizards.ProjectWizardSecondPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
 import org.eclipse.koneki.ldt.ui.wizards.pages.LuaProjectSettingsPage;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 
 /**
  * A wizard tailored only for available functionalities.
@@ -80,5 +89,26 @@ public class LuaProjectWizard extends GenericDLTKProjectWizard {
 	public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
 		super.init(workbench, currentSelection);
 		setDefaultPageImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(ImageConstants.LUA_WIZARD_BAN));
+	}
+
+	/**
+	 * @see org.eclipse.dltk.ui.wizards.ProjectWizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		boolean superResult = super.performFinish();
+
+		// Open main file of the created project in a editor
+		IPath mainFilePath = new Path(LuaConstants.SOURCE_FOLDER).append(LuaConstants.DEFAULT_MAIN_FILE);
+		IFile mainFile = getProject().getFile(mainFilePath);
+		if (mainFile.exists()) {
+			try {
+				IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), mainFile, true);
+			} catch (PartInitException e) {
+				final String message = MessageFormat.format("Unable to open lua editor for %s", mainFile.getFullPath()); //$NON-NLS-1$
+				Activator.logError(message, e);
+			}
+		}
+		return superResult;
 	}
 }
