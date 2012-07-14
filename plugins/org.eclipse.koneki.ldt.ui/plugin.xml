@@ -264,6 +264,25 @@
          </partition>
       </scriptCompletionProposalComputer>
    </extension>
+ <extension
+       id="LuaDocumentorCompletionProposalComputer"
+       name="LuaDocumentor Proposals"
+       point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+    <scriptCompletionProposalComputer
+          categoryId="org.eclipse.koneki.ldt.ui.luaDocumentorProposalCategory"
+          class="org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaDocumentorCompletionProposalComputer"
+          toolkitId="org.eclipse.koneki.ldt.nature">
+       <partition
+             type="__lua_doc">
+       </partition>
+    </scriptCompletionProposalComputer>
+ </extension>
+ <extension
+       id="luaDocumentorProposalCategory"
+       name="LuaDocumentor Proposals"
+       point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
+    <proposalCategory></proposalCategory>
+ </extension>
    <extension
          point="org.eclipse.ui.editors.templates">
       <contextType
@@ -275,6 +294,15 @@
           file="templates/templates.xml"
           translations="templates/templates.properties">
        </include>
+    <contextType
+          class="org.eclipse.koneki.ldt.ui.internal.editor.templates.LuaDocumentorTemplateContextType"
+          id="LuaDocumentorTemplateContextType"
+          name="%templates.context.luaDocumentor">
+    </contextType>
+    <include
+          file="templates/luadocumentor-templates.xml"
+          translations="templates/luadocumentor-templates.properties">
+    </include>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">

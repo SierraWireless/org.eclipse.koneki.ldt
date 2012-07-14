@@ -12,8 +12,10 @@ package org.eclipse.koneki.ldt.ui.internal.editor.templates;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 
 /**
  * 
@@ -40,6 +42,13 @@ public class LuaTemplateAccess extends ScriptTemplateAccess {
 	@Override
 	protected String getCustomTemplatesKey() {
 		return CUSTOM_TEMPLATES_KEY;
+	}
+
+	@Override
+	protected ContextTypeRegistry createContextTypeRegistry() {
+		final ContributionContextTypeRegistry registry = (ContributionContextTypeRegistry) super.createContextTypeRegistry();
+		registry.addContextType(LuaDocumentorTemplateContextType.CONTEXT_TYPE_ID);
+		return registry;
 	}
 
 	@Override

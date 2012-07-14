@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+<template
+	context="LuaDocumentorTemplateContextType"
+	description="%module.description"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.module"
+	name="@module">@module ${name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.function"
+	name="@function"
+	description="%function.description"
+	autoinsert="true">@function [parent=#${parent}] ${name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.param"
+	name="@param"
+	description="%param.description"
+	autoinsert="true">@param #${type} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.field"
+	name="@field"
+	description="%field.description"
+	autoinsert="true">@field [parent=#${parent}] #${type} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.type"
+	name="@type"
+	description="%type.description"
+	autoinsert="true">@type ${name}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.return"
+	name="@return"
+	description="%return.description"
+	autoinsert="true">@return #${type} ${description}</template>
+
+</templates>

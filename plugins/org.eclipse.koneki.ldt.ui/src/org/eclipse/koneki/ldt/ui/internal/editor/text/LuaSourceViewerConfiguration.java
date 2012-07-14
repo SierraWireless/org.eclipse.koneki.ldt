@@ -19,6 +19,7 @@ import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
+import org.eclipse.dltk.ui.text.completion.ContentAssistProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -59,6 +60,9 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	protected void alterContentAssistant(ContentAssistant assistant) {
 		IContentAssistProcessor scriptProcessor = new LuaCompletionProcessor(getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(scriptProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+
+		ContentAssistProcessor luaDocumentorProcessor = new LuaCompletionProcessor(getEditor(), assistant, ILuaPartitions.LUA_DOC);
+		assistant.setContentAssistProcessor(luaDocumentorProcessor, ILuaPartitions.LUA_DOC);
 	}
 
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {

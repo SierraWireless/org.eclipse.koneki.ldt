@@ -14,6 +14,8 @@ import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.templates.Template;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.ILuaPartitions;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaTextTools;
@@ -44,4 +46,14 @@ public class LuaTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	private LuaTextTools getTextTools() {
 		return Activator.getDefault().getTextTools();
 	}
+
+	@Override
+	protected ViewerInputDecorations getViewerInputUpdater(SourceViewer viewer, Template template) {
+		if (LuaDocumentorTemplateContextType.CONTEXT_TYPE_ID.equals(template.getContextTypeId())) {
+			final String lineDelimiter = viewer.getDocument().getLegalLineDelimiters()[0];
+			return new ViewerInputDecorations("---" + lineDelimiter + "-- ", lineDelimiter); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		return null;
+	}
+
 }
