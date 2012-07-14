@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.tests;
 
+import org.eclipse.koneki.ldt.ui.tests.internal.LuaNumberRuleTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.LuaWordFinderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ LuaWordFinderTest.class })
+@SuiteClasses({ LuaWordFinderTest.class, LuaNumberRuleTest.class })
 public class AllUITests {
 
 }

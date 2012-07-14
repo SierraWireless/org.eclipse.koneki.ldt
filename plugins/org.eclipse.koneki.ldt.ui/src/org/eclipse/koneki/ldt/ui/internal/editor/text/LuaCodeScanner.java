@@ -111,7 +111,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		}
 	}
 
-	private static class LuaNumberRule extends NumberRule {
+	public static class LuaNumberRule extends NumberRule {
 		public LuaNumberRule(IToken token) {
 			super(token);
 		}
