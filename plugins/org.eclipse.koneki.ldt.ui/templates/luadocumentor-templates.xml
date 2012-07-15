@@ -18,14 +18,14 @@
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.param"
 	name="@param"
 	description="%param.description"
-	autoinsert="true">@param #${type} ${description}</template>
+	autoinsert="true">@param #${type} ${name} ${description}</template>
 
 <template
 	context="LuaDocumentorTemplateContextType"
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.field"
 	name="@field"
 	description="%field.description"
-	autoinsert="true">@field [parent=#${parent}] #${type} ${description}</template>
+	autoinsert="true">@field [parent=#${parent}] #${type} ${name} ${description}</template>
 
 <template
 	context="LuaDocumentorTemplateContextType"
