@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.koneki.ldt.product"
       label="Lua Development Tools - branding (Incubation)"
-      version="0.8.0.qualifier"
+      version="0.9.0.qualifier"
       provider-name="Koneki"
       plugin="org.eclipse.koneki.ldt.branding">
 
@@ -114,9 +114,9 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="org.eclipse.dltk.core"
          version="0.0.0"/>
 
-   <requires>
-      <import feature="org.eclipse.koneki.ldt" version="0.1.0" match="compatible"/>
-   </requires>
+   <includes
+         id="org.eclipse.koneki.ldt"
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.koneki.ldt.branding"

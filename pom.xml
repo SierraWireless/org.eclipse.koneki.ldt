@@ -12,75 +12,94 @@
 		<module>plugins</module>
 		<module>features</module>
 		<module>tests</module>
-		<module>repository</module>
+		<!-- <module>repository</module> -->
 	</modules>
 
 	<properties>
 		<tycho-version>0.15.0</tycho-version>
 		<tycho-extras-version>0.15.0</tycho-extras-version>
 		<tycho-groupid>org.eclipse.tycho</tycho-groupid>
-	    <download-publish-path>/home/data/httpd/download.eclipse.org/koneki/updates-nightly/ldt</download-publish-path>
+		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/koneki/</download-publish-rootpath>
+		<download-publish-relativepath>updates-nightly/ldt</download-publish-relativepath>
+		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
+		<eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
 	</properties>
 
 	<profiles>
 		<profile>
+			<id>maintenance</id>
+			<properties>
+				<download-publish-relativepath>updates-nightly-maintenance/ldt</download-publish-relativepath>
+			</properties>
+		</profile>
+		<profile>
 			<id>build-product</id>
- 			<modules>
+			<modules>
 				<module>product</module>
 			</modules>
 		</profile>
-	    <profile>
-	      <id>platform-indigo</id>
-	      <activation>
-	        <activeByDefault>true</activeByDefault>
-	        <property>
-	          <name>platform-version-name</name>
-	          <value>indigo</value>
-	        </property>
-	      </activation>
-	      <properties>
-	        <eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
-	      </properties>
-	    </profile>
-	    <profile>
-	      <id>platform-juno</id>
-	      <activation>
-	        <property>
-	          <name>platform-version-name</name>
-	          <value>juno</value>
-	        </property>
-	      </activation>
-	      <properties>
-	        <eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
-	      </properties>
-	    </profile>
-	    <profile>
-	      <id>platform-juno-staging</id>
-	      <activation>
-	        <property>
-	          <name>platform-version-name</name>
-	          <value>juno</value>
-	        </property>
-	      </activation>
-	      <properties>
-	        <eclipse-site>http://download.eclipse.org/releases/staging</eclipse-site>
-	      </properties>
-	    </profile>
+		<profile>
+			<id>platform-indigo</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>indigo</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-juno</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>juno</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-kepler</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>kepler</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-staging</id>
+			<activation>
+				<property>
+					<name>platform-version-name</name>
+					<value>staging</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-site>http://download.eclipse.org/releases/staging</eclipse-site>
+			</properties>
+		</profile>
 	</profiles>
 
-    <repositories>
-              <repository>
-                      <id>eclipse</id>
-                      <layout>p2</layout>
-                      <url>${eclipse-site}</url>
-              </repository>
-              <repository>
-                      <id>wikitext</id>
-                      <layout>p2</layout>
-                      <url>http://download.eclipse.org/tools/mylyn/update/weekly</url>
-              </repository>
-      </repositories>
-
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<layout>p2</layout>
+			<url>${eclipse-site}</url>
+		</repository>
+		<repository>
+			<id>wikitext</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/tools/mylyn/update/weekly</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
@@ -109,15 +128,10 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<resolver>p2</resolver>
-<!--					<target>
-						<artifact>
-							<groupId>org.eclipse.koneki.ldt</groupId>
-							<artifactId>target-platform</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
-							<classifier>luaeclipse2</classifier>
-						</artifact>
-					</target>
--->					<ignoreTychoRepositories>true</ignoreTychoRepositories>
+					<!-- <target> <artifact> <groupId>org.eclipse.koneki.ldt</groupId> <artifactId>target-platform</artifactId> 
+						<version>0.0.1-SNAPSHOT</version> <classifier>ldt</classifier> </artifact> 
+						</target> -->
+					<ignoreTychoRepositories>true</ignoreTychoRepositories>
 					<environments>
 						<environment>
 							<os>win32</os>
@@ -147,7 +161,7 @@
 					</environments>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
@@ -158,7 +172,7 @@
 					<excludes>**/com/naef/jnlua/**/*</excludes>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
@@ -166,23 +180,21 @@
 				<configuration>
 					<failOnError>false</failOnError>
 					<findbugsXmlOutput>true</findbugsXmlOutput>
-      				<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
 					<xmlOutput>true</xmlOutput>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 
 	<pluginRepositories>
 		<pluginRepository>
 			<id>sonatype-staging</id>
-  			<url>https://repository.sonatype.org/content/repositories/forge</url>
+			<url>https://repository.sonatype.org/content/repositories/forge</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>maven.eclipse.org</id>
 			<url>http://maven.eclipse.org/nexus/content/groups/public/</url>
-		</pluginRepository>		
+		</pluginRepository>
 	</pluginRepositories>
-
 </project>
-
