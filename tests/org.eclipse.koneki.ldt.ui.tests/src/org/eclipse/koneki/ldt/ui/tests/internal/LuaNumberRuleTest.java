@@ -11,6 +11,8 @@
 
 package org.eclipse.koneki.ldt.ui.tests.internal;
 
+import java.text.MessageFormat;
+
 import junit.framework.TestCase;
 
 import org.eclipse.jface.text.Document;
@@ -21,6 +23,7 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaCodeScanner;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaCodeScanner.LuaNumberRule;
+import org.junit.Test;
 
 /**
  * Tests for {@link LuaCodeScanner.LuaNumberRule}.
@@ -29,65 +32,105 @@ public class LuaNumberRuleTest extends TestCase {
 
 	private static final IToken NUMBER_TOKEN = new Token("number"); //$NON-NLS-1$
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Test
+	public void testIntegers() {
+		numberDetected("0", 0, 1); //$NON-NLS-1$
+		numberDetected("-1", 0, 2); //$NON-NLS-1$
+
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@Test
+	public void testDecimals() {
+		numberDetected("0.", 0, 2); //$NON-NLS-1$
+		numberDetected(".1", 0, 2); //$NON-NLS-1$
+		numberDetected("0.0", 0, 3); //$NON-NLS-1$
+		numberDetected("-1.2", 0, 4); //$NON-NLS-1$
+		numberDetected("-.3", 0, 3); //$NON-NLS-1$
+		numberDetected("-.3E10", 0, 6); //$NON-NLS-1$
+		numberDetected("local x = 3.4", 10, 3); //$NON-NLS-1$
+		numberDetected("local x=3.4", 8, 3); //$NON-NLS-1$
 	}
 
-	public void testNumbers() {
-		assertTrue(numberDetected("0")); //$NON-NLS-1$
-		assertTrue(numberDetected("0.")); //$NON-NLS-1$
-
-		assertTrue(numberDetected("-1")); //$NON-NLS-1$
-		assertTrue(numberDetected("-1.2")); //$NON-NLS-1$
-		assertTrue(numberDetected("-.3")); //$NON-NLS-1$
-
-		assertTrue(numberDetected("1E10")); //$NON-NLS-1$
-		assertTrue(numberDetected("-1E10")); //$NON-NLS-1$
-		assertTrue(numberDetected("0.1e10")); //$NON-NLS-1$
-		assertTrue(numberDetected("0.1E10")); //$NON-NLS-1$
-		assertTrue(numberDetected(".1")); //$NON-NLS-1$
-		assertTrue(numberDetected(".1E10")); //$NON-NLS-1$
-		assertTrue(numberDetected(".1e10")); //$NON-NLS-1$
-
-		assertTrue(numberDetected("0x")); //$NON-NLS-1$
-		assertTrue(numberDetected("0x12")); //$NON-NLS-1$
+	@Test
+	public void testHexadecimals() {
+		numberDetected("0x1", 0, 3); //$NON-NLS-1$
+		numberDetected("0xf", 0, 3); //$NON-NLS-1$
+		numberDetected("0x12", 0, 4); //$NON-NLS-1$
+		numberDetected("0xAA", 0, 4); //$NON-NLS-1$
+		numberDetected("0x", 0, 2, false); //$NON-NLS-1$
 	}
 
+	@Test
+	public void testNumbersInExpressions() {
+		numberDetected("local x = (10/3.4)", 11, 2); //$NON-NLS-1$
+		numberDetected("local x = (10/3.4)", 14, 3); //$NON-NLS-1$
+		numberDetected("local x = (10./3.4E10)", 11, 3); //$NON-NLS-1$
+		numberDetected("local x = (10./3.4E10)", 15, 6); //$NON-NLS-1$
+	}
+
+	@Test
+	public void testExponential() {
+		numberDetected("1e1", 0, 3); //$NON-NLS-1$
+		numberDetected("1E10", 0, 4); //$NON-NLS-1$
+		numberDetected("-1E10", 0, 5); //$NON-NLS-1$
+		numberDetected("0.1e10", 0, 6); //$NON-NLS-1$
+		numberDetected("0.1E10", 0, 6); //$NON-NLS-1$
+		numberDetected(".1E10", 0, 5); //$NON-NLS-1$
+		numberDetected(".1e10", 0, 5); //$NON-NLS-1$
+		numberDetected("1.E10", 0, 5); //$NON-NLS-1$
+		numberDetected("1.e10", 0, 5); //$NON-NLS-1$
+	}
+
+	@Test
 	public void testNonNumbers() {
-		assertFalse(numberDetected("abc")); //$NON-NLS-1$
-
-		assertFalse(numberDetected("e")); //$NON-NLS-1$
-		assertFalse(numberDetected("E")); //$NON-NLS-1$
-		assertFalse(numberDetected("e10")); //$NON-NLS-1$
-		assertFalse(numberDetected("E10")); //$NON-NLS-1$
-		assertFalse(numberDetected("ex")); //$NON-NLS-1$
-
-		//		assertFalse(numberDetected(".")); //$NON-NLS-1$
-		//		assertFalse(numberDetected("..")); //$NON-NLS-1$
-		//		assertFalse(numberDetected(".x")); //$NON-NLS-1$
-
-		//		assertFalse(numberDetected("0.x")); //$NON-NLS-1$
-		//		assertFalse(numberDetected("0.ex")); //$NON-NLS-1$
-
-		assertFalse(numberDetected("a.b")); //$NON-NLS-1$
-		assertFalse(numberDetected("a.E")); //$NON-NLS-1$
-		assertFalse(numberDetected("a.ex")); //$NON-NLS-1$
-		assertFalse(numberDetected("a.x")); //$NON-NLS-1$
+		assertNoNumberFound("abc"); //$NON-NLS-1$
+		assertNoNumberFound("e"); //$NON-NLS-1$
+		assertNoNumberFound("E"); //$NON-NLS-1$
+		assertNoNumberFound("ex"); //$NON-NLS-1$
+		assertNoNumberFound("."); //$NON-NLS-1$
+		assertNoNumberFound(".."); //$NON-NLS-1$
+		assertNoNumberFound(".x"); //$NON-NLS-1$
+		assertNoNumberFound("abc.x"); //$NON-NLS-1$
+		assertNoNumberFound("a.b"); //$NON-NLS-1$
+		assertNoNumberFound("a.E"); //$NON-NLS-1$
+		assertNoNumberFound("a.ex"); //$NON-NLS-1$
+		assertNoNumberFound("a.x"); //$NON-NLS-1$
+		assertNoNumberFound("os.exit()"); //$NON-NLS-1$
+		assertNoNumberFound("table:send()"); //$NON-NLS-1$
+		assertNoNumberFound("io.flush()"); //$NON-NLS-1$
 	}
 
-	private boolean numberDetected(String n) {
-		IDocument doc = new Document(n);
-		LuaCodeScanner.LuaNumberRule numberRule = new LuaNumberRule(NUMBER_TOKEN);
-		RuleBasedScanner scanner = new RuleBasedScanner();
+	private void numberDetected(final String n, final int offset, final int length, final boolean failWhenNumberisFound) {
+		final IDocument doc = new Document(n);
+		final LuaCodeScanner.LuaNumberRule numberRule = new LuaNumberRule(NUMBER_TOKEN);
+		final RuleBasedScanner scanner = new RuleBasedScanner();
+		scanner.setRules(new IRule[] { numberRule });
+		scanner.setRange(doc, offset, doc.getLength() - offset);
+		final IToken token = scanner.nextToken();
+		final boolean numberFound = token == NUMBER_TOKEN && scanner.getTokenOffset() == offset && scanner.getTokenLength() == length;
+		if ((!numberFound) && failWhenNumberisFound) {
+			final String negation = failWhenNumberisFound ? "" : " not "; //$NON-NLS-1$ //$NON-NLS-2$
+			fail(MessageFormat.format("In \"{0}\", \"{1}\" is {2} parsed as a number.", n, n.substring(offset, offset + length), negation)); //$NON-NLS-1$
+		}
+	}
+
+	private void numberDetected(String n, int offset, int length) {
+		numberDetected(n, offset, length, true);
+	}
+
+	private void assertNoNumberFound(final String n) {
+		final IDocument doc = new Document(n);
+		final LuaCodeScanner.LuaNumberRule numberRule = new LuaNumberRule(NUMBER_TOKEN);
+		final RuleBasedScanner scanner = new RuleBasedScanner();
 		scanner.setRules(new IRule[] { numberRule });
 		scanner.setRange(doc, 0, doc.getLength());
-		return scanner.nextToken() == NUMBER_TOKEN;
+		for (IToken t = scanner.nextToken(); t != Token.EOF; t = scanner.nextToken()) {
+			if (t == NUMBER_TOKEN) {
+				final StringBuffer sb = new StringBuffer(n);
+				sb.insert(scanner.getTokenOffset(), "*"); //$NON-NLS-1$
+				sb.insert(scanner.getTokenOffset() + scanner.getTokenLength() + 1, "*"); //$NON-NLS-1$
+				fail("A number has been found at an unexpected location: \"" + sb.toString() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		}
 	}
-
 }

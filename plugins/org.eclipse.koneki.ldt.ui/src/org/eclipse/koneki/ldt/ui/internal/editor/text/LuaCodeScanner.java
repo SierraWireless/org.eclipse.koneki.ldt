@@ -124,7 +124,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			return Token.UNDEFINED;
 		}
 
-		private static int eatEuler(final ICharacterScanner scanner) {
+		private static int eatExponentioal(final ICharacterScanner scanner) {
 
 			// Find 'e' or 'E'
 			char current = (char) scanner.read();
@@ -152,11 +152,11 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		private static int eatDecimalDigitsFromDot(final ICharacterScanner scanner) {
 			// Handle '.'
-			if (scanner.read() != '.') {
-				scanner.unread();
-				return 0;
+			if (scanner.read() == '.') {
+				return eatDecimalDigits(scanner) + 1;
 			}
-			return eatDecimalDigits(scanner) + 1;
+			scanner.unread();
+			return 0;
 		}
 
 		private static int eatDecimalDigits(final ICharacterScanner scanner) {
@@ -170,26 +170,39 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		private static int eatNumber(final ICharacterScanner scanner) {
 			char current = (char) scanner.read();
-			int result = 0;
+			final int result;
 			switch (current) {
 			case '-':
 				result = eatNumber(scanner);
-				return result > 0 ? result + 1 : 0;
+				if (result > 0) {
+					return result + 1;
+				}
+				break;
 			case '.':
-				result = eatDecimalDigits(scanner) + eatEuler(scanner) + 1;
-				return result > 0 ? result + 1 : 0;
+				result = eatDecimalDigits(scanner);
+				if (result > 0) {
+					return result + eatExponentioal(scanner) + 1;
+				}
+				break;
 			case '0':
 				// Check hexadecimal
 				if (followedByChar(scanner, 'x') || followedByChar(scanner, 'X')) {
-					return eatHexaecimalDigits(scanner) + eatEuler(scanner) + 1;
+					result = eatHexaecimalDigits(scanner);
+					if (result > 0) {
+						return result + eatExponentioal(scanner) + 1;
+
+					}
+				} else {
+					// Regular numbers
+					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponentioal(scanner) + 1;
 				}
-				// Regular numbers
-				return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatEuler(scanner) + 1;
+				break;
 			default:
 				if (Character.isDigit(current)) {
-					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatEuler(scanner) + 1;
+					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponentioal(scanner) + 1;
 				}
 			}
+			scanner.unread();
 			return 0;
 		}
 
