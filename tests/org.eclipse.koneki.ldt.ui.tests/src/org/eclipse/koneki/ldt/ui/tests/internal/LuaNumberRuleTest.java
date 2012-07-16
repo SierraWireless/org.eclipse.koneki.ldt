@@ -35,8 +35,8 @@ public class LuaNumberRuleTest extends TestCase {
 	@Test
 	public void testIntegers() {
 		numberDetected("0", 0, 1); //$NON-NLS-1$
-		numberDetected("-1", 0, 2); //$NON-NLS-1$
-
+		numberDetected("10", 0, 2); //$NON-NLS-1$
+		numberDetected("-10", 0, 3, false); //$NON-NLS-1$
 	}
 
 	@Test
@@ -44,9 +44,6 @@ public class LuaNumberRuleTest extends TestCase {
 		numberDetected("0.", 0, 2); //$NON-NLS-1$
 		numberDetected(".1", 0, 2); //$NON-NLS-1$
 		numberDetected("0.0", 0, 3); //$NON-NLS-1$
-		numberDetected("-1.2", 0, 4); //$NON-NLS-1$
-		numberDetected("-.3", 0, 3); //$NON-NLS-1$
-		numberDetected("-.3E10", 0, 6); //$NON-NLS-1$
 		numberDetected("local x = 3.4", 10, 3); //$NON-NLS-1$
 		numberDetected("local x=3.4", 8, 3); //$NON-NLS-1$
 	}
@@ -72,7 +69,6 @@ public class LuaNumberRuleTest extends TestCase {
 	public void testExponential() {
 		numberDetected("1e1", 0, 3); //$NON-NLS-1$
 		numberDetected("1E10", 0, 4); //$NON-NLS-1$
-		numberDetected("-1E10", 0, 5); //$NON-NLS-1$
 		numberDetected("0.1e10", 0, 6); //$NON-NLS-1$
 		numberDetected("0.1E10", 0, 6); //$NON-NLS-1$
 		numberDetected(".1E10", 0, 5); //$NON-NLS-1$
@@ -100,7 +96,7 @@ public class LuaNumberRuleTest extends TestCase {
 		assertNoNumberFound("io.flush()"); //$NON-NLS-1$
 	}
 
-	private void numberDetected(final String n, final int offset, final int length, final boolean failWhenNumberisFound) {
+	private void numberDetected(final String n, final int offset, final int length, final boolean failWhenNumberIsFound) {
 		final IDocument doc = new Document(n);
 		final LuaCodeScanner.LuaNumberRule numberRule = new LuaNumberRule(NUMBER_TOKEN);
 		final RuleBasedScanner scanner = new RuleBasedScanner();
@@ -108,8 +104,8 @@ public class LuaNumberRuleTest extends TestCase {
 		scanner.setRange(doc, offset, doc.getLength() - offset);
 		final IToken token = scanner.nextToken();
 		final boolean numberFound = token == NUMBER_TOKEN && scanner.getTokenOffset() == offset && scanner.getTokenLength() == length;
-		if ((!numberFound) && failWhenNumberisFound) {
-			final String negation = failWhenNumberisFound ? "" : " not "; //$NON-NLS-1$ //$NON-NLS-2$
+		if ((!numberFound) && failWhenNumberIsFound) {
+			final String negation = failWhenNumberIsFound ? "" : " not "; //$NON-NLS-1$ //$NON-NLS-2$
 			fail(MessageFormat.format("In \"{0}\", \"{1}\" is {2} parsed as a number.", n, n.substring(offset, offset + length), negation)); //$NON-NLS-1$
 		}
 	}

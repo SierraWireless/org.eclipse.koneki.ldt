@@ -47,13 +47,13 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	}
 
 	protected List<IRule> createRules() {
-		List<IRule> rules = new ArrayList<IRule>();
-		IToken keyword = this.getToken(ILuaColorConstants.LUA_KEYWORD);
-		IToken comment = this.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
-		IToken multiline = this.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
-		IToken doc = this.getToken(ILuaColorConstants.LUA_DOC);
-		IToken numbers = this.getToken(ILuaColorConstants.LUA_NUMBER);
-		IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
+		final List<IRule> rules = new ArrayList<IRule>();
+		final IToken keyword = this.getToken(ILuaColorConstants.LUA_KEYWORD);
+		final IToken comment = this.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
+		final IToken multiline = this.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
+		final IToken doc = this.getToken(ILuaColorConstants.LUA_DOC);
+		final IToken numbers = this.getToken(ILuaColorConstants.LUA_NUMBER);
+		final IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
 
 		// Add rule for multi-line comments
 		rules.add(new MultiLineStringOrCommentRule(multiline, doc));
@@ -65,14 +65,14 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
 
 		// Add word rule for keywords.
-		WordRule wordRule = new WordRule(new LuaWordDetector(), other);
+		final WordRule wordRule = new WordRule(new LuaWordDetector(), other);
 		for (int i = 0; i < fgKeywords.length; i++) {
 			wordRule.addWord(fgKeywords[i], keyword);
 		}
 		rules.add(wordRule);
 
 		// Add number recognition
-		NumberRule numberRule = new LuaNumberRule(numbers);
+		final NumberRule numberRule = new LuaNumberRule(numbers);
 		rules.add(numberRule);
 
 		// Default case
@@ -112,7 +112,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	}
 
 	public static class LuaNumberRule extends NumberRule {
-		public LuaNumberRule(IToken token) {
+		public LuaNumberRule(final IToken token) {
 			super(token);
 		}
 
@@ -124,7 +124,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			return Token.UNDEFINED;
 		}
 
-		private static int eatExponentioal(final ICharacterScanner scanner) {
+		private static int eatExponential(final ICharacterScanner scanner) {
 
 			// Find 'e' or 'E'
 			char current = (char) scanner.read();
@@ -169,19 +169,13 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		}
 
 		private static int eatNumber(final ICharacterScanner scanner) {
-			char current = (char) scanner.read();
+			final char current = (char) scanner.read();
 			final int result;
 			switch (current) {
-			case '-':
-				result = eatNumber(scanner);
-				if (result > 0) {
-					return result + 1;
-				}
-				break;
 			case '.':
 				result = eatDecimalDigits(scanner);
 				if (result > 0) {
-					return result + eatExponentioal(scanner) + 1;
+					return result + eatExponential(scanner) + 1;
 				}
 				break;
 			case '0':
@@ -189,17 +183,17 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 				if (followedByChar(scanner, 'x') || followedByChar(scanner, 'X')) {
 					result = eatHexaecimalDigits(scanner);
 					if (result > 0) {
-						return result + eatExponentioal(scanner) + 1;
+						return result + eatExponential(scanner) + 1;
 
 					}
 				} else {
 					// Regular numbers
-					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponentioal(scanner) + 1;
+					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponential(scanner) + 1;
 				}
 				break;
 			default:
 				if (Character.isDigit(current)) {
-					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponentioal(scanner) + 1;
+					return eatDecimalDigits(scanner) + eatDecimalDigitsFromDot(scanner) + eatExponential(scanner) + 1;
 				}
 			}
 			scanner.unread();
@@ -210,8 +204,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 			// Find 'x'
 			int digits = 0;
-			char current = (char) scanner.read();
-			if (current == 'x' || current == 'X') {
+			final char current = (char) scanner.read();
+			if ((current == 'x' || current == 'X') && followedByHexadecimal(scanner)) {
 				digits++;
 			} else {
 				scanner.unread();
@@ -234,6 +228,12 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 		private static boolean followedByDigit(final ICharacterScanner scanner) {
 			final boolean result = Character.isDigit((char) scanner.read());
+			scanner.unread();
+			return result;
+		}
+
+		private static boolean followedByHexadecimal(final ICharacterScanner scanner) {
+			final boolean result = Character.digit((char) scanner.read(), 16) != -1;
 			scanner.unread();
 			return result;
 		}
