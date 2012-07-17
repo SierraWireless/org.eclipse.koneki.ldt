@@ -324,7 +324,12 @@
             id="org.eclipse.koneki.ldt.typing.preferences"
             name="%preference.typing.name">
       </page>
-      <page
+	  <page
+          category="org.eclipse.koneki.ldt.editor.preferences"
+          class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaFoldingPreferencePage"
+          id="org.eclipse.koneki.ldt.typing.folding"
+          name="%preference.folding.name"/>
+	      <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
 	        class="org.eclipse.koneki.ldt.ui.internal.preferences.LuaEditorPreferencePage"
             id="org.eclipse.koneki.ldt.editor.preferences"
@@ -413,6 +418,10 @@
   <blockProvider
     nature="org.eclipse.koneki.ldt.nature"
     class="org.eclipse.koneki.ldt.ui.internal.editor.text.folding.LuaCommentFoldingBlockProvider">
+  </blockProvider>
+  <blockProvider
+    nature="org.eclipse.koneki.ldt.nature"
+    class="org.eclipse.koneki.ldt.ui.internal.editor.text.folding.LuaCodeFoldingBlockProvider">
   </blockProvider>
 </extension>
 </plugin>

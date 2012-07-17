@@ -36,6 +36,8 @@ public class Messages extends NLS {
 	public static String LuaFormatterIndentationTabPageIndentTableValues;
 	public static String LuaFormatterIndentationTabPageTableIndentationPolicy;
 	public static String LuaFormatterModifyDialogIndentation;
+	public static String LuaFoldingPreferencePage_initiallyFoldLevelOneBlocks;
+	public static String LuaFoldingPreferencePage_initiallyFoldDoc;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -79,6 +79,14 @@ public class LuaPreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_DOC, new RGB(63, 95, 191));
 		PreferenceConverter.setDefault(store, ILuaColorConstants.LUA_DOC_TAGS, new RGB(127, 159, 191));
 		store.setDefault(ILuaColorConstants.LUA_DOC_TAGS + PreferenceConstants.EDITOR_BOLD_SUFFIX, true);
+
+		// Code folding
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);
+		store.setDefault(PreferenceConstants.EDITOR_DOCS_FOLDING_ENABLED, true);
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_METHODS, false);
+
 	}
 
 }
