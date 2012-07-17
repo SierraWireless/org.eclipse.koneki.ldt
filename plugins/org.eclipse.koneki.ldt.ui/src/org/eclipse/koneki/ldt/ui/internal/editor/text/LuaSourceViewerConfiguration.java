@@ -63,6 +63,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 
 		ContentAssistProcessor luaDocumentorProcessor = new LuaCompletionProcessor(getEditor(), assistant, ILuaPartitions.LUA_DOC);
 		assistant.setContentAssistProcessor(luaDocumentorProcessor, ILuaPartitions.LUA_DOC);
+		assistant.setContentAssistProcessor(luaDocumentorProcessor, ILuaPartitions.LUA_DOC_MULTI);
 	}
 
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
@@ -110,6 +111,10 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		dr = new DefaultDamagerRepairer(fDocScanner);
 		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC);
+
+		dr = new DefaultDamagerRepairer(fDocScanner);
+		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC_MULTI);
+		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC_MULTI);
 
 		return reconciler;
 	}

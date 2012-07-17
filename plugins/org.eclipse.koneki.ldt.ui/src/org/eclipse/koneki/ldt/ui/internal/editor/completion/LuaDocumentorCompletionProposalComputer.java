@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
@@ -27,11 +29,14 @@ import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.LuaDocumentorTags;
 import org.eclipse.koneki.ldt.ui.internal.editor.templates.LuaDocumentorTemplateCompletionProcessor;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.ILuaPartitions;
 
 public class LuaDocumentorCompletionProposalComputer implements IScriptCompletionProposalComputer {
 
@@ -47,44 +52,85 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 	public List<ICompletionProposal> computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
 		IDocument document = context.getDocument();
 		try {
-			final IRegion region = document.getLineInformationOfOffset(context.getInvocationOffset());
-			final char[] line = document.get(region.getOffset(), region.getLength()).toCharArray();
-			final int offsetInLine = context.getInvocationOffset() - region.getOffset();
-			int index = 0;
-			index = skipSpaces(line, index, offsetInLine);
-			if (index < offsetInLine && line[index] == '-') {
-				++index;
-			}
-			if (index < offsetInLine && line[index] == '-') {
-				++index;
-			}
-			index = skipSpaces(line, index, offsetInLine);
-			if (!(index < offsetInLine && line[index] == '@')) {
-				return Collections.emptyList();
-			}
-			final int tagStart = index;
-			++index;
-			if (index < offsetInLine && Character.isJavaIdentifierStart(line[index])) {
-				++index;
-				while (index < offsetInLine && (Character.isJavaIdentifierPart(line[index]) || line[index] == '.' || line[index] == '-')) {
-					++index;
+
+			final IRegion contentAssistRegion = document.getLineInformationOfOffset(context.getInvocationOffset());
+			final char[] contentAssistLine = document.get(contentAssistRegion.getOffset(), contentAssistRegion.getLength()).toCharArray();
+			final int contentAssistOffsetInLine = context.getInvocationOffset() - contentAssistRegion.getOffset();
+
+			int offsetInCurrentLine = 0;
+
+			// Check if we are on the first line of the lua doc bloc to known how many hyphens we have to ignore
+			ITypedRegion[] partitions = TextUtilities.computePartitioning(document, ILuaPartitions.LUA_PARTITIONING, 0, document.getLength(), false);
+			for (ITypedRegion region : partitions) {
+				if (ILuaPartitions.LUA_DOC.equals(region.getType()) || ILuaPartitions.LUA_DOC_MULTI.equals(region.getType())) {
+					if (context.getInvocationOffset() >= region.getOffset()
+							&& context.getInvocationOffset() < (region.getOffset() + region.getLength())) {
+						// "region" is the current region
+						int blockFirstLine = document.getLineOfOffset(region.getOffset());
+						int invocationLine = document.getLineOfOffset(context.getInvocationOffset());
+						boolean isInvocationOnFirstLine = (blockFirstLine == invocationLine);
+
+						if (isInvocationOnFirstLine) {
+							offsetInCurrentLine = region.getOffset() - document.getLineOffset(blockFirstLine);
+						} else {
+							offsetInCurrentLine = 0;
+						}
+
+						if (ILuaPartitions.LUA_DOC_MULTI.equals(region.getType())) {
+							if (isInvocationOnFirstLine) {
+								offsetInCurrentLine = skipOpenningMultiLineChars(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine);
+							}
+						} else if (ILuaPartitions.LUA_DOC.equals(region.getType())) {
+							if (isInvocationOnFirstLine) {
+								offsetInCurrentLine += 3;
+							} else {
+								offsetInCurrentLine += 2;
+							}
+						}
+					}
 				}
 			}
-			if (index == offsetInLine) {
-				return completionOnTag(context, new String(line, tagStart, index - tagStart));
+
+			offsetInCurrentLine = skipSpaces(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine);
+
+			if (!(offsetInCurrentLine < contentAssistOffsetInLine && contentAssistLine[offsetInCurrentLine] == '@')) {
+				return Collections.emptyList();
 			}
+
+			final int tagStart = offsetInCurrentLine;
+			++offsetInCurrentLine;
+			if (offsetInCurrentLine < contentAssistOffsetInLine && Character.isJavaIdentifierStart(contentAssistLine[offsetInCurrentLine])) {
+				++offsetInCurrentLine;
+				while (offsetInCurrentLine < contentAssistOffsetInLine
+						&& (Character.isJavaIdentifierPart(contentAssistLine[offsetInCurrentLine]) || contentAssistLine[offsetInCurrentLine] == '.' || contentAssistLine[offsetInCurrentLine] == '-')) {
+					++offsetInCurrentLine;
+				}
+			}
+
+			if (offsetInCurrentLine == contentAssistOffsetInLine) {
+				return completionOnTag(context, new String(contentAssistLine, tagStart, offsetInCurrentLine - tagStart));
+			}
+
 		} catch (BadLocationException e) {
 			Activator.logError("Compute completion proposal error", e); //$NON-NLS-1$
 		}
 		return Collections.emptyList();
 	}
 
-	private static int skipSpaces(final char[] line, int index, int offsetInLine) {
-		int i = index;
-		while (i < offsetInLine && Character.isWhitespace(line[index])) {
-			i++;
+	private static int skipOpenningMultiLineChars(char[] contentAssistLine, int offsetInCurrentLine, int contentAssistOffsetInLine) {
+		Pattern pattern = Pattern.compile("--\\[=*\\[-");//$NON-NLS-1$
+		Matcher matcher = pattern.matcher(new String(contentAssistLine));
+		if (matcher.find()) {
+			return matcher.end();
 		}
-		return index;
+		return offsetInCurrentLine;
+	}
+
+	private static int skipSpaces(final char[] line, int offsetInCurrentLine, int offsetInLine) {
+		while (offsetInCurrentLine < offsetInLine && Character.isWhitespace(line[offsetInCurrentLine])) {
+			offsetInCurrentLine++;
+		}
+		return offsetInCurrentLine;
 	}
 
 	private List<ICompletionProposal> completionOnTag(ContentAssistInvocationContext context, String tag) {

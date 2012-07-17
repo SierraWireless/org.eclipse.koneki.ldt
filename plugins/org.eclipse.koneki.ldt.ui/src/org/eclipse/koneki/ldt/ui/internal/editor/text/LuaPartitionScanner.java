@@ -48,11 +48,12 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		 */
 
 		IToken doc = new Token(ILuaPartitions.LUA_DOC);
+		IToken docMultiLine = new Token(ILuaPartitions.LUA_DOC_MULTI);
 		IToken multiLineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
 		IToken singleLineComment = new Token(ILuaPartitions.LUA_COMMENT);
 
 		// Multi-line documentation
-		rules.add(new MultiLineStringOrCommentRule(multiLineComment, doc));
+		rules.add(new MultiLineStringOrCommentRule(multiLineComment, docMultiLine));
 
 		// Documentation starting with "---"
 		rules.add(new LuaDocSingleCommentSeriesRule(doc));
