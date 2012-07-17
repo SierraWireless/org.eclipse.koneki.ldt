@@ -266,7 +266,7 @@
    </extension>
  <extension
        id="LuaDocumentorCompletionProposalComputer"
-       name="LuaDocumentor Proposals"
+       name="%proposals.luaDocumentor.name"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
     <scriptCompletionProposalComputer
           categoryId="org.eclipse.koneki.ldt.ui.luaDocumentorProposalCategory"
@@ -279,7 +279,7 @@
  </extension>
  <extension
        id="luaDocumentorProposalCategory"
-       name="LuaDocumentor Proposals"
+       name="%proposals.luaDocumentor.category.name"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
     <proposalCategory></proposalCategory>
  </extension>

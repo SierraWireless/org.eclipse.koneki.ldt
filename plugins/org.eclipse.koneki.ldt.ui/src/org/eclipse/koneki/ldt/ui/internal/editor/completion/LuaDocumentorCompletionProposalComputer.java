@@ -33,7 +33,6 @@ import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.editor.LuaDocumentorTags;
 import org.eclipse.koneki.ldt.ui.internal.editor.templates.LuaDocumentorTemplateCompletionProcessor;
 
-@SuppressWarnings("restriction")
 public class LuaDocumentorCompletionProposalComputer implements IScriptCompletionProposalComputer {
 
 	public LuaDocumentorCompletionProposalComputer() {
@@ -81,8 +80,9 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 	}
 
 	private static int skipSpaces(final char[] line, int index, int offsetInLine) {
-		while (index < offsetInLine && Character.isWhitespace(line[index])) {
-			++index;
+		int i = index;
+		while (i < offsetInLine && Character.isWhitespace(line[index])) {
+			i++;
 		}
 		return index;
 	}

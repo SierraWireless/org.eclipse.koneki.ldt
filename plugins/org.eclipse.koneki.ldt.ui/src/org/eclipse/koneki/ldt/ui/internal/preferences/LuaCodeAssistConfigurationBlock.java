@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class LuaCodeAssistConfigurationBlock extends AbstractConfigurationBlock {
 
+	private Control autoActivation;
+
 	public LuaCodeAssistConfigurationBlock(PreferencePage mainPreferencePage, OverlayPreferenceStore store) {
 		super(store, mainPreferencePage);
 		getPreferenceStore().addKeys(createOverlayStoreKeys());
@@ -86,8 +88,6 @@ public class LuaCodeAssistConfigurationBlock extends AbstractConfigurationBlock 
 
 		return control;
 	}
-
-	Control autoActivation;
 
 	protected void addAutoActivationSection(Composite composite) {
 		String label;

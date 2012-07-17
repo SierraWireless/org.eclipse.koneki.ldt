@@ -20,7 +20,6 @@ import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
-import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
@@ -47,7 +46,6 @@ public class LuaEditor extends ScriptEditor {
 
 	public static final String EDITOR_CONTEXT = "#LuaEditorContext"; //$NON-NLS-1$
 	public static final String EDITOR_ID = Activator.PLUGIN_ID + ".editor"; //$NON-NLS-1$
-	private IFoldingStructureProvider foldingStructureProvider = null;
 
 	/**
 	 * Will inspect typed character to close automatically string, brackets and braces
