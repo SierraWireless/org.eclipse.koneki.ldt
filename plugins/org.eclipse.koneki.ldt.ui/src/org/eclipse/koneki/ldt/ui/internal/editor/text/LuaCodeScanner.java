@@ -184,7 +184,6 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 					result = eatHexaecimalDigits(scanner);
 					if (result > 0) {
 						return result + eatExponential(scanner) + 1;
-
 					}
 				} else {
 					// Regular numbers
@@ -237,6 +236,5 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 			scanner.unread();
 			return result;
 		}
-
 	}
 }

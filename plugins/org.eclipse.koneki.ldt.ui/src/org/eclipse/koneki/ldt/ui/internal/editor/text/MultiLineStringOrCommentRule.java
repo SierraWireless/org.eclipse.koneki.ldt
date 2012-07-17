@@ -46,6 +46,7 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 				readCount++;
 				if (c != '-') {
 					scanner.unread();
+					scanner.unread();
 					return Token.UNDEFINED;
 				} else {
 					c = scanner.read();
@@ -69,8 +70,6 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 			// at this point, the current character should be '[' otherwise it means we are not
 			// detecting a multiline string/comment opening after all
 			if (c != '[') {
-				scanner.unread();
-				readCount--;
 				for (; readCount > 0; readCount--) {
 					scanner.unread();
 				}
@@ -79,12 +78,12 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 
 			// now read characters until ']' is detected...
 			c = scanner.read();
+			readCount++;
 			// if the first actual character inside the comment block is a "-", then
 			// we have a LuaDoc block...
 			if (fDocToken != null && c == '-') {
 				returnToken = fDocToken;
 			}
-			readCount++;
 			while (c != ']' && c != LuaPartitionScanner.EOF) {
 				c = scanner.read();
 				readCount++;
