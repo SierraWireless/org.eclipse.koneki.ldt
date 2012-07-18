@@ -128,26 +128,28 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 
 			// Find 'e' or 'E'
 			char current = (char) scanner.read();
-			int digits = 0;
-			if (current != 'e' && current != 'E') {
-				scanner.unread();
-				return digits;
-			} else {
-				digits++;
-			}
+			if (current == 'e' || current == 'E') {
 
-			// Check for optional sign
-			current = (char) scanner.read();
-			if (current == '-' || current == '+') {
-				if (!followedByDigit(scanner)) {
-					scanner.unread();
-					scanner.unread();
-					return digits;
+				// 'e' is followed by digits it is an exponential notation
+				if (followedByDigit(scanner)) {
+					return eatDecimalDigits(scanner) + 1;
 				} else {
-					digits++;
+
+					// Check for optional sign
+					current = (char) scanner.read();
+					if ((current == '-' || current == '+') && followedByDigit(scanner)) {
+
+						// There is a digit after 'e' and sign
+						return eatDecimalDigits(scanner) + 2;
+
+					} else {
+						// Last characters red are not an exponential notation
+						scanner.unread();
+					}
 				}
 			}
-			return eatDecimalDigits(scanner) + digits;
+			scanner.unread();
+			return 0;
 		}
 
 		private static int eatDecimalDigitsFromDot(final ICharacterScanner scanner) {

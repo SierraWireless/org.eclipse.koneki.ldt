@@ -34,47 +34,47 @@ public class LuaNumberRuleTest extends TestCase {
 
 	@Test
 	public void testIntegers() {
-		numberDetected("0", 0, 1); //$NON-NLS-1$
-		numberDetected("10", 0, 2); //$NON-NLS-1$
-		numberDetected("-10", 0, 3, false); //$NON-NLS-1$
+		assertNumberDetected("0", 0, 1); //$NON-NLS-1$
+		assertNumberDetected("10", 0, 2); //$NON-NLS-1$
+		assertNumberNotDetected("-10", 0, 3); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testDecimals() {
-		numberDetected("0.", 0, 2); //$NON-NLS-1$
-		numberDetected(".1", 0, 2); //$NON-NLS-1$
-		numberDetected("0.0", 0, 3); //$NON-NLS-1$
-		numberDetected("local x = 3.4", 10, 3); //$NON-NLS-1$
-		numberDetected("local x=3.4", 8, 3); //$NON-NLS-1$
+		assertNumberDetected("0.", 0, 2); //$NON-NLS-1$
+		assertNumberDetected(".1", 0, 2); //$NON-NLS-1$
+		assertNumberDetected("0.0", 0, 3); //$NON-NLS-1$
+		assertNumberDetected("local x = 3.4", 10, 3); //$NON-NLS-1$
+		assertNumberDetected("local x=3.4", 8, 3); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testHexadecimals() {
-		numberDetected("0x1", 0, 3); //$NON-NLS-1$
-		numberDetected("0xf", 0, 3); //$NON-NLS-1$
-		numberDetected("0x12", 0, 4); //$NON-NLS-1$
-		numberDetected("0xAA", 0, 4); //$NON-NLS-1$
-		numberDetected("0x", 0, 2, false); //$NON-NLS-1$
+		assertNumberDetected("0x1", 0, 3); //$NON-NLS-1$
+		assertNumberDetected("0xf", 0, 3); //$NON-NLS-1$
+		assertNumberDetected("0x12", 0, 4); //$NON-NLS-1$
+		assertNumberDetected("0xAA", 0, 4); //$NON-NLS-1$
+		assertNumberNotDetected("0x", 0, 2); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testNumbersInExpressions() {
-		numberDetected("local x = (10/3.4)", 11, 2); //$NON-NLS-1$
-		numberDetected("local x = (10/3.4)", 14, 3); //$NON-NLS-1$
-		numberDetected("local x = (10./3.4E10)", 11, 3); //$NON-NLS-1$
-		numberDetected("local x = (10./3.4E10)", 15, 6); //$NON-NLS-1$
+		assertNumberDetected("local x = (10/3.4)", 11, 2); //$NON-NLS-1$
+		assertNumberDetected("local x = (10/3.4)", 14, 3); //$NON-NLS-1$
+		assertNumberDetected("local x = (10./3.4E10)", 11, 3); //$NON-NLS-1$
+		assertNumberDetected("local x = (10./3.4E10)", 15, 6); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testExponential() {
-		numberDetected("1e1", 0, 3); //$NON-NLS-1$
-		numberDetected("1E10", 0, 4); //$NON-NLS-1$
-		numberDetected("0.1e10", 0, 6); //$NON-NLS-1$
-		numberDetected("0.1E10", 0, 6); //$NON-NLS-1$
-		numberDetected(".1E10", 0, 5); //$NON-NLS-1$
-		numberDetected(".1e10", 0, 5); //$NON-NLS-1$
-		numberDetected("1.E10", 0, 5); //$NON-NLS-1$
-		numberDetected("1.e10", 0, 5); //$NON-NLS-1$
+		assertNumberDetected("1e1", 0, 3); //$NON-NLS-1$
+		assertNumberDetected("1E10", 0, 4); //$NON-NLS-1$
+		assertNumberDetected("0.1e10", 0, 6); //$NON-NLS-1$
+		assertNumberDetected("0.1E10", 0, 6); //$NON-NLS-1$
+		assertNumberDetected(".1E10", 0, 5); //$NON-NLS-1$
+		assertNumberDetected(".1e10", 0, 5); //$NON-NLS-1$
+		assertNumberDetected("1.E10", 0, 5); //$NON-NLS-1$
+		assertNumberDetected("1.e10", 0, 5); //$NON-NLS-1$
 	}
 
 	@Test
@@ -96,22 +96,29 @@ public class LuaNumberRuleTest extends TestCase {
 		assertNoNumberFound("io.flush()"); //$NON-NLS-1$
 	}
 
-	private void numberDetected(final String n, final int offset, final int length, final boolean failWhenNumberIsFound) {
+	private boolean numberDetected(final String n, final int offset, final int length) {
 		final IDocument doc = new Document(n);
 		final LuaCodeScanner.LuaNumberRule numberRule = new LuaNumberRule(NUMBER_TOKEN);
 		final RuleBasedScanner scanner = new RuleBasedScanner();
 		scanner.setRules(new IRule[] { numberRule });
 		scanner.setRange(doc, offset, doc.getLength() - offset);
 		final IToken token = scanner.nextToken();
-		final boolean numberFound = token == NUMBER_TOKEN && scanner.getTokenOffset() == offset && scanner.getTokenLength() == length;
-		if ((!numberFound) && failWhenNumberIsFound) {
-			final String negation = failWhenNumberIsFound ? "" : " not "; //$NON-NLS-1$ //$NON-NLS-2$
-			fail(MessageFormat.format("In \"{0}\", \"{1}\" is {2} parsed as a number.", n, n.substring(offset, offset + length), negation)); //$NON-NLS-1$
+		return token == NUMBER_TOKEN && scanner.getTokenOffset() == offset && scanner.getTokenLength() == length;
+
+	}
+
+	private void assertNumberDetected(final String number, final int offset, final int length) {
+		if (!numberDetected(number, offset, length)) {
+			final String subString = number.substring(offset, offset + length);
+			fail(MessageFormat.format("In \"{0}\", \"{1}\" is not parsed as a number.", number, subString)); //$NON-NLS-1$
 		}
 	}
 
-	private void numberDetected(String n, int offset, int length) {
-		numberDetected(n, offset, length, true);
+	private void assertNumberNotDetected(final String number, final int offset, final int length) {
+		if (numberDetected(number, offset, length)) {
+			final String subString = number.substring(offset, offset + length);
+			fail(MessageFormat.format("In \"{0}\", \"{1}\" is parsed as a number.", number, subString)); //$NON-NLS-1$
+		}
 	}
 
 	private void assertNoNumberFound(final String n) {
