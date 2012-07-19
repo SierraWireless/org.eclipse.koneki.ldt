@@ -69,6 +69,10 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+		if (ILuaPartitions.LUA_DOC.equals(contentType)) {
+			return new IAutoEditStrategy[] { new LuaDocumentorCommentAutoEditStrategy() };
+		}
+
 		return new IAutoEditStrategy[] { new DefaultIndentLineAutoEditStrategy() };
 	}
 

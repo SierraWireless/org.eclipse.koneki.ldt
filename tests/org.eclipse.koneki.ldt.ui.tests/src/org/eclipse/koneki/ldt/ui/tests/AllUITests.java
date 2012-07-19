@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2011, 2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.tests;
 
+import org.eclipse.koneki.ldt.ui.tests.internal.LuaDocumentorCommentAutoEditStrategyTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.LuaNumberRuleTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.LuaWordFinderTest;
 import org.junit.runner.RunWith;
@@ -17,7 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ LuaWordFinderTest.class, LuaNumberRuleTest.class })
+@SuiteClasses({ LuaWordFinderTest.class, LuaNumberRuleTest.class, LuaDocumentorCommentAutoEditStrategyTest.class })
 public class AllUITests {
 
 }
