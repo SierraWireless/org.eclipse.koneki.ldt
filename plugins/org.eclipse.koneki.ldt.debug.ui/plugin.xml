@@ -13,12 +13,26 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="org.eclipse.koneki.ldt.debug.ui.internal.LuaAttachLaunchConfigurationTabGroup"
+            class="org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.LuaAttachLaunchConfigurationTabGroup"
             description="%LuaAttachLaunchConfigurationTabGroup.description"
             id="org.eclipse.koneki.ldt.debug.ui.luaAttachLaunchConfigurationTabGroup"
             type="org.eclipse.koneki.ldt.debug.core.luaattachdebug">
          <launchMode
                mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            class="org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.LuaLaunchConfigurationTabGroup"
+            description="%LuaLocalLaunchConfigurationTabGroup.description"
+            id="org.eclipse.koneki.ldt.debug.ui.LuaLocalLaunchConfigurationTabGroup"
+            type="org.eclipse.koneki.ldt.debug.core.lualocaldebug">
+         <launchMode
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               mode="run"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
       </launchConfigurationTabGroup>
@@ -107,6 +121,11 @@
                icon="icons/obj16/lua_attach.gif"
                id="org.eclipse.koneki.ldt.debug.ui.luaattachdebug.image">
          </launchConfigurationTypeImage>
+         <launchConfigurationTypeImage
+               configTypeID="org.eclipse.koneki.ldt.debug.core.lualocaldebug"
+               icon="icons/obj16/lua_local.gif"
+               id="org.eclipse.koneki.ldt.debug.ui.lualocaldebug.image">
+         </launchConfigurationTypeImage>
       </extension>
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
@@ -147,5 +166,14 @@
 			</not>
          </enabledWhen>
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
+            class="org.eclipse.koneki.ldt.debug.ui.internal.interpreters.LuaInterpreterPreferencePage"
+            id="org.eclipse.koneki.ldt.debug.ui.page1"
+            name="%interpreterspage.name">
+      </page>
    </extension>
 </plugin>

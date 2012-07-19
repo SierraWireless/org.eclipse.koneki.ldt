@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Sierra Wireless and others.
+ * Copyright (c) 2011-2012 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.debug.ui.internal;
+package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,6 +27,8 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
+import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
+import org.eclipse.koneki.ldt.debug.ui.internal.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;

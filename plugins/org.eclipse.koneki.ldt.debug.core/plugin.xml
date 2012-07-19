@@ -20,6 +20,14 @@
             sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
             sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.eclipse.koneki.ldt.debug.core.internal.local.LuaLaunchConfigurationDelegate"
+            id="org.eclipse.koneki.ldt.debug.core.lualocaldebug"
+            modes="run, debug"
+            name="%LocalLuaLaunchConfigurationType.name"
+            sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
+            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
+      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.dltk.debug.scriptDebugModel">
@@ -54,4 +62,11 @@
 			delegateClass="org.eclipse.dltk.internal.debug.core.model.ScriptWatchExpressionDelegate">
 		</watchExpressionDelegate>
 	</extension>
+	<extension
+          point="org.eclipse.dltk.launching.interpreterInstallTypes">
+       <interpreterInstallType
+             class="org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterInstallType"
+             id="org.eclipse.koneki.ldt.debug.core.LuaGenericInterpreterInstallType">
+       </interpreterInstallType>
+    </extension>
 </plugin>
