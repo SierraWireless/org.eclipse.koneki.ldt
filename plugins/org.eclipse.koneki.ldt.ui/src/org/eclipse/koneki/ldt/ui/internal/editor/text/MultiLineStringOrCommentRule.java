@@ -120,6 +120,8 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 					readCount++;
 				}
 			}
+			scanner.unread();
+			return returnToken;
 		}
 
 		for (; readCount > 0; readCount--) {
@@ -132,5 +134,4 @@ public class MultiLineStringOrCommentRule implements IPredicateRule {
 	public IToken evaluate(ICharacterScanner scanner) {
 		return evaluate(scanner, false);
 	}
-
 }

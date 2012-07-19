@@ -33,33 +33,30 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		super();
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
-		/*
-		 * Deal with single and double quote multi lines strings
-		 */
-		IToken string = new Token(ILuaPartitions.LUA_STRING);
-		IToken singleQuoteString = new Token(ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
-		IToken multilineString = new Token(ILuaPartitions.LUA_MULTI_LINE_STRING);
-		rules.add(new MultiLineStringOrCommentRule(multilineString));
-		rules.add(new SingleLineRule("\'", "\'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
-		rules.add(new SingleLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
-
-		/*
-		 * Deal with comments
-		 */
-
-		IToken doc = new Token(ILuaPartitions.LUA_DOC);
+		// Multi-line documentation
 		IToken docMultiLine = new Token(ILuaPartitions.LUA_DOC_MULTI);
 		IToken multiLineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
-		IToken singleLineComment = new Token(ILuaPartitions.LUA_COMMENT);
-
-		// Multi-line documentation
 		rules.add(new MultiLineStringOrCommentRule(multiLineComment, docMultiLine));
 
 		// Documentation starting with "---"
+		IToken doc = new Token(ILuaPartitions.LUA_DOC);
 		rules.add(new LuaDocSingleCommentSeriesRule(doc));
 
 		// Single line
+		IToken singleLineComment = new Token(ILuaPartitions.LUA_COMMENT);
 		rules.add(new EndOfLineRule(LuaConstants.COMMENT_STRING, singleLineComment));
+
+		/*
+		 * Deal with single and double quote multi lines strings
+		 */
+		IToken multilineString = new Token(ILuaPartitions.LUA_MULTI_LINE_STRING);
+		rules.add(new MultiLineStringOrCommentRule(multilineString));
+
+		IToken singleQuoteString = new Token(ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
+		rules.add(new SingleLineRule("\'", "\'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
+
+		IToken string = new Token(ILuaPartitions.LUA_STRING);
+		rules.add(new SingleLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Apply rules
 		IPredicateRule[] result = new IPredicateRule[rules.size()];

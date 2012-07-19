@@ -40,13 +40,15 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 
 	private AbstractScriptScanner fCodeScanner;
+
 	private AbstractScriptScanner fStringScanner;
 	private AbstractScriptScanner fSingleQuoteStringScanner;
 	private AbstractScriptScanner fMultilineStringScanner;
+
 	private AbstractScriptScanner fCommentScanner;
+
+	private AbstractScriptScanner fLuaDocScanner;
 	private AbstractScriptScanner fMultilineCommentScanner;
-	private AbstractScriptScanner fNumberScanner;
-	private LuaDocumentorScanner fDocScanner;
 
 	public LuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
@@ -80,10 +82,12 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		reconciler.setDocumentPartitioning(this.getConfiguredDocumentPartitioning(sourceViewer));
 
 		DefaultDamagerRepairer dr;
+		// code
 		dr = new DefaultDamagerRepairer(this.fCodeScanner);
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
+		// strings
 		dr = new DefaultDamagerRepairer(this.fStringScanner);
 		reconciler.setDamager(dr, ILuaPartitions.LUA_STRING);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_STRING);
@@ -96,6 +100,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		reconciler.setDamager(dr, ILuaPartitions.LUA_MULTI_LINE_STRING);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_MULTI_LINE_STRING);
 
+		// comments
 		dr = new DefaultDamagerRepairer(this.fMultilineCommentScanner);
 		reconciler.setDamager(dr, ILuaPartitions.LUA_MULTI_LINE_COMMENT);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_MULTI_LINE_COMMENT);
@@ -104,17 +109,14 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		reconciler.setDamager(dr, ILuaPartitions.LUA_COMMENT);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_COMMENT);
 
-		dr = new DefaultDamagerRepairer(this.fNumberScanner);
-		reconciler.setDamager(dr, ILuaPartitions.LUA_NUMBER);
-		reconciler.setRepairer(dr, ILuaPartitions.LUA_NUMBER);
-
-		dr = new DefaultDamagerRepairer(fDocScanner);
-		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC);
-		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC);
-
-		dr = new DefaultDamagerRepairer(fDocScanner);
+		// luadocs
+		dr = new DefaultDamagerRepairer(this.fLuaDocScanner);
 		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC_MULTI);
 		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC_MULTI);
+
+		dr = new DefaultDamagerRepairer(this.fLuaDocScanner);
+		reconciler.setDamager(dr, ILuaPartitions.LUA_DOC);
+		reconciler.setRepairer(dr, ILuaPartitions.LUA_DOC);
 
 		return reconciler;
 	}
@@ -126,17 +128,17 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		// This is our code scanner
 		this.fCodeScanner = new LuaCodeScanner(this.getColorManager(), this.fPreferenceStore);
 
-		// This is default scanners for partitions with same color.
+		// This is default scanners for String partitions.
 		this.fStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
 		this.fSingleQuoteStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
 		this.fMultilineStringScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_STRING);
-		this.fMultilineCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
-				ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
+
+		// This is default scanners for comments partitions.
+		this.fMultilineCommentScanner = createCommentScanner(ILuaColorConstants.LUA_MULTI_LINE_COMMENT, ILuaColorConstants.COMMENT_TASK_TAGS);
 		this.fCommentScanner = createCommentScanner(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT, ILuaColorConstants.COMMENT_TASK_TAGS);
-		// this.fCommentScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore,
-		// ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
-		this.fNumberScanner = new SingleTokenScriptScanner(this.getColorManager(), this.fPreferenceStore, ILuaColorConstants.LUA_NUMBER);
-		this.fDocScanner = new LuaDocumentorScanner(this);
+
+		// This is scanner for LuaDoc partitions.
+		this.fLuaDocScanner = new LuaDocumentorScanner(this);
 	}
 
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
@@ -158,20 +160,22 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		if (this.fCommentScanner.affectsBehavior(event)) {
 			this.fCommentScanner.adaptToPreferenceChange(event);
 		}
-		if (this.fNumberScanner.affectsBehavior(event)) {
-			this.fNumberScanner.adaptToPreferenceChange(event);
-		}
-		if (this.fDocScanner.affectsBehavior(event)) {
-			this.fDocScanner.adaptToPreferenceChange(event);
+		if (this.fLuaDocScanner.affectsBehavior(event)) {
+			this.fLuaDocScanner.adaptToPreferenceChange(event);
 		}
 	}
 
-	public boolean affectsTextPresentation(final PropertyChangeEvent event) {
-		final boolean affectStrings = this.fStringScanner.affectsBehavior(event) || this.fSingleQuoteStringScanner.affectsBehavior(event)
+	public boolean affectsTextPresentation(PropertyChangeEvent event) {
+		boolean affectCode = this.fCodeScanner.affectsBehavior(event);
+
+		boolean affectString = this.fStringScanner.affectsBehavior(event) || this.fSingleQuoteStringScanner.affectsBehavior(event)
 				|| this.fMultilineStringScanner.affectsBehavior(event);
-		final boolean affectComments = this.fMultilineCommentScanner.affectsBehavior(event) || this.fDocScanner.affectsBehavior(event)
-				|| this.fCommentScanner.affectsBehavior(event);
-		return this.fCodeScanner.affectsBehavior(event) || this.fNumberScanner.affectsBehavior(event) || affectStrings || affectComments;
+
+		boolean affectComments = this.fCommentScanner.affectsBehavior(event) || this.fMultilineCommentScanner.affectsBehavior(event);
+
+		boolean affectLuaDoc = this.fLuaDocScanner.affectsBehavior(event);
+
+		return affectCode || affectString || affectComments || affectLuaDoc;
 	}
 
 	/**
@@ -191,9 +195,7 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 
 	protected AbstractScriptScanner createCommentScanner(String commentColor, String tagColor, ITodoTaskPreferences taskPrefs) {
 		return new ScriptCommentScanner(getColorManager(), fPreferenceStore, commentColor, tagColor, taskPrefs) {
-			/**
-			 * @see org.eclipse.dltk.ui.text.ScriptCommentScanner#skipCommentChars()
-			 */
+
 			@Override
 			protected int skipCommentChars() {
 				if (read() == '-') {
@@ -209,7 +211,6 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 					return 0;
 				}
 			}
-
 		};
 	}
 }

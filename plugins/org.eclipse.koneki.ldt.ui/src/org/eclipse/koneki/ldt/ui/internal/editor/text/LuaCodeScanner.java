@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -34,8 +33,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	private static String[] fgKeywords = { "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local", "nil",
 			"not", "or", "repeat", "return", "then", "true", "until", "while" };
 
-	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_STRING, ILuaColorConstants.LUA_SINGLE_LINE_COMMENT,
-			ILuaColorConstants.LUA_MULTI_LINE_COMMENT, ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT, ILuaColorConstants.LUA_KEYWORD };
+	private static String[] fgTokenProperties = new String[] { ILuaColorConstants.LUA_NUMBER, ILuaColorConstants.LUA_DEFAULT,
+			ILuaColorConstants.LUA_KEYWORD };
 
 	public LuaCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
@@ -49,17 +48,8 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 	protected List<IRule> createRules() {
 		final List<IRule> rules = new ArrayList<IRule>();
 		final IToken keyword = this.getToken(ILuaColorConstants.LUA_KEYWORD);
-		final IToken comment = this.getToken(ILuaColorConstants.LUA_SINGLE_LINE_COMMENT);
-		final IToken multiline = this.getToken(ILuaColorConstants.LUA_MULTI_LINE_COMMENT);
-		final IToken doc = this.getToken(ILuaColorConstants.LUA_DOC);
 		final IToken numbers = this.getToken(ILuaColorConstants.LUA_NUMBER);
 		final IToken other = this.getToken(ILuaColorConstants.LUA_DEFAULT);
-
-		// Add rule for multi-line comments
-		rules.add(new MultiLineStringOrCommentRule(multiline, doc));
-
-		// Add rule for single line comments.
-		rules.add(new EndOfLineRule("--", comment)); //$NON-NLS-1$
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LuaWhitespaceDetector()));
@@ -71,7 +61,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		}
 		rules.add(wordRule);
 
-		// Add number recognition
+		// // Add number recognition
 		final NumberRule numberRule = new LuaNumberRule(numbers);
 		rules.add(numberRule);
 
