@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.editor.text;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -20,15 +19,12 @@ import org.eclipse.dltk.ui.text.ScriptCommentScanner;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.TodoTaskPreferencesOnPreferenceStore;
 import org.eclipse.dltk.ui.text.rules.CombinedWordRule.WordMatcher;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
-import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.koneki.ldt.ui.internal.editor.LuaDocumentorTags;
-import org.eclipse.swt.SWT;
 
 public class LuaDocumentorScanner extends ScriptCommentScanner {
 
@@ -51,32 +47,34 @@ public class LuaDocumentorScanner extends ScriptCommentScanner {
 
 	@Override
 	protected List<IRule> createRules() {
-		final List<IRule> rules = new ArrayList<IRule>();
-		Token luaDoc = getToken(ILuaColorConstants.LUA_DOC);
-		TextAttribute textAttribute;
+		// Deactivate Markdown coloration
 
-		// Rules below are used to perform basic MarkDown pattern detection (bold, italic, ...)
-		Token monospace = new Token(luaDoc.getData());
-		textAttribute = (TextAttribute) monospace.getData();
-		monospace.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle()
-				| TextAttribute.UNDERLINE));
-		rules.add(new PatternRule("`", "`", monospace, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		// final List<IRule> rules = new ArrayList<IRule>();
+		// Token luaDoc = getToken(ILuaColorConstants.LUA_DOC);
+		// TextAttribute textAttribute;
+		//
+		// // Rules below are used to perform basic MarkDown pattern detection (bold, italic, ...)
+		// Token monospace = new Token(luaDoc.getData());
+		// textAttribute = (TextAttribute) monospace.getData();
+		// monospace.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle()
+		// | TextAttribute.UNDERLINE));
+		//		rules.add(new PatternRule("`", "`", monospace, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		//
+		// Token bold = new Token(luaDoc.getData());
+		// textAttribute = (TextAttribute) bold.getData();
+		// bold.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle() | SWT.BOLD));
+		//		rules.add(new PatternRule("__", "__", bold, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		//		rules.add(new PatternRule("**", "**", bold, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		//
+		// Token italic = new Token(luaDoc.getData());
+		// textAttribute = (TextAttribute) italic.getData();
+		// italic.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle() | SWT.ITALIC));
+		//		rules.add(new PatternRule("_", "_", italic, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		//		rules.add(new PatternRule("*", "*", italic, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
+		//
+		// rules.addAll(super.createRules());
 
-		Token bold = new Token(luaDoc.getData());
-		textAttribute = (TextAttribute) bold.getData();
-		bold.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle() | SWT.BOLD));
-		rules.add(new PatternRule("__", "__", bold, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
-		rules.add(new PatternRule("**", "**", bold, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
-
-		Token italic = new Token(luaDoc.getData());
-		textAttribute = (TextAttribute) italic.getData();
-		italic.setData(new TextAttribute(textAttribute.getForeground(), textAttribute.getBackground(), textAttribute.getStyle() | SWT.ITALIC));
-		rules.add(new PatternRule("_", "_", italic, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
-		rules.add(new PatternRule("*", "*", italic, (char) 0, false)); //$NON-NLS-1$//$NON-NLS-2$
-
-		rules.addAll(super.createRules());
-
-		return rules;
+		return super.createRules();
 	}
 
 	private WordMatcher createLuaDocumentorKeywordMatcher() {

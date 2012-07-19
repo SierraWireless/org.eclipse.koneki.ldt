@@ -21,6 +21,9 @@ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.koneki.ldt.core.LuaConstants;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaDocMultLineCommentRule;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaMultLineCommentRule;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaMultLineStringRule;
 
 /**
  * Defines rules to follow in order to highlight source code in editor
@@ -33,14 +36,23 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		super();
 		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
+		/*
+		 * Deal with documentation
+		 */
 		// Multi-line documentation
 		IToken docMultiLine = new Token(ILuaPartitions.LUA_DOC_MULTI);
-		IToken multiLineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
-		rules.add(new MultiLineStringOrCommentRule(multiLineComment, docMultiLine));
+		rules.add(new LuaDocMultLineCommentRule(docMultiLine));
 
 		// Documentation starting with "---"
 		IToken doc = new Token(ILuaPartitions.LUA_DOC);
 		rules.add(new LuaDocSingleCommentSeriesRule(doc));
+
+		/*
+		 * Deal with comments
+		 */
+		// Multi-line documentation
+		IToken multilineComment = new Token(ILuaPartitions.LUA_MULTI_LINE_COMMENT);
+		rules.add(new LuaMultLineCommentRule(multilineComment));
 
 		// Single line
 		IToken singleLineComment = new Token(ILuaPartitions.LUA_COMMENT);
@@ -50,7 +62,7 @@ public class LuaPartitionScanner extends RuleBasedPartitionScanner {
 		 * Deal with single and double quote multi lines strings
 		 */
 		IToken multilineString = new Token(ILuaPartitions.LUA_MULTI_LINE_STRING);
-		rules.add(new MultiLineStringOrCommentRule(multilineString));
+		rules.add(new LuaMultLineStringRule(multilineString));
 
 		IToken singleQuoteString = new Token(ILuaPartitions.LUA_SINGLE_QUOTE_STRING);
 		rules.add(new SingleLineRule("\'", "\'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$

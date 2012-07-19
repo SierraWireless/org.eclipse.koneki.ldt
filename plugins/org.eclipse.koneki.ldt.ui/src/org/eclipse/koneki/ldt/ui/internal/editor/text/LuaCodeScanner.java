@@ -61,7 +61,7 @@ public class LuaCodeScanner extends AbstractScriptScanner {
 		}
 		rules.add(wordRule);
 
-		// // Add number recognition
+		// Add number recognition
 		final NumberRule numberRule = new LuaNumberRule(numbers);
 		rules.add(numberRule);
 
