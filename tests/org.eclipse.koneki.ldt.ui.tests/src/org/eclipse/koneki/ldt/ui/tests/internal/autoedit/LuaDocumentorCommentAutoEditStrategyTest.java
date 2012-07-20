@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.ui.tests.internal;
+package org.eclipse.koneki.ldt.ui.tests.internal.autoedit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

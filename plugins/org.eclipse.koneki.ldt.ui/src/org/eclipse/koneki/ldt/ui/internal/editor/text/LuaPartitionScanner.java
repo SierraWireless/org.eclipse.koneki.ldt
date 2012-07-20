@@ -22,6 +22,7 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaDocMultLineCommentRule;
+import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaDocSingleCommentSeriesRule;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaMultLineCommentRule;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.rules.LuaMultLineStringRule;
 
