@@ -29,6 +29,13 @@
 
 <template
 	context="LuaDocumentorTemplateContextType"
+	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.fieldinparent"
+	name="@fieldinparent"
+	description="%fieldinparent.description"
+	autoinsert="true">@field #${type} ${name} ${description}</template>
+
+<template
+	context="LuaDocumentorTemplateContextType"
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.type"
 	name="@type"
 	description="%type.description"
