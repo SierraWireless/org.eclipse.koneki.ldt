@@ -25,6 +25,7 @@ import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 
 /**
+<<<<<<< OURS
  * An abstract class to perform JUnit tests on rules
  */
 public abstract class AbstractRuleTestCase extends TestCase {

@@ -11,6 +11,7 @@
 package org.eclipse.koneki.ldt.ui.tests;
 
 
+
 import org.eclipse.koneki.ldt.ui.tests.internal.LuaWordFinderTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.autoedit.LuaDocumentorCommentAutoEditStrategyTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaDocMultLineCommentTest;
