@@ -1,0 +1,4 @@
+---
+-- @module modulename
+
+--- @type typename

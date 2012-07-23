@@ -23,10 +23,10 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
+import org.eclipse.koneki.ldt.ui.tests.internal.ScannerResult;
 
 /**
-<<<<<<< OURS
- * An abstract class to perform JUnit tests on rules
+ * An abstract class to perform junit test on rules
  */
 public abstract class AbstractRuleTestCase extends TestCase {
 
@@ -45,21 +45,21 @@ public abstract class AbstractRuleTestCase extends TestCase {
 		ITokenScanner scanner = createScanner(doc);
 
 		boolean tokenFound = false;
-		List<TestResult> tokenList = new ArrayList<TestResult>();
+		List<ScannerResult> tokenList = new ArrayList<ScannerResult>();
 		for (IToken token = scanner.nextToken(); token != Token.EOF; token = scanner.nextToken()) {
 			if (token == expectedToken && scanner.getTokenOffset() == expectedOffset && scanner.getTokenLength() == expectedLength) {
 				tokenFound = true;
 			}
-			tokenList.add(new TestResult(token, scanner.getTokenOffset(), scanner.getTokenLength()));
+			tokenList.add(new ScannerResult(token, scanner.getTokenOffset(), scanner.getTokenLength()));
 		}
 		if (!tokenFound) {
 			StringBuffer messageBuilder = new StringBuffer();
-			messageBuilder.append(MessageFormat.format("For input:\"{0}\" expected token is [-Token={1} -Offset={2} -Length={3}] ", //$NON-NLS-1$
+			messageBuilder.append(MessageFormat.format("For input:\"{0}\" expected token is [-Token={1} -Offset={2} -Lenght={3}] ", //$NON-NLS-1$
 					inputString.replace("\n", "\\n"), expectedToken.getData(), expectedOffset, expectedLength)); //$NON-NLS-1$//$NON-NLS-2$
 			if (tokenList.isEmpty()) {
 				messageBuilder.append("but no token was found"); //$NON-NLS-1$
 			} else {
-				messageBuilder.append("\nbut token(s) found was:\n"); //$NON-NLS-1$
+				messageBuilder.append("\nbut token(s) found were:\n"); //$NON-NLS-1$
 				appendTokenList(tokenList, messageBuilder, inputString);
 			}
 			fail(messageBuilder.toString());
@@ -71,13 +71,13 @@ public abstract class AbstractRuleTestCase extends TestCase {
 		ITokenScanner scanner = createScanner(doc);
 
 		boolean tokenFound = false;
-		List<TestResult> tokenList = new ArrayList<TestResult>();
+		List<ScannerResult> tokenList = new ArrayList<ScannerResult>();
 		for (IToken token = scanner.nextToken(); token != Token.EOF; token = scanner.nextToken()) {
 			if (token == tokenNotExpected) {
 				tokenFound = true;
 			}
 
-			tokenList.add(new TestResult(token, scanner.getTokenOffset(), scanner.getTokenLength()));
+			tokenList.add(new ScannerResult(token, scanner.getTokenOffset(), scanner.getTokenLength()));
 		}
 
 		if (tokenFound) {
@@ -92,26 +92,15 @@ public abstract class AbstractRuleTestCase extends TestCase {
 		}
 	}
 
-	protected void appendTokenList(final List<TestResult> tokenList, final StringBuffer messageBuilder, final String inputString) {
-		for (TestResult result : tokenList) {
+	protected void appendTokenList(final List<ScannerResult> tokenList, final StringBuffer messageBuilder, final String inputString) {
+		for (ScannerResult result : tokenList) {
 			StringBuilder inputWithStar = new StringBuilder(inputString);
-			inputWithStar.insert(result.offset, '*');
-			inputWithStar.insert(result.offset + result.length + 1, '*');
-			messageBuilder.append(MessageFormat.format("'{'-Token={0} -Offset={1} -Length={2} \"{3}\"'}'\n", result.token.getData(), result.offset, //$NON-NLS-1$
-					result.length, inputWithStar.toString()));
+			inputWithStar.insert(result.getOffset(), '*');
+			inputWithStar.insert(result.getOffset() + result.getLenght() + 1, '*');
+			messageBuilder.append(MessageFormat.format(
+					"'{'-Token={0} -Offset={1} -Lenght={2} \"{3}\"'}'\n", result.getToken().getData(), result.getOffset(), //$NON-NLS-1$
+					result.getLenght(), inputWithStar.toString()));
 		}
 	}
 
-	private static class TestResult {
-
-		private IToken token;
-		private int offset;
-		private int length;
-
-		public TestResult(IToken token2, int tokenOffset, int tokenLength) {
-			token = token2;
-			offset = tokenOffset;
-			length = tokenLength;
-		}
-	}
 }

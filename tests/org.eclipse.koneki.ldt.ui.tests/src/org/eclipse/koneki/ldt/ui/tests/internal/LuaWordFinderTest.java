@@ -17,22 +17,14 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.koneki.ldt.ui.internal.editor.text.LuaWordFinder;
+import org.junit.Test;
 
 /**
  * Tests for LuaWordFinder.
  */
 public class LuaWordFinderTest extends TestCase {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testBasic() {
 		IDocument doc = new Document(" foo:bar(arg1, arg2)"); //$NON-NLS-1$
 		// | foo:bar(arg1, arg2)
@@ -81,6 +73,7 @@ public class LuaWordFinderTest extends TestCase {
 		assertEquals(4, region.getLength());
 	}
 
+	@Test
 	public void testWordAtEnd() {
 		IDocument doc = new Document("    foo"); //$NON-NLS-1$
 		// |foo
@@ -99,6 +92,7 @@ public class LuaWordFinderTest extends TestCase {
 		assertEquals(0, region.getLength());
 	}
 
+	@Test
 	public void testWordAtStart() {
 		IDocument doc = new Document("foo  "); //$NON-NLS-1$
 		// |foo
