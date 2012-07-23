@@ -15,16 +15,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-
-
-
 import org.eclipse.koneki.ldt.ui.tests.internal.LuaWordFinderTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.autoedit.LuaDocumentorCommentAutoEditStrategyTest;
-import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaDocMultLineCommentTest;
-import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaDocSingleCommentSeriesRuleTest;
-import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaMultLineCommentRuleTest;
-import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaMultLineStringRuleTest;
-import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaNumberRuleTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaDocMultLineCommentTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaDocSingleCommentSeriesRuleTest;
 import org.eclipse.koneki.ldt.ui.tests.internal.rules.LuaMultLineCommentRuleTest;
