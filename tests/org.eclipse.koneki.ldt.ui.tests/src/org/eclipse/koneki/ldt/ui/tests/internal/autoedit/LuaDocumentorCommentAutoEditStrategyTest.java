@@ -171,6 +171,19 @@ public class LuaDocumentorCommentAutoEditStrategyTest extends TestCase {
 		assertEquals(expected.toString(), document.get());
 	}
 
+	public void testNotOverwrittingComment() throws BadLocationException {
+		StringBuffer code = new StringBuffer();
+		code.append("--" + ENTER); //$NON-NLS-1$
+		code.append("local v = 123"); //$NON-NLS-1$
+		final IDocument document = createDocument(code.toString());
+		execute(document, createCommand(ENTER, getEndOfLineOffset(document, 0)));
+		StringBuffer expected = new StringBuffer();
+		expected.append("--" + ENTER); //$NON-NLS-1$
+		expected.append("--" + ENTER); //$NON-NLS-1$
+		expected.append("local v = 123"); //$NON-NLS-1$
+		assertEquals(expected.toString(), document.get());
+	}
+
 	private static int getEndOfLineOffset(IDocument d, int line) throws BadLocationException {
 		IRegion line1 = d.getLineInformation(line);
 		return line1.getOffset() + line1.getLength();
