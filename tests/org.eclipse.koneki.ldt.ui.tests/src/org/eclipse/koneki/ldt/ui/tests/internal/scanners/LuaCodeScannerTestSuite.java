@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 public class LuaCodeScannerTestSuite extends AbstractScannerTestSuite {
 
-	public LuaCodeScannerTestSuite() {
-		super("LuaCodeScanner", "tests/codescanner", "txt", false); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+	public LuaCodeScannerTestSuite(boolean ignoreFailure) {
+		super("LuaCodeScanner", "tests/codescanner", "txt", ignoreFailure); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 	}
 
 	@Override

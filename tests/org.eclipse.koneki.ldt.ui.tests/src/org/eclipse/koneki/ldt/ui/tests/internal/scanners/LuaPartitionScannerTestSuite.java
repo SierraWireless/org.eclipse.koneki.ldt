@@ -16,8 +16,8 @@ import junit.framework.TestCase;
 
 public class LuaPartitionScannerTestSuite extends AbstractScannerTestSuite {
 
-	public LuaPartitionScannerTestSuite() {
-		super("LuaPartitionScanner", "tests/codepartionner", "txt", false); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+	public LuaPartitionScannerTestSuite(boolean ignoreFailure) {
+		super("LuaPartitionScanner", "tests/codepartionner", "txt", ignoreFailure); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 	}
 
 	@Override

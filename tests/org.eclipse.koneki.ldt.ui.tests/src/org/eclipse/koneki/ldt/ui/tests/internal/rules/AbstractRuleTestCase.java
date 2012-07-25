@@ -26,11 +26,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.koneki.ldt.ui.tests.internal.ScannerResult;
 
 /**
-<<<<<<< OURS
  * An abstract class to perform JUnit tests on rules
-=======
- * An abstract class to perform junit test on rules
->>>>>>> THEIRS
  */
 public abstract class AbstractRuleTestCase extends TestCase {
 
