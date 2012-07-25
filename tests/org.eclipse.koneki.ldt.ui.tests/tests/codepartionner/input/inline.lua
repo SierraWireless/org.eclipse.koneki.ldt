@@ -1,0 +1,1 @@
+--[[- doc]] --[[comment]] local var = [[string]].."string2" --comment

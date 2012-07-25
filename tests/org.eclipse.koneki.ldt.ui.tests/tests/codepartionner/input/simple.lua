@@ -2,6 +2,7 @@
 
 --[[- @function [parent=#modulename] functionname]]
 --[[print hello]]
+local var = [[hello world]]
 
--- return the module
+-- return
 return "hello world"

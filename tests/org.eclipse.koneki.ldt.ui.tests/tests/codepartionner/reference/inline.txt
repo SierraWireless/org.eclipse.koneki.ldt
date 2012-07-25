@@ -1,0 +1,5 @@
+{0;11;__lua_doc_multi_line}
+{12;13;__lua_multi_line_comment}
+{38;10;__lua_multi_line_string}
+{50;9;__lua_string}
+{60;9;__lua_comment}

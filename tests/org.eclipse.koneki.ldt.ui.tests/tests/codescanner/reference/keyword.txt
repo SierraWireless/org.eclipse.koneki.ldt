@@ -1,0 +1,14 @@
+{0;5;DLTK_keyword}
+{20;6;DLTK_keyword}
+{27;4;DLTK_keyword}
+{33;3;DLTK_keyword}
+{38;3;DLTK_keyword}
+{49;2;DLTK_keyword}
+{53;1;DLTK_number}
+{55;1;DLTK_number}
+{57;1;DLTK_number}
+{61;2;DLTK_keyword}
+{77;2;DLTK_keyword}
+{86;4;DLTK_keyword}
+{109;3;DLTK_keyword}
+{113;3;DLTK_keyword}

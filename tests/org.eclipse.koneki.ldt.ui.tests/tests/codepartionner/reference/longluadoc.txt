@@ -1,0 +1,2 @@
+{0;62;__lua_doc_multi_line}
+{64;26;__lua_doc_multi_line}

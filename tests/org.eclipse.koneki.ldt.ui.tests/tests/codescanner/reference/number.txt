@@ -1,0 +1,6 @@
+{0;5;DLTK_keyword}
+{24;1;DLTK_number}
+{28;1;DLTK_number}
+{31;3;DLTK_number}
+{36;3;DLTK_number}
+{41;3;DLTK_number}
