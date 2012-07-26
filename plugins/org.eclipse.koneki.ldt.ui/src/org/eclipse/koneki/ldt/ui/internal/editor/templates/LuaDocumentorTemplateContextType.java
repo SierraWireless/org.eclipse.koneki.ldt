@@ -12,16 +12,15 @@ package org.eclipse.koneki.ldt.ui.internal.editor.templates;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.templates.ScriptTemplateContext;
-import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 
-public class LuaDocumentorTemplateContextType extends ScriptTemplateContextType {
+public class LuaDocumentorTemplateContextType extends LuaUniversalTemplateContextType {
 
 	public static final String CONTEXT_TYPE_ID = "LuaDocumentorTemplateContextType"; //$NON-NLS-1$
 
 	public LuaDocumentorTemplateContextType() {
-		// empty constructor
+		super();
 	}
 
 	public LuaDocumentorTemplateContextType(String id) {

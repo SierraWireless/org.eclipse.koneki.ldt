@@ -31,10 +31,12 @@ public class LuaUniversalTemplateContextType extends ScriptTemplateContextType {
 
 	public LuaUniversalTemplateContextType(String id, String name) {
 		super(id, name);
+		setupLuaResolvers();
 	}
 
 	public LuaUniversalTemplateContextType(String id) {
 		super(id);
+		setupLuaResolvers();
 	}
 
 	private void setupLuaResolvers() {

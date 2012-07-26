@@ -4,14 +4,14 @@
 	context="LuaDocumentorTemplateContextType"
 	description="%module.description"
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.module"
-	name="@module">@module ${name}</template>
+	name="@module">@module ${module_name}</template>
 
 <template
 	context="LuaDocumentorTemplateContextType"
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.function"
 	name="@function"
 	description="%function.description"
-	autoinsert="true">@function [parent=#${parent}] ${name}</template>
+	autoinsert="true">@function [parent=#${module_name}] ${name}</template>
 
 <template
 	context="LuaDocumentorTemplateContextType"
@@ -25,7 +25,7 @@
 	id="org.eclipse.koneki.ldt.ui.templates.luadocumentor.field"
 	name="@field"
 	description="%field.description"
-	autoinsert="true">@field [parent=#${parent}] #${type} ${name} ${description}</template>
+	autoinsert="true">@field [parent=#${module_name}] #${type} ${name} ${description}</template>
 
 <template
 	context="LuaDocumentorTemplateContextType"
