@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.dltk.ui.text.completion.ContentAssistInvocationContext;
 import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposalComputer;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
@@ -60,6 +59,7 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 			int offsetInCurrentLine = 0;
 
 			// Check if we are on the first line of the lua doc bloc to known how many hyphens we have to ignore
+			// Find the block region where the content assist is called
 			ITypedRegion[] partitions = TextUtilities.computePartitioning(document, ILuaPartitions.LUA_PARTITIONING, 0, document.getLength(), false);
 			for (ITypedRegion region : partitions) {
 				if (ILuaPartitions.LUA_DOC.equals(region.getType()) || ILuaPartitions.LUA_DOC_MULTI.equals(region.getType())) {
@@ -70,17 +70,21 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 						int invocationLine = document.getLineOfOffset(context.getInvocationOffset());
 						boolean isInvocationOnFirstLine = (blockFirstLine == invocationLine);
 
+						// On the first line, skip things before the luadoc block
 						if (isInvocationOnFirstLine) {
 							offsetInCurrentLine = region.getOffset() - document.getLineOffset(blockFirstLine);
 						} else {
 							offsetInCurrentLine = 0;
 						}
 
+						// skip openning comment chars
 						if (ILuaPartitions.LUA_DOC_MULTI.equals(region.getType())) {
+							// on multi-line skip "--[[-"
 							if (isInvocationOnFirstLine) {
 								offsetInCurrentLine = skipOpenningMultiLineChars(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine);
 							}
 						} else if (ILuaPartitions.LUA_DOC.equals(region.getType())) {
+							// skip 3 or 2 hyphens
 							if (isInvocationOnFirstLine) {
 								offsetInCurrentLine += 3;
 							} else {
@@ -93,10 +97,12 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 
 			offsetInCurrentLine = skipSpaces(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine);
 
+			// the first char after comment opening have to be a @
 			if (!(offsetInCurrentLine < contentAssistOffsetInLine && contentAssistLine[offsetInCurrentLine] == '@')) {
 				return Collections.emptyList();
 			}
 
+			// Retrieve the number of char between the @ and the cursor
 			final int tagStart = offsetInCurrentLine;
 			++offsetInCurrentLine;
 			if (offsetInCurrentLine < contentAssistOffsetInLine && Character.isJavaIdentifierStart(contentAssistLine[offsetInCurrentLine])) {
@@ -108,7 +114,11 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 			}
 
 			if (offsetInCurrentLine == contentAssistOffsetInLine) {
-				return completionOnTag(context, new String(contentAssistLine, tagStart, offsetInCurrentLine - tagStart));
+				// filter proposals of the text between the @ and the cursor and compute relevance
+				final boolean endOfLine = (contentAssistLine.length == contentAssistOffsetInLine);
+				final boolean isCursorFollowedByWhitespace = (!endOfLine && Character.isWhitespace(contentAssistLine[contentAssistOffsetInLine]));
+				final String partialTag = new String(contentAssistLine, tagStart, offsetInCurrentLine - tagStart);
+				return completionOnTag(context, partialTag, endOfLine, isCursorFollowedByWhitespace);
 			}
 
 		} catch (BadLocationException e) {
@@ -118,10 +128,11 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 	}
 
 	private static int skipOpenningMultiLineChars(char[] contentAssistLine, int offsetInCurrentLine, int contentAssistOffsetInLine) {
-		Pattern pattern = Pattern.compile("--\\[=*\\[-");//$NON-NLS-1$
-		Matcher matcher = pattern.matcher(new String(contentAssistLine));
+		Pattern pattern = Pattern.compile("^--\\[=*\\[-");//$NON-NLS-1$
+		String startBlockToCursor = new String(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine - offsetInCurrentLine);
+		Matcher matcher = pattern.matcher(startBlockToCursor);
 		if (matcher.find()) {
-			return matcher.end();
+			return matcher.end() + offsetInCurrentLine;
 		}
 		return offsetInCurrentLine;
 	}
@@ -133,25 +144,34 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 		return offsetInCurrentLine;
 	}
 
-	private List<ICompletionProposal> completionOnTag(ContentAssistInvocationContext context, String tag) {
+	private List<ICompletionProposal> completionOnTag(final ContentAssistInvocationContext context, final String tag,
+			final boolean nothingAfterOnTheLine, boolean tagFollowedByWhitespace) {
+		// retrieve templates proposals
 		final List<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
 		final LuaDocumentorTemplateCompletionProcessor processor = new LuaDocumentorTemplateCompletionProcessor(
 				(ScriptContentAssistInvocationContext) context);
 		Collections.addAll(proposals, processor.computeCompletionProposals(context.getViewer(), context.getInvocationOffset()));
-		//
+
+		// retrieve tags
 		final Set<String> tags = new HashSet<String>();
 		Collections.addAll(tags, LuaDocumentorTags.getTags());
-		// collect used tags, to show keywords only for missing ones
-		final Set<String> usedTags = new HashSet<String>();
-		for (ICompletionProposal proposal : proposals) {
-			if (proposal instanceof ScriptTemplateProposal) {
-				usedTags.add(((ScriptTemplateProposal) proposal).getTemplateName());
-			}
-		}
+
+		// add simple tags proposals matching with the given tag
 		for (String jsdocTag : tags) {
-			if (CharOperation.prefixEquals(tag, jsdocTag) && !usedTags.contains(jsdocTag)) {
-				proposals.add(new ScriptCompletionProposal(jsdocTag + ' ', context.getInvocationOffset() - tag.length(), tag.length(),
-						DLTKPluginImages.get(DLTKPluginImages.IMG_OBJS_JAVADOCTAG), jsdocTag, 90, true));
+			if (CharOperation.prefixEquals(tag, jsdocTag)) {
+
+				// if there is nothing after, template are more relevant
+				int relevance = nothingAfterOnTheLine ? 50 : 95;
+
+				// add a space after the replacement if missing
+				String replacement = jsdocTag;
+				if (nothingAfterOnTheLine || !tagFollowedByWhitespace) {
+					replacement += ' ';
+				}
+
+				// add tag proposal
+				proposals.add(new ScriptCompletionProposal(replacement, context.getInvocationOffset() - tag.length(), tag.length(), DLTKPluginImages
+						.get(DLTKPluginImages.IMG_OBJS_JAVADOCTAG), jsdocTag, relevance, true));
 			}
 		}
 		return proposals;
