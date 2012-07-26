@@ -20,6 +20,9 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * LuaDocumentor template completion processor
@@ -69,5 +72,10 @@ public class LuaDocumentorTemplateCompletionProcessor extends ScriptTemplateComp
 	@Override
 	protected ICompletionProposal createProposal(Template template, TemplateContext context, IRegion region, int relevance) {
 		return new LuaDocumentorTemplateProposal(template, context, region, getImage(template), relevance);
+	}
+
+	@Override
+	protected Image getImage(Template template) {
+		return Activator.getDefault().getImageRegistry().get(ImageConstants.TEMPLATE_LUADOC);
 	}
 }
