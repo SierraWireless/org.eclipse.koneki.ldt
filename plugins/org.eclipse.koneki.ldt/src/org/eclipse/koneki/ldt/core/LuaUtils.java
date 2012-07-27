@@ -305,17 +305,14 @@ public final class LuaUtils {
 		EXECUTION_ENVIRONMENT, DEPENDENT_PROJECT, ARCHIVE
 	}
 
-	/** Enable to perform operation in all files and directories in project fragments source directories */
-	public static void visitSourceFiles(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final IProjectSourceVisitor visitor,
-			final IProgressMonitor monitor) throws CoreException {
-
-		SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
+	private static List<IProjectFragment> getProjectFragments(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter,
+			final IProgressMonitor monitor) throws ModelException {
 
 		ArrayList<IProjectFragment> filteredProjecFragment = new ArrayList<IProjectFragment>();
 
 		// filter project fragment
 		final IProjectFragment[] projectFragments = project.getAllProjectFragments();
-		final SubMonitor filteredLoopMonitor = subMonitor.newChild(1).setWorkRemaining(projectFragments.length);
+		final SubMonitor filteredLoopMonitor = SubMonitor.convert(monitor, projectFragments.length);
 
 		for (int i = 0; i < projectFragments.length && !monitor.isCanceled(); i++) {
 			final IProjectFragment projectFragment = projectFragments[i];
@@ -334,21 +331,45 @@ public final class LuaUtils {
 			}
 			filteredLoopMonitor.worked(1);
 		}
+		return filteredProjecFragment;
+	}
+
+	/** Enable to perform operation in Root source folders */
+	public static void visitRootSourceFolder(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter,
+			final IProjectSourceRootFolderVisitor visitor, final IProgressMonitor monitor) throws CoreException {
+
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
+
+		// get filtered project fragments
+		List<IProjectFragment> filteredProjecFragments = getProjectFragments(project, filter, subMonitor.newChild(1));
 
 		// visit fragment
-		final SubMonitor visitLoopMonitor = subMonitor.newChild(9).setWorkRemaining(filteredProjecFragment.size());
-		for (IProjectFragment projectFragment : filteredProjecFragment) {
+		final SubMonitor visitLoopMonitor = subMonitor.newChild(9).setWorkRemaining(filteredProjecFragments.size());
+		for (IProjectFragment projectFragment : filteredProjecFragments) {
 			if (monitor.isCanceled())
 				return;
-			visitSourceFiles(projectFragment, visitor, visitLoopMonitor.newChild(1));
+
+			IPath absolutePathFromModelElement = getAbsolutePathFromModelElement(projectFragment);
+			visitor.processSourceRootFolder(absolutePathFromModelElement, visitLoopMonitor.newChild(1));
 		}
 	}
 
 	/** Enable to perform operation in all files and directories in project fragments source directories */
-	@Deprecated
-	private static void visitSourceFiles(final IParent parent, final IProjectSourceVisitor visitor, final IProgressMonitor monitor)
-			throws CoreException {
-		visitSourceFiles(parent, visitor, monitor, Path.EMPTY);
+	public static void visitSourceFiles(final IScriptProject project, EnumSet<ProjectFragmentFilter> filter, final IProjectSourceVisitor visitor,
+			final IProgressMonitor monitor) throws CoreException {
+
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
+
+		// get filtered project fragments
+		List<IProjectFragment> filteredProjecFragments = getProjectFragments(project, filter, subMonitor.newChild(1));
+
+		// visit fragment
+		final SubMonitor visitLoopMonitor = subMonitor.newChild(9).setWorkRemaining(filteredProjecFragments.size());
+		for (IProjectFragment projectFragment : filteredProjecFragments) {
+			if (monitor.isCanceled())
+				return;
+			visitSourceFiles(projectFragment, visitor, visitLoopMonitor.newChild(1), Path.EMPTY);
+		}
 	}
 
 	private static void visitSourceFiles(final IParent parent, final IProjectSourceVisitor visitor, final IProgressMonitor monitor,
@@ -365,17 +386,9 @@ public final class LuaUtils {
 				/*
 				 * Support local module
 				 */
-				final IResource resource = modelElement.getResource();
-				IPath absolutePath;
-				String charset;
-				if (resource instanceof IFile) {
-					final IFile file = (IFile) resource;
-					absolutePath = new Path(resource.getLocationURI().getPath());
-					charset = file.getCharset();
-				} else {
-					absolutePath = getAbsolutePathFromModelElement(modelElement);
-					charset = Charset.defaultCharset().toString();
-				}
+				IPath absolutePath = getAbsolutePathFromModelElement(modelElement);
+				String charset = getCharsetOfModelElement(modelElement);
+
 				final IPath relativeFilePath = currentPath.append(absolutePath.lastSegment());
 				visitor.processFile(absolutePath, relativeFilePath, charset, subMonitor.newChild(1));
 			} else if (modelElement instanceof IScriptFolder) {
@@ -386,34 +399,43 @@ public final class LuaUtils {
 				final IScriptFolder innerSourceFolder = (IScriptFolder) modelElement;
 				// Do not notify interface for Source folders
 				if (!innerSourceFolder.isRootFolder()) {
-					final IResource resource = innerSourceFolder.getResource();
-					IPath absolutePath;
-					if (resource != null) {
-						absolutePath = new Path(resource.getLocationURI().getPath());
-					} else {
-						absolutePath = getAbsolutePathFromModelElement(modelElement);
-					}
+					IPath absolutePath = getAbsolutePathFromModelElement(modelElement);
 
 					final IPath newPath = currentPath.append(innerSourceFolder.getElementName());
 					visitor.processDirectory(absolutePath, newPath, monitor);
 					visitSourceFiles(innerSourceFolder, visitor, subMonitor.newChild(1), newPath);
 				} else {
 					// Deal with sub elements
-					visitSourceFiles(innerSourceFolder, visitor, subMonitor.newChild(1));
+					visitSourceFiles(innerSourceFolder, visitor, subMonitor.newChild(1), Path.EMPTY);
 				}
 			}
 		}
 	}
 
 	private static IPath getAbsolutePathFromModelElement(final IModelElement modelElement) throws CoreException {
+		final IResource resource = modelElement.getResource();
+		if (resource != null) {
+			return resource.getLocation();
+		}
+
 		final IPath folderPath = modelElement.getPath();
 		if (EnvironmentPathUtils.isFull(folderPath)) {
 			return EnvironmentPathUtils.getLocalPath(folderPath);
-		} else {
-			final String message = MessageFormat.format("Unable to get absolute location for {0}.", modelElement.getElementName()); //$NON-NLS-1$
-			final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
-			throw new CoreException(status);
 		}
+
+		final String message = MessageFormat.format("Unable to get absolute location for {0}.", modelElement.getElementName()); //$NON-NLS-1$
+		final Status status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
+		throw new CoreException(status);
+	}
+
+	private static String getCharsetOfModelElement(final IModelElement modelElement) throws CoreException {
+		final IResource resource = modelElement.getResource();
+		if (resource instanceof IFile) {
+			final IFile file = (IFile) resource;
+			return file.getCharset();
+		}
+
+		return Charset.defaultCharset().toString();
 	}
 
 	/**

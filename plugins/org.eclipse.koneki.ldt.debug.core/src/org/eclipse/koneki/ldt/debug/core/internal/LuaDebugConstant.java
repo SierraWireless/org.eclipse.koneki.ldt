@@ -36,4 +36,8 @@ public interface LuaDebugConstant {
 	String TYPE_LUAFUNC = "function (Lua)"; //$NON-NLS-1$
 	String TYPE_SPECIAL = "special"; //$NON-NLS-1$
 
+	/**
+	 * Plug-in path
+	 */
+	String SCRIPT_PATH = "script"; //$NON-NLS-1$
 }
