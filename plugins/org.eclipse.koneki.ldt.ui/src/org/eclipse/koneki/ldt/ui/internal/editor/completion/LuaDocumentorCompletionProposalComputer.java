@@ -96,30 +96,18 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 			}
 
 			offsetInCurrentLine = skipSpaces(contentAssistLine, offsetInCurrentLine, contentAssistOffsetInLine);
-
 			// the first char after comment opening have to be a @
-			if (!(offsetInCurrentLine < contentAssistOffsetInLine && contentAssistLine[offsetInCurrentLine] == '@')) {
+			if (!(offsetInCurrentLine <= contentAssistOffsetInLine)) {
 				return Collections.emptyList();
 			}
+			// we find the start of the tag
+			int tagStart = offsetInCurrentLine;
 
-			// Retrieve the number of char between the @ and the cursor
-			final int tagStart = offsetInCurrentLine;
-			++offsetInCurrentLine;
-			if (offsetInCurrentLine < contentAssistOffsetInLine && Character.isJavaIdentifierStart(contentAssistLine[offsetInCurrentLine])) {
-				++offsetInCurrentLine;
-				while (offsetInCurrentLine < contentAssistOffsetInLine
-						&& (Character.isJavaIdentifierPart(contentAssistLine[offsetInCurrentLine]) || contentAssistLine[offsetInCurrentLine] == '.' || contentAssistLine[offsetInCurrentLine] == '-')) {
-					++offsetInCurrentLine;
-				}
-			}
-
-			if (offsetInCurrentLine == contentAssistOffsetInLine) {
-				// filter proposals of the text between the @ and the cursor and compute relevance
-				final boolean endOfLine = (contentAssistLine.length == contentAssistOffsetInLine);
-				final boolean isCursorFollowedByWhitespace = (!endOfLine && Character.isWhitespace(contentAssistLine[contentAssistOffsetInLine]));
-				final String partialTag = new String(contentAssistLine, tagStart, offsetInCurrentLine - tagStart);
-				return completionOnTag(context, partialTag, endOfLine, isCursorFollowedByWhitespace);
-			}
+			// filter proposals of the text between the @ and the cursor and compute relevance
+			final boolean endOfLine = (contentAssistLine.length == contentAssistOffsetInLine);
+			final boolean isCursorFollowedByWhitespace = (!endOfLine && Character.isWhitespace(contentAssistLine[contentAssistOffsetInLine]));
+			final String partialTag = new String(contentAssistLine, tagStart, contentAssistOffsetInLine - tagStart);
+			return completionOnTag(context, partialTag, endOfLine, isCursorFollowedByWhitespace);
 
 		} catch (BadLocationException e) {
 			Activator.logError("Compute completion proposal error", e); //$NON-NLS-1$

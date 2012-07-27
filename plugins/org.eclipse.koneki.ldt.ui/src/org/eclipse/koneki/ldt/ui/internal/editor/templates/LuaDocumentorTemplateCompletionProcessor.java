@@ -49,6 +49,11 @@ public class LuaDocumentorTemplateCompletionProcessor extends ScriptTemplateComp
 		return LuaTemplateAccess.getInstance();
 	}
 
+	@Override
+	protected boolean isValidPrefix(String prefix) {
+		return true;
+	}
+
 	protected String extractPrefix(ITextViewer viewer, int offset) {
 		int i = offset;
 		IDocument document = viewer.getDocument();
