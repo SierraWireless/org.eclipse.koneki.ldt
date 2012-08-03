@@ -12,16 +12,26 @@ package org.eclipse.koneki.ldt.core.internal.buildpath;
 
 import org.eclipse.core.runtime.IPath;
 
-public class LuaExecutionEnvironment {
+public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironment> {
 
 	private final String id;
 	private final String version;
 	private final IPath path;
+	private boolean embedded;
 
 	public LuaExecutionEnvironment(final String identifier, final String eeversion, final IPath pathToEE) {
 		id = identifier;
 		version = eeversion;
 		path = pathToEE;
+		embedded = false;
+	}
+
+	protected void setEmbedded(boolean embeddedEE) {
+		this.embedded = embeddedEE;
+	}
+
+	public boolean isEmbedded() {
+		return embedded;
 	}
 
 	public String getID() {
@@ -46,7 +56,6 @@ public class LuaExecutionEnvironment {
 		return new IPath[0];
 	}
 
-	// TODO: Try implementation
 	public IPath[] getDocumentationPath() {
 		if (path != null && path.toFile().exists()) {
 			final IPath sourcePath = path.append(LuaExecutionEnvironmentConstants.EE_FILE_DOCS_FOLDER);
@@ -95,5 +104,10 @@ public class LuaExecutionEnvironment {
 		} else if (!version.equals(other.version))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(LuaExecutionEnvironment ee) {
+		return getEEIdentifier().compareTo(ee.getEEIdentifier());
 	}
 }

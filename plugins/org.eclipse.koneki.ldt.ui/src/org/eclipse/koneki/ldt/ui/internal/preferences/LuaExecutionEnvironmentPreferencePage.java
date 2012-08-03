@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.RowDataFactory;
 import org.eclipse.jface.layout.RowLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -29,6 +33,7 @@ import org.eclipse.koneki.ldt.ui.SWTUtil;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentContentProvider;
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentLabelProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -65,14 +70,12 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 
 		eeTreeViewer = new TreeViewer(containerComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		eeTreeViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
-		eeTreeViewer.setLabelProvider(new LuaExecutionEnvironmentLabelProvider());
+		eeTreeViewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new LuaExecutionEnvironmentLabelProvider()));
 		eeTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				if (removeButton != null)
-					// Enabling to remove selected Execution Environment
-					removeButton.setEnabled(true);
+				refreshRemoveButton();
 			}
 		});
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(eeTreeViewer.getControl());
@@ -140,7 +143,15 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 		 * Deploy
 		 */
 		try {
-			LuaExecutionEnvironmentManager.installLuaExecutionEnvironment(selectedFilePath).getEEIdentifier();
+			LuaExecutionEnvironment ee = LuaExecutionEnvironmentManager.getExecutionEnvironmentFromCompressedFile(selectedFilePath);
+			List<LuaExecutionEnvironment> embeddedExecutionEnvironments = LuaExecutionEnvironmentManager.getEmbeddedExecutionEnvironments();
+			if (embeddedExecutionEnvironments.contains(ee)) {
+				boolean okToInstall = MessageDialog.openQuestion(getShell(), Messages.LuaExecutionEnvironmentPreferencePage_addEESupportTitle,
+						NLS.bind(Messages.LuaExecutionEnvironmentPreferencePage_addEESupportMessage, ee.getEEIdentifier()));
+				if (!okToInstall)
+					return;
+			}
+			LuaExecutionEnvironmentManager.installLuaExecutionEnvironment(selectedFilePath);
 
 			// Refresh the treeviewer
 			initializePage();
@@ -151,22 +162,8 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 	}
 
 	private void doRemoveSelection(final SelectionEvent event) {
-		/*
-		 * Extract selected Execution Environment
-		 */
-		if (eeTreeViewer == null)
-			return;
-		final ISelection selection = eeTreeViewer.getSelection();
-		if (selection.isEmpty()) {
-			return;
-		}
-		LuaExecutionEnvironment ee = null;
-		if (selection instanceof StructuredSelection) {
-			final StructuredSelection sSelection = (StructuredSelection) selection;
-			final Object currentSelection = sSelection.getFirstElement();
-			if (currentSelection instanceof LuaExecutionEnvironment)
-				ee = (LuaExecutionEnvironment) currentSelection;
-		}
+		// Extract selected Execution Environment
+		LuaExecutionEnvironment ee = getSelectedExecutionEnvironment();
 
 		// Nothing to delete
 		if (ee == null)
@@ -174,7 +171,7 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 
 		try {
 			// Remove selected Execution Environment
-			LuaExecutionEnvironmentManager.removeLuaExecutionEnvironment(ee);
+			LuaExecutionEnvironmentManager.uninstallLuaExecutionEnvironment(ee);
 
 			// Recompute page content
 			initializePage();
@@ -184,14 +181,39 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 		}
 	}
 
+	private LuaExecutionEnvironment getSelectedExecutionEnvironment() {
+		if (eeTreeViewer == null)
+			return null;
+
+		final ISelection selection = eeTreeViewer.getSelection();
+		if (selection.isEmpty())
+			return null;
+
+		if (selection instanceof StructuredSelection) {
+			final StructuredSelection sSelection = (StructuredSelection) selection;
+			final Object currentSelection = sSelection.getFirstElement();
+			if (currentSelection instanceof LuaExecutionEnvironment)
+				return (LuaExecutionEnvironment) currentSelection;
+		}
+		return null;
+	}
+
+	private void refreshRemoveButton() {
+		if (removeButton != null) {
+			// enable remove button only for non embedded Execution Environment
+			LuaExecutionEnvironment ee = getSelectedExecutionEnvironment();
+			removeButton.setEnabled(ee != null && !ee.isEmbedded());
+		}
+	}
+
 	private void initializePage() {
 		if (eeTreeViewer == null)
 			return;
 
 		// Refresh list
-		eeTreeViewer.setInput(LuaExecutionEnvironmentManager.getInstalledExecutionEnvironments());
+		eeTreeViewer.setInput(LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments());
 
 		// As list is refreshed, they is no selection
-		removeButton.setEnabled(false);
+		refreshRemoveButton();
 	}
 }

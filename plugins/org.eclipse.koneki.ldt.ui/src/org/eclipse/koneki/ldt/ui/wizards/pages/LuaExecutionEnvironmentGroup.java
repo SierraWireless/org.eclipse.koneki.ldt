@@ -15,7 +15,6 @@ import java.util.Observable;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
+import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -85,7 +85,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 
 		// Execution Environment actual list
 		installedEEsComboViewer = new ComboViewer(group, SWT.READ_ONLY | SWT.BORDER);
-		installedEEsComboViewer.setContentProvider(new ArrayContentProvider());
+		installedEEsComboViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
 		updateExecutionEnvironmentList();
 		installedEEsComboViewer.getCombo().setEnabled(isListAvailable);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).applyTo(installedEEsComboViewer.getControl());
@@ -142,7 +142,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 
 	private void updateExecutionEnvironmentList() {
 		if (installedEEsComboViewer != null) {
-			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentManager.getInstalledExecutionEnvironments();
+			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
 			installedEEsComboViewer.setInput(installedExecutionEnvironments);
 			if (installedExecutionEnvironments.size() > 0) {
 				installedEEsComboViewer.setSelection(new StructuredSelection(installedExecutionEnvironments.get(0)));

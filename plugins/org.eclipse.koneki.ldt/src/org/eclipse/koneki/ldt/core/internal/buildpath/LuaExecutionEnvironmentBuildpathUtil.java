@@ -31,7 +31,7 @@ public final class LuaExecutionEnvironmentBuildpathUtil {
 			final String eeid = getEEID(containerPath);
 			final String eeVersion = getEEVersion(containerPath);
 			try {
-				return LuaExecutionEnvironmentManager.getInstalledExecutionEnvironment(eeid, eeVersion) != null;
+				return LuaExecutionEnvironmentManager.getAvailableExecutionEnvironment(eeid, eeVersion) != null;
 			} catch (final CoreException e) {
 				Activator.log(e.getStatus());
 				return false;
@@ -62,7 +62,7 @@ public final class LuaExecutionEnvironmentBuildpathUtil {
 		if (isValidExecutionEnvironmentBuildPath(path)) {
 			final String id = getEEID(path);
 			final String version = getEEVersion(path);
-			return LuaExecutionEnvironmentManager.getInstalledExecutionEnvironment(id, version);
+			return LuaExecutionEnvironmentManager.getAvailableExecutionEnvironment(id, version);
 		}
 		return null;
 	}

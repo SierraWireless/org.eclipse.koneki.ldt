@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.buildpath;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -28,7 +29,9 @@ public class LuaExecutionEnvironmentContentProvider implements ITreeContentProvi
 	@Override
 	public Object[] getElements(Object inputElement) {
 		if (inputElement instanceof List<?>) {
-			return ((List<?>) inputElement).toArray();
+			Object[] array = ((List<?>) inputElement).toArray();
+			Arrays.sort(array);
+			return array;
 		}
 		return null;
 	}

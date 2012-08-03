@@ -11,6 +11,7 @@
  -->
 
 <plugin>
+   <extension-point id="executionEnvironment" name="%extension-point.executionenvironement.name" schema="schema/executionEnvironment.exsd"/>
    <extension
          id="nature"
          name="%extension.name"

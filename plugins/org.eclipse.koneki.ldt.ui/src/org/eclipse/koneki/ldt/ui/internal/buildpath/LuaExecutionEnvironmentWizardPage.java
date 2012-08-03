@@ -11,6 +11,7 @@ import org.eclipse.dltk.internal.ui.wizards.IBuildpathContainerPageExtension2;
 import org.eclipse.dltk.ui.wizards.NewElementWizardPage;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -53,7 +54,7 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 		// Define Execution Environment list
 		eeTreeViewer = new TreeViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		eeTreeViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
-		eeTreeViewer.setLabelProvider(new LuaExecutionEnvironmentLabelProvider());
+		eeTreeViewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new LuaExecutionEnvironmentLabelProvider()));
 
 		updateExecutionEnvironmentList();
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(eeTreeViewer.getControl());
@@ -134,7 +135,7 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 		}
 
 		// get new input
-		final List<LuaExecutionEnvironment> newInput = LuaExecutionEnvironmentManager.getInstalledExecutionEnvironments();
+		final List<LuaExecutionEnvironment> newInput = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
 		eeTreeViewer.setInput(newInput);
 
 		// try to guess the better new selection

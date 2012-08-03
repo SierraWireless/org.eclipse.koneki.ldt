@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -31,8 +32,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathContainer;
@@ -40,15 +45,22 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.osgi.framework.Bundle;
 
 public final class LuaExecutionEnvironmentManager {
+
+	private static final String EXTENSION_POINT_ID = "org.eclipse.koneki.ldt.executionEnvironment"; //$NON-NLS-1$
+	private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+	private static final String ATTRIBUTE_VERSION = "version"; //$NON-NLS-1$
+	private static final String ATTRIBUTE_RESOURCEDIRECTORY = "resourcedirectory"; //$NON-NLS-1$
+
 	private static final String INSTALLATION_FOLDER = "ee"; //$NON-NLS-1$
 
 	private LuaExecutionEnvironmentManager() {
 
 	}
 
-	private static LuaExecutionEnvironment getExecutionEnvironmentFromCompressedFile(final String filePath) throws CoreException {
+	public static LuaExecutionEnvironment getExecutionEnvironmentFromCompressedFile(final String filePath) throws CoreException {
 		/*
 		 * Extract manifest file
 		 */
@@ -90,10 +102,10 @@ public final class LuaExecutionEnvironmentManager {
 					LuaExecutionEnvironmentConstants.MANIFEST_EXTENSION), null, IStatus.ERROR);
 		}
 
-		return getLuaExecutionEnvironmentFromManifest(manifestString);
+		return getLuaExecutionEnvironmentFromManifest(manifestString, null);
 	}
 
-	private static LuaExecutionEnvironment getInstalledExecutionEnvironmentFromDir(final File executionEnvironmentDirectory) throws CoreException {
+	private static LuaExecutionEnvironment getExecutionEnvironmentFromDir(final File executionEnvironmentDirectory) throws CoreException {
 		// check if the directory exist
 		if (!executionEnvironmentDirectory.exists() || !executionEnvironmentDirectory.isDirectory())
 			return null;
@@ -133,10 +145,11 @@ public final class LuaExecutionEnvironmentManager {
 		}
 
 		// extract execution environment from manifest
-		return getLuaExecutionEnvironmentFromManifest(manifestString);
+		return getLuaExecutionEnvironmentFromManifest(manifestString, new Path(executionEnvironmentDirectory.getPath()));
 	}
 
-	private static LuaExecutionEnvironment getLuaExecutionEnvironmentFromManifest(String manifestString) throws CoreException {
+	private static LuaExecutionEnvironment getLuaExecutionEnvironmentFromManifest(String manifestString, final IPath installDirectory)
+			throws CoreException {
 		/*
 		 * Match available package name
 		 */
@@ -162,15 +175,40 @@ public final class LuaExecutionEnvironmentManager {
 			throwException("Manifest from given file has no package name or version.", null, IStatus.ERROR); //$NON-NLS-1$
 		}
 
-		// get install path
-		final IPath pathToEE = getInstallDirectory().append(name + '-' + version);
-
-		return new LuaExecutionEnvironment(name, version, pathToEE);
+		return new LuaExecutionEnvironment(name, version, installDirectory);
 	}
 
-	public static void removeLuaExecutionEnvironment(final LuaExecutionEnvironment ee) throws CoreException {
+	private static LuaExecutionEnvironment getExecutionEnvironmentFromContribution(IConfigurationElement contribution) throws CoreException {
+		String resourceDirectory = contribution.getAttribute(ATTRIBUTE_RESOURCEDIRECTORY);
+		String contributor = contribution.getContributor().getName();
+		Bundle bundle = Platform.getBundle(contributor);
+		if (bundle != null && resourceDirectory != null) {
+			// get execution environment directory
+			URL entry = bundle.getEntry(resourceDirectory);
+			try {
+				URL fileURL = FileLocator.toFileURL(entry);
+				File file = new File(fileURL.getFile());
+				if (file.exists()) {
+					LuaExecutionEnvironment embeddedEE = LuaExecutionEnvironmentManager.getExecutionEnvironmentFromDir(file);
+					embeddedEE.setEmbedded(true);
+					return embeddedEE;
+				}
+			} catch (IOException e) {
+				throwException(
+						MessageFormat.format("Unable to extract embedded execution environment from {0} - {1}", bundle, resourceDirectory), e, IStatus.ERROR); //$NON-NLS-1$
+			} catch (CoreException e) {
+				throwException(
+						MessageFormat.format("Unable to extract embedded execution environment from {0} - {1}", bundle, resourceDirectory), e, IStatus.ERROR); //$NON-NLS-1$
+			}
+		}
+		return null;
+	}
+
+	public static void uninstallLuaExecutionEnvironment(final LuaExecutionEnvironment ee) throws CoreException {
 		if (ee == null)
 			throwException("No Execution Environment provided.", null, IStatus.ERROR); //$NON-NLS-1$
+		if (ee.isEmbedded())
+			throwException("Embedded Execution Environment could not be uninstalled.", null, IStatus.ERROR); //$NON-NLS-1$
 		final IPath pathToEE = ee.getPath();
 		if (pathToEE == null)
 			throwException("The install path should not be null", null, IStatus.ERROR); //$NON-NLS-1$
@@ -211,10 +249,7 @@ public final class LuaExecutionEnvironmentManager {
 		}
 
 		// prepare/clean the directory where the Execution environment will be installed
-		final IPath eePath = ee.getPath();
-		if (eePath == null)
-			throwException("The install path should not be null.", null, IStatus.ERROR); //$NON-NLS-1$
-
+		final IPath eePath = getInstallDirectory().append(ee.getEEIdentifier());
 		final File installDirectory = eePath.toFile();
 		// clean install directory if it exists
 		if (installDirectory.exists()) {
@@ -323,7 +358,7 @@ public final class LuaExecutionEnvironmentManager {
 				if (executionEnvironmentDirectory.exists() && executionEnvironmentDirectory.isDirectory()) {
 					LuaExecutionEnvironment executionEnvironment;
 					try {
-						executionEnvironment = getInstalledExecutionEnvironmentFromDir(executionEnvironmentDirectory);
+						executionEnvironment = getExecutionEnvironmentFromDir(executionEnvironmentDirectory);
 						if (executionEnvironment != null)
 							result.add(executionEnvironment);
 					} catch (CoreException e) {
@@ -337,13 +372,70 @@ public final class LuaExecutionEnvironmentManager {
 		return result;
 	}
 
+	public static List<LuaExecutionEnvironment> getEmbeddedExecutionEnvironments() {
+		// list of execution environment installed
+		final ArrayList<LuaExecutionEnvironment> result = new ArrayList<LuaExecutionEnvironment>();
+
+		// search plug-in contribution
+		IConfigurationElement[] contributions = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
+		for (int i = 0; i < contributions.length; i++) {
+			try {
+				LuaExecutionEnvironment embeddedEE = getExecutionEnvironmentFromContribution(contributions[i]);
+				result.add(embeddedEE);
+			} catch (CoreException e) {
+				Activator.log(e.getStatus());
+			}
+		}
+		return result;
+	}
+
+	public static List<LuaExecutionEnvironment> getAvailableExecutionEnvironments() {
+		List<LuaExecutionEnvironment> availableExecutionEnvironments = getInstalledExecutionEnvironments();
+
+		List<LuaExecutionEnvironment> embeddedExecutionEnvironments = getEmbeddedExecutionEnvironments();
+
+		// add embedded execution environments only if there are not an installed version.
+		for (LuaExecutionEnvironment luaExecutionEnvironment : embeddedExecutionEnvironments) {
+			if (!availableExecutionEnvironments.contains(luaExecutionEnvironment)) {
+				availableExecutionEnvironments.add(luaExecutionEnvironment);
+			}
+		}
+		return availableExecutionEnvironments;
+	}
+
 	private static IPath getLuaExecutionEnvironmentPath(final String name, final String version) {
 		return getInstallDirectory().append(name + '-' + version);
 	}
 
 	public static LuaExecutionEnvironment getInstalledExecutionEnvironment(String name, String version) throws CoreException {
 		IPath luaExecutionEnvironmentPath = getLuaExecutionEnvironmentPath(name, version);
-		return getInstalledExecutionEnvironmentFromDir(luaExecutionEnvironmentPath.toFile());
+		return getExecutionEnvironmentFromDir(luaExecutionEnvironmentPath.toFile());
+	}
+
+	public static LuaExecutionEnvironment getEmbeddedExecutionEnvironment(String name, String version) throws CoreException {
+		// search plug-in contribution
+		IConfigurationElement[] contributions = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
+		for (int i = 0; i < contributions.length; i++) {
+			String embeddedID = contributions[i].getAttribute(ATTRIBUTE_ID);
+			String embeddedVersion = contributions[i].getAttribute(ATTRIBUTE_VERSION);
+
+			if (name != null && name.equals(embeddedID) && version != null && version.equals(embeddedVersion)) {
+				LuaExecutionEnvironment embeddedEE = getExecutionEnvironmentFromContribution(contributions[i]);
+				if (embeddedEE != null)
+					return embeddedEE;
+			}
+		}
+		return null;
+	}
+
+	public static LuaExecutionEnvironment getAvailableExecutionEnvironment(String name, String version) throws CoreException {
+		// search in installed execution environments
+		LuaExecutionEnvironment ee = getInstalledExecutionEnvironment(name, version);
+		if (ee != null)
+			return ee;
+
+		// if not found, search in embedded environments
+		return getEmbeddedExecutionEnvironment(name, version);
 	}
 
 	private static void refreshDLTKModel(LuaExecutionEnvironment ee) {
