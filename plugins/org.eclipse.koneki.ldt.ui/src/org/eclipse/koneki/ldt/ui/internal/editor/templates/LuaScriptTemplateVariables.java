@@ -41,7 +41,7 @@ public final class LuaScriptTemplateVariables {
 		}
 
 		protected boolean isUnambiguous(TemplateContext context) {
-			return resolve(context) != null;
+			return false;
 		}
 	}
 
@@ -61,7 +61,7 @@ public final class LuaScriptTemplateVariables {
 		}
 
 		protected boolean isUnambiguous(TemplateContext context) {
-			return resolve(context) != null;
+			return false;
 		}
 	}
 
