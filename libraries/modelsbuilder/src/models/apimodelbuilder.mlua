@@ -21,7 +21,16 @@ local handledcomments={} -- cache to know the comment already handled
 
 ----
 -- UTILITY METHODS
-local primitivetypes = {["nil"]=true, string=true, boolean=true, number=true, table=true}
+local primitivetypes = {
+	['boolean']  = true,
+	['function'] = true,
+	['nil']      = true,
+	['number']   = true,
+	['string']   = true,
+	['table']    = true,
+	['thread']   = true,
+	['userdata'] = true
+}
 
 
 -- get or create the typedef with the name "name"
