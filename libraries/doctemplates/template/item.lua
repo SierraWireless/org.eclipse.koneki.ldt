@@ -70,8 +70,17 @@ return
 		<ul>
 #		for position, param in ipairs( fdef.params ) do
 #			if not (position == 1 and param.name == 'self') then
-				<li>
-				<code><em>$(param.name) $(param.optional and 'optional') $(param.hidden and 'hidden')</em></code>: $( format(param.description) )
+				<li><code><em>
+#				if param.type then
+#					local link = linkto( param.type )
+#					local name = prettyname( param.type )
+#					if link then
+						<a href="$( link )">$( name )</a>
+#					else
+						$( name )
+#					end
+#				end				
+				$(param.name) $(param.optional and 'optional') $(param.hidden and 'hidden')</em></code>: $( format(param.description) )
 				</li>
 #			end
 #		end
@@ -89,7 +98,13 @@ return
 #		local function niceparmlist( parlist )
 #			local typelist = {}
 #			for position, type in ipairs(parlist) do
-#				typelist[#typelist + 1] = prettyname( type )
+#				local link = linkto( type )
+#				local name = prettyname( type )
+#				if link then
+#					typelist[#typelist + 1] = '<a href="'..link..'">'..name..'</a>'
+#				else
+#					typelist[#typelist + 1] = name
+#				end
 #				-- Append end separator or separating comma 
 #				typelist[#typelist + 1] = position == #parlist and ':' or ', '
 #			end
@@ -102,22 +117,24 @@ return
 			<ol>
 #			for position, ret in ipairs(fdef.returns) do
 				<li>
-#				if #ret.types > 0 and #niceparmlist(ret.types) > 0 then
-					<em>$( niceparmlist(ret.types) )</em>
+#				local paramlist = niceparmlist(ret.types)
+#				if #ret.types > 0 and #paramlist > 0 then
+					<em>$( paramlist )</em>
 #				end
 				$(ret.description and format(ret.description))
 				</li>
 #			end
 			</ol>
 #		else
-#			local isreturn = fdef.returns and #fdef.returns > 0 and #niceparmlist(fdef.returns[1].types) > 0
+#			local paramlist = niceparmlist(fdef.returns[1].types)
+#			local isreturn = fdef.returns and #fdef.returns > 0 and #paramlist > 0
 #			local isdescription = fdef.returns and fdef.returns[1].description and #format(fdef.returns[1].description) > 0
 #			if isreturn or isdescription  then
 				<p>
 #			end
 #			-- Show return type if provided
 #			if isreturn then
-				<em>$( niceparmlist(fdef.returns[1].types) )</em>
+				<em>$( paramlist )</em>
 #			end
 #			if isdescription then
 				$( format(fdef.returns[1].description) )
@@ -128,6 +145,7 @@ return
 #		end
 #	end
 #end
+#
 #--
 #-- Show usage samples
 #--
