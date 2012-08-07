@@ -44,7 +44,7 @@ public class LuaInterpreterPreferencePage extends ScriptInterpreterPreferencePag
 	 * Copy of the super method without the initialization of the default interpreter and customizing interpreter list validation
 	 */
 	@Override
-	protected Control createContents(Composite ancestor) {
+	protected Control createContents(final Composite ancestor) {
 		initializeDialogUnits(ancestor);
 
 		noDefaultAndApplyButton();
@@ -81,17 +81,19 @@ public class LuaInterpreterPreferencePage extends ScriptInterpreterPreferencePag
 	 * Retrieve default interpreter in preference and check it is the UI
 	 */
 	private void checkDefaultInterpreter() {
-		IEnvironment[] environments = EnvironmentManager.getEnvironments();
-		for (IEnvironment environment : environments) {
+		final IEnvironment[] environments = EnvironmentManager.getEnvironments();
+		for (final IEnvironment environment : environments) {
 			// Retrieve default
-			IInterpreterInstall defaultInterpreter = ScriptRuntime.getDefaultInterpreterInstall(new DefaultInterpreterEntry(fInterpretersBlock
-					.getCurrentNature(), environment.getId()));
+			final String currentNature = fInterpretersBlock.getCurrentNature();
+			final DefaultInterpreterEntry defaultInterpreterEntry = new DefaultInterpreterEntry(currentNature, environment.getId());
+			final IInterpreterInstall defaultInterpreter = ScriptRuntime.getDefaultInterpreterInstall(defaultInterpreterEntry);
 			if (defaultInterpreter != null) {
 				// Find the interpreter in the list
-				for (IInterpreterInstall interpreter : fInterpretersBlock.getInterpreters()) {
+				for (final IInterpreterInstall interpreter : fInterpretersBlock.getInterpreters()) {
 					if (defaultInterpreter.equals(interpreter)) {
-						//check it
+						// Check it
 						fInterpretersBlock.setCheckedInterpreter(interpreter);
+						return;
 					}
 				}
 			}
@@ -99,10 +101,10 @@ public class LuaInterpreterPreferencePage extends ScriptInterpreterPreferencePag
 	}
 
 	private void validateInterpreterList() {
-		// remove old messages
+		// Remove old messages
 		setErrorMessage(null);
 
-		// check if no default interpreter
+		// Check if no default interpreter
 		if (fInterpretersBlock.getInterpreters().length > 0 && fInterpretersBlock.getSelection().isEmpty()) {
 			setErrorMessage(InterpretersMessages.InterpreterPreferencePage_pleaseSetDefaultInterpreter);
 

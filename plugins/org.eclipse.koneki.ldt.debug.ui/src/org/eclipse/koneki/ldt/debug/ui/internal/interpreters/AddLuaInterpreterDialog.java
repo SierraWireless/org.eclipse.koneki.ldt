@@ -12,7 +12,6 @@ package org.eclipse.koneki.ldt.debug.ui.internal.interpreters;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterEnvironmentVariablesBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterLibraryBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.internal.debug.ui.interpreters.IAddInterpreterDialogRequestor;
@@ -26,23 +25,23 @@ import org.eclipse.swt.widgets.Shell;
 
 public class AddLuaInterpreterDialog extends AddScriptInterpreterDialog {
 
-	public AddLuaInterpreterDialog(IAddInterpreterDialogRequestor requestor, Shell shell, IInterpreterInstallType[] interpreterInstallTypes,
-			IInterpreterInstall editedInterpreter) {
+	public AddLuaInterpreterDialog(final IAddInterpreterDialogRequestor requestor, final Shell shell,
+			final IInterpreterInstallType[] interpreterInstallTypes, final IInterpreterInstall editedInterpreter) {
 		super(requestor, shell, interpreterInstallTypes, editedInterpreter);
 	}
 
 	@Override
-	protected AbstractInterpreterLibraryBlock createLibraryBlock(AddScriptInterpreterDialog dialog) {
+	protected LuaInterpreterLibraryBlock createLibraryBlock(final AddScriptInterpreterDialog dialog) {
 		return new LuaInterpreterLibraryBlock(this);
 	}
 
 	@Override
-	protected AbstractInterpreterEnvironmentVariablesBlock createEnvironmentVariablesBlock() {
+	protected LuaInterpreterEnvironmentVariablesBlock createEnvironmentVariablesBlock() {
 		return new LuaInterpreterEnvironmentVariablesBlock(this);
 	}
 
 	@Override
-	protected Composite createEnvironmentVariablesBlockParent(Composite parent, int numColumns) {
+	protected Composite createEnvironmentVariablesBlockParent(final Composite parent, final int numColumns) {
 		return super.createEnvironmentVariablesBlockParent(parent, numColumns);
 	}
 
@@ -59,8 +58,8 @@ public class AddLuaInterpreterDialog extends AddScriptInterpreterDialog {
 		return s;
 	}
 
-	protected void createDialogBlocks(Composite parent, int numColumns) {
-		// removing library block by stubing it
+	protected void createDialogBlocks(final Composite parent, final int numColumns) {
+		// removing library block by stubbing it
 		fLibraryBlock = new LibraryBlockStub();
 
 		// create environment variable block instead
@@ -88,7 +87,7 @@ public class AddLuaInterpreterDialog extends AddScriptInterpreterDialog {
 		}
 
 		@Override
-		public void initializeFrom(IInterpreterInstall interpreter, IInterpreterInstallType type) {
+		public void initializeFrom(final IInterpreterInstall interpreter, final IInterpreterInstallType type) {
 		}
 
 		@Override
@@ -99,7 +98,6 @@ public class AddLuaInterpreterDialog extends AddScriptInterpreterDialog {
 		protected boolean isDefaultLocations() {
 			return true;
 		}
-
 	}
 
 }
