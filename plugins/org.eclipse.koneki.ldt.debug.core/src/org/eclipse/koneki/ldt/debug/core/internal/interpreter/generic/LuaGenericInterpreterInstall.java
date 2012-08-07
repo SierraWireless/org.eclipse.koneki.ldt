@@ -40,4 +40,9 @@ public class LuaGenericInterpreterInstall extends AbstractInterpreterInstall {
 	protected IInterpreterRunner getDebugInterpreterRunner() {
 		return new LuaGenericDebuggingEngineRunner(this);
 	}
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

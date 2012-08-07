@@ -172,7 +172,7 @@
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
             class="org.eclipse.koneki.ldt.debug.ui.internal.interpreters.LuaInterpreterPreferencePage"
-            id="org.eclipse.koneki.ldt.debug.ui.page1"
+            id="org.eclipse.koneki.ldt.debug.ui.interpreters"
             name="%interpreterspage.name">
       </page>
    </extension>

@@ -12,17 +12,21 @@ package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.dltk.debug.ui.launchConfigurations.InterpreterTab;
-import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptArgumentsTab;
+import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaArgumentsTab;
+import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaEnvironmentTab;
+import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaInterpreterTab;
 
 public class LuaLaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		LuaMainLaunchConfigurationTab main = new LuaMainLaunchConfigurationTab(mode);
-		setTabs(new ILaunchConfigurationTab[] { main, new ScriptArgumentsTab(), new InterpreterTab(main), new EnvironmentTab(), new CommonTab() });
+		final LuaMainLaunchConfigurationTab main = new LuaMainLaunchConfigurationTab(mode);
+		final LuaArgumentsTab arguments = new LuaArgumentsTab();
+		final LuaInterpreterTab interpreter = new LuaInterpreterTab(main);
+		final LuaEnvironmentTab env = new LuaEnvironmentTab();
+		final CommonTab common = new CommonTab();
+		setTabs(new ILaunchConfigurationTab[] { main, arguments, interpreter, env, common });
 	}
 }

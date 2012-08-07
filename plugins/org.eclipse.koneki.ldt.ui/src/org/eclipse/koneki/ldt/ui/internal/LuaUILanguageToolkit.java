@@ -52,4 +52,8 @@ public class LuaUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 		return Activator.getDefault().getTextTools();
 	}
 
+	@Override
+	public String getInterpreterPreferencePage() {
+		return "org.eclipse.koneki.ldt.debug.ui.interpreters"; //$NON-NLS-1$
+	}
 }
