@@ -86,9 +86,18 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		// Execution Environment actual list
 		installedEEsComboViewer = new ComboViewer(group, SWT.READ_ONLY | SWT.BORDER);
 		installedEEsComboViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
-		updateExecutionEnvironmentList();
-		installedEEsComboViewer.getCombo().setEnabled(isListAvailable);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).applyTo(installedEEsComboViewer.getControl());
+		updateExecutionEnvironmentList();
+
+		// Check first execution environment of list
+		if (installedEEsComboViewer.getCombo().getItemCount() > 0) {
+			installedEEsComboViewer.getCombo().setEnabled(true);
+			eeButton.setSelection(true);
+			noEEButton.setSelection(false);
+		} else {
+			eeButton.setEnabled(false);
+			installedEEsComboViewer.getCombo().setEnabled(false);
+		}
 
 		// Set link to define a new execution environment
 		final Link link = new Link(group, SWT.NONE);
@@ -141,12 +150,17 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	}
 
 	private void updateExecutionEnvironmentList() {
-		if (installedEEsComboViewer != null) {
+		if (installedEEsComboViewer != null && eeButton != null) {
 			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
 			installedEEsComboViewer.setInput(installedExecutionEnvironments);
+			eeButton.setEnabled(false);
+
+			// Select first execution environment when available
 			if (installedExecutionEnvironments.size() > 0) {
 				installedEEsComboViewer.setSelection(new StructuredSelection(installedExecutionEnvironments.get(0)));
+				eeButton.setEnabled(true);
 			}
+
 			// Ask for page reload
 			setChanged();
 			notifyObservers();
