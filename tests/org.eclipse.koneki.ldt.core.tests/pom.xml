@@ -21,4 +21,24 @@
   <artifactId>org.eclipse.koneki.ldt.core.tests</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
+  <build>
+	<plugins>
+		<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+			<artifactId>tycho-surefire-plugin</artifactId>
+			<version>${tycho-version}</version>
+			<configuration>
+				<includes>
+					<include>**/AllCoreTests.*</include>
+				</includes>
+			<dependencies>
+					<dependency>
+						<type>p2-installable-unit</type>
+						<artifactId>org.eclipse.koneki.ldt.feature.group</artifactId>
+					</dependency>
+				</dependencies>   	
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
 </project>

@@ -14,4 +14,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.koneki.ldt.core.tests,
  org.eclipse.koneki.ldt.core.tests.internal.ast;x-internal:=true,
+ org.eclipse.koneki.ldt.core.tests.internal.ast.error;x-internal:=true,
  org.eclipse.koneki.ldt.core.tests.internal.ast.utils;x-internal:=true
