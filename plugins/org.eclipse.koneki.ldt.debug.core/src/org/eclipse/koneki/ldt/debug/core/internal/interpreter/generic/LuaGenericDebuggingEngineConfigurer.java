@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.Activator;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
 
 public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterConfigurer {
 
@@ -44,7 +44,7 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 
 		// add debugger path to lua path
 		try {
-			URL debuggerEntry = Activator.getDefault().getBundle().getEntry(LuaDebugConstant.SCRIPT_PATH);
+			URL debuggerEntry = Activator.getDefault().getBundle().getEntry(LuaDebugConstants.SCRIPT_PATH);
 			File debuggerFolder = new File(FileLocator.toFileURL(debuggerEntry).getFile());
 			luaPath.add(new Path(debuggerFolder.getPath()));
 		} catch (IOException e) {

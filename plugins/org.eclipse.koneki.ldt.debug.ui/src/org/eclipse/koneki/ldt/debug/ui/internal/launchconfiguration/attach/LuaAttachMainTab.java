@@ -26,7 +26,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.debug.ui.internal.Messages;
 import org.eclipse.swt.SWT;
@@ -50,7 +50,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
 	private static final String DEFAULT_IDEKEY = "luaidekey"; //$NON-NLS-1$
 	private static final String DEFAULT_REPLACE_PATH = ""; //$NON-NLS-1$
-	private static final String DEFAULT_MAPPING_TYPE = LuaDebugConstant.LOCAL_MAPPING_TYPE;
+	private static final String DEFAULT_MAPPING_TYPE = LuaDebugConstants.LOCAL_MAPPING_TYPE;
 
 	private Text txtIdeKey;
 	private Text txtTimeout;
@@ -111,7 +111,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
 		txtTimeout.setText(Integer.toString(LaunchConfigurationUtils.getConnectionTimeout(config, getDefaultRemoteTimeout()) / 1000));
 
-		String mappingType = LaunchConfigurationUtils.getString(config, LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE, DEFAULT_MAPPING_TYPE);
+		String mappingType = LaunchConfigurationUtils.getString(config, LuaDebugConstants.ATTR_LUA_SOURCE_MAPPING_TYPE, DEFAULT_MAPPING_TYPE);
 		selectSourceMapping(mappingType);
 
 		txtReplacePath.setText(LaunchConfigurationUtils.getString(config, ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE_WORKING_DIR,
@@ -122,9 +122,9 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	 * select the source mapping graphicaly
 	 */
 	private void selectSourceMapping(String mappingType) {
-		if (mappingType.equals(LuaDebugConstant.MODULE_MAPPING_TYPE)) {
+		if (mappingType.equals(LuaDebugConstants.MODULE_MAPPING_TYPE)) {
 			btnModuleResolution.setSelection(true);
-		} else if (mappingType.equals(LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE)) {
+		} else if (mappingType.equals(LuaDebugConstants.REPLACE_PATH_MAPPING_TYPE)) {
 			btnReplacePathResolution.setSelection(true);
 
 		} else {
@@ -159,7 +159,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 
 		// set source mapping type
 		String sourceMapping = getSelectedSourceMapping();
-		config.setAttribute(LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE, sourceMapping);
+		config.setAttribute(LuaDebugConstants.ATTR_LUA_SOURCE_MAPPING_TYPE, sourceMapping);
 
 		// set replace path
 		config.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DLTK_DBGP_REMOTE_WORKING_DIR, txtReplacePath.getText().trim());
@@ -170,11 +170,11 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	 */
 	private String getSelectedSourceMapping() {
 		if (btnModuleResolution.getSelection()) {
-			return LuaDebugConstant.MODULE_MAPPING_TYPE;
+			return LuaDebugConstants.MODULE_MAPPING_TYPE;
 		} else if (btnReplacePathResolution.getSelection()) {
-			return LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE;
+			return LuaDebugConstants.REPLACE_PATH_MAPPING_TYPE;
 		} else {
-			return LuaDebugConstant.LOCAL_MAPPING_TYPE;
+			return LuaDebugConstants.LOCAL_MAPPING_TYPE;
 		}
 	}
 

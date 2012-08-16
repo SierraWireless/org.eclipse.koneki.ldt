@@ -32,8 +32,8 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaCoroutine;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIUtil;
 import org.eclipse.koneki.ldt.debug.core.internal.UnreachableStackFrame;
 import org.eclipse.koneki.ldt.ui.internal.editor.LuaEditor;
@@ -199,7 +199,7 @@ public class LuaDebugModelPresentation extends ScriptDebugModelPresentation {
 	@Override
 	protected Image getVariableImage(IScriptVariable variable) {
 		try {
-			if (variable.getReferenceTypeName().equals(LuaDebugConstant.TYPE_SPECIAL)) {
+			if (variable.getReferenceTypeName().equals(LuaDebugConstants.TYPE_SPECIAL)) {
 				return Activator.getDefault().getImageRegistry().get(ImageConstants.LUA_DEBUG_SPECIAL_VAR);
 			}
 			// CHECKSTYLE:OFF

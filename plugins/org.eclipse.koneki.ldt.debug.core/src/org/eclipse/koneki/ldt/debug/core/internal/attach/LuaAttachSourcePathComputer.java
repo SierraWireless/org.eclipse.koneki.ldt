@@ -16,8 +16,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
 import org.eclipse.dltk.launching.sourcelookup.ScriptSourcePathComputer;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaAbsoluteFileURIBuildpathSourceContainer;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIBuildpathSourceContainer;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaReplacePathSourceContainer;
 
@@ -30,12 +30,12 @@ public class LuaAttachSourcePathComputer extends ScriptSourcePathComputer {
 
 	@Override
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor) throws CoreException {
-		String mappingType = LaunchConfigurationUtils.getString(configuration, LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE,
-				LuaDebugConstant.LOCAL_MAPPING_TYPE);
+		String mappingType = LaunchConfigurationUtils.getString(configuration, LuaDebugConstants.ATTR_LUA_SOURCE_MAPPING_TYPE,
+				LuaDebugConstants.LOCAL_MAPPING_TYPE);
 
-		if (mappingType.equals(LuaDebugConstant.MODULE_MAPPING_TYPE)) {
+		if (mappingType.equals(LuaDebugConstants.MODULE_MAPPING_TYPE)) {
 			return new ISourceContainer[] { new LuaModuleURIBuildpathSourceContainer() };
-		} else if (mappingType.equals(LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE)) {
+		} else if (mappingType.equals(LuaDebugConstants.REPLACE_PATH_MAPPING_TYPE)) {
 			return new ISourceContainer[] { new LuaReplacePathSourceContainer() };
 		} else {
 			return new ISourceContainer[] { new LuaAbsoluteFileURIBuildpathSourceContainer() };

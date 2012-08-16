@@ -23,9 +23,9 @@ import org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget;
 import org.eclipse.dltk.internal.debug.core.model.ScriptThread;
 import org.eclipse.dltk.internal.debug.core.model.operations.DbgpDebugger;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.Activator;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaAbsoluteFileURIBreakpointPathMapper;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstant;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugTarget;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIBreakpointPathMapper;
 
@@ -35,7 +35,7 @@ public abstract class LuaAttachDebugTarget extends LuaDebugTarget {
 		super(modelId, dbgpService, sessionId, launch, process);
 
 		// initialize DBGP client
-		if (LuaDebugConstant.MODULE_MAPPING_TYPE.equals(getSourceMappingType())) {
+		if (LuaDebugConstants.MODULE_MAPPING_TYPE.equals(getSourceMappingType())) {
 			setScriptDebugThreadConfigurator(new IScriptDebugThreadConfigurator() {
 
 				@Override
@@ -77,9 +77,9 @@ public abstract class LuaAttachDebugTarget extends LuaDebugTarget {
 	@Override
 	protected IScriptBreakpointPathMapper createPathMapper() {
 		String mappingType = getSourceMappingType();
-		if (mappingType.equals(LuaDebugConstant.MODULE_MAPPING_TYPE)) {
+		if (mappingType.equals(LuaDebugConstants.MODULE_MAPPING_TYPE)) {
 			return new LuaModuleURIBreakpointPathMapper(getScriptProject());
-		} else if (mappingType.equals(LuaDebugConstant.REPLACE_PATH_MAPPING_TYPE)) {
+		} else if (mappingType.equals(LuaDebugConstants.REPLACE_PATH_MAPPING_TYPE)) {
 
 			return new LuaAttachBreakpointPathMapper(getScriptProject(), folder());
 		} else {
@@ -96,7 +96,7 @@ public abstract class LuaAttachDebugTarget extends LuaDebugTarget {
 	protected abstract String folder();
 
 	protected String getSourceMappingType() {
-		return LaunchConfigurationUtils.getString(getLaunch().getLaunchConfiguration(), LuaDebugConstant.ATTR_LUA_SOURCE_MAPPING_TYPE,
-				LuaDebugConstant.LOCAL_MAPPING_TYPE);
+		return LaunchConfigurationUtils.getString(getLaunch().getLaunchConfiguration(), LuaDebugConstants.ATTR_LUA_SOURCE_MAPPING_TYPE,
+				LuaDebugConstants.LOCAL_MAPPING_TYPE);
 	}
 }

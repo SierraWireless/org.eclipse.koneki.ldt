@@ -15,12 +15,13 @@ import java.util.Comparator;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 public class LuaVariableComparator implements Comparator<IVariable>, Serializable {
 	private static final long serialVersionUID = -5828968181211469862L;
 
 	public int category(IVariable var) throws DebugException {
-		return var.getReferenceTypeName().equals(LuaDebugConstant.TYPE_SPECIAL) ? 0 : 1;
+		return var.getReferenceTypeName().equals(LuaDebugConstants.TYPE_SPECIAL) ? 0 : 1;
 	}
 
 	@Override

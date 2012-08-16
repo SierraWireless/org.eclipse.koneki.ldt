@@ -176,4 +176,47 @@
             name="%interpreterspage.name">
       </page>
    </extension>
+ <extension point="org.eclipse.debug.ui.launchShortcuts">
+  <shortcut
+    label="%launchShortcut.luaApp.label"
+    icon="icons/obj16/lua_local.gif"
+    helpContextId="org.eclipse.jdt.debug.ui"
+    modes="run, debug"
+    class="org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.LuaApplicationLaunchShortcut"
+    description="%launchShortcut.luaApp.description"
+    id="org.eclipse.koneki.ldt.debug.ui.localLuaShortcut">
+    <description
+     description="%launchShortcut.luaApp.run.description"
+     mode="run">
+    </description>
+    <description
+     description="%launchShortcut.luaApp.debug.description"
+     mode="debug">
+    </description>
+  <contextualLaunch>
+  <enablement>
+    <with variable="selection">
+     <count value="1"/>
+      <iterate>
+    	<adapt type="org.eclipse.core.resources.IResource">
+    		<and>
+        		<test property="org.eclipse.core.resources.projectNature"
+               		  value="org.eclipse.koneki.ldt.nature"/>
+	        	<or>
+	        		<test property="org.eclipse.core.resources.extension" value="lua"/>
+	        		<adapt type="org.eclipse.core.resources.IProject">
+	          			<test property="org.eclipse.core.resources.open"/>
+	          		</adapt>
+	        	</or>
+        	</and>
+        </adapt>
+      </iterate>
+     </with>
+  </enablement>
+  </contextualLaunch>
+  <configurationType
+    id="org.eclipse.koneki.ldt.debug.core.lualocaldebug">
+  </configurationType>
+  </shortcut>
+</extension>
 </plugin>

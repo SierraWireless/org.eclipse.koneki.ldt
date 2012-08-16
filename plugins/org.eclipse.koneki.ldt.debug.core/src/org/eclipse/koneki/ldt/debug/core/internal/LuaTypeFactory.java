@@ -13,6 +13,7 @@ package org.eclipse.koneki.ldt.debug.core.internal;
 import org.eclipse.dltk.debug.core.model.AtomicScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptTypeFactory;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 public class LuaTypeFactory implements IScriptTypeFactory {
 
@@ -22,13 +23,13 @@ public class LuaTypeFactory implements IScriptTypeFactory {
 	@Override
 	public IScriptType buildType(String type) {
 		// TODO: script types are stateless, do only one instance of them
-		if (type.equals(LuaDebugConstant.TYPE_TABLE))
+		if (type.equals(LuaDebugConstants.TYPE_TABLE))
 			return new LuaTableType();
-		else if (type.equals(LuaDebugConstant.TYPE_MULTIVAL))
+		else if (type.equals(LuaDebugConstants.TYPE_MULTIVAL))
 			return new LuaMultivalType();
-		else if (type.equals(LuaDebugConstant.TYPE_SEQUENCE))
+		else if (type.equals(LuaDebugConstants.TYPE_SEQUENCE))
 			return new LuaSequenceType();
-		else if (type.equals(LuaDebugConstant.TYPE_LUAFUNC))
+		else if (type.equals(LuaDebugConstants.TYPE_LUAFUNC))
 			return new LuaFunctionType();
 		else
 			return new AtomicScriptType(type);

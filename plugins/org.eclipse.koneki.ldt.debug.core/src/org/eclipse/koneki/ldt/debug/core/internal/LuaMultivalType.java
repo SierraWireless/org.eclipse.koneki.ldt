@@ -14,13 +14,14 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.dltk.debug.core.model.CollectionScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptValue;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 /**
  * Represents a "multival" type in Lua like function return values, ...
  */
 public class LuaMultivalType extends CollectionScriptType {
 	public LuaMultivalType() {
-		super(LuaDebugConstant.TYPE_MULTIVAL);
+		super(LuaDebugConstants.TYPE_MULTIVAL);
 	}
 
 	/**
