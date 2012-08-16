@@ -28,43 +28,53 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
+import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 public class LuaGenericInterpreterConfigurer {
 
 	private static final String LUA_PATTERN = "?.lua;"; //$NON-NLS-1$
 	private static final String LUA_INIT_PATTERN = "?" + File.separator + "init.lua;"; //$NON-NLS-1$ //$NON-NLS-2$
 
-	public InterpreterConfig alterConfig(ILaunch launch, InterpreterConfig config) throws CoreException {
-		// create commands to execute
-		List<String> commandList = new ArrayList<String>();
-		addCommands(commandList, launch, config);
+	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config) throws CoreException {
 
-		// flatten commands
-		StringBuilder commands = new StringBuilder();
-		for (String cmd : commandList) {
-			commands.append(cmd);
+		// Append project path to $LUA_PATH
+		final String envLuaPath = config.getEnvVar(LuaDebugConstants.LUA_PATH);
+		final String interpreterPath = createPathCommand(launch, config);
+		if (envLuaPath != null) {
+			config.addEnvVar(LuaDebugConstants.LUA_PATH, envLuaPath + interpreterPath);
+		} else {
+			config.addEnvVar(LuaDebugConstants.LUA_PATH, interpreterPath);
+
 		}
 
-		// add commands to execute as interpreter argument
-		config.addInterpreterArg("-e"); //$NON-NLS-1$
-		config.addInterpreterArg(commands.toString());
+		// Create commands to execute
+		final List<String> commandList = new ArrayList<String>();
+		addCommands(commandList, launch, config);
 
+		// Flatten commands
+		if (!commandList.isEmpty()) {
+			final StringBuilder commands = new StringBuilder();
+			for (final String cmd : commandList) {
+				commands.append(cmd);
+			}
+
+			// Add commands to execute as interpreter argument
+			config.addInterpreterArg("-e"); //$NON-NLS-1$
+			config.addInterpreterArg(commands.toString());
+		}
 		return config;
 	}
 
-	protected void addCommands(List<String> commandList, ILaunch launch, InterpreterConfig config) throws CoreException {
-		commandList.add(createSetLuaPathCommand(launch, config));
+	protected void addCommands(final List<String> commandList, final ILaunch launch, final InterpreterConfig config) throws CoreException {
 	}
 
-	protected String createSetLuaPathCommand(ILaunch launch, InterpreterConfig config) throws CoreException {
-		// get lua path
+	protected String createPathCommand(final ILaunch launch, final InterpreterConfig config) throws CoreException {
+		// Get lua path
 		List<IPath> luaPath = getLuaPath(launch, config);
 
-		// create : set path command
+		// Create : set path command
 		StringBuilder command = new StringBuilder();
-		command.append("package.path = package.path.."); //$NON-NLS-1$
-		command.append("[["); //$NON-NLS-1$
-		for (IPath iPath : luaPath) {
+		for (final IPath iPath : luaPath) {
 			command.append(";"); //$NON-NLS-1$
 			command.append(iPath);
 			command.append(File.separatorChar);
@@ -74,12 +84,10 @@ public class LuaGenericInterpreterConfigurer {
 			command.append(File.separatorChar);
 			command.append(LUA_INIT_PATTERN);
 		}
-		command.append("]];"); //$NON-NLS-1$;
-
 		return command.toString();
 	}
 
-	protected List<IPath> getLuaPath(ILaunch launch, InterpreterConfig config) throws CoreException {
+	protected List<IPath> getLuaPath(final ILaunch launch, final InterpreterConfig config) throws CoreException {
 		// get Script Project
 		String projectName = launch.getLaunchConfiguration().getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);

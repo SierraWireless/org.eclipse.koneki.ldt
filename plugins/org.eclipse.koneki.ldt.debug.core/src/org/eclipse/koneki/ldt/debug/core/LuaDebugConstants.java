@@ -46,4 +46,7 @@ public interface LuaDebugConstants {
 	 * Plug-in path
 	 */
 	String SCRIPT_PATH = "script"; //$NON-NLS-1$
+	String DEBUGGER_PATH = SCRIPT_PATH + "/external"; //$NON-NLS-1$
+
+	final String LUA_PATH = "LUA_PATH"; //$NON-NLS-1$
 }
