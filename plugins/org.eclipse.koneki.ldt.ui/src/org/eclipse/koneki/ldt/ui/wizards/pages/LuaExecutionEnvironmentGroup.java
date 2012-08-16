@@ -74,7 +74,6 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		// Button for no Execution Environment at project creation
 		noEEButton = new Button(group, SWT.RADIO);
 		noEEButton.setText(Messages.LuaExecutionEnvironmentGroupNoEEForProjectCreation);
-		noEEButton.setSelection(true);
 		noEEButton.addSelectionListener(eeChoiceListener);
 		GridDataFactory.swtDefaults().span(3, 1).applyTo(noEEButton);
 
@@ -88,16 +87,6 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		installedEEsComboViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).applyTo(installedEEsComboViewer.getControl());
 		updateExecutionEnvironmentList();
-
-		// Check first execution environment of list
-		if (installedEEsComboViewer.getCombo().getItemCount() > 0) {
-			installedEEsComboViewer.getCombo().setEnabled(true);
-			eeButton.setSelection(true);
-			noEEButton.setSelection(false);
-		} else {
-			eeButton.setEnabled(false);
-			installedEEsComboViewer.getCombo().setEnabled(false);
-		}
 
 		// Set link to define a new execution environment
 		final Link link = new Link(group, SWT.NONE);
@@ -150,15 +139,21 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	}
 
 	private void updateExecutionEnvironmentList() {
-		if (installedEEsComboViewer != null && eeButton != null) {
+		if (installedEEsComboViewer != null && eeButton != null && noEEButton != null) {
 			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
 			installedEEsComboViewer.setInput(installedExecutionEnvironments);
-			eeButton.setEnabled(false);
 
 			// Select first execution environment when available
 			if (installedExecutionEnvironments.size() > 0) {
 				installedEEsComboViewer.setSelection(new StructuredSelection(installedExecutionEnvironments.get(0)));
 				eeButton.setEnabled(true);
+				eeButton.setSelection(true);
+				noEEButton.setSelection(false);
+
+				eeChoiceListener.widgetDefaultSelected(null);
+			} else {
+				eeButton.setEnabled(false);
+				noEEButton.setSelection(true);
 			}
 
 			// Ask for page reload
