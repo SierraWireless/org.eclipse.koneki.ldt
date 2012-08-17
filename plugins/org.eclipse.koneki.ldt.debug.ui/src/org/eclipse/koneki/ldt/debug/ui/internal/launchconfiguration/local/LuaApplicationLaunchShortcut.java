@@ -10,15 +10,23 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;
 
+import java.text.MessageFormat;
+
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
+import org.eclipse.dltk.launching.process.ScriptRuntimeProcessFactory;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 
 public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 
@@ -59,4 +67,31 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		return super.chooseScript(scripts, title);
 	}
 
+	/**
+	 * Copy of the super method with a custom config name generation
+	 */
+	@Override
+	protected ILaunchConfiguration createConfiguration(IResource script) {
+		ILaunchConfiguration config = null;
+		ILaunchConfigurationWorkingCopy wc = null;
+		try {
+			ILaunchConfigurationType configType = getConfigurationType();
+
+			// custom launch conf name
+			String fileNameWithoutExtension = script.getLocation().removeFileExtension().lastSegment();
+			String configNamePrefix = MessageFormat.format("{0}#{1}", script.getProject().getName(), fileNameWithoutExtension); //$NON-NLS-1$
+
+			wc = configType.newInstance(null, getLaunchManager().generateLaunchConfigurationName(configNamePrefix));
+			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE, getNatureId());
+			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, script.getProject().getName());
+			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, script.getProjectRelativePath().toPortableString());
+			wc.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, ScriptRuntimeProcessFactory.PROCESS_FACTORY_ID);
+
+			wc.setMappedResources(new IResource[] { script });
+			config = wc.doSave();
+		} catch (CoreException e) {
+			Activator.logError("Unable to create a launch configuration from a LaunchShortcut", e); //$NON-NLS-1$
+		}
+		return config;
+	}
 }
