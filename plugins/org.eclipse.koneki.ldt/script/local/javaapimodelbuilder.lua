@@ -25,6 +25,7 @@ local templateengineenv = require 'template.utils'
 -- Remove default implementation not supported from IDE
 templateengineenv.anchortypes['externaltyperef'] = nil
 templateengineenv.linktypes['externaltyperef'] = nil
+templateengineenv.linktypes['file'] = nil
 
 --
 -- So far, documentation embedded in the IDE does not support links very well.
