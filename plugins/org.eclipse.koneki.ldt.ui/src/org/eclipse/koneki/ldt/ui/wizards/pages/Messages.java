@@ -20,6 +20,8 @@ public class Messages extends NLS {
 	public static String LuaExecutionEnvironmentGroupNoEEForProjectCreation;
 	public static String LuaExecutionEnvironmentGroupSelectEE;
 	public static String LuaExecutionEnvironmentGroupTitle;
+	public static String LuaFilePageDescription;
+	public static String LuaFilePageTitle;
 	public static String LuaProjecSettingsPageLabel;
 	static {
 		// initialize resource bundle

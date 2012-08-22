@@ -200,6 +200,14 @@
             name="%wizard.name"
             project="true">
       </wizard>
+      <wizard
+            category="org.eclipse.koneki.ldt.category"
+            class="org.eclipse.koneki.ldt.ui.wizards.LuaNewFileWizard"
+            finalPerspective="org.eclipse.koneki.ldt.ui.luaperspective"
+            icon="icons/obj16/lua-logo.gif"
+            id="org.eclipse.koneki.ldt.wizard.file"
+            name="%wizard.file.new.name">
+      </wizard>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
