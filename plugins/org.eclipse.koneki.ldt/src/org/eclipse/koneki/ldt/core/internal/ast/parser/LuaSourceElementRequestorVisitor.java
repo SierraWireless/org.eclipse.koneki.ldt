@@ -107,7 +107,7 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			methodInfo.name = item.getName();
 			methodInfo.parameterNames = parametersName;
 			methodInfo.nameSourceStart = item.sourceStart();
-			methodInfo.nameSourceEnd = item.sourceEnd();
+			methodInfo.nameSourceEnd = item.sourceEnd() - 1;
 			methodInfo.declarationStart = item.sourceStart();
 
 			// calculate modifiers
@@ -134,7 +134,7 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 			// set FIELD information
 			fieldinfo.name = item.getName();
 			fieldinfo.nameSourceStart = item.sourceStart();
-			fieldinfo.nameSourceEnd = item.sourceEnd();
+			fieldinfo.nameSourceEnd = item.sourceEnd() - 1;
 			fieldinfo.declarationStart = item.sourceStart();
 
 			// calculate modifiers
@@ -166,7 +166,7 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 		typeinfo.name = recordtype.getName();
 		typeinfo.declarationStart = type.sourceStart();
 		typeinfo.nameSourceStart = type.sourceStart();
-		typeinfo.nameSourceEnd = type.sourceEnd();
+		typeinfo.nameSourceEnd = type.sourceEnd() - 1;
 
 		// calculate modifiers
 		int modifiers = 0; // define kind modifier
