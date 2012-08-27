@@ -21,7 +21,7 @@ public class LuaNewFileWizard extends NewSourceModuleWizard {
 
 	public LuaNewFileWizard() {
 		final ImageRegistry imageRegistry = Activator.getDefault().getImageRegistry();
-		setDefaultPageImageDescriptor(imageRegistry.getDescriptor(ImageConstants.LUA_WIZARD_BAN));
+		setDefaultPageImageDescriptor(imageRegistry.getDescriptor(ImageConstants.LUA_FILE_WIZARD_BAN));
 		setDialogSettings(Activator.getDefault().getDialogSettings());
 		setWindowTitle(Messages.LuaNewFileWizardTitle);
 	}
