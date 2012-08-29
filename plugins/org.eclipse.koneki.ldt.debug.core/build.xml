@@ -17,11 +17,15 @@
 
 	<!-- destination folder -->
 	<property name="destinationFolder" value="script" />
-	
+
 	<!-- copy all files/folders -->
 	<target name="build">
+		<!-- clean destinationLuaFolder -->
+		<delete>
+			<fileset dir="${destinationFolder}" />
+		</delete>
 		<copy todir="${destinationFolder}">
-			<fileset dir="${folderToImport}" includes="*.lua"/>
+			<fileset dir="${folderToImport}" includes="*.lua" />
 		</copy>
 	</target>
 </project>

@@ -24,6 +24,10 @@
 	
 	<!-- copy all files/folders -->
 	<target name="build">
+		<!-- clean destinationLuaFolder -->
+		<delete>
+			<fileset dir="${destinationLuaFolder}"/>
+		</delete>
 		<!-- copy lua file -->
 		<copy todir="${destinationLuaFolder}">
 			<fileset dir="${luaformatterFolder}" includes="**/*.lua"/>
