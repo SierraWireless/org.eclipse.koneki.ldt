@@ -42,7 +42,7 @@ public class LuaGenericInterpreterConfigurer {
 		final String interpreterPath = createLuaPath(launch, config);
 		if (envLuaPath != null) {
 			// check if the path ends by a ";"
-			if (envLuaPath.matches(";\\s*$")) //$NON-NLS-1$
+			if (envLuaPath.matches(".*;\\s*$")) //$NON-NLS-1$
 				config.addEnvVar(LuaDebugConstants.LUA_PATH, envLuaPath + interpreterPath);
 			else
 				config.addEnvVar(LuaDebugConstants.LUA_PATH, envLuaPath + ";" + interpreterPath); //$NON-NLS-1$
