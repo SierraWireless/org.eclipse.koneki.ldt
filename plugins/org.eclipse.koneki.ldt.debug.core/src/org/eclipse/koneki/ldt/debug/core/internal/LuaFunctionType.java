@@ -14,7 +14,6 @@ import java.net.URI;
 
 import org.eclipse.dltk.debug.core.model.AtomicScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptValue;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 /**
  * Represents a function defined in Lua and allows to retrieve its URI and file name.

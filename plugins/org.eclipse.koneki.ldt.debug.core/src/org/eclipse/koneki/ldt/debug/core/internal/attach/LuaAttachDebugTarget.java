@@ -23,9 +23,9 @@ import org.eclipse.dltk.internal.debug.core.model.ScriptDebugTarget;
 import org.eclipse.dltk.internal.debug.core.model.ScriptThread;
 import org.eclipse.dltk.internal.debug.core.model.operations.DbgpDebugger;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.Activator;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaAbsoluteFileURIBreakpointPathMapper;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugTarget;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIBreakpointPathMapper;
 

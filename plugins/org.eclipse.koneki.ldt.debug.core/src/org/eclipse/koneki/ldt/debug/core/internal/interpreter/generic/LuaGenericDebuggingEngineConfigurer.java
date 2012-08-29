@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.Activator;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 
 public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterConfigurer {
 

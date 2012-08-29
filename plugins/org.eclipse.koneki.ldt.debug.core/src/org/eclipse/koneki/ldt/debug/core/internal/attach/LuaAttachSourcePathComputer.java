@@ -16,8 +16,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
 import org.eclipse.dltk.launching.sourcelookup.ScriptSourcePathComputer;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaAbsoluteFileURIBuildpathSourceContainer;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIBuildpathSourceContainer;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaReplacePathSourceContainer;
 

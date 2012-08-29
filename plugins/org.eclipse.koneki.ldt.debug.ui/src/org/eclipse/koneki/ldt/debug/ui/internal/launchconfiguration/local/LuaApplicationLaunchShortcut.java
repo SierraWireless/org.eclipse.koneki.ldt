@@ -25,7 +25,7 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.launching.process.ScriptRuntimeProcessFactory;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 
 public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {

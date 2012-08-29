@@ -28,7 +28,7 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 
 public class LuaGenericInterpreterConfigurer {
 

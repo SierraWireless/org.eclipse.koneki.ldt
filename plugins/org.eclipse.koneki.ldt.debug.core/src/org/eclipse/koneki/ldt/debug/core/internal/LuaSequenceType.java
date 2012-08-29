@@ -14,7 +14,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.dltk.debug.core.model.CollectionScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptValue;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 /**
  * Represents a special case of Lua table. A sequence is a table with only 1..n consecutive keys. It is identified as "sequcence" type by Lua

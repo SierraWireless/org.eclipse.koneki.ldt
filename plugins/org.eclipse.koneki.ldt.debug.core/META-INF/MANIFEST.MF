@@ -12,8 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.debug;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.koneki.ldt.debug.core,
- org.eclipse.koneki.ldt.debug.core.internal;x-internal:=true,
+Export-Package: org.eclipse.koneki.ldt.debug.core.internal;x-friends:="org.eclipse.koneki.ldt.debug.ui",
  org.eclipse.koneki.ldt.debug.core.internal.attach;x-internal:=true,
  org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic;x-friends:="org.eclipse.koneki.ldt.support.lua51",
  org.eclipse.koneki.ldt.debug.core.internal.local;x-internal:=true

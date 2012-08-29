@@ -12,7 +12,6 @@ package org.eclipse.koneki.ldt.debug.core.internal;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 /**
  * A general Lua table with arbitrary keys.

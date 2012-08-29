@@ -15,7 +15,6 @@ import java.util.Comparator;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 public class LuaVariableComparator implements Comparator<IVariable>, Serializable {
 	private static final long serialVersionUID = -5828968181211469862L;

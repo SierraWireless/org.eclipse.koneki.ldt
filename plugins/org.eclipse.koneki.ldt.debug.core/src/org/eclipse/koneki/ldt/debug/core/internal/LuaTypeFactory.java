@@ -13,7 +13,6 @@ package org.eclipse.koneki.ldt.debug.core.internal;
 import org.eclipse.dltk.debug.core.model.AtomicScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptType;
 import org.eclipse.dltk.debug.core.model.IScriptTypeFactory;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
 
 public class LuaTypeFactory implements IScriptTypeFactory {
 

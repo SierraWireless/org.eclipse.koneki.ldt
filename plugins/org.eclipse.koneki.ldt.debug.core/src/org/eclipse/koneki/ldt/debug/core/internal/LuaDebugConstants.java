@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.debug.core;
+package org.eclipse.koneki.ldt.debug.core.internal;
 
 /**
  * Constant for attribute of Lua launch configuration

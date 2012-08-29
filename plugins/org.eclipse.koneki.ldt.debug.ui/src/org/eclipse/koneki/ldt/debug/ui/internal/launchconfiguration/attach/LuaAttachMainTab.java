@@ -26,7 +26,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
-import org.eclipse.koneki.ldt.debug.core.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.debug.ui.internal.Messages;
 import org.eclipse.swt.SWT;
