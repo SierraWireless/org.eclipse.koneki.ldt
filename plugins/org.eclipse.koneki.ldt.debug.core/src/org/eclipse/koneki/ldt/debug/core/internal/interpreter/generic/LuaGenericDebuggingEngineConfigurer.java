@@ -36,6 +36,11 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 		// In debug engine the config must not be alter, surely because it is used as key to retreive the DBGPConnectionConfig.
 		initialConfig = config;
 		InterpreterConfig interpreterConfig = (InterpreterConfig) config.clone();
+
+		// XXX Workaround to use PWD var env as working directory under macosx
+		// This have to me removed when the new debugger version will be intergrated.
+		interpreterConfig.addEnvVar("PWD", interpreterConfig.getWorkingDirectoryPath().toOSString()); //$NON-NLS-1$
+
 		return super.alterConfig(launch, interpreterConfig);
 	}
 
