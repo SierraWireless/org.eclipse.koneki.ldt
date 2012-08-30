@@ -15,6 +15,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ErrorHandlingTestCase.class })
+@SuiteClasses({})
 public class AllASTErrorTestSuite {
 }

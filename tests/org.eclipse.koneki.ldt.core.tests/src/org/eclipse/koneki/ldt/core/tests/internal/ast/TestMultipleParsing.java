@@ -28,7 +28,13 @@ public class TestMultipleParsing extends TestCase {
 	private static class Parsing extends Thread {
 		@Override
 		public void run() {
-			final String code = "do local var= 21 var = 22 end set = 12 while true do set = 0 end repeat set = 1 until true for k = 1,10 do set = 2  end for k = 1,10,2 do set = 2  end for k,i in  12,15  do set =3 end local z = var or {} local var, v local c = nil local var = 12, 0 local function var (o) end while true or false do return end while 1 do return one end while 1 do return one, two end call({}) recall(-12) recall(true, false) local mod mod:sample() mod:sample('yop') mod:sample('yop', ...) if true then call() end if true then call() else recall() end local tab = {} local tab = { var = 12, 3+0 } if true then yop() end if false then raplapla() else yop() end if true then yop() elseif false then callThePolice() end if true then yop() elseif false then callThePolice() else hangUp() end no =function  ()end function another() end function par( x, ... ) end function par( ra, me, tres, ...)end function par( o ) return o end"; //$NON-NLS-1$
+			final String code = "do local var= 21 var = 22 end set = 12 while true do set = 0 end repeat set = 1 until true for k = 1,10 do set = 2  end " //$NON-NLS-1$
+					+ "for k = 1,10,2 do set = 2  end for k,i in  12,15  do set =3 end local z = var or {} local var, v local c = nil local var = 12, 0 " //$NON-NLS-1$
+					+ "local function var (o) end while true or false do return end while 1 do return one end while 1 do return one, two end call({}) " //$NON-NLS-1$
+					+ "recall(-12) recall(true, false) local mod mod:sample() mod:sample('yop') mod:sample('yop', ...) if true then call() end " //$NON-NLS-1$
+					+ "if true then call() else recall() end local tab = {} local tab = { var = 12, 3+0 } if true then yop() end if false then raplapla() else yop() end " //$NON-NLS-1$
+					+ "if true then yop() elseif false then callThePolice() end if true then yop() elseif false then callThePolice() else hangUp() end no =function()end " //$NON-NLS-1$
+					+ "function another() end function par( x, ... ) end function par( ra, me, tres, ...)end function par( o ) return o end"; //$NON-NLS-1$
 			ISourceParser parser = new LuaSourceParserFactory().createSourceParser();
 			ModuleSource input = new ModuleSource(code);
 			parser.parse(input, new DummyReporter());
