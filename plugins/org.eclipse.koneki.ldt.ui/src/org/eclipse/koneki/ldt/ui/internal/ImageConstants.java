@@ -11,12 +11,13 @@
 package org.eclipse.koneki.ldt.ui.internal;
 
 public interface ImageConstants {
-	final String LUA_WIZARD_BAN = "icons/wizban/lua_newprj_wiz.png"; //$NON-NLS-1$
-	final String LUA_FILE_WIZARD_BAN = "icons/wizban/lua_newfile_wiz.png"; //$NON-NLS-1$
+	String LUA_WIZARD_BAN = "icons/wizban/lua_newprj_wiz.png"; //$NON-NLS-1$
+	String LUA_FILE_WIZARD_BAN = "icons/wizban/lua_newfile_wiz.png"; //$NON-NLS-1$
 
-	final String MODULE_OBJ16 = "icons/obj16/module.gif"; //$NON-NLS-1$
-	final String MODULE_FUNCTION_OBJ16 = "icons/obj16/module_function.gif"; //$NON-NLS-1$
-	final String GLOBAL_TABLE_OBJ16 = "icons/obj16/global_table.gif"; //$NON-NLS-1$
-	final String LOCAL_TABLE_OBJ16 = "icons/obj16/local_table.gif"; //$NON-NLS-1$
-	final String TEMPLATE_LUADOC = "icons/obj16/template_luadoc.png"; //$NON-NLS-1$
+	String MODULE_OBJ16 = "icons/obj16/module.gif"; //$NON-NLS-1$
+	String MODULE_FUNCTION_OBJ16 = "icons/obj16/module_function.gif"; //$NON-NLS-1$
+	String GLOBAL_TABLE_OBJ16 = "icons/obj16/global_table.gif"; //$NON-NLS-1$
+	String LOCAL_TABLE_OBJ16 = "icons/obj16/local_table.gif"; //$NON-NLS-1$
+	String TEMPLATE_LUADOC = "icons/obj16/template_luadoc.png"; //$NON-NLS-1$
+	String NEW_FILE = "icons/obj16/lua_file_plus.png"; //$NON-NLS-1$
 }

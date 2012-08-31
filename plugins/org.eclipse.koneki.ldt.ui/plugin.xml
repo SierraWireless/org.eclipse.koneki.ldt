@@ -204,7 +204,7 @@
             category="org.eclipse.koneki.ldt.category"
             class="org.eclipse.koneki.ldt.ui.wizards.LuaNewFileWizard"
             finalPerspective="org.eclipse.koneki.ldt.ui.luaperspective"
-            icon="icons/obj16/lua-logo.gif"
+            icon="icons/obj16/lua_file_plus.png"
             id="org.eclipse.koneki.ldt.wizard.file"
             name="%wizard.file.new.name">
       </wizard>
@@ -215,6 +215,9 @@
             targetID="org.eclipse.koneki.ldt.ui.luaperspective">
          <newWizardShortcut
                id="org.eclipse.koneki.ldt.wizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="org.eclipse.koneki.ldt.wizard.file">
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
