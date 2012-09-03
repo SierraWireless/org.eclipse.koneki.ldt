@@ -80,10 +80,10 @@ public class LuaFormatter extends AbstractScriptFormatter {
 		final String formatted;
 		// With mixed white spaces
 		if (tabPolicy == TabStyle.MIXED) {
-			formatted = formatLuaModule.indent(source, delimiter, tabSize, indentationSize, formatTableValues, 0);
+			formatted = formatLuaModule.indent(source, delimiter, formatTableValues, tabSize, indentationSize);
 		} else {
 			// With one type of tabulation
-			formatted = formatLuaModule.indent(source, delimiter, tabulation, formatTableValues, 0);
+			formatted = formatLuaModule.indent(source, delimiter, formatTableValues, tabulation);
 		}
 		if (length < source.length()) {
 			final Document doc = new Document(source);
@@ -127,6 +127,6 @@ public class LuaFormatter extends AbstractScriptFormatter {
 
 	@Override
 	public int detectIndentationLevel(final IDocument document, final int offset) {
-		return formatLuaModule.depth(document.get(), offset);
+		return 0;
 	}
 }

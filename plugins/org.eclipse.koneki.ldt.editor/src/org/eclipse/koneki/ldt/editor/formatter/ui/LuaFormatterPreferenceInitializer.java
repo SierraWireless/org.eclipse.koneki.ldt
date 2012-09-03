@@ -28,5 +28,4 @@ public class LuaFormatterPreferenceInitializer extends AbstractPreferenceInitial
 		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
 		store.setDefault(LuaFormatterPreferenceConstants.FORMATTER_INDENT_TABLE_VALUES, true);
 	}
-
 }

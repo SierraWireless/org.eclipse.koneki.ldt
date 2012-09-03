@@ -26,5 +26,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
-
 // CHECKSTYLE NLS: ON
