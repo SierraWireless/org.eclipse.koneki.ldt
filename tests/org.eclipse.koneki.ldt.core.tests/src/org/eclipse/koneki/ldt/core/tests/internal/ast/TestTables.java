@@ -23,4 +23,20 @@ public class TestTables extends AbstractParserTest {
 	public void testTableWithOneScalarField() {
 		parse("local t = {} t.f1, t.f2 = 2,3"); //$NON-NLS-1$		
 	}
+
+	public void testTableWithValues() {
+		parse("local t = {0, '1', nil, {}, function() end}"); //$NON-NLS-1$		
+	}
+
+	public void testTableWithKeys() {
+		parse("local t = {['f']=function() end}"); //$NON-NLS-1$		
+	}
+
+	public void testTableWithTrailingComma() {
+		parse("local t = {0,}"); //$NON-NLS-1$		
+	}
+
+	public void testTableWithTrailingSemiColon() {
+		parse("local t = {0;}"); //$NON-NLS-1$		
+	}
 }

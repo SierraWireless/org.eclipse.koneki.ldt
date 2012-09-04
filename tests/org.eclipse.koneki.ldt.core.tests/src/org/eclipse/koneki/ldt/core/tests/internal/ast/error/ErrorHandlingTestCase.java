@@ -64,6 +64,18 @@ public class ErrorHandlingTestCase {
 	}
 
 	@Test
+	public void testBasicErrorHandling() {
+		// Parse
+		final LuaSourceParser parser = new LuaSourceParser();
+		final ProblemCollector reporter = new ProblemCollector();
+		final String code = "wrongcode"; //$NON-NLS-1$
+		parser.parse(new ModuleSource(code), reporter);
+
+		// Check if there is a problem
+		if (reporter.isEmpty())
+			Assert.fail(MessageFormat.format("No error found for:\n{0}", code)); //$NON-NLS-1$
+	}
+
 	public void testIncompleteStatement() {
 		final String[] statements = { "do", //$NON-NLS-1$ 
 				"else",//$NON-NLS-1$ 
@@ -80,7 +92,6 @@ public class ErrorHandlingTestCase {
 			parseAndCheckErrors(code);
 	}
 
-	@Test
 	public void testSyntaxErrorAfterBlankLines() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(NEW_LINE);
@@ -89,7 +100,6 @@ public class ErrorHandlingTestCase {
 		parseAndCheckErrors(sb.toString(), 3, sb.length());
 	}
 
-	@Test
 	public void testSyntaxErrorAtStart() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("x"); //$NON-NLS-1$
@@ -98,7 +108,6 @@ public class ErrorHandlingTestCase {
 		parseAndCheckErrors(sb.toString(), 3, 13, sb.length());
 	}
 
-	@Test
 	public void testSyntaxErrorSurroundedByValidCode() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("function n(x)"); //$NON-NLS-1$
@@ -109,7 +118,6 @@ public class ErrorHandlingTestCase {
 		parseAndCheckErrors(sb.toString(), 3, 13, sb.length());
 	}
 
-	@Test
 	public void testWrongExperssion() {
 		final StringBuilder wrongFunction = new StringBuilder();
 		wrongFunction.append("function n()");//$NON-NLS-1$
@@ -117,10 +125,9 @@ public class ErrorHandlingTestCase {
 		wrongFunction.append("return x x");//$NON-NLS-1$
 		wrongFunction.append(NEW_LINE);
 		wrongFunction.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(wrongFunction.toString(), 2, 33, wrongFunction.length());
+		parseAndCheckErrors(wrongFunction.toString(), 2, 22, wrongFunction.length());
 	}
 
-	@Test
 	public void testWrongStatements() {
 
 		final String wrongFunction = "function n(x x)end"; //$NON-NLS-1$
