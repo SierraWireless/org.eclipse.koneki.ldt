@@ -42,6 +42,10 @@
                 name="aboutText"
                 value="Lua Development Tools&#x0A;&#x0A;© Copyright Eclipse contributors and others 2000, 2012.  All rights reserved.&#x0A;&#x0A;This product includes software developed by the Apache Software Foundation http://www.apache.org/&#x0A;&#x0A;Visit http://www.eclipse.org/koneki/ldt for more information.">
           </property>
+          <property
+          	    name="cssTheme"
+                value="org.eclipse.e4.ui.css.theme.e4_classic">
+          </property>
       </product>
    </extension>
    <extension
