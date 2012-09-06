@@ -168,6 +168,16 @@
       </handler>
    </extension>
    <extension
+             point="org.eclipse.core.expressions.propertyTesters">
+       <propertyTester
+                class="org.eclipse.koneki.ldt.debug.ui.internal.LuaDebugPropertyTester"
+                id="org.eclipse.koneki.ldt.debug.ui.propertytester"
+                namespace="org.eclipse.koneki.ldt.debug.ui.propertytester"
+                properties="isLaunchableProjectFragment"
+                type="org.eclipse.dltk.core.IProjectFragment">
+       </propertyTester>
+   </extension>
+   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.koneki.ldt.ui.globalpreferencepage"
@@ -198,18 +208,27 @@
     <with variable="selection">
      <count value="1"/>
       <iterate>
-    	<adapt type="org.eclipse.core.resources.IResource">
-    		<and>
+   		<and>
+	 		<adapt type="org.eclipse.core.resources.IResource">
         		<test property="org.eclipse.core.resources.projectNature"
                		  value="org.eclipse.koneki.ldt.nature"/>
-	        	<or>
+         	</adapt>
+	        <or>
+	        	<adapt type="org.eclipse.core.resources.IResource">
 	        		<test property="org.eclipse.core.resources.extension" value="lua"/>
-	        		<adapt type="org.eclipse.core.resources.IProject">
-	          			<test property="org.eclipse.core.resources.open"/>
-	          		</adapt>
-	        	</or>
-        	</and>
-        </adapt>
+	        	</adapt>
+	        	<adapt type="org.eclipse.core.resources.IProject">
+	        		<test property="org.eclipse.core.resources.open"/>
+	        	</adapt>
+	        	<adapt type="org.eclipse.dltk.core.IProjectFragment">
+            		<test
+               			forcePluginActivation="true"
+                  		property="org.eclipse.koneki.ldt.debug.ui.propertytester.isLaunchableProjectFragment">
+                  	</test>
+         	    </adapt>
+          		<instanceof value="org.eclipse.dltk.core.IScriptFolder"></instanceof>
+	        </or>
+        </and>
       </iterate>
      </with>
   </enablement>
