@@ -12,6 +12,8 @@ package org.eclipse.koneki.ldt.debug.core.internal.local;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -22,6 +24,11 @@ public class LuaLaunchConfigurationDelegate extends AbstractScriptLaunchConfigur
 	@Override
 	public String getLanguageId() {
 		return LuaNature.ID;
+	}
+
+	@Override
+	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+		super.launch(configuration, mode, launch, monitor);
 	}
 
 	@Override
