@@ -20,7 +20,7 @@
 
 	<!-- clean destinationLuaFolder -->
 	<delete>
-		<fileset dir="${destinationFolder}"/>
+		<fileset dir="${destinationFolder}" excludes=".gitignore"/>
 	</delete>
 
 	<!-- copy all files/folders -->
