@@ -19,6 +19,11 @@
 	<!-- destination folder -->
 	<property name="destinationFolder" value="lib" />
 	
+	<!-- clean destinationLuaFolder -->
+	<delete>
+		<fileset dir="${destinationFolder}"/>
+	</delete>
+	
 	<!-- copy all files/folders -->
 	<target name="build">
 		<copy todir="${destinationFolder}">
