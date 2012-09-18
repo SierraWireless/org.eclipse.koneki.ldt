@@ -18,19 +18,19 @@
 
 	<!-- destination folder -->
 	<property name="destinationFolder" value="lib" />
-	
-	<!-- clean destinationLuaFolder -->
-	<delete>
-		<fileset dir="${destinationFolder}" excludes=".gitignore"/>
-	</delete>
-	
-	<!-- copy all files/folders -->
+
 	<target name="build">
+		<!-- clean destinationLuaFolder -->
+		<delete includeEmptyDirs="true">
+			<fileset dir="${destinationFolder}" defaultexcludes="no" excludes=".gitignore" />
+		</delete>
+
+		<!-- copy all files/folders -->
 		<copy todir="${destinationFolder}">
-			<fileset dir="${metaluaSRCFolder}" includes="**/*.lua"/>
+			<fileset dir="${metaluaSRCFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationFolder}">
-			<fileset dir="${metaluaByteCodeFolder}" includes="**/*.luac"/>
+			<fileset dir="${metaluaByteCodeFolder}" includes="**/*.luac" />
 		</copy>
 	</target>
 </project>

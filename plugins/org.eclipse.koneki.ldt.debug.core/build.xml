@@ -18,17 +18,13 @@
 	<!-- destination folder -->
 	<property name="destinationFolder" value="script" />
 
-	<!-- clean destinationLuaFolder -->
-	<delete>
-		<fileset dir="${destinationFolder}" excludes=".gitignore"/>
-	</delete>
-
-	<!-- copy all files/folders -->
 	<target name="build">
 		<!-- clean destinationLuaFolder -->
-		<delete>
-			<fileset dir="${destinationFolder}" />
+		<delete includeEmptyDirs="true">
+			<fileset dir="${destinationFolder}" defaultexcludes="no" excludes=".gitignore" />
 		</delete>
+
+		<!-- copy debugger file -->
 		<copy todir="${destinationFolder}">
 			<fileset dir="${folderToImport}" includes="*.lua" />
 		</copy>

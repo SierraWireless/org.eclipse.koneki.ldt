@@ -18,38 +18,37 @@
 	<property name="penlightFolder" value="${librariesFolder}/penlight" />
 	<property name="templateengineFolder" value="${librariesFolder}/templateengine" />
 	<property name="doctemplatesFolder" value="${librariesFolder}/doctemplates" />
-	
+
 	<!-- destination folder -->
 	<property name="destinationLuaFolder" value="script/external" />
-	
-	<!-- copy all files/folders -->
+
 	<target name="build">
 		<!-- clean destinationLuaFolder -->
-		<delete>
-			<fileset dir="${destinationLuaFolder}" excludes=".gitignore"/>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${destinationLuaFolder}" defaultexcludes="no" excludes=".gitignore" />
 		</delete>
 		<!-- copy lua file -->
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${luaformatterFolder}" includes="**/*.lua"/>
+			<fileset dir="${luaformatterFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${markdownFolder}" includes="**/*.lua"/>
+			<fileset dir="${markdownFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${penlightFolder}" includes="**/*.lua"/>
+			<fileset dir="${penlightFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${templateengineFolder}" includes="**/*.lua"/>
+			<fileset dir="${templateengineFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${modelsbuilderFolder}" includes="**/*.lua"/>
+			<fileset dir="${modelsbuilderFolder}" includes="**/*.lua" />
 		</copy>
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${doctemplatesFolder}" includes="**/*.lua"/>
+			<fileset dir="${doctemplatesFolder}" includes="**/*.lua" />
 		</copy>
 		<!-- copy metalua file -->
 		<copy todir="${destinationLuaFolder}">
-			<fileset dir="${modelsbuilderFolder}" includes="**/*.mlua"/>
+			<fileset dir="${modelsbuilderFolder}" includes="**/*.mlua" />
 		</copy>
 	</target>
 </project>
