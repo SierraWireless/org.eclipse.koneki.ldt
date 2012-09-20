@@ -30,9 +30,12 @@ public class LuaDocumentorScannerTestSuite extends AbstractScannerTestSuite {
 	@Override
 	protected List<String> createTestBlacklist() {
 		List<String> blacklist = new ArrayList<String>();
+
+		// The following three tests fail because of bug 385956
 		blacklist.add("longluadoc.lua"); //$NON-NLS-1$
 		blacklist.add("module.lua"); //$NON-NLS-1$
 		blacklist.add("firstline.lua"); //$NON-NLS-1$
+
 		return blacklist;
 	}
 
