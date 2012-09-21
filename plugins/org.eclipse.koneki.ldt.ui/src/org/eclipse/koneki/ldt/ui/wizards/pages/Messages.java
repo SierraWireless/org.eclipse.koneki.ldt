@@ -16,6 +16,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.wizards.pages.messages"; //$NON-NLS-1$
+	public static String LuaExecutionEnvironmentGroupMainLabel;
 	public static String LuaExecutionEnvironmentGroupManageExecutionEnvironment;
 	public static String LuaExecutionEnvironmentGroupNoEEForProjectCreation;
 	public static String LuaExecutionEnvironmentGroupSelectEE;

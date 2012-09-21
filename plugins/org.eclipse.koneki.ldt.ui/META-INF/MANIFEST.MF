@@ -41,3 +41,4 @@ Export-Package: org.eclipse.koneki.ldt.ui,
  org.eclipse.koneki.ldt.ui.internal.views;x-friends:="org.eclipse.koneki.ldt.debug.ui,org.eclipse.koneki.ldt.ui.tests",
  org.eclipse.koneki.ldt.ui.wizards,
  org.eclipse.koneki.ldt.ui.wizards.pages
+Import-Package: org.apache.commons.io;version="1.4.0"

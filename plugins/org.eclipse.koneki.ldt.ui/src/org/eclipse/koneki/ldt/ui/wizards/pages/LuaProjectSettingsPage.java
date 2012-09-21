@@ -79,6 +79,10 @@ public class LuaProjectSettingsPage extends ProjectWizardFirstPage implements Ob
 		return null;
 	}
 
+	public boolean hasToCreateMain() {
+		return luaExecutionEnvironmentGroup != null && luaExecutionEnvironmentGroup.hasToCreateMain();
+	}
+
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);

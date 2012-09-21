@@ -40,6 +40,8 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	private ISelection selection;
 	private final Button eeButton;
 	private final Button noEEButton;
+	private boolean hasToCreateMain = true;
+
 	/**
 	 * Will make {@link #installedEEsComboViewer} available only when {@link #eeButton} is checked
 	 * 
@@ -63,6 +65,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 			installedEEsComboViewer.getCombo().setEnabled(isListAvailable);
 		}
 	};
+	private Button mainCheckBox;
 
 	public LuaExecutionEnvironmentGroup(final Composite parent) {
 		// Create group
@@ -93,6 +96,24 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		link.setFont(group.getFont());
 		link.setText("<a>" + Messages.LuaExecutionEnvironmentGroupManageExecutionEnvironment + "</a>"); //$NON-NLS-1$  //$NON-NLS-2$
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).applyTo(link);
+
+		// Should we create a main.lua
+		mainCheckBox = new Button(group, SWT.CHECK);
+		mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupMainLabel);
+		mainCheckBox.setSelection(hasToCreateMain);
+		GridDataFactory.swtDefaults().span(3, 1).applyTo(mainCheckBox);
+		mainCheckBox.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				widgetDefaultSelected(e);
+			}
+
+			@Override
+			public void widgetDefaultSelected(final SelectionEvent e) {
+				hasToCreateMain = mainCheckBox.getSelection();
+			}
+		});
 
 		// Refresh list after user went to Execution Environment preferences
 		link.addSelectionListener(new SelectionListener() {
@@ -136,6 +157,10 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 			}
 		}
 		return null;
+	}
+
+	public boolean hasToCreateMain() {
+		return hasToCreateMain;
 	}
 
 	private void updateExecutionEnvironmentList() {

@@ -17,6 +17,7 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 	private final String id;
 	private final String version;
 	private final IPath path;
+	private final IPath main;
 	private boolean embedded;
 
 	public LuaExecutionEnvironment(final String identifier, final String eeversion, final IPath pathToEE) {
@@ -24,9 +25,20 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 		version = eeversion;
 		path = pathToEE;
 		embedded = false;
+
+		// Create path to main.lua
+		IPath mainPath = null;
+		if (pathToEE != null)
+			mainPath = pathToEE.append(LuaExecutionEnvironmentConstants.EE_FILE_MAIN);
+
+		// Keep it if main file really exists
+		if (mainPath != null && mainPath.toFile().exists())
+			main = mainPath;
+		else
+			main = null;
 	}
 
-	protected void setEmbedded(boolean embeddedEE) {
+	protected void setEmbedded(final boolean embeddedEE) {
 		this.embedded = embeddedEE;
 	}
 
@@ -85,7 +97,7 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -107,7 +119,12 @@ public class LuaExecutionEnvironment implements Comparable<LuaExecutionEnvironme
 	}
 
 	@Override
-	public int compareTo(LuaExecutionEnvironment ee) {
+	public int compareTo(final LuaExecutionEnvironment ee) {
 		return getEEIdentifier().compareTo(ee.getEEIdentifier());
 	}
+
+	public IPath getMainPath() {
+		return main;
+	}
+
 }
