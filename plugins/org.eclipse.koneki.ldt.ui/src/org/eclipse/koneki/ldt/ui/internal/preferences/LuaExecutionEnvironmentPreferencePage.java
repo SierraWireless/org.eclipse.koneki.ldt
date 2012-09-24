@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.preferences;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +37,7 @@ import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentConte
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentLabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
@@ -42,11 +45,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	private static final String AVAILABLE_EXECUTION_ENVIRONEMENT_URL = "http://wiki.eclipse.org/Koneki/LDT/User_Area/Available_Execution_Environments"; //$NON-NLS-1$
+	
 	private TreeViewer eeTreeViewer;
 	private Button removeButton;
 
@@ -95,6 +103,11 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 		RowDataFactory.swtDefaults().hint(SWTUtil.getButtonWidthHint(removeButton), -1).applyTo(removeButton);
 		removeButton.setText(Messages.LuaExecutionEnvironmentPreferencePage_removeButton);
 
+		// Link to available EEs
+		Link availableEELink = new Link(containerComposite, SWT.NONE);
+		availableEELink.setText(Messages.LuaExecutionEnvironmentPreferencePage_availableEELink);
+		GridDataFactory.fillDefaults().span(2, 1).applyTo(availableEELink);
+
 		// ----------------
 		// ADD LISTENERS
 		addButton.addSelectionListener(new SelectionListener() {
@@ -119,6 +132,18 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				doRemoveSelection(e);
+			}
+		});
+		availableEELink.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(AVAILABLE_EXECUTION_ENVIRONEMENT_URL));
+				} catch (PartInitException e1) {
+					Activator.logError("Unable to open: " + AVAILABLE_EXECUTION_ENVIRONEMENT_URL, e1); //$NON-NLS-1$
+				} catch (MalformedURLException e1) {
+					Activator.logError("Unable to open: " + AVAILABLE_EXECUTION_ENVIRONEMENT_URL, e1); //$NON-NLS-1$
+				}
 			}
 		});
 
