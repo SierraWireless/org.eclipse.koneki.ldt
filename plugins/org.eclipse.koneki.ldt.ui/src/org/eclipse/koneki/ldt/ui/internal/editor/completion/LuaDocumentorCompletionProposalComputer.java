@@ -125,11 +125,12 @@ public class LuaDocumentorCompletionProposalComputer implements IScriptCompletio
 		return offsetInCurrentLine;
 	}
 
-	private static int skipSpaces(final char[] line, int offsetInCurrentLine, int offsetInLine) {
-		while (offsetInCurrentLine < offsetInLine && Character.isWhitespace(line[offsetInCurrentLine])) {
-			offsetInCurrentLine++;
+	private static int skipSpaces(final char[] line, final int offsetInCurrentLine, final int offsetInLine) {
+		int newOffsetInCurrentLine = offsetInCurrentLine;
+		while (newOffsetInCurrentLine < offsetInLine && Character.isWhitespace(line[newOffsetInCurrentLine])) {
+			newOffsetInCurrentLine++;
 		}
-		return offsetInCurrentLine;
+		return newOffsetInCurrentLine;
 	}
 
 	private List<ICompletionProposal> completionOnTag(final ContentAssistInvocationContext context, final String tag,

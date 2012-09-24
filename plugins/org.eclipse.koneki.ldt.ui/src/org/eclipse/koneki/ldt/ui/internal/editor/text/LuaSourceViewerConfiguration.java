@@ -39,6 +39,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 
+	// CHECKSTYLE:OFF
+	// we declare abstract type because of DLTK architecture
 	private AbstractScriptScanner fCodeScanner;
 
 	private AbstractScriptScanner fStringScanner;
@@ -49,6 +51,8 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 
 	private AbstractScriptScanner fLuaDocScanner;
 	private AbstractScriptScanner fMultilineCommentScanner;
+
+	// CHECKSTYLE:ON
 
 	public LuaSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
@@ -197,7 +201,10 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		return ILuaPartitions.LUA_PARTITION_TYPES;
 	}
 
+	// CHECKSTYLE:OFF
+	// we declare abstract type because of DLTK architecture
 	protected AbstractScriptScanner createCommentScanner(String commentColor, String tagColor, ITodoTaskPreferences taskPrefs) {
+		// CHECKSTYLE:ON
 		return new ScriptCommentScanner(getColorManager(), fPreferenceStore, commentColor, tagColor, taskPrefs) {
 
 			@Override

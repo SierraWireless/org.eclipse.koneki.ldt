@@ -75,7 +75,7 @@ public class AddLuaInterpreterDialog extends AddScriptInterpreterDialog {
 	/**
 	 * Stub to avoid library block
 	 */
-	private class LibraryBlockStub extends AbstractInterpreterLibraryBlock {
+	private static class LibraryBlockStub extends AbstractInterpreterLibraryBlock {
 
 		protected LibraryBlockStub() {
 			super(null);

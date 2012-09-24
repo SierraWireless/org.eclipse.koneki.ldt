@@ -87,11 +87,11 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		} catch (ModelException e) {
 			String message = MessageFormat.format("Unable to retreive Launch Configuration for the selection: {0}", selection); //$NON-NLS-1$
 			Activator.logWarning(message, e);
-			// CHECKSTYLE: OFF
+			// CHECKSTYLE:OFF
 		} catch (InterruptedException e) {
 			// If the user cancel the search of last container launch configuration, there is nothing to do as we will let him choose the script is
 			// want to launch
-			// CHECKSTYLE: ON
+			// CHECKSTYLE:ON
 		} catch (CoreException e) {
 			String message = MessageFormat.format("Unable to retreive and launch Launch Configuration for the selection: {0}", selection); //$NON-NLS-1$
 			Activator.logWarning(message, e);
