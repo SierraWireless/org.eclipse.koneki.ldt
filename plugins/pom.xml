@@ -27,5 +27,9 @@
     <module>org.eclipse.koneki.ldt.ui</module>
     <module>org.eclipse.koneki.ldt.debug.core</module>
     <module>org.eclipse.koneki.ldt.debug.ui</module>
+    <module>org.eclipse.koneki.ldt.remote.core</module>
+    <module>org.eclipse.koneki.ldt.remote.ui</module>
+    <module>org.eclipse.koneki.ldt.remote.debug.core</module>
+    <module>org.eclipse.koneki.ldt.remote.debug.ui</module>
   </modules>
 </project>

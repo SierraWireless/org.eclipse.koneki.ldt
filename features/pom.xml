@@ -14,6 +14,7 @@
   <modules>
     <module>org.eclipse.koneki.ldt-feature</module>
     <module>org.eclipse.koneki.ldt.product-feature</module>
+    <module>org.eclipse.koneki.ldt.remote-feature</module>
   </modules>
 
   <build>
