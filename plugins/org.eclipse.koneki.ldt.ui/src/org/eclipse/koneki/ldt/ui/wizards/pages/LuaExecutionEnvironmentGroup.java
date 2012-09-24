@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.wizards.pages;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Observable;
 
@@ -42,21 +43,17 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 	private final Button eeButton;
 	private final Button noEEButton;
 	private boolean hasToCreateMain = true;
+	private Button mainCheckBox;
 
 	/**
 	 * Will make {@link #installedEEsComboViewer} available only when {@link #eeButton} is checked
 	 * 
 	 * @see Button#getSelection()
 	 */
-	private final SelectionListener eeChoiceListener = new SelectionListener() {
+	private final SelectionListener eeChoiceListener = new SelectionAdapter() {
 
 		@Override
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
-		}
-
-		@Override
-		public void widgetDefaultSelected(SelectionEvent e) {
+		public void widgetSelected(final SelectionEvent e) {
 			if (eeButton.getSelection()) {
 				isListAvailable = true;
 
@@ -66,7 +63,6 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 			installedEEsComboViewer.getCombo().setEnabled(isListAvailable);
 		}
 	};
-	private Button mainCheckBox;
 
 	public LuaExecutionEnvironmentGroup(final Composite parent) {
 		// Create group
@@ -90,12 +86,11 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		installedEEsComboViewer = new ComboViewer(group, SWT.READ_ONLY | SWT.BORDER);
 		installedEEsComboViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false).applyTo(installedEEsComboViewer.getControl());
-		updateExecutionEnvironmentList();
 
 		// Set link to define a new execution environment
 		final Link link = new Link(group, SWT.NONE);
 		link.setFont(group.getFont());
-		link.setText("<a>" + Messages.LuaExecutionEnvironmentGroupManageExecutionEnvironment + "</a>"); //$NON-NLS-1$  //$NON-NLS-2$
+		link.setText(MessageFormat.format("<a>{0}</a>", Messages.LuaExecutionEnvironmentGroupManageExecutionEnvironment)); //$NON-NLS-1$
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).applyTo(link);
 
 		// Should we create a main.lua
@@ -111,21 +106,15 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		});
 
 		// Refresh list after user went to Execution Environment preferences
-		link.addSelectionListener(new SelectionListener() {
-
+		link.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
-				widgetDefaultSelected(e);
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				final String pageId = LuaExecutionEnvironmentConstants.PREFERENCE_PAGE_ID;
 				PreferencesUtil.createPreferenceDialogOn(parent.getShell(), pageId, new String[] { pageId }, null).open();
 				updateExecutionEnvironmentList();
 			}
 		});
-
+		updateExecutionEnvironmentList();
 	}
 
 	/**
@@ -170,7 +159,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 				eeButton.setSelection(true);
 				noEEButton.setSelection(false);
 
-				eeChoiceListener.widgetDefaultSelected(null);
+				eeChoiceListener.widgetSelected(null);
 			} else {
 				eeButton.setEnabled(false);
 				noEEButton.setSelection(true);
