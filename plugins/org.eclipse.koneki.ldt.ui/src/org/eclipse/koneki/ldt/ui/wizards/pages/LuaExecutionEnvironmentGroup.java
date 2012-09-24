@@ -24,6 +24,7 @@ import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentCon
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentContentProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
@@ -102,15 +103,9 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 		mainCheckBox.setText(Messages.LuaExecutionEnvironmentGroupMainLabel);
 		mainCheckBox.setSelection(hasToCreateMain);
 		GridDataFactory.swtDefaults().span(3, 1).applyTo(mainCheckBox);
-		mainCheckBox.addSelectionListener(new SelectionListener() {
-
+		mainCheckBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				widgetDefaultSelected(e);
-			}
-
-			@Override
-			public void widgetDefaultSelected(final SelectionEvent e) {
 				hasToCreateMain = mainCheckBox.getSelection();
 			}
 		});
