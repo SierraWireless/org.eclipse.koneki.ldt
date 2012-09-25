@@ -120,6 +120,10 @@ public class LuaFormatter extends AbstractScriptFormatter {
 						Messages.LuaFormatterUnableToFormatSelection);
 				Activator.logError(Messages.LuaFormatterUnableToFormatSelection, e);
 			}
+		} else if (source.equals(formatted)) {
+			// If no modification have be done on the source code when formatting,
+			// avoid the editor to be dirty/stale mode by returning null
+			return null;
 		}
 		// Construct text edition
 		return new ReplaceEdit(offset, length, formatted);
