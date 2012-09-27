@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.koneki.ldt.remote.core.internal.lua.LuaSubSystem"
+            class="org.eclipse.koneki.ldt.remote.ui.internal.lua.LuaSubSystemAdapterFactory">
+         <adapter
+               type="org.eclipse.rse.ui.view.ISystemViewElementAdapter">
+         </adapter>
+         <adapter
+               type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.dltkElementFilters">
+      <filter
+            description="%rse.filter.description"
+            enabled="true"
+            id="org.eclipse.koneki.ldt.remote.ui.rsefilter"
+            name="%rse.filter.name"
+            pattern="RemoteSystemsTempFiles"
+            targetId="org.eclipse.dltk.ui.ScriptExplorer">
+      </filter>
+   </extension>
+
+</plugin>

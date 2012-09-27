@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.rse.core.systemTypes">
+      <systemType
+            description="%lua.systemType.description"
+            icon="icons/obj16/luasystem.png"
+            iconLive="icons/obj16/luasystem_live.png"
+            id="org.eclipse.koneki.ldt.remote.core.luasystemtype"
+            label="%lua.systemType.label"
+            name="luasystemtype"
+            subsystemConfigurationIds="ssh.files;ssh.terminals;ssh.lua">
+      </systemType>
+   </extension>
+   <extension
+         point="org.eclipse.rse.core.subsystemConfigurations">
+      <configuration
+            class="org.eclipse.koneki.ldt.remote.core.internal.lua.LuaSubSystemConfiguration"
+            description="%lua.configuration.description"
+            icon="icons/obj16/remote_lua.png"
+            iconlive="icons/obj16/remote_lua_live.png"
+            id="ssh.lua"
+            name="%lua.configuration.name"
+            vendor="%lua.configuration.vendor">
+      </configuration>
+   </extension>
+
+</plugin>
