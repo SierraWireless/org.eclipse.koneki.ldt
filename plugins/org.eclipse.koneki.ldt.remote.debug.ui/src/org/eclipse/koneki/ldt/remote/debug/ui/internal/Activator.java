@@ -11,14 +11,15 @@
 package org.eclipse.koneki.ldt.remote.debug.ui.internal;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends Plugin {
+public class Activator extends AbstractUIPlugin {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.eclipse.koneki.ldt.remote.debug.ui"; //$NON-NLS-1$
@@ -59,6 +60,15 @@ public class Activator extends Plugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+	 */
+	@Override
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		reg.put(ImageConstants.LUA_REMOTE_APP_LAUNCH_MAIN_TAB_ICON,
+				AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_REMOTE_APP_LAUNCH_MAIN_TAB_ICON));
 	}
 
 	/**

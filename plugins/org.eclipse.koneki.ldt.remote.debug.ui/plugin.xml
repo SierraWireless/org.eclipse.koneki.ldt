@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.tab.LuaRemoteLaunchConfigurationTabGroup"
+            id="org.eclipse.koneki.ldt.remote.debug.ui.luaRemoteApplicationLaunchTabGroup"
+            type="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug">
+            <launchMode
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               mode="run"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug"
+            icon="icons/obj16/lua_launcher.gif"
+            id="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug.image">
+      </launchConfigurationTypeImage>
+   </extension>
+</plugin>

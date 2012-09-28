@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug"
+            modes="run, debug"
+            name="%launchConfigurationType.name"
+            delegate="org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteLaunchConfigurationDelegate"
+            sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
+            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
+      </launchConfigurationType>
+   </extension>
+
+</plugin>
