@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.core.internal.lua;
 
 import java.util.EnumSet;
 
@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.koneki.ldt.core.IProjectSourceVisitor;
 import org.eclipse.koneki.ldt.core.LuaUtils;
-import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
+import org.eclipse.koneki.ldt.remote.core.internal.Activator;
+import org.eclipse.rse.core.model.IHost;
+import org.eclipse.rse.core.subsystems.ISubSystem;
 import org.eclipse.rse.services.clientserver.messages.SystemMessageException;
 import org.eclipse.rse.subsystems.files.core.subsystems.IRemoteFile;
 import org.eclipse.rse.subsystems.files.core.subsystems.IRemoteFileSubSystem;
@@ -72,6 +74,16 @@ public final class LuaRSEUtil {
 		};
 
 		LuaUtils.visitSourceFiles(project,
-				EnumSet.complementOf(EnumSet.of(ProjectFragmentFilter.ARCHIVE, ProjectFragmentFilter.EXECUTION_ENVIRONMENT)), visitor, monitor);
+				EnumSet.complementOf(EnumSet.of(LuaUtils.ProjectFragmentFilter.ARCHIVE, LuaUtils.ProjectFragmentFilter.EXECUTION_ENVIRONMENT)),
+				visitor, monitor);
+	}
+
+	public static LuaSubSystem getLuaSubSystem(IHost host) {
+		for (ISubSystem subsytem : host.getSubSystems()) {
+			if (subsytem instanceof LuaSubSystem) {
+				return (LuaSubSystem) subsytem;
+			}
+		}
+		return null;
 	}
 }

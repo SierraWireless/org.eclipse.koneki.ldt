@@ -9,7 +9,7 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 //FIXME This class is a copy from eclipse.debug.core plugin
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.sshprocess;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IFlushableStreamMonitor;
+import org.eclipse.koneki.ldt.remote.debug.core.internal.Activator;
 
 /**
  * Monitors the output stream of a system process and notifies listeners of additions to the stream.

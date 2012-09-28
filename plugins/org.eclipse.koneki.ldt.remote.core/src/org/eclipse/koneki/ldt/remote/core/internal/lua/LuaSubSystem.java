@@ -75,6 +75,26 @@ public class LuaSubSystem extends SubSystem implements ISubSystem {
 		return super.getAdapter(adapter);
 	}
 
+	public String getLuaCommand() {
+		return getLuaPropertyValue(LUACOMMAND_PROPERTY_KEY);
+	}
+
+	public String getLuaPath() {
+		return getLuaPropertyValue(LUAPATH_PROPERTY_KEY);
+	}
+
+	public String getCLuaPath() {
+		return getLuaPropertyValue(LUACPATH_PROPERTY_KEY);
+	}
+
+	public String getLDLibraryPath() {
+		return getLuaPropertyValue(LDLIBRARYPATH_PROPERTY_KEY);
+	}
+
+	public String getOutputDirectory() {
+		return getLuaPropertyValue(OUTPUTDIRECTORY_PROPERTY_KEY);
+	}
+
 	public void setLuaPropertyValue(String key, String value) {
 		IPropertySet propertySet = getPropertySet(LUA_PROPERTY_SET_KEY);
 		IProperty property = propertySet.getProperty(key);

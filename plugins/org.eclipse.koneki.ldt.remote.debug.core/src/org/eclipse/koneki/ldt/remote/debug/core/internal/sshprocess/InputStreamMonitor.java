@@ -9,7 +9,7 @@
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
 //FIXME This class is a copy from eclipse.debug.core plugin
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.sshprocess;
 
 import java.io.IOException;
 import java.io.OutputStream;

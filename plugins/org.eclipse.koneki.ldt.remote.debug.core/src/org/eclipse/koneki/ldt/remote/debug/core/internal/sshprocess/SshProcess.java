@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.sshprocess;
 
 import java.io.IOException;
 import java.util.Map;
@@ -24,6 +24,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.eclipse.koneki.ldt.remote.debug.core.internal.Activator;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -353,7 +354,7 @@ public class SshProcess implements IProcess {
 			// CHECKSTYLE:OFF
 		} catch (Exception e) {
 			// CHECKSTYLE:ON
-			throw new DebugException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, Messages.SshProcess_exception_kill_process_failed, e));
+			throw new DebugException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "An exception occurred when trying to stop the application.", e)); //$NON-NLS-1$
 		}
 	}
 }

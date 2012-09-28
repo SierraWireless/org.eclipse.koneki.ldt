@@ -7,7 +7,7 @@
             id="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug"
             modes="run, debug"
             name="%launchConfigurationType.name"
-            delegate="org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteLaunchConfigurationDelegate"
+            delegate="org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteLaunchConfigurationDelegate"
             sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
             sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
       </launchConfigurationType>

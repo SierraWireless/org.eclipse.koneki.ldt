@@ -8,26 +8,27 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.launch;
 
 import org.eclipse.osgi.util.NLS;
 
 // CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.remote.debug.core.internal.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.remote.debug.core.internal.launch.messages"; //$NON-NLS-1$
 	public static String LuaRemoteLaunchConfigurationDelegate_error_connectionfailed;
 	public static String LuaRemoteLaunchConfigurationDelegate_error_filealreadyexist;
+	public static String LuaRemoteLaunchConfigurationDelegate_error_noluasystem;
 	public static String LuaRemoteLaunchConfigurationDelegate_error_noremotefilesystem;
 	public static String LuaRemoteLaunchConfigurationDelegate_error_unabletoaccestoremoteapplicationdir;
-	public static String LuaRemoteLaunchConfigurationDelegate_error_unabletoloadintrospectionlib;
 	public static String LuaRemoteLaunchConfigurationUtil_error_closed_project;
-	public static String LuaRemoteLaunchConfigurationUtil_error_command_path_empty;
 	public static String LuaRemoteLaunchConfigurationUtil_error_no_host_selected;
+	public static String LuaRemoteLaunchConfigurationUtil_error_no_lua_service;
+	public static String LuaRemoteLaunchConfigurationUtil_error_no_luacommand;
+	public static String LuaRemoteLaunchConfigurationUtil_error_no_outputdir;
 	public static String LuaRemoteLaunchConfigurationUtil_error_no_project;
+	public static String LuaRemoteLaunchConfigurationUtil_error_no_remote_file_service;
 	public static String LuaRemoteLaunchConfigurationUtil_error_not_lua_project;
-	public static String LuaRemoteLaunchConfigurationUtil_error_remote_application_path_empty;
 	public static String LuaRemoteLaunchConfigurationUtil_error_unexisted_project;
-	public static String SshProcess_exception_kill_process_failed;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

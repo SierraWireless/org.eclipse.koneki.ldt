@@ -8,7 +8,7 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.remote.debug.core.internal;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.launch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,9 +20,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.remote.core.internal.lua.LuaRSEUtil;
+import org.eclipse.koneki.ldt.remote.core.internal.lua.LuaSubSystem;
+import org.eclipse.koneki.ldt.remote.core.internal.lua.RSEUtil;
+import org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteDebugConstant;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.rse.core.RSECorePlugin;
 import org.eclipse.rse.core.model.IHost;
 import org.eclipse.rse.core.model.ISystemProfile;
+import org.eclipse.rse.subsystems.files.core.subsystems.IRemoteFileSubSystem;
 
 /**
  * Utility class to handle ILaunchConfiguration for LuaEmbeddedLaunchConfiguration
@@ -92,32 +98,64 @@ public final class LuaRemoteLaunchConfigurationUtil {
 	 * 
 	 * @return true if value is valid
 	 */
-	public static String validateLuaEmbeddedConfiguration(String projectName, IHost host) {
+	public static String validateRemoteLaunchConfiguration(String projectName, IHost host) {
+		// project validation
+		// -------------------------------
 		// projectName validation
 		if (projectName == null || projectName.isEmpty()) {
-			return "A project must be selected.";
+			return Messages.LuaRemoteLaunchConfigurationUtil_error_no_project;
 		}
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		if (project == null || !project.exists()) {
-			return "This project doesn't exist.";
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_unexisted_project, projectName);
 		}
 		if (!project.isOpen()) {
-			return "This project is not open.";
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_closed_project, projectName);
 		}
 		try {
 			if (!project.hasNature(LuaNature.ID)) {
-				return "This project is not a lua project.";
+				return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_not_lua_project, projectName);
 			}
 		} catch (CoreException e) {
 			// must not append (at this line project is open and exist)
-			return null;
+			return "Unexpected problem :" + e.getMessage(); //$NON-NLS-1$
 		}
 
 		// target validation
+		// --------------------------------
 		if (host == null) {
-			return "An host must be selected.";
+			return Messages.LuaRemoteLaunchConfigurationUtil_error_no_host_selected;
+		}
+
+		String hostName = host.getName();
+		// check the target has the lua support
+		LuaSubSystem luaSubSystem = LuaRSEUtil.getLuaSubSystem(host);
+		if (luaSubSystem == null) {
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_no_lua_service, hostName);
+		}
+
+		// check luaSubSystem configuration
+		String luaCommand = luaSubSystem.getLuaCommand();
+		if (luaCommand == null || luaCommand.isEmpty()) {
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_no_luacommand, hostName);
+		}
+		String outputDirectory = luaSubSystem.getOutputDirectory();
+		if (outputDirectory == null || outputDirectory.isEmpty()) {
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_no_outputdir, hostName);
+		}
+
+		// check the target has the lua support
+		IRemoteFileSubSystem remoteFileSubsystem = RSEUtil.getRemoteFileSubsystem(host);
+		if (remoteFileSubsystem == null) {
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_no_remote_file_service, hostName);
 		}
 		return null;
 	}
 
+	public static String getRemoteApplicationPath(ILaunchConfiguration configuration) throws CoreException {
+		IHost host = getHost(configuration);
+		IRemoteFileSubSystem remoteFileSubSystem = RSEUtil.getRemoteFileSubsystem(host);
+		LuaSubSystem luaSubSystem = LuaRSEUtil.getLuaSubSystem(host);
+		return luaSubSystem.getOutputDirectory() + remoteFileSubSystem.getSeparator() + configuration.getName();
+	}
 }

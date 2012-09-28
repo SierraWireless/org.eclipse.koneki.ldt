@@ -19,7 +19,7 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteDebugConstant;
-import org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteLaunchConfigurationUtil;
+import org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteLaunchConfigurationUtil;
 import org.eclipse.koneki.ldt.remote.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.remote.debug.ui.internal.ImageConstants;
 import org.eclipse.koneki.ldt.ui.LuaDialogUtil;
@@ -274,7 +274,7 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	 * @return true if value is valid
 	 */
 	private boolean innerIsValuesValid(String projectName, IHost host) {
-		String error = LuaRemoteLaunchConfigurationUtil.validateLuaEmbeddedConfiguration(projectName, host);
+		String error = LuaRemoteLaunchConfigurationUtil.validateRemoteLaunchConfiguration(projectName, host);
 		setErrorMessage(error);
 		return error == null;
 	}
