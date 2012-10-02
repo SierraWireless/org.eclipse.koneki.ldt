@@ -6,12 +6,14 @@ Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.eclipse.koneki.ldt.remote.debug.ui.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.ui,
- org.eclipse.koneki.ldt.ui;bundle-version="0.9.0",
- org.eclipse.ui;bundle-version="3.103.0",
- org.eclipse.koneki.ldt.remote.debug.core;bundle-version="0.9.0",
- org.eclipse.dltk.launching;bundle-version="4.0.0",
- org.eclipse.rse.ui;bundle-version="3.3.0",
- org.eclipse.rse.core;bundle-version="3.3.0"
+ org.eclipse.koneki.ldt.ui,
+ org.eclipse.ui,
+ org.eclipse.koneki.ldt.remote.debug.core,
+ org.eclipse.rse.ui,
+ org.eclipse.rse.core,
+ org.eclipse.dltk.debug.ui,
+ org.eclipse.koneki.ldt,
+ org.eclipse.koneki.ldt.remote.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %Bundle-Vendor

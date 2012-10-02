@@ -78,12 +78,13 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 
 			// get configuration information
 			String projectName = configuration.getAttribute(LuaRemoteDebugConstant.PROJECT_NAME, "");//$NON-NLS-1$
+			String scriptName = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, "");//$NON-NLS-1$
 			IHost host = LuaRemoteLaunchConfigurationUtil.getHost(configuration);
 			@SuppressWarnings("rawtypes")
 			Map env = configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, Collections.EMPTY_MAP);
 
 			// valid configuration information
-			String errorMessage = LuaRemoteLaunchConfigurationUtil.validateRemoteLaunchConfiguration(projectName, host);
+			String errorMessage = LuaRemoteLaunchConfigurationUtil.validateRemoteLaunchConfiguration(projectName, scriptName, host);
 			if (errorMessage != null)
 				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, errorMessage));
 			submonitor.worked(1);

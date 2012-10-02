@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -98,7 +99,7 @@ public final class LuaRemoteLaunchConfigurationUtil {
 	 * 
 	 * @return true if value is valid
 	 */
-	public static String validateRemoteLaunchConfiguration(String projectName, IHost host) {
+	public static String validateRemoteLaunchConfiguration(String projectName, String scriptName, IHost host) {
 		// project validation
 		// -------------------------------
 		// projectName validation
@@ -119,6 +120,18 @@ public final class LuaRemoteLaunchConfigurationUtil {
 		} catch (CoreException e) {
 			// must not append (at this line project is open and exist)
 			return "Unexpected problem :" + e.getMessage(); //$NON-NLS-1$
+		}
+
+		// scriptName validation
+		if (scriptName == null || scriptName.isEmpty()) {
+			return Messages.LuaRemoteLaunchConfigurationUtil_error_no_script_selected;
+		}
+		IResource script = project.findMember(scriptName);
+		if (script == null || !script.exists()) {
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_script_desnt_exist, scriptName);
+		}
+		if (script.getType() != IResource.FILE || !script.getFileExtension().equals("lua")) { //$NON-NLS-1$
+			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_script_not_lua_file, scriptName);
 		}
 
 		// target validation

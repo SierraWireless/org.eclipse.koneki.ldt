@@ -29,7 +29,10 @@ public class Messages extends NLS {
 	public static String LuaRemoteLaunchConfigurationUtil_error_no_outputdir;
 	public static String LuaRemoteLaunchConfigurationUtil_error_no_project;
 	public static String LuaRemoteLaunchConfigurationUtil_error_no_remote_file_service;
+	public static String LuaRemoteLaunchConfigurationUtil_error_no_script_selected;
 	public static String LuaRemoteLaunchConfigurationUtil_error_not_lua_project;
+	public static String LuaRemoteLaunchConfigurationUtil_error_script_desnt_exist;
+	public static String LuaRemoteLaunchConfigurationUtil_error_script_not_lua_file;
 	public static String LuaRemoteLaunchConfigurationUtil_error_unexisted_project;
 	static {
 		// initialize resource bundle

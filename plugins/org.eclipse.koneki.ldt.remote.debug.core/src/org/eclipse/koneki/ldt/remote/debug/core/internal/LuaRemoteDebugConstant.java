@@ -14,7 +14,10 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 public interface LuaRemoteDebugConstant {
 
-	String HOST_ID = Activator.PLUGIN_ID + ".debug.hostid"; //$NON-NLS-1$
 	String PROJECT_NAME = ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME;
+	String SCRIPT_NAME = ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME;
+	String HOST_ID = Activator.PLUGIN_ID + ".debug.hostid"; //$NON-NLS-1$
 
+	String BREAK_ON_FIRST_LINE = ScriptLaunchConfigurationConstants.ENABLE_BREAK_ON_FIRST_LINE;
+	String DBGP_LOGGING = ScriptLaunchConfigurationConstants.ENABLE_DBGP_LOGGING;
 }

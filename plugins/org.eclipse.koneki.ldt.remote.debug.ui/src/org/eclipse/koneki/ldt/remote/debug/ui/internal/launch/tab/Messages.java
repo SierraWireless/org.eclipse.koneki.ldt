@@ -14,12 +14,19 @@ import org.eclipse.osgi.util.NLS;
 
 //CHECKSTYLE NLS: OFF
 public class Messages extends NLS {
+
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.tab.messages"; //$NON-NLS-1$
+
+	public static String LuaRemoteLaunchConfigurationMainTab_debuggroup_title;
+
+	public static String LuaRemoteLaunchConfigurationMainTab_scriptgroup_title;
+
 	public static String LuaRemoteMainTab_projectgroup_browseprojectbutton;
 	public static String LuaRemoteMainTab_projectgroup_title;
 	public static String LuaRemoteMainTab_tabname;
 	public static String LuaRemoteMainTab_targetgroup_hostlabel;
 	public static String LuaRemoteMainTab_targetgroup_title;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

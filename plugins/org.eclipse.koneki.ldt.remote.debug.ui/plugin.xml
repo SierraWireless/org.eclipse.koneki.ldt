@@ -6,7 +6,8 @@
       <launchConfigurationTabGroup
             class="org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.tab.LuaRemoteLaunchConfigurationTabGroup"
             id="org.eclipse.koneki.ldt.remote.debug.ui.luaRemoteApplicationLaunchTabGroup"
-            type="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug">
+            type="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug"
+            description="%org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.tab.description">
             <launchMode
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
