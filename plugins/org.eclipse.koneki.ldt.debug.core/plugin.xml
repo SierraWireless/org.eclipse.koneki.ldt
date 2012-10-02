@@ -18,7 +18,7 @@
             modes="debug"
             name="%RemoteLuaLaunchConfigurationType.name"
             sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
-            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
+            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.LuaAttachSourcePathComputer">
       </launchConfigurationType>
       <launchConfigurationType
             delegate="org.eclipse.koneki.ldt.debug.core.internal.local.LuaLaunchConfigurationDelegate"
@@ -26,7 +26,7 @@
             modes="run, debug"
             name="%LocalLuaLaunchConfigurationType.name"
             sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
-            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
+            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.LuaLocalSourcePathComputer">
       </launchConfigurationType>
    </extension>
    <extension
@@ -49,11 +49,18 @@
            id="org.eclipse.koneki.ldt.debug.core.SourceLookup"
            name="%LuaSourceLocator.name" />
    </extension>
+    <extension
+          point="org.eclipse.debug.core.sourcePathComputers">
+       <sourcePathComputer
+             class="org.eclipse.koneki.ldt.debug.core.internal.local.LuaLocalSourcePathComputer"
+             id="org.eclipse.koneki.ldt.debug.core.LuaLocalSourcePathComputer">
+       </sourcePathComputer>
+    </extension>
    <extension 
         point="org.eclipse.debug.core.sourcePathComputers">
         <sourcePathComputer
             class="org.eclipse.koneki.ldt.debug.core.internal.attach.LuaAttachSourcePathComputer"
-            id="org.eclipse.koneki.ldt.debug.core.SourcePathComputer"/>
+            id="org.eclipse.koneki.ldt.debug.core.LuaAttachSourcePathComputer"/>
    </extension>
     <extension
 		point="org.eclipse.debug.core.watchExpressionDelegates">

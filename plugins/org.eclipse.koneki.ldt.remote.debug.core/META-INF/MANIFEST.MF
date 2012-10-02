@@ -18,6 +18,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.launching,
  org.eclipse.dltk.debug,
  org.eclipse.koneki.ldt,
+ org.eclipse.koneki.ldt.debug.core,
  org.eclipse.koneki.ldt.remote.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

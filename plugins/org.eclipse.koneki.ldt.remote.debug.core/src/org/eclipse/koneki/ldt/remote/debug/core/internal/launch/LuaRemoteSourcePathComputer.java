@@ -8,38 +8,24 @@
  * Contributors:
  *     Sierra Wireless - initial API and implementation
  *******************************************************************************/
-package org.eclipse.koneki.ldt.debug.core.internal.attach;
+package org.eclipse.koneki.ldt.remote.debug.core.internal.launch;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
-import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
 import org.eclipse.dltk.launching.sourcelookup.ScriptSourcePathComputer;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaAbsoluteFileURIBuildpathSourceContainer;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaModuleURIBuildpathSourceContainer;
-import org.eclipse.koneki.ldt.debug.core.internal.LuaReplacePathSourceContainer;
 
 /**
  * This class is responsible to find the object (in most of case IResource) for a given sourcename.<br>
  * The sourceName is calculated by the ISourceLookupDirector (LuaSourceLookupDirector)<br>
  * In our case this sourceName is always a string with the URI format.
  */
-public class LuaAttachSourcePathComputer extends ScriptSourcePathComputer {
+public class LuaRemoteSourcePathComputer extends ScriptSourcePathComputer {
 
 	@Override
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor) throws CoreException {
-		String mappingType = LaunchConfigurationUtils.getString(configuration, LuaDebugConstants.ATTR_LUA_SOURCE_MAPPING_TYPE,
-				LuaDebugConstants.LOCAL_MAPPING_TYPE);
-
-		if (mappingType.equals(LuaDebugConstants.MODULE_MAPPING_TYPE)) {
-			return new ISourceContainer[] { new LuaModuleURIBuildpathSourceContainer() };
-		} else if (mappingType.equals(LuaDebugConstants.REPLACE_PATH_MAPPING_TYPE)) {
-			return new ISourceContainer[] { new LuaReplacePathSourceContainer() };
-		} else {
-			return new ISourceContainer[] { new LuaAbsoluteFileURIBuildpathSourceContainer() };
-		}
-
+		return new ISourceContainer[] { new LuaModuleURIBuildpathSourceContainer() };
 	}
 }

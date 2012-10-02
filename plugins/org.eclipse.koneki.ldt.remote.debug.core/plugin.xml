@@ -9,8 +9,15 @@
             name="%launchConfigurationType.name"
             delegate="org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteLaunchConfigurationDelegate"
             sourceLocatorId="org.eclipse.koneki.ldt.debug.core.SourceLookup"
-            sourcePathComputerId="org.eclipse.koneki.ldt.debug.core.SourcePathComputer">
+            sourcePathComputerId="org.eclipse.koneki.ldt.remote.debug.core.LuaRemoteSourcePathComputer">
       </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteSourcePathComputer"
+            id="org.eclipse.koneki.ldt.remote.debug.core.LuaRemoteSourcePathComputer">
+      </sourcePathComputer>
    </extension>
 
 </plugin>

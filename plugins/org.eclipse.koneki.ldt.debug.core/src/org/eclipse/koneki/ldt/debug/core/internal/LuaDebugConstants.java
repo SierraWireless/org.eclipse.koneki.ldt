@@ -48,5 +48,14 @@ public interface LuaDebugConstants {
 	String SCRIPT_PATH = "script"; //$NON-NLS-1$
 	String DEBUGGER_PATH = SCRIPT_PATH + "/external"; //$NON-NLS-1$
 
-	final String LUA_PATH = "LUA_PATH"; //$NON-NLS-1$
+	/**
+	 * Environment variables
+	 */
+	String LUA_PATH = "LUA_PATH"; //$NON-NLS-1$
+	String LUA_CPATH = "LUA_CPATH"; //$NON-NLS-1$
+	String LUA_LDLIBRARYPATH = "LD_LIBRARY_PATH"; //$NON-NLS-1$
+	String ENV_VAR_KEY_DBGP_IDE_KEY = "DBGP_IDEKEY"; //$NON-NLS-1$
+	String ENV_VAR_KEY_DBGP_IDE_PORT = "DBGP_IDEPORT"; //$NON-NLS-1$
+	String ENV_VAR_KEY_DBGP_IDE_HOST = "DBGP_IDEHOST"; //$NON-NLS-1$
+
 }
