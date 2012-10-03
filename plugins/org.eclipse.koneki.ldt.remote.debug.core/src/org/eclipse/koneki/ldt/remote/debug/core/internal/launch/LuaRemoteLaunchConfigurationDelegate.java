@@ -253,11 +253,17 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 
 			SshProcess process = new SshProcess(session, launch, remoteApplicationFolderPath, cmd.toArray(new String[cmd.size()]), envVars);
 
-			// TODO support debug
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// Desactivate DBGP Stream redirection
-				// TODO manage DBGP Stream redirection (so desactivate process redirection in debug mode)
-				launch.setAttribute(DLTKDebugLaunchConstants.ATTR_DEBUG_CONSOLE, "false"); //$NON-NLS-1$
+				// TODO manage DBGP Stream redirection (so deactivate process redirection in debug mode)
+				launch.setAttribute(DLTKDebugLaunchConstants.ATTR_DEBUG_CONSOLE, DLTKDebugLaunchConstants.FALSE);
+
+				// manage break on first line
+				if (configuration.getAttribute(LuaRemoteDebugConstant.BREAK_ON_FIRST_LINE, false)) {
+					launch.setAttribute(DLTKDebugLaunchConstants.ATTR_BREAK_ON_FIRST_LINE, DLTKDebugLaunchConstants.TRUE);
+				}
+
+				// create runner
 				LuaRemoteDebuggingEngineRunner debugingEngine = new LuaRemoteDebuggingEngineRunner(process, sessionID, remoteApplicationFolderPath);
 				debugingEngine.run(new InterpreterConfig(), launch, submonitor.newChild(1));
 				launch.addProcess(process);
