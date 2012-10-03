@@ -327,20 +327,6 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	 */
 	@Override
 	public boolean isValid(ILaunchConfiguration configuration) {
-		//			String projectName = configuration.getAttribute(LuaRemoteDebugConstant.PROJECT_NAME, "");//$NON-NLS-1$
-		//			String scriptName = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, ""); //$NON-NLS-1$
-		// IHost host = LuaRemoteLaunchConfigurationUtil.getHost(configuration);
-		String projectName = projectNameText.getText();
-		String scriptName = scriptNameText.getText();
-		IHost host = hostCombo.getHost();
-		return innerIsValuesValid(projectName, scriptName, host);
-	}
-
-	/**
-	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTab#canSave()
-	 */
-	@Override
-	public boolean canSave() {
 		String projectName = projectNameText.getText();
 		String scriptName = scriptNameText.getText();
 		IHost host = hostCombo.getHost();
