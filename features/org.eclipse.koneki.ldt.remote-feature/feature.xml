@@ -18,8 +18,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.rse.scp" match="greaterOrEqual"/>
-      <import feature="org.eclipse.rse" match="greaterOrEqual"/>
+      <import feature="org.eclipse.rse" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
