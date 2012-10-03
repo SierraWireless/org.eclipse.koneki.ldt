@@ -3,3 +3,4 @@ bin/
 .DS_Store
 target/
 workspace/
+/plugin_customization.ini

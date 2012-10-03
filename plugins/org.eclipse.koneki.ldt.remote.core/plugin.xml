@@ -10,7 +10,7 @@
             id="org.eclipse.koneki.ldt.remote.core.luasystemtype"
             label="%lua.systemType.label"
             name="luasystemtype"
-            subsystemConfigurationIds="ssh.files;ssh.terminals;ssh.lua">
+            subsystemConfigurationIds="ssh.files;scp.files;ssh.terminals;ssh.lua">
       </systemType>
    </extension>
    <extension

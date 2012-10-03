@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?>
+<?pde version="3.6"?>
 
-<target name="Lua Development Tools" sequenceNumber="20">
+<target name="Lua Development Tools" sequenceNumber="21">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.apache.commons.io" version="1.4.0.v20081110-1000"/>
 <unit id="org.apache.commons.io.source" version="1.4.0.v20081110-1000"/>
 <unit id="org.junit" version="4.8.1.v4_8_1_v20100427-1100"/>
 <unit id="org.junit.source" version="4.8.1.v4_8_1_v20100427-1100"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/repository"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.platform.sdk" version="4.2.0.I20120608-1400"/>
 <repository location="http://download.eclipse.org/releases/juno"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.dltk.core.sdk.feature.group" version="4.0.0.201206120848"/>
 <unit id="org.eclipse.dltk.itcl.sdk.feature.group" version="4.0.0.201206120848"/>
 <unit id="org.eclipse.dltk.javascript.sdk.feature.group" version="4.0.0.201206120848"/>
@@ -23,8 +23,9 @@
 <unit id="org.eclipse.dltk.tcl.sdk.feature.group" version="4.0.0.201206120848"/>
 <repository location="http://download.eclipse.org/technology/dltk/updates-dev/4.0-stable/"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
+<location includeAllPlatforms="false" includeMode="planner" includeSource="false" type="InstallableUnit">
 <unit id="org.eclipse.rse.sdk.feature.group" version="3.4.0.201205300905-7U7UFBV7lfbwaIHTQX71hXj27ViO"/>
+<unit id="org.eclipse.rse.scp.feature.group" version="0.2.0.201205300905-13-773573D933L3D"/>
 <repository location="http://download.eclipse.org/tm/updates/3.4/"/>
 </location>
 </locations>
