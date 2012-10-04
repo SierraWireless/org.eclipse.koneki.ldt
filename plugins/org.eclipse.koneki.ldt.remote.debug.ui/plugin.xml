@@ -22,7 +22,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug"
-            icon="icons/obj16/lua_remote2.png"
+            icon="icons/obj16/lua_remote.png"
             id="org.eclipse.koneki.ldt.remote.debug.core.luaremotedebug.image">
       </launchConfigurationTypeImage>
    </extension>
