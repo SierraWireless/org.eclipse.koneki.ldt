@@ -16,6 +16,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.messages"; //$NON-NLS-1$
 	public static String LuaDialogUtil_message;
+	public static String LuaDialogUtil_selectScript_message;
+	public static String LuaDialogUtil_selectScript_title;
 	public static String LuaDialogUtil_title;
 	static {
 		// initialize resource bundle
