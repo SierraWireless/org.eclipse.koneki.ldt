@@ -19,6 +19,7 @@
 
    <requires>
       <import feature="org.eclipse.rse" version="3.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.koneki.ldt" version="0.9.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
