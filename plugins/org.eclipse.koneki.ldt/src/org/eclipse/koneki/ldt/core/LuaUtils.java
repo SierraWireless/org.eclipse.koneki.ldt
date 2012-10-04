@@ -96,42 +96,77 @@ public final class LuaUtils {
 	 *         e.g. : socket.core
 	 */
 	public static String getModuleFullName(final ISourceModule module) {
+		IPath path = getSourcePathRelativePath(module);
+
+		// replace file name by the module name
 		String moduleName = getModuleName(module);
+		path = path.removeLastSegments(1);
+		// handle the case of a package with a init module
+		if (path.segmentCount() == 0 || !"init".equals(moduleName)) { //$NON-NLS-1$
+			path = path.append(moduleName);
+		}
+
+		// build package prefix from the path
+		StringBuilder fullNameBuilder = new StringBuilder();
+		for (String segment : path.segments()) {
+			if (fullNameBuilder.length() > 0) {
+				fullNameBuilder.append("."); //$NON-NLS-1$
+			}
+			fullNameBuilder.append(segment);
+		}
+
+		return fullNameBuilder.toString();
+	}
+
+	/**
+	 * @return the source path relative path of the given module
+	 */
+	public static IPath getSourcePathRelativePath(IModuleSource module) {
+		final IModelElement modelElement = module.getModelElement();
+		if (modelElement instanceof ISourceModule) {
+			return getSourcePathRelativePath((ISourceModule) modelElement);
+		} else {
+			return new Path(module.getFileName());
+		}
+	}
+
+	/**
+	 * @return the source path relative path of the given module
+	 */
+	public static IPath getSourcePathRelativePath(ISourceModule module) {
+		String moduleName = module.getElementName();
 
 		// get prefix
-		String prefix = null;
+		IPath prefix = null;
 		if (module.getParent() instanceof IScriptFolder) {
-			prefix = getFolderFullName((IScriptFolder) module.getParent());
+			prefix = getFolderSourcePathRelativePath((IScriptFolder) module.getParent());
 		}
 
 		if (prefix != null)
-			if ("init".equalsIgnoreCase(moduleName))//$NON-NLS-1$
-				return prefix;
-			else
-				return prefix + "." + moduleName; //$NON-NLS-1$
+			return prefix.append(moduleName);
 		else
-			return moduleName;
+			return new Path(moduleName);
 	}
 
 	/*
 	 * @return the source folder full name with module dot syntax
 	 */
-	private static String getFolderFullName(final IScriptFolder folder) {
+	private static IPath getFolderSourcePathRelativePath(final IScriptFolder folder) {
 		if (!folder.isRootFolder()) {
 			// get folder name
-			final String folderName = folder.getElementName().replace("/", "."); //$NON-NLS-1$//$NON-NLS-2$
+			final String folderName = folder.getElementName();
 
 			// get prefix
 			final IModelElement parent = folder.getParent();
-			String prefix = null;
+			IPath prefix = null;
 			if (parent instanceof IScriptFolder) {
-				prefix = getFolderFullName((IScriptFolder) parent) + "."; //$NON-NLS-1$
+				prefix = getFolderSourcePathRelativePath((IScriptFolder) parent);
 			}
 
 			if (prefix != null)
-				return prefix + "." + folderName; //$NON-NLS-1$
+				return prefix.append(folderName);
 			else
-				return folderName;
+				return new Path(folderName);
 		}
 		return null;
 	}
@@ -466,4 +501,5 @@ public final class LuaUtils {
 		}
 		return false;
 	}
+
 }

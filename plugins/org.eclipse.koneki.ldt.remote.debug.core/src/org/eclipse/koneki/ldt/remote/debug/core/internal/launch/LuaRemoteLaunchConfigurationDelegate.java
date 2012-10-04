@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -35,6 +37,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.dbgp.DbgpSessionIdGenerator;
@@ -42,6 +45,7 @@ import org.eclipse.dltk.debug.core.DLTKDebugLaunchConstants;
 import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.koneki.ldt.core.LuaConstants;
+import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.remote.core.internal.NetworkUtil;
 import org.eclipse.koneki.ldt.remote.core.internal.RSEUtil;
@@ -110,11 +114,23 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 						Messages.LuaRemoteLaunchConfigurationDelegate_error_connectionfailed, e));
 			}
 
+			// create script project
+			IScriptProject scriptProject = DLTKCore.create(project);
+
 			// compute the remote project workingdir
 			if (submonitor.isCanceled())
 				return;
 			String outputDirectory = luaSubSystem.getOutputDirectory();
 			String remoteApplicationFolderPath = LuaRemoteLaunchConfigurationUtil.getRemoteApplicationPath(configuration);
+
+			// compute script file source path relative path
+			String scriptProjectRelativePath = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, LuaConstants.DEFAULT_MAIN_FILE);
+			IFile scriptFile = project.getFile(scriptProjectRelativePath);
+			IModuleSource moduleSource = LuaUtils.getModuleSourceFromAbsoluteURI(scriptFile.getLocationURI(), scriptProject);
+			if (moduleSource == null)
+				throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, NLS.bind(
+						Messages.LuaRemoteLaunchConfigurationDelegate_error_unabletofindsourcerelativepath, scriptProjectRelativePath)));
+			IPath scriptSourcePathRelativePath = LuaUtils.getSourcePathRelativePath(moduleSource);
 
 			// kill Process if already running
 			// could happen if connection is closed and last process launch is not terminate
@@ -157,7 +173,6 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 				remoteFileSubSystem.createFolder(remoteWorkingFolder, submonitor.newChild(1));
 
 				// upload sourcecode
-				IScriptProject scriptProject = DLTKCore.create(project);
 				LuaRSEUtil.uploadFiles(remoteFileSubSystem, scriptProject, remoteApplicationFolderPath, submonitor.newChild(2));
 
 				// upload Debug module
@@ -228,8 +243,6 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			}
 
 			// create lua execution command
-			// TODO get value from launch configuration
-			String mainRelativePath = LuaConstants.DEFAULT_MAIN_FILE;
 			List<String> cmd = new ArrayList<String>(6);
 			// FIXME is there a cleaner way to control buffering ?
 			// see: http://lua-users.org/lists/lua-l/2011-05/msg00549.html
@@ -243,7 +256,7 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			}
 			cmd.add("-e"); //$NON-NLS-1$
 			cmd.add(bootstrapCode);
-			cmd.add(mainRelativePath);
+			cmd.add(scriptSourcePathRelativePath.toPortableString());
 
 			submonitor.setWorkRemaining(1);
 
