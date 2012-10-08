@@ -13,9 +13,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rse.core,
  org.eclipse.dltk.debug.ui,
  org.eclipse.koneki.ldt,
- org.eclipse.koneki.ldt.remote.core
+ org.eclipse.koneki.ldt.remote.core,
+ org.eclipse.koneki.ldt.debug.ui,
+ org.eclipse.rse.subsystems.files.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.koneki.ldt.remote.debug.ui.internal;x-internal:=true,
+ org.eclipse.koneki.ldt.remote.debug.ui.internal.launch;x-internal:=true,
  org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.tab;x-internal:=true

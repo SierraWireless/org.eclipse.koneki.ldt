@@ -22,10 +22,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions;bundle-version="3.4.300"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.koneki.ldt.debug.ui.internal;x-internal:=true,
- org.eclipse.koneki.ldt.debug.ui.internal.actions;x-internal:=true,
- org.eclipse.koneki.ldt.debug.ui.internal.interpreters;x-internal:=true,
- org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach;x-internal:=true,
- org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;x-internal:=true,
- org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab;x-internal:=true
+Export-Package: org.eclipse.koneki.ldt.debug.ui.internal;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui",
+ org.eclipse.koneki.ldt.debug.ui.internal.actions;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui",
+ org.eclipse.koneki.ldt.debug.ui.internal.interpreters;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui",
+ org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui",
+ org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui",
+ org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab;x-friends:="org.eclipse.koneki.ldt.remote.debug.ui"
 Bundle-Vendor: %Bundle-Vendor

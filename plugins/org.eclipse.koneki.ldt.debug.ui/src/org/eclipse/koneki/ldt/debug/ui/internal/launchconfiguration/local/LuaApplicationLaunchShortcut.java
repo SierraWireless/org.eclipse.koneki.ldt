@@ -183,7 +183,7 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 				if (config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, Util.EMPTY_STRING).equals(
 						script.getProjectRelativePath().toString())
 						&& config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING).equals(
-								script.getProject().getName())) {
+								script.getProject().getName()) && config.getType().equals(getConfigurationType())) {
 					candidateConfigs.add(config);
 				}
 			}
