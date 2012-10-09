@@ -19,10 +19,7 @@ public class Messages extends NLS {
 
 	public static String LuaRemoteLaunchConfigurationMainTab_debuggroup_title;
 
-	public static String LuaRemoteLaunchConfigurationMainTab_scriptgroup_title;
-
 	public static String LuaRemoteMainTab_projectgroup_browseprojectbutton;
-	public static String LuaRemoteMainTab_projectgroup_title;
 	public static String LuaRemoteMainTab_tabname;
 	public static String LuaRemoteMainTab_targetgroup_hostlabel;
 	public static String LuaRemoteMainTab_targetgroup_title;

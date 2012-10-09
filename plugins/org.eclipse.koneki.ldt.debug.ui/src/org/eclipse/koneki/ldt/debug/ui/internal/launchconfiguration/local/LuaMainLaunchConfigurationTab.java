@@ -12,6 +12,9 @@ package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local;
 
 import org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.ui.internal.Activator;
+import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
+import org.eclipse.swt.graphics.Image;
 
 public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 
@@ -22,5 +25,13 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	public String getNatureID() {
 		return LuaNature.ID;
+	}
+
+	/**
+	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab#getImage()
+	 */
+	@Override
+	public Image getImage() {
+		return Activator.getDefault().getImageRegistry().get(ImageConstants.MODULE_OBJ16);
 	}
 }

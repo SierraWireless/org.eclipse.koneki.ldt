@@ -173,6 +173,10 @@ public class LuaRemoteEnvironmentTab extends AbstractLaunchConfigurationTab {
 
 		createEnvironmentTable(comp);
 		createTableButtons(comp);
+
+		Label l2 = new Label(comp, SWT.NONE);
+		l2.setText(LaunchConfigurationsMessages.EnvironmentTab_16);
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(l2);
 	}
 
 	/**

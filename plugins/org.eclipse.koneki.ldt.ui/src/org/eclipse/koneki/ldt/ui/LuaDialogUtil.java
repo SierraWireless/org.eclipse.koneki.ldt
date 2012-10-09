@@ -32,11 +32,18 @@ public final class LuaDialogUtil {
 	private LuaDialogUtil() {
 	}
 
-	public static final IProject openSelectLuaProjectDialog(Shell shell, String projectName) {
+	public static final IProject openSelectLuaProjectDialog(Shell shell, String projectName, String title, String message) {
 		// initialize selection dialog
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new WorkbenchLabelProvider());
-		dialog.setTitle(Messages.LuaDialogUtil_title);
-		dialog.setMessage(Messages.LuaDialogUtil_message);
+		if (title == null)
+			dialog.setTitle(Messages.LuaDialogUtil_title);
+		else
+			dialog.setTitle(title);
+		if (message == null)
+			dialog.setMessage(Messages.LuaDialogUtil_message);
+		else
+			dialog.setMessage(message);
+
 		dialog.setElements(LuaUtils.getLuaProjects());
 
 		// initialize default selected project
@@ -57,7 +64,7 @@ public final class LuaDialogUtil {
 		return null;
 	}
 
-	public static final IFile openSelectScriptFromProjectDialog(Shell shell, IProject project) {
+	public static final IFile openSelectScriptFromProjectDialog(Shell shell, IProject project, String title, String message) {
 		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new WorkbenchContentProvider() {
 			@Override
 			public Object[] getElements(Object element) {
@@ -80,8 +87,16 @@ public final class LuaDialogUtil {
 			}
 		});
 		dialog.setInput(project);
-		dialog.setMessage(Messages.LuaDialogUtil_selectScript_message);
-		dialog.setTitle(Messages.LuaDialogUtil_selectScript_title);
+
+		if (title == null)
+			dialog.setTitle(Messages.LuaDialogUtil_selectScript_title);
+		else
+			dialog.setTitle(title);
+		if (message == null)
+			dialog.setMessage(Messages.LuaDialogUtil_selectScript_message);
+		else
+			dialog.setMessage(message);
+
 		if (dialog.open() == Window.OK) {
 			return (IFile) dialog.getResult()[0];
 		}

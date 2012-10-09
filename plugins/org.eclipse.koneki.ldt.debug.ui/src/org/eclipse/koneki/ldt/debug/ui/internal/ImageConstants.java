@@ -14,4 +14,5 @@ public interface ImageConstants {
 	String LUA_DEBUG_UNREACHABLE_STACK_FRAME = "icons/obj16/stckframe_unreachable.gif"; //$NON-NLS-1$
 	String LUA_DEBUG_CCODE_STACK_FRAME = "icons/obj16/stckframe_ccode.gif"; //$NON-NLS-1$
 	String LUA_DEBUG_SPECIAL_VAR = "icons/obj16/specialfield_obj.gif"; //$NON-NLS-1$
+	String LUA_ATTACH_MAINTAB = "icons/obj16/lua_attach_maintab.gif"; //$NON-NLS-1$
 }

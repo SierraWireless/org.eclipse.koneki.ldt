@@ -15,8 +15,6 @@ import java.net.URL;
 
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.DebugUITools;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
 import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab;
 import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
@@ -96,7 +94,7 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 	 */
 	@Override
 	public Image getImage() {
-		return DebugUITools.getImage(IDebugUIConstants.IMG_LCL_DISCONNECT);
+		return Activator.getDefault().getImageRegistry().get(org.eclipse.koneki.ldt.debug.ui.internal.ImageConstants.LUA_ATTACH_MAINTAB);
 	}
 
 	private int getDefaultRemoteTimeout() {

@@ -72,6 +72,7 @@ public class Activator extends AbstractUIPlugin {
 		reg.put(ImageConstants.LUA_DEBUG_CCODE_STACK_FRAME,
 				AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_DEBUG_CCODE_STACK_FRAME));
 		reg.put(ImageConstants.LUA_DEBUG_SPECIAL_VAR, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_DEBUG_SPECIAL_VAR));
+		reg.put(ImageConstants.LUA_ATTACH_MAINTAB, AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, ImageConstants.LUA_ATTACH_MAINTAB));
 	}
 
 	/**

@@ -20,6 +20,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
 import org.eclipse.dltk.debug.ui.preferences.ScriptDebugPreferencesMessages;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -29,7 +30,6 @@ import org.eclipse.koneki.ldt.remote.core.internal.RSEUtil;
 import org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteDebugConstant;
 import org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteLaunchConfigurationUtil;
 import org.eclipse.koneki.ldt.remote.debug.ui.internal.Activator;
-import org.eclipse.koneki.ldt.remote.debug.ui.internal.ImageConstants;
 import org.eclipse.koneki.ldt.ui.LuaDialogUtil;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
 import org.eclipse.rse.core.RSECorePlugin;
@@ -93,7 +93,7 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	public void createControl(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
-		GridLayoutFactory.swtDefaults().applyTo(comp);
+		GridLayoutFactory.swtDefaults().spacing(SWT.DEFAULT, 1).applyTo(comp);
 		comp.setFont(parent.getFont());
 
 		// TODO not sure this is the good way to wait for init everywhere in the code
@@ -116,7 +116,7 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	private void createProjectConfigComponent(Composite comp) {
 		// create group
 		Group group = new Group(comp, SWT.None);
-		group.setText(Messages.LuaRemoteMainTab_projectgroup_title);
+		group.setText(DLTKLaunchConfigurationsMessages.mainTab_projectGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(group);
 
@@ -133,7 +133,7 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	private void createScriptConfigComponent(Composite comp) {
 		// create group
 		Group group = new Group(comp, SWT.None);
-		group.setText(Messages.LuaRemoteLaunchConfigurationMainTab_scriptgroup_title);
+		group.setText(DLTKLaunchConfigurationsMessages.mainTab_mainModule);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(group);
 
@@ -319,7 +319,8 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	 */
 	@Override
 	public Image getImage() {
-		return Activator.getDefault().getImageRegistry().get(ImageConstants.LUA_REMOTE_APP_LAUNCH_MAIN_TAB_ICON);
+		return org.eclipse.koneki.ldt.ui.internal.Activator.getDefault().getImageRegistry()
+				.get(org.eclipse.koneki.ldt.ui.internal.ImageConstants.MODULE_OBJ16);
 	}
 
 	/**
@@ -351,7 +352,8 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	 */
 	private void selectLuaEmbeddedProject() {
 		String currentProjectName = projectNameText.getText();
-		IProject selectedProject = LuaDialogUtil.openSelectLuaProjectDialog(getShell(), projectNameText.getText());
+		IProject selectedProject = LuaDialogUtil.openSelectLuaProjectDialog(getShell(), projectNameText.getText(),
+				DLTKLaunchConfigurationsMessages.mainTab_chooseProject_title, DLTKLaunchConfigurationsMessages.mainTab_chooseProject_message);
 		if (selectedProject != null && !selectedProject.getName().equals(currentProjectName))
 			projectNameText.setText(selectedProject.getName());
 	}
@@ -362,7 +364,8 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 	private void selectScript() {
 		String currentProjectName = projectNameText.getText();
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(currentProjectName);
-		IFile selectedScript = LuaDialogUtil.openSelectScriptFromProjectDialog(getShell(), project);
+		IFile selectedScript = LuaDialogUtil.openSelectScriptFromProjectDialog(getShell(), project,
+				DLTKLaunchConfigurationsMessages.mainTab_searchButton_title, DLTKLaunchConfigurationsMessages.mainTab_searchButton_message);
 		if (selectedScript != null && !selectedScript.getName().equals(scriptNameText.getText())) {
 			scriptNameText.setText(selectedScript.getProjectRelativePath().toPortableString());
 		}
