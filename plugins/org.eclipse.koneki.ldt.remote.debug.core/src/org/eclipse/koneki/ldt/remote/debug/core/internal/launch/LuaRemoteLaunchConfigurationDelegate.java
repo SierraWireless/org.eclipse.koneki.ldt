@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -121,7 +119,9 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			if (submonitor.isCanceled())
 				return;
 			String outputDirectory = luaSubSystem.getOutputDirectory();
-			String remoteApplicationFolderPath = LuaRemoteLaunchConfigurationUtil.getRemoteApplicationPath(configuration);
+			String defaultRemoteApplicationFolderPath = outputDirectory + remoteFileSubSystem.getSeparator() + configuration.getName();
+			String remoteApplicationFolderPath = configuration.getAttribute(LuaRemoteDebugConstant.OUTPUT_DIRECTORY,
+					defaultRemoteApplicationFolderPath);
 
 			// compute script file source path relative path
 			String scriptProjectRelativePath = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, LuaConstants.DEFAULT_MAIN_FILE);
@@ -243,20 +243,39 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			}
 
 			// create lua execution command
-			List<String> cmd = new ArrayList<String>(6);
-			// FIXME is there a cleaner way to control buffering ?
-			// see: http://lua-users.org/lists/lua-l/2011-05/msg00549.html
-			String bootstrapCode = "io.stdout:setvbuf(\"line\");"; //$NON-NLS-1$
+			StringBuilder cmd = new StringBuilder();
 
 			// create command to run
-			cmd.add(luaSubSystem.getLuaCommand());
+			cmd.append(luaSubSystem.getLuaCommand());
+			cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+
+			// insert interpreter args
+			String interpreterArgs = configuration.getAttribute(LuaRemoteDebugConstant.INTERPRETER_ARGS, ""); //$NON-NLS-1$
+			if (!interpreterArgs.isEmpty()) {
+				cmd.append(interpreterArgs);
+				cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+			}
+
+			// FIXME is there a cleaner way to control buffering ?
+			// see: http://lua-users.org/lists/lua-l/2011-05/msg00549.html
+			String bootstrapCode = "io.stdout:setvbuf('line');"; //$NON-NLS-1$
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// load debugging libraries. The -l parameter cannot be used here because the debugger MUST be the first module to be loaded
-				bootstrapCode += " require(\"" + DEBGUGGER_MODULE + "\")();"; //$NON-NLS-1$//$NON-NLS-2$
+				bootstrapCode += " require('" + DEBGUGGER_MODULE + "')();"; //$NON-NLS-1$//$NON-NLS-2$
 			}
-			cmd.add("-e"); //$NON-NLS-1$
-			cmd.add(bootstrapCode);
-			cmd.add(scriptSourcePathRelativePath.toPortableString());
+			cmd.append("-e"); //$NON-NLS-1$
+			cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+			cmd.append("\"" + bootstrapCode + "\""); //$NON-NLS-1$//$NON-NLS-2$
+			cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+			cmd.append(SshProcess.escapeShell(scriptSourcePathRelativePath.toPortableString()));
+			cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+
+			// insert script args
+			String scriptArgs = configuration.getAttribute(LuaRemoteDebugConstant.SCRIPT_ARGS, ""); //$NON-NLS-1$
+			if (!scriptArgs.isEmpty()) {
+				cmd.append(scriptArgs);
+				cmd.append(SshProcess.ARGUMENT_SEPARATOR);
+			}
 
 			submonitor.setWorkRemaining(1);
 
@@ -264,7 +283,7 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			if (submonitor.isCanceled())
 				return;
 
-			SshProcess process = new SshProcess(session, launch, remoteApplicationFolderPath, cmd.toArray(new String[cmd.size()]), envVars);
+			SshProcess process = new SshProcess(session, launch, remoteApplicationFolderPath, cmd.toString(), envVars);
 
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 				// Desactivate DBGP Stream redirection

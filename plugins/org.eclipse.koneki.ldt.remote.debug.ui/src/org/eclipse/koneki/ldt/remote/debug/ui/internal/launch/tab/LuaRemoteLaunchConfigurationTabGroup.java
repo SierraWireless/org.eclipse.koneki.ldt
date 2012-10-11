@@ -12,10 +12,11 @@ public class LuaRemoteLaunchConfigurationTabGroup extends AbstractLaunchConfigur
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[3];
+		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[4];
 		tabs[0] = new LuaRemoteLaunchConfigurationMainTab(mode);
-		tabs[1] = new LuaRemoteEnvironmentTab();
-		tabs[2] = new CommonTab();
+		tabs[1] = new LuaRemoteArgumentsTab();
+		tabs[2] = new LuaRemoteEnvironmentTab();
+		tabs[3] = new CommonTab();
 		setTabs(tabs);
 	}
 

@@ -165,7 +165,7 @@ public final class LuaRemoteLaunchConfigurationUtil {
 		return null;
 	}
 
-	public static String getRemoteApplicationPath(ILaunchConfiguration configuration) throws CoreException {
+	public static String getRemoteApplicationPath(ILaunchConfiguration configuration) {
 		IHost host = getHost(configuration);
 		IRemoteFileSubSystem remoteFileSubSystem = RSEUtil.getRemoteFileSubsystem(host);
 		LuaSubSystem luaSubSystem = LuaRSEUtil.getLuaSubSystem(host);

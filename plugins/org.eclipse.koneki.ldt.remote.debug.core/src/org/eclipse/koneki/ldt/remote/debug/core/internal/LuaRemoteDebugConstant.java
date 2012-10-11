@@ -19,9 +19,13 @@ public interface LuaRemoteDebugConstant {
 	String PROJECT_NAME = ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME;
 	String SCRIPT_NAME = ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME;
 	String HOST_ID = Activator.PLUGIN_ID + ".debug.hostid"; //$NON-NLS-1$
+	String OUTPUT_DIRECTORY = ScriptLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY;
+	String SCRIPT_ARGS = ScriptLaunchConfigurationConstants.ATTR_SCRIPT_ARGUMENTS;
+	String INTERPRETER_ARGS = ScriptLaunchConfigurationConstants.ATTR_INTERPRETER_ARGUMENTS;
 
 	String BREAK_ON_FIRST_LINE = ScriptLaunchConfigurationConstants.ENABLE_BREAK_ON_FIRST_LINE;
 	String DBGP_LOGGING = ScriptLaunchConfigurationConstants.ENABLE_DBGP_LOGGING;
 
 	String NATURE = ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE;
+
 }

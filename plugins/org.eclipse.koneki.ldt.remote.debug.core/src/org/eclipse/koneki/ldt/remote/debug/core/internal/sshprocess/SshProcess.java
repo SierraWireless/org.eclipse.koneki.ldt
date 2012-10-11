@@ -36,6 +36,8 @@ import com.jcraft.jsch.Session;
  */
 public class SshProcess implements IProcess {
 
+	public static final char ARGUMENT_SEPARATOR = ' ';
+
 	private ILaunch launch;
 	private ChannelExec channelExec;
 	private StreamsProxy sshStreamProxy;
@@ -55,8 +57,7 @@ public class SshProcess implements IProcess {
 	 * @throws CoreException
 	 *             if exec channel can not be created, or session is down
 	 */
-	public SshProcess(Session session, ILaunch launch, String workingDirectoryPath, String[] command, Map<String, String> envVars)
-			throws CoreException {
+	public SshProcess(Session session, ILaunch launch, String workingDirectoryPath, String command, Map<String, String> envVars) throws CoreException {
 		this.launch = launch;
 		this.currentSession = session;
 		this.workingDir = workingDirectoryPath;
@@ -72,12 +73,7 @@ public class SshProcess implements IProcess {
 			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Unable to create SShProcess")); //$NON-NLS-1$
 		channelExec = (ChannelExec) channel;
 
-		// Create command label (unescaped form)
-		StringBuilder labelCmd = new StringBuilder();
-		for (String part : command) {
-			labelCmd.append(part).append(" "); //$NON-NLS-1$
-		}
-		this.label = labelCmd.toString();
+		this.label = command;
 
 		// create composed command
 		String composedCommand = createLaunchCommand(workingDirectoryPath, command, envVars);
@@ -145,7 +141,7 @@ public class SshProcess implements IProcess {
 	/**
 	 * create one command from workingdir, envpath and command
 	 */
-	private String createLaunchCommand(String workingDirectoryPath, String[] command, Map<String, String> envVars) {
+	private String createLaunchCommand(String workingDirectoryPath, String command, Map<String, String> envVars) {
 		// TODO : should works only on linux...
 
 		StringBuilder composedCommand = new StringBuilder();
@@ -177,9 +173,8 @@ public class SshProcess implements IProcess {
 
 		// launch command in background
 		composedCommand.append("{ "); //$NON-NLS-1$
-		for (String part : command) {
-			composedCommand.append(escapeShell(part)).append(" "); //$NON-NLS-1$
-		}
+		composedCommand.append(command);
+
 		composedCommand.append(" & }"); //$NON-NLS-1$
 		composedCommand.append(" && "); //$NON-NLS-1$
 
