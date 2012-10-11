@@ -283,24 +283,24 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	@Override
-	public boolean isValid(ILaunchConfiguration launchConfig) {
-		boolean valid = super.isValid(launchConfig);
+	public boolean isValid(final ILaunchConfiguration launchConfig) {
+		final boolean valid = super.isValid(launchConfig);
 
 		if (valid) {
 			if (defaultInterpreterButton.getSelection()) {
-				IInterpreterInstall defaultInterpreter = getDefaultInterpreter();
+				final IInterpreterInstall defaultInterpreter = getDefaultInterpreter();
 				if (defaultInterpreter == null) {
 					setErrorMessage(Messages.LuaInterpreterTabComboBlockNoDefaultInterpreter);
-					return true;
+					return false;
 				}
 			} else {
 				if (getSelectedInterpreter() == null) {
 					if (interpretersViewer.getCombo().getItemCount() > 0) {
 						setErrorMessage(Messages.LuaInterpreterTabComboBlockSelectAnInterpreter);
-						return true;
+						return false;
 					} else {
 						setErrorMessage(Messages.LuaInterpreterTabComboBlockNoInterpreter);
-						return true;
+						return false;
 					}
 				}
 			}
