@@ -16,7 +16,6 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaArgumentsTab;
 import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaEnvironmentTab;
-import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.LuaInterpreterTab;
 
 public class LuaLaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
@@ -24,9 +23,8 @@ public class LuaLaunchConfigurationTabGroup extends AbstractLaunchConfigurationT
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		final LuaMainLaunchConfigurationTab main = new LuaMainLaunchConfigurationTab(mode);
 		final LuaArgumentsTab arguments = new LuaArgumentsTab();
-		final LuaInterpreterTab interpreter = new LuaInterpreterTab(main);
 		final LuaEnvironmentTab env = new LuaEnvironmentTab();
 		final CommonTab common = new CommonTab();
-		setTabs(new ILaunchConfigurationTab[] { main, arguments, interpreter, env, common });
+		setTabs(new ILaunchConfigurationTab[] { main, arguments, env, common });
 	}
 }

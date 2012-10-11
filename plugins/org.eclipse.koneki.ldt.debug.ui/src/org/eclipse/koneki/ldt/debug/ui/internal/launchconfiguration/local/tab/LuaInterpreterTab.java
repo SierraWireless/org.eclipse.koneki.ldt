@@ -22,6 +22,10 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.launching.ScriptRuntime.DefaultInterpreterEntry;
 
+/**
+ * @deprecated not used since lua interpreters is configurable in main Tab
+ *             (org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.LuaMainLaunchConfigurationTab).
+ */
 public class LuaInterpreterTab extends InterpreterTab {
 
 	public LuaInterpreterTab(final IMainLaunchConfigurationTab main) {

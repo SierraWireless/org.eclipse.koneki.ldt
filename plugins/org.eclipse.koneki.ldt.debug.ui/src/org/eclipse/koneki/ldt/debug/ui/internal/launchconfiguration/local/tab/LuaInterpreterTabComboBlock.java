@@ -44,6 +44,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+/**
+ * @deprecated not used since lua interpreters is configurable in main
+ *             Tab.(org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.LuaMainLaunchConfigurationTab).
+ */
 public class LuaInterpreterTabComboBlock extends AbstractInterpreterComboBlock {
 
 	private static final Status OK = new Status(Status.OK, Activator.PLUGIN_ID, "It is all good."); //$NON-NLS-1$
