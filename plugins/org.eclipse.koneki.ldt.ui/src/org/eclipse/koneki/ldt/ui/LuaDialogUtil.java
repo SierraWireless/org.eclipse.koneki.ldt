@@ -32,6 +32,10 @@ public final class LuaDialogUtil {
 	private LuaDialogUtil() {
 	}
 
+	public static final IProject openSelectLuaProjectDialog(Shell shell, String projectName) {
+		return openSelectLuaProjectDialog(shell, projectName, null, null);
+	}
+
 	public static final IProject openSelectLuaProjectDialog(Shell shell, String projectName, String title, String message) {
 		// initialize selection dialog
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new WorkbenchLabelProvider());
@@ -62,6 +66,10 @@ public final class LuaDialogUtil {
 			}
 		}
 		return null;
+	}
+
+	public static final IFile openSelectScriptFromProjectDialog(Shell shell, IProject project) {
+		return openSelectScriptFromProjectDialog(shell, project, null, null);
 	}
 
 	public static final IFile openSelectScriptFromProjectDialog(Shell shell, IProject project, String title, String message) {
