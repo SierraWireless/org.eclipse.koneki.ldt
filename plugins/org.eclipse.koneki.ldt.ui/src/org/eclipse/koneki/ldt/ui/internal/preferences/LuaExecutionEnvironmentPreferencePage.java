@@ -12,7 +12,9 @@ package org.eclipse.koneki.ldt.ui.internal.preferences;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -31,6 +33,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
+import org.eclipse.koneki.ldt.ui.LuaExecutionEnvironmentUIManager;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentContentProvider;
@@ -50,13 +53,26 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.activities.ActivityEvent;
+import org.eclipse.ui.activities.IActivity;
+import org.eclipse.ui.activities.IActivityListener;
 
 public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static final String AVAILABLE_EXECUTION_ENVIRONEMENT_URL = "http://wiki.eclipse.org/Koneki/LDT/User_Area/Available_Execution_Environments"; //$NON-NLS-1$
-	
+
 	private TreeViewer eeTreeViewer;
 	private Button removeButton;
+
+	private Set<IActivity> activitiesWatched = new HashSet<IActivity>();
+	private IActivityListener activityListener = new IActivityListener() {
+		@Override
+		public void activityChanged(ActivityEvent activityEvent) {
+			if (activityEvent.hasEnabledChanged()) {
+				initializePage();
+			}
+		}
+	};
 
 	public LuaExecutionEnvironmentPreferencePage() {
 		setDescription(Messages.LuaExecutionEnvironmentPreferencePageTitle);
@@ -147,6 +163,9 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			}
 		});
 
+		// add a listener to activities which can hide EE to refresh the UI
+		activitiesWatched = LuaExecutionEnvironmentUIManager.addListenerToEERelatedActivity(activityListener);
+
 		// ----------------
 		// Initialize UI
 		initializePage();
@@ -232,13 +251,27 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 	}
 
 	private void initializePage() {
-		if (eeTreeViewer == null)
+		if (eeTreeViewer == null || eeTreeViewer.getControl().isDisposed())
 			return;
 
 		// Refresh list
-		eeTreeViewer.setInput(LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments());
+		eeTreeViewer.setInput(LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments());
 
 		// As list is refreshed, they is no selection
 		refreshRemoveButton();
+	}
+
+	/**
+	 * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+	 */
+	@Override
+	public void dispose() {
+		// dispose the listener watching something not build in this page
+		for (IActivity activity : activitiesWatched) {
+			activity.removeActivityListener(activityListener);
+		}
+
+		super.dispose();
+
 	}
 }

@@ -389,6 +389,10 @@ public final class LuaExecutionEnvironmentManager {
 		return result;
 	}
 
+	/**
+	 * List all the installed and contributed EEs. To have only activities enabled EE see LuaExecutionEnvironmentUIManager
+	 * 
+	 */
 	public static List<LuaExecutionEnvironment> getAvailableExecutionEnvironments() {
 		List<LuaExecutionEnvironment> availableExecutionEnvironments = getInstalledExecutionEnvironments();
 

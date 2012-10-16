@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentBuildpathUtil;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
-import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
+import org.eclipse.koneki.ldt.ui.LuaExecutionEnvironmentUIManager;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -135,7 +135,7 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 		}
 
 		// get new input
-		final List<LuaExecutionEnvironment> newInput = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
+		final List<LuaExecutionEnvironment> newInput = LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments();
 		eeTreeViewer.setInput(newInput);
 
 		// try to guess the better new selection
@@ -155,7 +155,6 @@ public class LuaExecutionEnvironmentWizardPage extends NewElementWizardPage impl
 				}
 			}
 		}
-
 	}
 
 	private LuaExecutionEnvironment getSelectedExecutionEnvironment() {

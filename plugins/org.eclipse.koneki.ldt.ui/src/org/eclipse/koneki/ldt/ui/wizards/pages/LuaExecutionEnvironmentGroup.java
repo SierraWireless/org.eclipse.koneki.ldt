@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
-import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
+import org.eclipse.koneki.ldt.ui.LuaExecutionEnvironmentUIManager;
 import org.eclipse.koneki.ldt.ui.internal.buildpath.LuaExecutionEnvironmentContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -149,7 +149,7 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 
 	private void updateExecutionEnvironmentList() {
 		if (installedEEsComboViewer != null && eeButton != null && noEEButton != null) {
-			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentManager.getAvailableExecutionEnvironments();
+			final List<LuaExecutionEnvironment> installedExecutionEnvironments = LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments();
 			installedEEsComboViewer.setInput(installedExecutionEnvironments);
 
 			// Select first execution environment when available
