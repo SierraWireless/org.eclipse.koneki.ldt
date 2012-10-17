@@ -53,7 +53,7 @@ public class FunctionTypeDef extends TypeDef {
 	@Override
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
-			// traverse paramters
+			// traverse parameters
 			for (Parameter param : parameters) {
 				param.traverse(visitor);
 			}

@@ -15,11 +15,11 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaASTNode;
 
 public class LocalVar extends LuaASTNode {
-	private Item var;
+	private final Item var;
 	private int scopeMinOffset;
 	private int scopeMaxOffset;
 
-	public LocalVar(Item var, int scopeMinOffset, int scopeMaxOffset) {
+	public LocalVar(final Item var, final int scopeMinOffset, final int scopeMaxOffset) {
 		this.var = var;
 		this.scopeMinOffset = scopeMinOffset;
 		this.scopeMaxOffset = scopeMaxOffset;
@@ -37,8 +37,16 @@ public class LocalVar extends LuaASTNode {
 		return scopeMaxOffset;
 	}
 
+	public void setScopeMinOffset(final int scopeMinOffset) {
+		this.scopeMinOffset = scopeMinOffset;
+	}
+
+	public void setScopeMaxOffset(final int scopeMaxOffset) {
+		this.scopeMaxOffset = scopeMaxOffset;
+	}
+
 	@Override
-	public void traverse(ASTVisitor visitor) throws Exception {
+	public void traverse(final ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
 			var.traverse(visitor);
 			visitor.endvisit(this);

@@ -28,6 +28,7 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
+import org.eclipse.osgi.util.NLS;
 
 import com.naef.jnlua.LuaException;
 
@@ -102,10 +103,18 @@ public class LuaSourceParser extends AbstractSourceParser {
 		LuaSourceRoot module = new LuaSourceRoot(input.getSourceContents().length());
 
 		synchronized (LuaSourceParser.class) {
+			final String source = input.getSourceContents();
 			try {
-				module = astBuilder.buildAST(input.getSourceContents());
-			} catch (LuaException e) {
-				Activator.logError("Unable to load metalua ast builder :" + input.getFileName(), e); //$NON-NLS-1$
+				module = astBuilder.buildAST(source);
+
+				// Handle encoding shifts
+				module.traverse(new EncodingVisitor(source));
+			} catch (final LuaException e) {
+				Activator.logError(NLS.bind("Unable to load metalua ast builder for {0}.", input.getFileName()), e); //$NON-NLS-1$
+				// CHECKSTYLE:OFF
+			} catch (final Exception e) {
+				// CHECKSTYLE:ON
+				Activator.logWarning(NLS.bind("Unable to backpatch encoding shifts for {0}.", input.getFileName()), e); //$NON-NLS-1$
 			}
 
 			// Deal with errors on Lua side
