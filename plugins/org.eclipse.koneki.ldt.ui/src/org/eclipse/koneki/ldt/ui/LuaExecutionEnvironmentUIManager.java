@@ -29,9 +29,12 @@ import org.eclipse.ui.activities.IActivityPatternBinding;
  * Only activities with following format of binding pattern are take in account:
  * <code><plugin id>/org.eclipse.koneki.ldt.executionEnvironment.<EE's id>-<EE's version></code>
  */
-public class LuaExecutionEnvironmentUIManager {
+public final class LuaExecutionEnvironmentUIManager {
 
 	public static final String EE_EXTENTION_POINT_ID = "org.eclipse.koneki.ldt.executionEnvironment"; //$NON-NLS-1$
+
+	private LuaExecutionEnvironmentUIManager() {
+	}
 
 	/**
 	 * List all the installed and contributed activities enabled EEs.
@@ -68,7 +71,6 @@ public class LuaExecutionEnvironmentUIManager {
 				}
 			}
 		}
-
 		return newExecutionEnvironments;
 	}
 
