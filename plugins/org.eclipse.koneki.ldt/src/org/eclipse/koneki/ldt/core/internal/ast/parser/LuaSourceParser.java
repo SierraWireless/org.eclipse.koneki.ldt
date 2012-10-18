@@ -19,7 +19,9 @@ import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
+import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
+import org.eclipse.dltk.compiler.problem.ProblemCollector;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
@@ -103,12 +105,30 @@ public class LuaSourceParser extends AbstractSourceParser {
 		LuaSourceRoot module = new LuaSourceRoot(input.getSourceContents().length());
 
 		synchronized (LuaSourceParser.class) {
-			final String source = input.getSourceContents();
 			try {
+
+				// Build AST
+				final String source = input.getSourceContents();
 				module = astBuilder.buildAST(source);
 
-				// Handle encoding shifts
-				module.traverse(new EncodingVisitor(source));
+				/*
+				 * Handle encoding shifts
+				 */
+
+				// Compute encoding shifts
+				final OffsetFixer fixer = new OffsetFixer(source);
+
+				// Fix AST
+				module.traverse(new EncodingVisitor(fixer));
+
+				// Fix problems
+				if (reporter instanceof ProblemCollector) {
+					for (final IProblem problem : ((ProblemCollector) reporter).getProblems()) {
+						problem.setSourceStart(fixer.getCharacterPosition(problem.getSourceStart()));
+						problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
+					}
+				}
+
 			} catch (final LuaException e) {
 				Activator.logError(NLS.bind("Unable to load metalua ast builder for {0}.", input.getFileName()), e); //$NON-NLS-1$
 				// CHECKSTYLE:OFF
@@ -132,10 +152,8 @@ public class LuaSourceParser extends AbstractSourceParser {
 							return cached;
 						}
 					}
-				} else {
-					if (input.getModelElement() != null) {
-						cache.put(input.getModelElement(), module);
-					}
+				} else if (input.getModelElement() != null) {
+					cache.put(input.getModelElement(), module);
 				}
 			}
 		}
