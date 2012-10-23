@@ -1,0 +1,12 @@
+--- Module to process.
+-- 
+-- A regular line.
+-- 
+-- * apple	
+-- * banana
+-- * orange
+--
+-- Another regular line.
+-- 
+-- @module list 
+return nil

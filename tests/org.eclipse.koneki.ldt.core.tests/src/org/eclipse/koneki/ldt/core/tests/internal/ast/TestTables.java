@@ -11,32 +11,44 @@
 package org.eclipse.koneki.ldt.core.tests.internal.ast;
 
 import org.eclipse.koneki.ldt.core.tests.internal.ast.utils.AbstractParserTest;
+import org.junit.Test;
 
 /**
  * Module Parsing Tests
  */
+
 public class TestTables extends AbstractParserTest {
 
 	/**
 	 * parse table
 	 */
+	@Test
 	public void testTableWithOneScalarField() {
 		parse("local t = {} t.f1, t.f2 = 2,3"); //$NON-NLS-1$		
 	}
 
+	@Test
 	public void testTableWithValues() {
 		parse("local t = {0, '1', nil, {}, function() end}"); //$NON-NLS-1$		
 	}
 
+	@Test
 	public void testTableWithKeys() {
 		parse("local t = {['f']=function() end}"); //$NON-NLS-1$		
 	}
 
+	@Test
 	public void testTableWithTrailingComma() {
 		parse("local t = {0,}"); //$NON-NLS-1$		
 	}
 
+	@Test
 	public void testTableWithTrailingSemiColon() {
 		parse("local t = {0;}"); //$NON-NLS-1$		
+	}
+
+	@Test
+	public void testSeveralValuesTableWithTrailingSemiColon() {
+		parse("local t = {0;0,}"); //$NON-NLS-1$		
 	}
 }

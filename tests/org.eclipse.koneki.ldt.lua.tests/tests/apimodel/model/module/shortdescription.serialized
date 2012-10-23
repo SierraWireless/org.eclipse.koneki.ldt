@@ -1,0 +1,48 @@
+do local _ = {
+		description = "",
+		globalvars = {
+
+		}
+		--[[table: 0x9f454e8]],
+		shortdescription = " Module short description.",
+		name = "modulename",
+		returns = {
+			{
+				types = {
+					{
+						typename = "modulename",
+						tag = "internaltyperef"
+					}
+					--[[table: 0x9f45498]]
+				}
+				--[[table: 0x9fbade0]],
+				description = "",
+				tag = "return"
+			}
+			--[[table: 0x9df44b8]]
+		}
+		--[[table: 0x9f45510]],
+		types = {
+			modulename = {
+				fields = {
+
+				}
+				--[[table: 0x9f0d0b8]],
+				name = "modulename",
+				parent = nil --[[ref]],
+				sourcerange = {
+					min = 1,
+					max = 55
+				}
+				--[[table: 0x9f0d0e0]],
+				tag = "recordtypedef"
+			}
+			--[[table: 0x9f0d090]]
+		}
+		--[[table: 0x9f454c0]],
+		tag = "file"
+	}
+	--[[table: 0x9eb5888]];
+	_.types.modulename.parent = _;
+	return _;
+end

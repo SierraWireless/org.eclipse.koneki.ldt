@@ -10,8 +10,7 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 return 
-[[<a id="$(anchor(_item))" />
-<dl class="function">
+[[<dl class="function">
 <dt>
 # --
 # -- Resolve item type definition
@@ -37,7 +36,9 @@ return
 		<em>$(prettyname(_item.type))</em>
 #	end
 #end
+<a id="$(anchor(_item))" >
 <strong>$( prettyname(_item) )</strong>
+</a>
 </dt>
 <dd>
 # if _item.shortdescription then

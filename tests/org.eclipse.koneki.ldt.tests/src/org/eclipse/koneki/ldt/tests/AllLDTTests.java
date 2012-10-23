@@ -12,6 +12,7 @@ package org.eclipse.koneki.ldt.tests;
 
 import org.eclipse.koneki.ldt.core.tests.AllCoreTests;
 import org.eclipse.koneki.ldt.jnlua.tests.AllJNLuaTests;
+import org.eclipse.koneki.ldt.lua.tests.AllLuaTests;
 import org.eclipse.koneki.ldt.metalua.tests.AllMetaluaTests;
 import org.eclipse.koneki.ldt.ui.tests.AllUITests;
 import org.junit.runner.RunWith;
@@ -19,7 +20,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AllJNLuaTests.class, AllMetaluaTests.class, AllCoreTests.class, AllUITests.class })
+@SuiteClasses({ AllJNLuaTests.class, AllMetaluaTests.class, AllLuaTests.class, AllCoreTests.class, AllUITests.class })
 public class AllLDTTests {
 
 }

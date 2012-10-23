@@ -13,20 +13,14 @@
 
 	<!-- folder where lua script file should be get -->
 	<property name="librariesFolder" value="../../libraries" />
-	<property name="folderToImport" value="${librariesFolder}/luadbgpclient" />
+	<property name="debuggerFolder" value="${librariesFolder}/luadbgpclient/" />
 
 	<!-- destination folder -->
-	<property name="destinationFolder" value="script" />
+	<property name="destinationFolder" value="script/external" />
 
 	<target name="build">
-		<!-- clean destinationLuaFolder -->
-		<delete includeEmptyDirs="true">
-			<fileset dir="${destinationFolder}" defaultexcludes="no" excludes=".gitignore" />
-		</delete>
-
-		<!-- copy debugger file -->
-		<copy todir="${destinationFolder}">
-			<fileset dir="${folderToImport}" includes="*.lua" />
-		</copy>
+		<ant antfile="${debuggerFolder}/build.xml" target="build">
+			<property name="debuggerFile" value="${destinationFolder}/debugger.lua" />
+		</ant>
 	</target>
 </project>

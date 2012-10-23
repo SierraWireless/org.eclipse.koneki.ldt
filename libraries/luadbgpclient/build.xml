@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Copyright (c) 2012 Sierra Wireless and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        Sierra Wireless - initial API and implementation
+ -->
+<project name="debuggerBuilder" default="build">
+
+	<!-- Calculate the folder which contains this current ant file-->
+	<dirname property="antFileFolder" file="${ant.file}" /> 
+	
+	<!--Output file name -->
+	<property name="debuggerFile" value="./debugger.lua" />
+	
+	<!--Some constant string part of the generated file -->
+	<property name="header">-- /!\ This file is auto-generated. Do not alter manually /!\
+
+--------------------------------------------------------------------------------
+--  Submodules body
+--------------------------------------------------------------------------------
+</property>
+	<property name="moduleheaderstart">--------------------------------------------------------------------------------
+--  Module </property>
+	<property name="moduleheadermidle">
+package.preload["</property>
+	<property name="moduleheaderend">"] = function(...)
+</property>
+	<property name="modulefooterstart">
+end
+-- End of module</property>
+<property name="modulefooterend">
+--------------------------------------------------------------------------------
+
+</property>
+	<property name="mainheader">
+--------------------------------------------------------------------------------
+--  Main content
+--------------------------------------------------------------------------------
+
+</property>
+
+	<!--Create the file -->
+	<target name="createDebugger">
+		<delete file="${debuggerFile}" />
+		<touch file="${debuggerFile}" />
+
+		<echo file="${debuggerFile}" append="true" message="${header}" />
+	</target>
+	
+	<!--Find a path from a lua module name -->
+	<target name="findPath">
+		<script language="javascript">
+		    var module = project.getProperty("module");
+		    project.setProperty("path", module.replace(".", "/") + ".lua");
+		</script>
+	</target>
+
+	<!--Append a module in the file -->
+	<target name="appendModule" depends="findPath">
+		<antcall target="findPath" />
+		
+		<loadfile property="fileContent" srcFile="${antFileFolder}/${path}" />
+		<echo file="${debuggerFile}" append="true" message="${moduleheaderstart}${module}" />
+		<echo file="${debuggerFile}" append="true" message="${moduleheadermidle}${module}" />
+		<echo file="${debuggerFile}" append="true" message="${moduleheaderend}" />
+		<echo file="${debuggerFile}" append="true" message="${fileContent}" />
+		<echo file="${debuggerFile}" append="true" message="${modulefooterstart}${module}" />
+		<echo file="${debuggerFile}" append="true" message="${modulefooterend}" />
+	</target>
+
+	<!--Append the main in the file -->
+	<target name="appendMain" depends="findPath">
+		<antcall target="findPath" />
+		
+		<loadfile property="fileContent" srcFile="${antFileFolder}/${path}" />
+		<echo file="${debuggerFile}" append="true" message="${mainheader}" />
+		<echo file="${debuggerFile}" append="true" message="${fileContent}" />
+	</target>
+
+	<!--Main task
+	Chain all the module and the main to be included in the generated file
+	 -->
+	<target name="build">
+		<antcall target="createDebugger" />
+		
+		<antcall target="appendModule">
+			<param name="module" value="debugger.transport.apr" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.transport.luasocket" />
+		</antcall>
+		<antcall target="appendModule">
+					<param name="module" value="debugger.transport.luasocket_sched" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.commands" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.context" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.dbgp" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.introspection" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.platform" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.util" />
+		</antcall>
+		<antcall target="appendModule">
+			<param name="module" value="debugger.url" />
+		</antcall>
+
+		<antcall target="appendMain">
+			<param name="module" value="debugger.init" />
+		</antcall>
+	</target>
+
+</project>

@@ -13,8 +13,10 @@
 	<modules>
 		<module>org.eclipse.koneki.ldt.jnlua.tests</module>
 		<module>org.eclipse.koneki.ldt.metalua.tests</module>
+		<module>org.eclipse.koneki.ldt.lua.tests</module>
 		<module>org.eclipse.koneki.ldt.core.tests</module>
 		<module>org.eclipse.koneki.ldt.ui.tests</module>
+		
 	</modules>
 	<build>
 		<plugins>

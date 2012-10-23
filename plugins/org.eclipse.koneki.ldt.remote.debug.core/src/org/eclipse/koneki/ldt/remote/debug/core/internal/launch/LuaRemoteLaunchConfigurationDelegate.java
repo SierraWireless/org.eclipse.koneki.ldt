@@ -62,7 +62,7 @@ import org.osgi.framework.Bundle;
 import com.jcraft.jsch.Session;
 
 public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
-	private static final String[] DEBUG_FILES = { "/script/debugintrospection.lua", "script/debugger.lua" }; //$NON-NLS-1$ //$NON-NLS-2$
+	private static final String[] DEBUG_FILES = { "script/external/debugger.lua" }; //$NON-NLS-1$
 
 	private static final String DEBGUGGER_MODULE = "debugger"; //$NON-NLS-1$
 
@@ -240,6 +240,9 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 				// dbgp env vars
 				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_KEY, sessionID);
 				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_PORT, String.valueOf(DLTKDebugPlugin.getDefault().getDbgpService().getPort()));
+				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_PLATFORM, "unix"); //$NON-NLS-1$
+				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_WORKINGDIR, remoteApplicationFolderPath);
+				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_TRANSPORT, "luasocket_sched"); //$NON-NLS-1$
 			}
 
 			// create lua execution command

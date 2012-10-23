@@ -19,7 +19,7 @@ import org.eclipse.koneki.ldt.debug.core.internal.Activator;
 
 public class LuaGenericInterpreterRunner extends AbstractInterpreterRunner {
 
-	protected LuaGenericInterpreterRunner(IInterpreterInstall install) {
+	public LuaGenericInterpreterRunner(IInterpreterInstall install) {
 		super(install);
 	}
 

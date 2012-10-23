@@ -1,0 +1,100 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x91f39b8]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x91f3880]]
+				}
+				--[[table: 0x91f3948]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x91f38a8]]
+		}
+		--[[table: 0x91f39e0]],
+		types={
+			["__othermodule#atype=__1"]={
+				shortdescription=" Function short description.",
+				description="Function long description",
+				name="__othermodule#atype=__1",
+				parent=nil --[[ref]],
+				returns={
+					[1]={
+						types={
+							[1]={
+								typename="atype",
+								modulename="othermodule",
+								tag="externaltyperef"
+							}
+							--[[table: 0x92323c0]]
+						}
+						--[[table: 0x9232398]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0x9232370]]
+				}
+				--[[table: 0x9232410]],
+				params={
+
+				}
+				--[[table: 0x92323e8]],
+				tag="functiontypedef"
+			}
+			--[[table: 0x9232348]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__othermodule#atype=__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0x9232710]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription=" Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=166
+						}
+						--[[table: 0x92322c8]],
+						occurrences={
+
+						}
+						--[[table: 0x92322a0]],
+						tag="item"
+					}
+					--[[table: 0x9232190]]
+				}
+				--[[table: 0x922cdd8]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0x922ce00]],
+				tag="recordtypedef"
+			}
+			--[[table: 0x922ccc8]]
+		}
+		--[[table: 0x91f3990]],
+		tag="file"
+	}
+	--[[table: 0x91f3858]];
+	_.types["__othermodule#atype=__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

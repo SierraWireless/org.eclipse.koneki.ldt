@@ -1,0 +1,97 @@
+do local _ = {
+		description = "",
+		globalvars = {
+
+		}
+		--[[table: 0x9fad0b8]],
+		shortdescription = "",
+		name = "modulename",
+		returns = {
+			{
+				types = {
+					{
+						typename = "modulename",
+						tag = "internaltyperef"
+					}
+					--[[table: 0x9facf80]]
+				}
+				--[[table: 0x9fad048]],
+				description = "",
+				tag = "return"
+			}
+			--[[table: 0x9facfa8]]
+		}
+		--[[table: 0x9fad0e0]],
+		types = {
+			["__=#string[paramname]__1"] = {
+				shortdescription = " Function short description.",
+				description = "Function long description",
+				name = "__=#string[paramname]__1",
+				parent = nil --[[ref]],
+				returns = {
+
+				}
+				--[[table: 0x9fb3e90]],
+				params = {
+					{
+						description = "param description",
+						type = {
+							typename = "string",
+							tag = "primitivetyperef"
+						}
+						--[[table: 0x9fb3e18]],
+						name = "paramname",
+						tag = "parameter"
+					}
+					--[[table: 0x9fb3df0]]
+				}
+				--[[table: 0x9fb3e68]],
+				tag = "functiontypedef"
+			}
+			--[[table: 0x9fb3dc8]],
+			modulename = {
+				fields = {
+					functionname = {
+						type = {
+							typename = "__=#string[paramname]__1",
+							tag = "internaltyperef"
+						}
+						--[[table: 0x9fb4190]],
+						description = "Function long description",
+						parent = nil --[[ref]],
+						shortdescription = " Function short description.",
+						name = "functionname",
+						sourcerange = {
+							min = 25,
+							max = 183
+						}
+						--[[table: 0x9fb3d60]],
+						occurrences = {
+
+						}
+						--[[table: 0x9fb3d38]],
+						tag = "item"
+					}
+					--[[table: 0x9fb3b00]]
+				}
+				--[[table: 0x9faed78]],
+				name = "modulename",
+				parent = nil --[[ref]],
+				sourcerange = {
+					min = 1,
+					max = 23
+				}
+				--[[table: 0x9faeda0]],
+				tag = "recordtypedef"
+			}
+			--[[table: 0x9faec68]]
+		}
+		--[[table: 0x9fad090]],
+		tag = "file"
+	}
+	--[[table: 0x9facf58]];
+	_.types["__=#string[paramname]__1"].parent = _;
+	_.types.modulename.fields.functionname.parent = _.types.modulename;
+	_.types.modulename.parent = _;
+	return _;
+end

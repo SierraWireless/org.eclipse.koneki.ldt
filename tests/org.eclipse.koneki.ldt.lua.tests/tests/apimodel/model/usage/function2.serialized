@@ -1,0 +1,102 @@
+do local _ = {
+		description = "",
+		globalvars = {
+
+		}
+		--[[table: 0x92546f8]],
+		shortdescription = "",
+		name = "modulename",
+		returns = {
+			{
+				types = {
+					{
+						typename = "modulename",
+						tag = "internaltyperef"
+					}
+					--[[table: 0x92545c0]]
+				}
+				--[[table: 0x9254688]],
+				description = "",
+				tag = "return"
+			}
+			--[[table: 0x92545e8]]
+		}
+		--[[table: 0x9254720]],
+		types = {
+			["__=__1"] = {
+				shortdescription = "",
+				description = "",
+				name = "__=__1",
+				parent = nil --[[ref]],
+				returns = {
+
+				}
+				--[[table: 0x924b608]],
+				params = {
+
+				}
+				--[[table: 0x924b5e0]],
+				tag = "functiontypedef"
+			}
+			--[[table: 0x924b520]],
+			modulename = {
+				fields = {
+					functionname = {
+						type = {
+							typename = "__=__1",
+							tag = "internaltyperef"
+						}
+						--[[table: 0x924b670]],
+						description = "",
+						parent = nil --[[ref]],
+						metadata = {
+							usage = {
+								{
+									description = "local code"
+								}
+								--[[table: 0x924a520]],
+								{
+									description = "other local code"
+								}
+								--[[table: 0x924b310]],
+								tag = "usage"
+							}
+							--[[table: 0x924b3d0]]
+						}
+						--[[table: 0x924b3a8]],
+						shortdescription = "",
+						name = "functionname",
+						sourcerange = {
+							min = 28,
+							max = 126
+						}
+						--[[table: 0x924b4b8]],
+						occurrences = {
+
+						}
+						--[[table: 0x924b490]],
+						tag = "item"
+					}
+					--[[table: 0x924b380]]
+				}
+				--[[table: 0x9239b00]],
+				name = "modulename",
+				parent = nil --[[ref]],
+				sourcerange = {
+					min = 1,
+					max = 26
+				}
+				--[[table: 0x9239b28]],
+				tag = "recordtypedef"
+			}
+			--[[table: 0x92399f0]]
+		}
+		--[[table: 0x92546d0]],
+		tag = "file"
+	}
+	--[[table: 0x9254598]];
+	_.types["__=__1"].parent = _;
+	_.types.modulename.fields.functionname.parent = _.types.modulename;
+	_.types.modulename.parent = _;
+	return _;
+end

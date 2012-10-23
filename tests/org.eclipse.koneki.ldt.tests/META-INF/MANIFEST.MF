@@ -8,6 +8,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.junit;bundle-version="4.5.0",
  org.eclipse.koneki.ldt.core.tests,
+ org.eclipse.koneki.ldt.lua.tests,
  org.eclipse.koneki.ldt.metalua.tests,
  org.eclipse.koneki.ldt.ui.tests,
  org.eclipse.koneki.ldt.jnlua.tests

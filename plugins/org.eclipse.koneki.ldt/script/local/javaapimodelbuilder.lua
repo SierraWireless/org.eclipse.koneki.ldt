@@ -35,6 +35,9 @@ templateengineenv.linktypes['file'] = nil
 -- Cache of link generation
 local originallinkto = templateengineenv.linkto
 
+-- use java library for markdown (for better performance)
+templateengine.env.markdown = javaapimodelfactory.markdown
+
 -- Restore link generators
 local function enablelinks()
 	templateengine.env.linkto = originallinkto

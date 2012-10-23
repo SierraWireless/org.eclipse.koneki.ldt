@@ -10,7 +10,6 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 return [[#
-<a id ="$(anchor(_recordtypedef))"></a>
 # --
 # -- Descriptions
 # --

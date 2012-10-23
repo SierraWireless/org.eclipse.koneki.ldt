@@ -16,21 +16,23 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
 				<executions>
 					<execution>
-						<id>make-archive</id>
 						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
 						<configuration>
-							<finalName>Debugger_lua</finalName>
-							<appendAssemblyId>false</appendAssemblyId>
-							<descriptor>archive.xml</descriptor>
+							<target>
+								<ant antfile="${basedir}/build.xml" target="build">
+									<property name="debuggerFile"
+										value="${project.build.directory}/debugger.lua" />
+								</ant>
+							</target>
 						</configuration>
-					</execution>					
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

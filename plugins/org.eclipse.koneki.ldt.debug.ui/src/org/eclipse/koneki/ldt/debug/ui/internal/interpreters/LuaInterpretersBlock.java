@@ -10,16 +10,20 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui.internal.interpreters;
 
-import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
+import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.internal.debug.ui.interpreters.IScriptInterpreterDialog;
 import org.eclipse.dltk.internal.debug.ui.interpreters.InterpretersBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.InterpretersMessages;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.ScriptRuntime;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 public class LuaInterpretersBlock extends InterpretersBlock {
+
+	private Button editButton;
 
 	@Override
 	protected String getCurrentNature() {
@@ -27,9 +31,8 @@ public class LuaInterpretersBlock extends InterpretersBlock {
 	}
 
 	@Override
-	protected AddScriptInterpreterDialog createInterpreterDialog(IInterpreterInstall standin) {
-		return new AddLuaInterpreterDialog(this, getShell(), ScriptRuntime.getInterpreterInstallTypes(getCurrentNature()),
-				standin);
+	protected IScriptInterpreterDialog createInterpreterDialog(IEnvironment environment, IInterpreterInstall standin) {
+		return new AddLuaInterpreterDialog(this, getShell(), environment, ScriptRuntime.getInterpreterInstallTypes(getCurrentNature()), standin);
 	}
 
 	@Override
@@ -41,6 +44,28 @@ public class LuaInterpretersBlock extends InterpretersBlock {
 			button.setVisible(false);
 		}
 
+		// keep a pointer on Edit button
+		if (InterpretersMessages.InstalledInterpretersBlock_4.equals(label)) {
+			editButton = button;
+		}
+
 		return button;
+	}
+
+	@Override
+	protected void enableButtons() {
+		super.enableButtons();
+
+		// Disable Edit button if the selection contain one interpreter contributed by extension points
+		Object[] selectedInterpreters = ((IStructuredSelection) fInterpreterList.getSelection()).toArray();
+		boolean enableEdit = selectedInterpreters.length > 0;
+		for (Object selected : selectedInterpreters) {
+			if (selected instanceof IInterpreterInstall) {
+				IInterpreterInstall interpreter = (IInterpreterInstall) selected;
+				boolean isContributed = ScriptRuntime.isContributedInterpreterInstall(interpreter.getId());
+				enableEdit = enableEdit && !isContributed;
+			}
+		}
+		editButton.setEnabled(enableEdit);
 	}
 }

@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
---  Copyright (c) 2011 Sierra Wireless.
+--  Copyright (c) 2012 Sierra Wireless.
 --  All rights reserved. This program and the accompanying materials
 --  are made available under the terms of the Eclipse Public License v1.0
 --  which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
 local javamodelfactory = require "javamodelfactory"
 
 -- Just redefining classic print, as there is a flush problem calling it from Java
-local print = function (string) print(string) io.flush() end
+local print = function(...) print(...) io.flush() end
 
 local M = {}
 
@@ -27,35 +27,44 @@ function M.build(source)
 	handledcomments={}
 
 	-- Build AST
-	require 'errnode'
-	local ast = getast( source )
+	require 'metalua.compiler'
+	local ast = mlc.luastring_to_ast( source )
 	local root = javamodelfactory.newsourceroot(#source)
 
 	-- Check if an error occurred
-	local aststatus, error = pcall(mlc.check_ast, ast)
-	-- Seeking for regular `Error node
-	if not aststatus then
-		-- Selecting `Error in AST
+	local status, astvalid, errormsg, positions = pcall(mlc.check_ast, ast)
+	
+	-- Report problem
+	if not astvalid then
+		local msg = errormsg or 'Unable to determine error'
+		if positions then
+			local offset = positions.offset and positions.offset - 1 or 0
+			javamodelfactory.setproblem(root, positions.line, positions.column, offset, msg)
+		else
+			javamodelfactory.setproblem(root, 1, 1, 0, msg)
+		end
+		return root
+	elseif not status then
+
+		--
+		-- Seeking for regular `Error node "manually"
+		--
 		local Q = require 'metalua.treequery'
 		local errornode = Q(ast):filter('Error'):first()
+		local msg = errormsg or 'Unable to determine error'
+
 		-- Giving `Error information to Java AST
 		if errornode and errornode.lineinfo then
 			local line, column = errornode.lineinfo.first.line or 1, errornode.lineinfo.first.column or 1
-			local offset = errornode.lineinfo.first.offset or 1
-			javamodelfactory.setproblem(root,line, column, offset, error)
+			local offset = errornode.lineinfo.first.offset and errornode.lineinfo.first.offset - 1 or 0
+			javamodelfactory.setproblem(root,line, column, offset, msg)
 		else
-			javamodelfactory.setproblem(root,1, 1, 0, error)
+			javamodelfactory.setproblem(root,1, 1, 0, msg)
 		end
-		return root
-	elseif ast.tag == 'Error' then
-		-- Dealing with error generated from errnode#getast
-		local line, column, offset = ast.lineinfo.first[1] or 1, ast.lineinfo.first[2] or 1, ast.lineinfo.first[3] or 1
-		local errorMessage = ast[1] or 'Unable to determine error'
-		javamodelfactory.setproblem(root,line, column, offset, errorMessage )
 		return root
 	end
 
-	-- create api model
+	-- Create api model
 	local apimodelbuilder = require "models.apimodelbuilder"
 	local _file = apimodelbuilder.createmoduleapi(ast)
 

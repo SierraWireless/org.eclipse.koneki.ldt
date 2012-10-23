@@ -191,7 +191,7 @@ public class TestExpressions extends TestCase {
 		module = parse("table = {1,'2'}"); //$NON-NLS-1$
 		assertFalse("Table is not recognized.", module.isEmpty()); //$NON-NLS-1$
 		module = parse("table = {1,'2',}"); //$NON-NLS-1$
-		assertFalse("Table with trailing comman is not recognized.", module.isEmpty()); //$NON-NLS-1$
+		assertFalse("Table with trailing comma is not recognized.", module.isEmpty()); //$NON-NLS-1$
 		module = parse("table = {1,'2';}"); //$NON-NLS-1$
 		assertFalse("Table with trailing semi-colon is not recognized.", module.isEmpty()); //$NON-NLS-1$
 	}

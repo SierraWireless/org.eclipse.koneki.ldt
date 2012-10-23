@@ -1,0 +1,2 @@
+local d
+d = nil

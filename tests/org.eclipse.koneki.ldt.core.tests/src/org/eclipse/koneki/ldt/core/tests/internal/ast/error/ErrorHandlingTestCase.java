@@ -20,122 +20,182 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ErrorHandlingTestCase {
-	private static final String NEW_LINE = System.getProperty("line.separator"); //$NON-NLS-1$
+	private static final String NEW_LINE = "\n"; //$NON-NLS-1$
 
-	private void parseAndCheckErrors(final String code) {
-		parseAndCheckErrors(code, 1, code.length());
+	private IProblem parseAndCheckErrors(final String code) {
+
+		// Parse
+		final LuaSourceParser parser = new LuaSourceParser();
+		final ProblemCollector reporter = new ProblemCollector();
+		parser.parse(new ModuleSource(code), reporter);
+
+		// Check if there is a problem
+		Assert.assertFalse(MessageFormat.format("No error found for:\n{0}", code), reporter.isEmpty()); //$NON-NLS-1$
+
+		// Check if the problem seems valid
+		return reporter.getErrors().get(0);
 	}
 
-	private void parseAndCheckErrors(final String code, final int line, final int offset) {
-		parseAndCheckErrors(code, line, offset, -1);
+	private IProblem parseAndCheckErrors(final String code, final int line) {
+
+		// Check line
+		final IProblem problem = parseAndCheckErrors(code);
+		Assert.assertEquals(MessageFormat.format("Reported error line is invalid.\nGiven code is:\n{0}", code), line, problem.getSourceLineNumber()); //$NON-NLS-1$
+		return problem;
+	}
+
+	private IProblem parseAndCheckErrors(final String code, final int line, final int offset) {
+
+		// Check offset
+		final IProblem problem = parseAndCheckErrors(code, line);
+		Assert.assertEquals(MessageFormat.format("Wrong start offset. Given code was:\n{0}", code), offset, problem.getSourceStart()); //$NON-NLS-1$
+		return problem;
 	}
 
 	private void parseAndCheckErrors(final String code, final int line, final int startOffset, final int endOffset) {
 
-		// Parse
-		final LuaSourceParser parser = new LuaSourceParser();
-		final ProblemCollector reporter = new ProblemCollector();
-		parser.parse(new ModuleSource(code), reporter);
-
-		// Check if there is a problem
-		if (reporter.isEmpty())
-			Assert.fail(MessageFormat.format("No error found for:\n{0}", code)); //$NON-NLS-1$
-
-		// Check if the problem seems valid
-		final IProblem problem = reporter.getErrors().get(0);
-
-		// Check line
-		final int problemLineNumber = problem.getSourceLineNumber();
-		if (problemLineNumber != line)
-			Assert.fail(MessageFormat.format(
-					"Reported error line is invalid: <{0}> expected, got <{1}>.\nGiven code is:\n{2}", line, problemLineNumber, code)); //$NON-NLS-1$
+		// Parse and check line
+		final IProblem problem = parseAndCheckErrors(code, line);
 
 		// Check start
 		final int problemSourceStart = problem.getSourceStart();
-		if (startOffset != problemSourceStart)
-			Assert.fail(MessageFormat.format("Reported error start offset is invalid: <{0}> expected, got <{1}>.\nGiven code is:\n{2}",//$NON-NLS-1$	
-					startOffset, problemSourceStart, code));
+		final String startMessage = "Start error offset too small :{0} <= expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
+		Assert.assertTrue(MessageFormat.format(startMessage, startOffset, problemSourceStart, code), startOffset <= problemSourceStart);
 
 		// Check end
 		final int problemSourceEnd = problem.getSourceEnd();
-		if (endOffset != problemSourceEnd)
-			Assert.fail(MessageFormat.format(
-					"Reported error end offset is invalid: <{0}> expected, got <{1}>.\nGiven code is:\n{2}", endOffset, problemSourceEnd, code)); //$NON-NLS-1$		
+		final String endMessage = "End error offset is to big: >={0} expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
+		Assert.assertTrue(MessageFormat.format(endMessage, endOffset, problemSourceEnd, code), endOffset >= problemSourceEnd);
 	}
 
 	@Test
-	public void testBasicErrorHandling() {
-		// Parse
-		final LuaSourceParser parser = new LuaSourceParser();
-		final ProblemCollector reporter = new ProblemCollector();
-		final String code = "wrongcode"; //$NON-NLS-1$
-		parser.parse(new ModuleSource(code), reporter);
-
-		// Check if there is a problem
-		if (reporter.isEmpty())
-			Assert.fail(MessageFormat.format("No error found for:\n{0}", code)); //$NON-NLS-1$
+	public void testImbricatedBlocks() {
+		final StringBuilder wrongBlock = new StringBuilder();
+		wrongBlock.append("do"); //$NON-NLS-1$
+		wrongBlock.append(NEW_LINE);
+		wrongBlock.append("do"); //$NON-NLS-1$
+		wrongBlock.append(NEW_LINE);
+		wrongBlock.append("error"); //$NON-NLS-1$
+		wrongBlock.append(NEW_LINE);
+		wrongBlock.append("end"); //$NON-NLS-1$
+		wrongBlock.append(NEW_LINE);
+		wrongBlock.append("end"); //$NON-NLS-1$
+		parseAndCheckErrors(wrongBlock.toString(), 3, 6);
 	}
 
-	public void testIncompleteStatement() {
-		final String[] statements = { "do", //$NON-NLS-1$ 
-				"else",//$NON-NLS-1$ 
-				"end", //$NON-NLS-1$ 
-				"for", //$NON-NLS-1$ 
-				"function", //$NON-NLS-1$ 
-				"if", //$NON-NLS-1$ 
-				"local", //$NON-NLS-1$ 
-				"repeat", //$NON-NLS-1$ 
-				"then", //$NON-NLS-1$ 
-				"while" //$NON-NLS-1$ 
-		};
-		for (final String code : statements)
-			parseAndCheckErrors(code);
+	@Test
+	public void testIncompleteDo() {
+		parseAndCheckErrors("do"); //$NON-NLS-1$ 
 	}
 
+	@Test
+	public void testIncompleteElse() {
+		parseAndCheckErrors("else", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("else end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("else x=nil end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if else"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if true else"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if true then else"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if then else"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if then else end"); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteEnd() {
+		parseAndCheckErrors("end", 1, 0); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteFor() {
+		parseAndCheckErrors("for", 1, 0); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteFunction() {
+		parseAndCheckErrors("function"); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteIf() {
+		parseAndCheckErrors("if"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if then end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if true end"); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteIfElseIf() {
+		parseAndCheckErrors("elseif"); //$NON-NLS-1$ 
+		parseAndCheckErrors("elseif end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("elseif true end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("elseif true then end"); //$NON-NLS-1$
+
+		parseAndCheckErrors("if elseif"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if elseif end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if then elseif end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if then elseif then end"); //$NON-NLS-1$ 
+		parseAndCheckErrors("if true then elseif then end"); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteLocal() {
+		parseAndCheckErrors("local", 1, 0); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteRepeat() {
+		parseAndCheckErrors("repeat"); //$NON-NLS-1$ 
+	}
+
+	@Test
+	public void testIncompleteThen() {
+		parseAndCheckErrors("then", 1, 0); //$NON-NLS-1$ 
+	}
+
+	@Test
 	public void testSyntaxErrorAfterBlankLines() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append(NEW_LINE);
 		sb.append(NEW_LINE);
-		sb.append("local "); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 3, sb.length());
+		sb.append("if"); //$NON-NLS-1$
+		parseAndCheckErrors(sb.toString(), 3, 4);
 	}
 
+	@Test
 	public void testSyntaxErrorAtStart() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("x"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("return nil"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 3, 13, sb.length());
+		parseAndCheckErrors(sb.toString(), 1, 0);
 	}
 
+	@Test
 	public void testSyntaxErrorSurroundedByValidCode() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append("function n(x)"); //$NON-NLS-1$
+		sb.append("n=function(x)"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("x"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 3, 13, sb.length());
+		parseAndCheckErrors(sb.toString(), 1, 2, sb.length());
 	}
 
-	public void testWrongExperssion() {
+	@Test
+	public void testWrongExpression() {
 		final StringBuilder wrongFunction = new StringBuilder();
-		wrongFunction.append("function n()");//$NON-NLS-1$
+		wrongFunction.append("n = function()");//$NON-NLS-1$
 		wrongFunction.append(NEW_LINE);
 		wrongFunction.append("return x x");//$NON-NLS-1$
 		wrongFunction.append(NEW_LINE);
 		wrongFunction.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(wrongFunction.toString(), 2, 22, wrongFunction.length());
+		parseAndCheckErrors(wrongFunction.toString(), 1, 4);
 	}
 
+	@Test
 	public void testWrongStatements() {
-
-		final String wrongFunction = "function n(x x)end"; //$NON-NLS-1$
-		parseAndCheckErrors(wrongFunction, 1, 13, wrongFunction.length());
-
+		parseAndCheckErrors("function n(x x)end", 1, 10); //$NON-NLS-1$
 		parseAndCheckErrors("local ="); //$NON-NLS-1$
-
-		final String wrongForLoop = "for _,_ ine x do end"; //$NON-NLS-1$
-		parseAndCheckErrors(wrongForLoop, 1, 11, wrongForLoop.length());
+		parseAndCheckErrors("for _,_ ine x do end"); //$NON-NLS-1$
 	}
 }

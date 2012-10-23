@@ -123,9 +123,10 @@ local function getindentlevel(source,indenttable)
 
 	-- Walk through AST to build linetodepth
 	local ast = mlc.luastring_to_ast(source)
-	require 'metalua.walk'
-	walk.block(walker, ast)
-
+	if mlc.check_ast( ast ) then
+		require 'metalua.walk'
+		walk.block(walker, ast)
+	end
 	return linetodepth
 end
 

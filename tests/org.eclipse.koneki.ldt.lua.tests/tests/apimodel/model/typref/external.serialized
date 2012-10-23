@@ -1,0 +1,71 @@
+do local _ = {
+		description = "",
+		globalvars = {
+
+		}
+		--[[table: 0x9506038]],
+		shortdescription = "",
+		name = "modulename",
+		returns = {
+			{
+				types = {
+					{
+						typename = "modulename",
+						tag = "internaltyperef"
+					}
+					--[[table: 0x9505f00]]
+				}
+				--[[table: 0x9505fc8]],
+				description = "",
+				tag = "return"
+			}
+			--[[table: 0x9505f28]]
+		}
+		--[[table: 0x9506060]],
+		types = {
+			modulename = {
+				fields = {
+					fieldname = {
+						type = {
+							typename = "typename",
+							modulename = "externmodulename",
+							tag = "externaltyperef"
+						}
+						--[[table: 0x9558700]],
+						description = "",
+						parent = nil --[[ref]],
+						shortdescription = "",
+						name = "fieldname",
+						sourcerange = {
+							min = 25,
+							max = 94
+						}
+						--[[table: 0x94638b8]],
+						occurrences = {
+
+						}
+						--[[table: 0x9463890]],
+						tag = "item"
+					}
+					--[[table: 0x95534b0]]
+				}
+				--[[table: 0x9498350]],
+				name = "modulename",
+				parent = nil --[[ref]],
+				sourcerange = {
+					min = 1,
+					max = 23
+				}
+				--[[table: 0x9498378]],
+				tag = "recordtypedef"
+			}
+			--[[table: 0x9498240]]
+		}
+		--[[table: 0x9506010]],
+		tag = "file"
+	}
+	--[[table: 0x9505ed8]];
+	_.types.modulename.fields.fieldname.parent = _.types.modulename;
+	_.types.modulename.parent = _;
+	return _;
+end

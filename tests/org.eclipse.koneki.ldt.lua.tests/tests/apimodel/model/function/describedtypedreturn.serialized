@@ -1,0 +1,99 @@
+do local _ = {
+		description = "",
+		globalvars = {
+
+		}
+		--[[table: 0x9e5b518]],
+		shortdescription = "",
+		name = "modulename",
+		returns = {
+			{
+				types = {
+					{
+						typename = "modulename",
+						tag = "internaltyperef"
+					}
+					--[[table: 0x9e64668]]
+				}
+				--[[table: 0x9deff58]],
+				description = "",
+				tag = "return"
+			}
+			--[[table: 0x9defeb8]]
+		}
+		--[[table: 0x9e5b1c8]],
+		types = {
+			["__#string=__1"] = {
+				shortdescription = " Function short description.",
+				description = "Function long description",
+				name = "__#string=__1",
+				parent = nil --[[ref]],
+				returns = {
+					{
+						types = {
+							{
+								typename = "string",
+								tag = "primitivetyperef"
+							}
+							--[[table: 0x9eb3f50]]
+						}
+						--[[table: 0x9eb4068]],
+						description = "return description",
+						tag = "return"
+					}
+					--[[table: 0x9eb3f28]]
+				}
+				--[[table: 0x9eb3fc8]],
+				params = {
+
+				}
+				--[[table: 0x9eb3fa0]],
+				tag = "functiontypedef"
+			}
+			--[[table: 0x9eb3f00]],
+			modulename = {
+				fields = {
+					functionname = {
+						type = {
+							typename = "__#string=__1",
+							tag = "internaltyperef"
+						}
+						--[[table: 0x9e706d8]],
+						description = "Function long description",
+						parent = nil --[[ref]],
+						shortdescription = " Function short description.",
+						name = "functionname",
+						sourcerange = {
+							min = 25,
+							max = 175
+						}
+						--[[table: 0x9ec1380]],
+						occurrences = {
+
+						}
+						--[[table: 0x9ec1358]],
+						tag = "item"
+					}
+					--[[table: 0x9e374e8]]
+				}
+				--[[table: 0x9ec7e90]],
+				name = "modulename",
+				parent = nil --[[ref]],
+				sourcerange = {
+					min = 1,
+					max = 23
+				}
+				--[[table: 0x9ec7eb8]],
+				tag = "recordtypedef"
+			}
+			--[[table: 0x9e5b408]]
+		}
+		--[[table: 0x9e5b4f0]],
+		tag = "file"
+	}
+	--[[table: 0x9e64640]];
+	_.types["__#string=__1"].parent = _;
+	_.types.modulename.fields.functionname.parent = _.types.modulename;
+	_.types.modulename.parent = _;
+	return _;
+end

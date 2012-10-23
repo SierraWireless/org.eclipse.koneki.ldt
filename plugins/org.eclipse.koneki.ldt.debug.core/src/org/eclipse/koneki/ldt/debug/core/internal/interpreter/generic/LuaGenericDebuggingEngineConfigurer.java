@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -36,11 +37,6 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 		// In debug engine the config must not be alter, surely because it is used as key to retreive the DBGPConnectionConfig.
 		initialConfig = config;
 		InterpreterConfig interpreterConfig = (InterpreterConfig) config.clone();
-
-		// XXX Workaround to use PWD var env as working directory under macosx
-		// This have to me removed when the new debugger version will be intergrated.
-		interpreterConfig.addEnvVar("PWD", interpreterConfig.getWorkingDirectoryPath().toOSString()); //$NON-NLS-1$
-
 		return super.alterConfig(launch, interpreterConfig);
 	}
 
@@ -49,7 +45,7 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 
 		// add debugger path to lua path
 		try {
-			URL debuggerEntry = Activator.getDefault().getBundle().getEntry(LuaDebugConstants.SCRIPT_PATH);
+			URL debuggerEntry = Activator.getDefault().getBundle().getEntry(LuaDebugConstants.DEBUGGER_PATH);
 			File debuggerFolder = new File(FileLocator.toFileURL(debuggerEntry).getFile());
 			luaPath.add(new Path(debuggerFolder.getPath()));
 		} catch (IOException e) {
@@ -73,18 +69,46 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 		String host = dbgpConnectionConfig.getHost();
 		int port = dbgpConnectionConfig.getPort();
 		String sessionId = dbgpConnectionConfig.getSessionId();
+		IPath workingDirectory = config.getWorkingDirectoryPath();
+		String oS = Platform.getOS();
+		String transportLayer = getTransportLayer();
 
 		// create command
 		StringBuilder command = new StringBuilder();
 		command.append("require ('debugger')"); //$NON-NLS-1$
 		command.append("("); //$NON-NLS-1$
+		// HOST
 		command.append("'").append(host).append("'"); //$NON-NLS-1$//$NON-NLS-2$
 		command.append(","); //$NON-NLS-1$
+		// PORT
 		command.append(port);
 		command.append(","); //$NON-NLS-1$
+		// SESSION ID
 		command.append("'").append(sessionId).append("'");//$NON-NLS-1$//$NON-NLS-2$
+		command.append(","); //$NON-NLS-1$
+		// TRANSPORT LAYER
+		if (transportLayer == null)
+			command.append("nil");//$NON-NLS-1$
+		else
+			command.append("'").append(transportLayer).append("'");//$NON-NLS-1$ //$NON-NLS-2$
+		command.append(","); //$NON-NLS-1$
+		// PLATFORM
+		if (oS.equals(Platform.OS_WIN32))
+			command.append("'win'");//$NON-NLS-1$
+		else
+			command.append("'unix'");//$NON-NLS-1$
+		command.append(","); //$NON-NLS-1$
+		// WORKING DIRECTORY
+		if (workingDirectory.isEmpty())
+			command.append("nil");//$NON-NLS-1$
+		else
+			command.append("'").append(workingDirectory.toOSString()).append("'");//$NON-NLS-1$//$NON-NLS-2$
 		command.append(");"); //$NON-NLS-1$
 
 		return command.toString();
+	}
+
+	protected String getTransportLayer() {
+		return null;
 	}
 }

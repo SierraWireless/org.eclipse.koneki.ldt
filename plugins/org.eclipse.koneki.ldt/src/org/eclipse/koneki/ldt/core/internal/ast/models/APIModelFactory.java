@@ -29,6 +29,7 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.TypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Identifier;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LuaExpression;
 
+import com.cforcoding.jmd.MarkDown;
 import com.naef.jnlua.LuaState;
 import com.naef.jnlua.NamedJavaFunction;
 
@@ -68,6 +69,7 @@ public final class APIModelFactory {
 		javaFunctions.add(fileAPIAddGlobalVar());
 		javaFunctions.add(fileAPIAddReturn());
 		javaFunctions.add(fileAPIAddTypeDef());
+		javaFunctions.add(markdown());
 
 		return javaFunctions.toArray(new NamedJavaFunction[javaFunctions.size()]);
 	}
@@ -445,6 +447,28 @@ public final class APIModelFactory {
 			@Override
 			public String getName() {
 				return "fileapiaddreturn"; //$NON-NLS-1$
+			}
+		};
+	}
+
+	private static NamedJavaFunction markdown() {
+		return new NamedJavaFunction() {
+			private MarkDown markdown = new MarkDown();
+
+			@Override
+			public int invoke(LuaState l) {
+				String input = l.checkString(1);
+
+				String result = markdown.transform(input);
+				l.pushString(result);
+				// l.pushString(input);
+
+				return 1;
+			}
+
+			@Override
+			public String getName() {
+				return "markdown"; //$NON-NLS-1$
 			}
 		};
 	}

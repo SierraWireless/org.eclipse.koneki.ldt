@@ -1,0 +1,98 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x8e99938]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x8e99800]]
+				}
+				--[[table: 0x8e998c8]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x8e99828]]
+		}
+		--[[table: 0x8e99960]],
+		types={
+			["__=othermodule#atype[paramname]__1"]={
+				shortdescription=" Function short description.",
+				description="Function long description",
+				name="__=othermodule#atype[paramname]__1",
+				parent=nil --[[ref]],
+				returns={
+
+				}
+				--[[table: 0x8ed84d8]],
+				params={
+					[1]={
+						description="param description",
+						type={
+							typename="atype",
+							modulename="othermodule",
+							tag="externaltyperef"
+						}
+						--[[table: 0x8ed8460]],
+						name="paramname",
+						tag="parameter"
+					}
+					--[[table: 0x8ed8438]]
+				}
+				--[[table: 0x8ed84b0]],
+				tag="functiontypedef"
+			}
+			--[[table: 0x8ed8410]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__=othermodule#atype[paramname]__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0x8ed8818]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription=" Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=193
+						}
+						--[[table: 0x8ed8390]],
+						occurrences={
+
+						}
+						--[[table: 0x8ed8170]],
+						tag="item"
+					}
+					--[[table: 0x8ed8148]]
+				}
+				--[[table: 0x8ed2dc0]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0x8ed2de8]],
+				tag="recordtypedef"
+			}
+			--[[table: 0x8ed2cb0]]
+		}
+		--[[table: 0x8e99910]],
+		tag="file"
+	}
+	--[[table: 0x8e997d8]];
+	_.types["__=othermodule#atype[paramname]__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

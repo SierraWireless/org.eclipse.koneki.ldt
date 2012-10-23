@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-<!--		<module>luadocumentor</module> -->
+		<module>luadocumentor</module>
 		<module>luadbgpclient</module>
 	</modules>
 </project>

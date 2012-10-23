@@ -147,4 +147,17 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.cforcoding.jmd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+	<plugin
+         id="org.eclipse.koneki.ldt.support.lua51"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 </feature>
