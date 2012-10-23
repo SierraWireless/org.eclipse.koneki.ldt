@@ -531,7 +531,7 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
         fileuri = source
     } })
     
-    local sess = { skt = skt, state = "starting", id = sessionid }
+    local sess = { skt = skt, state = "starting", id = sessionid, coro = util.CurrentThread(corunning) }
     active_session = sess
     debugger_loop(sess)
     
