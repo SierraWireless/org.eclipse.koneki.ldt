@@ -23,6 +23,16 @@ local platform = nil
 -- keep all computed URIs in cache (as they are quite long to compute)
 local uri_cache = { }
 
+-- parse a normalized path and return a table of each segment
+-- you could precise the path seperator.
+local function split(path,sep)
+  local t = {}
+  for w in path:gmatch("[^"..(sep or "/").."]+")do
+    table.insert(t, w)
+  end
+  return t
+end
+
 --- Returns a RFC2396 compliant URI for given source, or false if the mapping failed
 local function get_abs_file_uri (source)
     local uri
@@ -38,25 +48,30 @@ local function get_abs_file_uri (source)
     end
 end
 
+--FIXME: as result is cached, changes in package.path that modify the module name are missed
+-- (mostly affect main module when Lua interpreter is launched with an absolute path)
 local function get_module_uri (source)
-    local uri
     if source:sub(1,1) == "@" then -- real source file
+        local uri
         local sourcepath = source:sub(2)
         local normalizedpath = M.normalize(sourcepath)
-        local normalizedluapath = M.normalize(package.path)
-        local luapathtable = M.split (normalizedluapath,";")
+        local luapathtable = split (package.path, ";")
+        local is_source_absolute = M.is_path_absolute(sourcepath)
         -- workarround : Add always the ?.lua entry to support
         -- the case where file was loaded by : "lua myfile.lua"
         table.insert(luapathtable,"?.lua")
         for i,var in ipairs(luapathtable) do
-            local escaped = string.gsub(var,"[%^%$%(%)%%%.%[%]%*%+%-%?]",function(c) return "%"..c end)
-            local pattern = string.gsub(escaped,"%%%?","(.+)")
-            local modulename = string.match(normalizedpath,pattern);
-            if modulename then
-                modulename = string.gsub(modulename,"/",".");
-                -- if we find more than 1 possible modulename return the shorter
-                if not uri or string.len(uri)>string.len(modulename) then
-                    uri = modulename
+            -- avoid relative patterns matching absolute ones (e.g. ?.lua matches anything)
+            if M.is_path_absolute(var) == is_source_absolute then
+                local escaped = string.gsub(M.normalize(var),"[%^%$%(%)%%%.%[%]%*%+%-%?]",function(c) return "%"..c end)
+                local pattern = string.gsub(escaped,"%%%?","(.+)")
+                local modulename = string.match(normalizedpath,pattern)
+                if modulename then
+                    modulename = string.gsub(modulename,"/",".");
+                    -- if we find more than 1 possible modulename return the shorter
+                    if not uri or string.len(uri)>string.len(modulename) then
+                        uri = modulename
+                    end
                 end
             end
         end
@@ -133,7 +148,7 @@ function M.init(executionplatform,workingdirectory)
             return false
         end
         
-        status, iswin = pcall(iswindows())
+        status, iswin = pcall(iswindows)
         if status and iswin then
             platform = "win"
         else
