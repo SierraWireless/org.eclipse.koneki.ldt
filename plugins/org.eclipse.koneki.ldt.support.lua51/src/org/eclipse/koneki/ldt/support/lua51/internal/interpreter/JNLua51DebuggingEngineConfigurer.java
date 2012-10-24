@@ -48,6 +48,6 @@ public class JNLua51DebuggingEngineConfigurer extends LuaGenericDebuggingEngineC
 
 	@Override
 	protected String getTransportLayer() {
-		return "java"; //$NON-NLS-1$
+		return "debugger.transport.java"; //$NON-NLS-1$
 	}
 }

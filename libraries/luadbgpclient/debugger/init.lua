@@ -75,6 +75,7 @@ local corunning, cocreate, cowrap, coyield, coresume, costatus = coroutine.runni
 
 -- register the URI of the debugger, to not jump into with redefined function or coroutine bootstrap stuff
 local debugger_uri = nil -- set in init function
+local transportmodule_uri = nil -- set in init function
 
 -- will contain the session object, and possibly a list of all sessions if a multi-threaded model is adopted
 -- this is only used for async commands.
@@ -405,7 +406,7 @@ local function line_hook(line)
     local do_break, packet = nil, nil
     local info = active_session.coro:getinfo(0, "S")
     local uri = platform.get_uri(info.source)
-    if uri and uri ~= debugger_uri then -- the debugger does not break if the source is not known
+    if uri and uri ~= debugger_uri and uri ~= transportmodule_uri then -- the debugger does not break if the source is not known
         do_break = core.breakpoints.at(uri, line) or core.events.does_match()
         if do_break then
             core.events.discard()
@@ -485,8 +486,8 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
     platform.init(executionplatform,workingdirectory)
     
     -- get transport layer
-    local transportpath = transport or os.getenv("DBGP_TRANSPORT") or "luasocket"
-    local transport = require("debugger.transport." .. transportpath)
+    local transportpath = transport or os.getenv("DBGP_TRANSPORT") or "debugger.transport.luasocket"
+    local transport = require(transportpath)
     
     -- install base64 functions into util
     util.b64, util.rawb64, util.unb64 = transport.b64, transport.rawb64, transport.unb64
@@ -503,8 +504,9 @@ local function init(host, port, idekey, transport, executionplatform, workingdir
     end
     if err then error(string.format("Cannot connect to %s:%d : %s", host, port, err)) end
     
-    -- get the debugger URI
+    -- get the debugger and transport layer URI
     debugger_uri = platform.get_uri(debug.getinfo(1).source)
+    transportmodule_uri = platform.get_uri(debug.getinfo(transport.create).source)
     
     -- get the root script path (the highest possible stack index)
     local source

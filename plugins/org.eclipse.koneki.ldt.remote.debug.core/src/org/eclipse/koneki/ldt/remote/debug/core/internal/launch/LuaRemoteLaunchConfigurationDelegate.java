@@ -242,7 +242,7 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_PORT, String.valueOf(DLTKDebugPlugin.getDefault().getDbgpService().getPort()));
 				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_PLATFORM, "unix"); //$NON-NLS-1$
 				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_WORKINGDIR, remoteApplicationFolderPath);
-				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_TRANSPORT, "luasocket_sched"); //$NON-NLS-1$
+				envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_TRANSPORT, "debugger.transport.luasocket_sched"); //$NON-NLS-1$
 			}
 
 			// create lua execution command
