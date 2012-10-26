@@ -10,20 +10,35 @@
 -------------------------------------------------------------------------------
 -- Debugger using DBGp protocol.
 -------------------------------------------------------------------------------
--- The module returns a single init function which takes 3 parameters (HOST, PORT, IDEKEY).
-
--- HOST: the host name or the ip address of the DBGP server (so your ide)
+-- The module returns a single init function which takes 6 parameters (IDEHOST, IDEPORT, IDEKEY, TRANSPORT, PLATFORM, WORKINGDIR).
+--
+-- IDEHOST: the host name or the ip address of the DBGP server (so your ide)
 -- if HOST is nil, the DBGP_IDEHOST env var is used.
 -- if the env var is nil, the default value '127.0.0.1' is used.
-
--- PORT: the port of the DBGP server (must be configure in the IDE) 
+--
+-- IDEPORT: the port of the DBGP server (must be configure in the IDE) 
 -- if PORT is nil, the DBGP_IDEPORT env var is used.
 -- if the env var is nil, the default value '10000' is used.
-
--- IDEKEY: a string which is used as session key
+--
+-- IDEIDEKEY: a string which is used as session key
 -- if IDEKEY is nil, the DBGP_IDEKEY env var is used.
 -- if the env var is nil, the default value 'luaidekey' is used.
-
+--
+-- TRANSPORT: (advanced optional parameter) the module name of which implement the transport interface used to do the connection with the server.
+-- by default the debugger use an  internal implementation based on luasocket, but if can not use it, you could implement or use another transport layer implementation.
+-- if TRANSPORT is nil, the DBGP_TRANSPORT env var is used.
+-- if the env var is nil, the default value 'debugger.transport.luasocket' is used : this is the default implementation based on luasocket.
+--
+-- PLATFORM: (advanced optional parameter) 'unix' or 'win32' string which define the kind of platform on which the program to debug is executed.
+-- by default the debugger will try to guess it and surely success, if for some reasons it fails you could help it by precise the execution platform.
+-- if PLATFORM is nil, the DBGP_PLATFORM env var is used.
+-- if the env var is nil, the debugger will try to guess it.
+--
+-- WORKINGDIR: (advanced optional parameter) the working directory in which the program to debug is executed.
+-- by default the debugger will try to guess it and surely success, if for some reasons it fails you could help it by precise the working directory. 
+-- if WORKINGDIR is nil, the DBGP_WORKINGDIR env var is used.
+-- if the env var is nil, the debugger will try to guess it.
+--
 -------------------------------------------------------------------------------
 -- Known Issues:
 --   * Functions cannot be created using the debugger and then called in program because their environment is mapped directly to
