@@ -86,7 +86,7 @@ end
 function M._item(_item,notemplate)
 	local description = ""
 	if not notemplate then 
-		description = templateengine.applytemplate(_item)
+		description = templateengine.applytemplate(_item, 3)
 	end 
 
 	local jitem = javaapimodelfactory.newitem(_item.name,
@@ -105,7 +105,7 @@ function M._typedef(_typedef)
 	if _typedef.tag == "recordtypedef" then
 
 		jtypedef = javaapimodelfactory.newrecordtypedef(_typedef.name,
-		    templateengine.applytemplate(_typedef),
+		    templateengine.applytemplate(_typedef, 3),
 			_typedef.sourcerange.min - 1,
 			_typedef.sourcerange.max
 		)
@@ -142,7 +142,7 @@ function M._file(_file)
 
 	-- Enable links just for module file objects 
 	enablelinks()
-	local jfile = javaapimodelfactory.newfileapi(templateengine.applytemplate(_file))
+	local jfile = javaapimodelfactory.newfileapi(templateengine.applytemplate(_file, 1))
 	disablelinks()
 
 	-- Adding gloval variables
