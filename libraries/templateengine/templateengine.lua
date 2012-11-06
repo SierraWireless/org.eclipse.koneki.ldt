@@ -85,7 +85,7 @@ local function format(string)
 	end
 	string = string:gsub('@{%s*(.-)%s*}', replace)
 	-- Trim markdown results from auto generated <p></p>
-	return M.env.markdown( string ):gsub('^%s*<p>(.+)</p>%s*$','%1')
+	return M.env.markdown( string )
 end
 ---
 -- Provide a full link to an element using `prettyname` and `linkto`.

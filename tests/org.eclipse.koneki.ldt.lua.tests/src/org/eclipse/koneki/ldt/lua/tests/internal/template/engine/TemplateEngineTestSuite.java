@@ -32,12 +32,6 @@ public class TemplateEngineTestSuite extends AbstractLuaTestSuite {
 		// Bug 389828
 		blacklist.add("markdown/code2.lua"); //$NON-NLS-1$
 
-		// Bug 389887
-		blacklist.add("markdown/paragraph.lua"); //$NON-NLS-1$
-
-		// Bug 388163
-		blacklist.add("markdown/list4.lua"); //$NON-NLS-1$
-
 		// Bug 389991
 		blacklist.add("markdown/title2.lua"); //$NON-NLS-1$
 

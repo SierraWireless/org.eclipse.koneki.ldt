@@ -24,7 +24,7 @@ return[[#
    $( format(_file.shortdescription) )
 # end
 # if _file.description and #_file.description > 0 then
-   <br/>$( format(_file.description) )
+   $( format(_file.description) )
 # end
 # --
 # -- Handle "@usage" special tag

@@ -45,7 +45,7 @@ return
 	$( format(_item.shortdescription) )
 # end
 # if _item.description and #_item.description > 0 then
-	<br/>$( format(_item.description) )
+	$( format(_item.description) )
 # end
 #
 # --
@@ -71,17 +71,34 @@ return
 		<ul>
 #		for position, param in ipairs( fdef.params ) do
 #			if not (position == 1 and param.name == 'self') then
-				<li><code><em>
+				<li>
+#				local paramline = "<code><em>"
 #				if param.type then
 #					local link = linkto( param.type )
 #					local name = prettyname( param.type )
 #					if link then
-						<a href="$( link )">$( name )</a>
+#						paramline = paramline .. '<a href=\"' .. link .. '\">' .. name .. "</a>"
 #					else
-						$( name )
+#						paramline = paramline .. name
 #					end
-#				end				
-				$(param.name) $(param.optional and 'optional') $(param.hidden and 'hidden')</em></code>: $( format(param.description) )
+#				end
+#
+#				paramline = paramline .. " " .. param.name ..  " "
+#
+#				if param.optional then
+#					paramline = paramline .. "optional" .. " "
+#				end
+#				if param.hidden then 
+#					paramline = paramline .. "hidden"
+#				end
+#
+# 				paramline = paramline .. "</em></code>: "
+#
+#				if param.description and #param.description > 0 then
+#					paramline = paramline .. param.description
+#				end
+#
+				$( format (paramline))
 				</li>
 #			end
 #		end
@@ -118,11 +135,14 @@ return
 			<ol>
 #			for position, ret in ipairs(fdef.returns) do
 				<li>
+#				local returnline = "";
+#
 #				local paramlist = niceparmlist(ret.types)
 #				if #ret.types > 0 and #paramlist > 0 then
-					<em>$( paramlist )</em>
+#					local returnline = "<em>" .. paramlist .. "</em>"
 #				end
-				$(ret.description and format(ret.description))
+#				returnline = returnline .. (ret.description and ret.description)
+				$( format (returnline))
 				</li>
 #			end
 			</ol>
@@ -130,19 +150,16 @@ return
 #			local paramlist = niceparmlist(fdef.returns[1].types)
 #			local isreturn = fdef.returns and #fdef.returns > 0 and #paramlist > 0
 #			local isdescription = fdef.returns and fdef.returns[1].description and #format(fdef.returns[1].description) > 0
-#			if isreturn or isdescription  then
-				<p>
-#			end
+#
+# 			local returnline = "";
 #			-- Show return type if provided
 #			if isreturn then
-				<em>$( paramlist )</em>
+#				returnline = "<em>"..paramlist.."</em>"
 #			end
 #			if isdescription then
-				$( format(fdef.returns[1].description) )
+#				returnline = returnline .. fdef.returns[1].description
 #			end
-#			if isreturn or isdescription then
-				</p>
-#			end
+				$( format(returnline))
 #		end
 #	end
 #end
