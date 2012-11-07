@@ -245,4 +245,10 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		}
 		return config;
 	}
+
+	@Override
+	protected void launch(final IResource script, final String mode) {
+		launchMode = mode;
+		super.launch(script, mode);
+	}
 }
