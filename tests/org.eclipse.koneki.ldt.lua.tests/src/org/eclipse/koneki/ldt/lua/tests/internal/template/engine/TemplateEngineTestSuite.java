@@ -28,13 +28,6 @@ public class TemplateEngineTestSuite extends AbstractLuaTestSuite {
 	@Override
 	protected List<String> createTestBlacklist() {
 		ArrayList<String> blacklist = new ArrayList<String>();
-
-		// Bug 389828
-		blacklist.add("markdown/code2.lua"); //$NON-NLS-1$
-
-		// Bug 389991
-		blacklist.add("markdown/title2.lua"); //$NON-NLS-1$
-
 		return blacklist;
 	}
 

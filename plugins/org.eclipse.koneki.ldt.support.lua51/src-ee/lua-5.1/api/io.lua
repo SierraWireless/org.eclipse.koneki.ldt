@@ -45,7 +45,8 @@
 -- Opens the given file name in read mode and returns an iterator function
 -- that, each time it is called, returns a new line from the file. Therefore,
 -- the construction 
---    for line in io.lines(filename) do *body* end
+-- 
+--     for line in io.lines(filename) do *body* end
 -- will iterate over all lines of the file. When the iterator function detects
 -- the end of file, it returns nil (to finish the loop) and automatically
 -- closes the file.
@@ -148,7 +149,8 @@
 -------------------------------------------------------------------------------
 -- Returns an iterator function that, each time it is called, returns a
 -- new line from the file. Therefore, the construction
---    for line in file:lines() do *body* end
+-- 
+--     for line in file:lines() do *body* end
 -- will iterate over all lines of the file. (Unlike `io.lines`, this function
 -- does not close the file when the loop ends.)
 -- @function [parent=#file] lines

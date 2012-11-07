@@ -24,7 +24,7 @@ do local _={
 		--[[table: 0x8e99960]],
 		types={
 			["__=othermodule#atype[paramname]__1"]={
-				shortdescription=" Function short description.",
+				shortdescription="Function short description.",
 				description="Function long description",
 				name="__=othermodule#atype[paramname]__1",
 				parent=nil --[[ref]],
@@ -60,7 +60,7 @@ do local _={
 						--[[table: 0x8ed8818]],
 						description="Function long description",
 						parent=nil --[[ref]],
-						shortdescription=" Function short description.",
+						shortdescription="Function short description.",
 						name="functionname",
 						sourcerange={
 							min=25,

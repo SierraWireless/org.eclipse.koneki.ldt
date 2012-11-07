@@ -38,7 +38,7 @@ do local _ = {
 						name = "fieldname",
 						sourcerange = {
 							min = 25,
-							max = 128
+							max = 127
 						}
 						--[[table: 0x9e74db8]],
 						occurrences = {
@@ -51,11 +51,11 @@ do local _ = {
 				}
 				--[[table: 0x9e9ce88]],
 				name = "typename",
-				shortdescription = " Type short description.",
+				shortdescription = "Type short description.",
 				parent = nil --[[ref]],
 				sourcerange = {
 					min = 25,
-					max = 128
+					max = 127
 				}
 				--[[table: 0x9eb8178]],
 				tag = "recordtypedef"

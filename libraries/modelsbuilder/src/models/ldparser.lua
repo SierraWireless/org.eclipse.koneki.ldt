@@ -17,7 +17,7 @@ local registeredparsers -- table {tagname => {list de parsers}}
 -- raise an error if result contains a node error
 local function raiserror(result)
 	for i, node in ipairs(result) do
---		 if node.tag == "Error" then table.print(node) end
+	-- if node.tag == "Error" then table.print(node) end
 		assert(not node or node.tag ~= "Error")
 	end
 end
@@ -312,32 +312,38 @@ end
 
 initparser()
 
-
 ------------------------------------------------------------
--- clean the description
-local function cleandescription (string)
-	return  string:gsub("([%s\n\r]*)$","")
+-- get the string pattern to remove for each line of description
+-- the goal is to fix the indentation problems
+local function getstringtoremove (stringcomment,commentstart)
+	local _,_,capture = string.find(stringcomment,"\n?([\ \t]*)@[^{]+",commentstart)
+	if not capture then
+		_,_,capture = string.find(stringcomment,"^([\ \t]*)",commentstart)
+	end
+	capture = string.gsub(capture,"(.)","%1?")
+	return capture 
 end
-
 
 ------------------------------------------------------------
 -- parse comment tag partition and return table structure
 local function parsetag(part)
-	-- check if the part start by a supported tag
-	for tagname,parsers in pairs(registeredparsers) do
-		if (part.comment:find("^@"..tagname)) then
-			-- try the registered parsers for this tag
-			local result
-			for i, parser in ipairs(parsers) do
-				local valid, tag = pcall(parser, lx:newstream(part.comment, tagname .. 'tag lexer'))
-				if valid then
-					-- add tagname
-					tag.tagname = tagname
-
-					-- add description
-					local endoffset = tag.lineinfo.last.offset
-					tag.description = cleandescription(part.comment:sub(endoffset+2,-1))
-					return tag
+	if part.comment:find("^@") then
+		-- check if the part start by a supported tag
+		for tagname,parsers in pairs(registeredparsers) do
+			if (part.comment:find("^@"..tagname)) then
+				-- try the registered parsers for this tag
+				local result
+				for i, parser in ipairs(parsers) do
+					local valid, tag = pcall(parser, lx:newstream(part.comment, tagname .. 'tag lexer'))
+					if valid then
+						-- add tagname
+						tag.tagname = tagname
+	
+						-- add description
+						local endoffset = tag.lineinfo.last.offset
+						tag.description = part.comment:sub(endoffset+2,-1)
+						return tag
+					end
 				end
 			end
 		end
@@ -366,7 +372,7 @@ local function parsethirdtag( part )
 	-- Retrieve description
 	local endoffset = parsedtag.lineinfo.last.offset
 	local tag = {
-		description = cleandescription(part.comment:sub(endoffset+2,-1))
+		description = part.comment:sub(endoffset+2,-1)
 	}
 	return parsedtag.name, tag
 end
@@ -379,10 +385,10 @@ end
 local function split(stringcomment,commentstart)
 	local partstart = commentstart
 	local result = {}
-
+	
 	-- manage case where the comment start by @
 	-- (we must ignore the inline see tag @{..})
-	local at_startoffset, at_endoffset = stringcomment:find("^%s*@[^{]",partstart)
+	local at_startoffset, at_endoffset = stringcomment:find("^[\ \t]*@[^{]",partstart)
 	if at_endoffset then
 		partstart = at_endoffset-1 -- we start before the @ and the non '{' character
 	end
@@ -390,20 +396,21 @@ local function split(stringcomment,commentstart)
 	-- split comment
 	-- (we must ignore the inline see tag @{..})
 	repeat
-		at_startoffset, at_endoffset = stringcomment:find("[\r\n]%s*@[^{]",partstart)
+		at_startoffset, at_endoffset = stringcomment:find("\n[\ \t]*@[^{]",partstart)
 		local partend
-		if at_endoffset then
-			partend= at_endoffset - 2 -- we start before the @ and the non '{' character
+		if at_startoffset then
+			partend= at_startoffset-1 -- the end is before the separator pattern (just before the \n)
 		else
 			partend = #stringcomment -- we don't find any pattern so the end is the end of the string
 		end
 		table.insert(result, { comment = stringcomment:sub (partstart,partend) ,
 								offset = partstart})
-		partstart = partend+1
+		if at_endoffset then
+			partstart = at_endoffset-1 -- the new start is befire the @ and the non { char
+		end		
 	until not at_endoffset
 	return result
 end
-
 
 
 ------------------------------------------------------------
@@ -412,46 +419,57 @@ function M.parse(stringcomment)
 
 	local _comment = {description="", shortdescription=""}
 
+	-- clean windows carriage return
+	stringcomment = string.gsub(stringcomment,"\r\n","\n")
+
 	-- check if it's a ld comment
 	-- get the begin of the comment
-	-------------------------------
+	-- ============================
 	if not stringcomment:find("^-") then
-		-- if this comment don't start by -, we will not handle it
+		-- if this comment don't start by -, we will not handle it.
 		return nil
 	end
 
 	-- retrieve the real start
 	local commentstart = 2 --after the first hyphen
 	-- if the first line is an empty comment line with at least 3 hyphens we ignore it
-	local  _ , endoffset = stringcomment:find("^-+%s*[\n\r]+")
+	local  _ , endoffset = stringcomment:find("^-+[\ \t]*\n")
 	if endoffset then
 		commentstart = endoffset+1
 	end
-
-
+	
+	-- clean comments 
+	-- ===================
+	-- remove line of "-"
+	stringcomment = string.sub(stringcomment,commentstart)
+	-- clean indentation
+	local pattern = getstringtoremove (stringcomment,1)
+	stringcomment = string.gsub(stringcomment,"^"..pattern,"")
+	stringcomment = string.gsub(stringcomment,"\n"..pattern,"\n")
+	
 	-- split comment part
-	-------------------------------
-	local commentparts = split(stringcomment, commentstart)
-
+	-- ====================
+	local commentparts = split(stringcomment, 1)
+	
 	-- Extract descriptions
-	-------------------------------
+	-- ====================
 	local firstpart = commentparts[1].comment
 	if firstpart:find("^[^@]") or firstpart:find("^@{") then
 		-- if the comment part don't start by @ 
 		-- it's the part which contains descriptions
 		-- (there are an exception for the in-line see tag @{..})
-		local startoffset,endoffset = firstpart:find("[.?][%s\n\r]+")
+		local startoffset,endoffset = firstpart:find("[.?][\ \t]*\n?")
 		if startoffset then
 			_comment.shortdescription = firstpart:sub(1,startoffset)
-			_comment.description = cleandescription(firstpart:sub(endoffset+1,-1))
+			_comment.description = firstpart:sub(endoffset+1,-1)
 		else
 			_comment.shortdescription = firstpart
 			_comment.description = ""
 		end
-	end
+	end	
 
 	-- Extract tags
-	-------------------------------
+	-- ===================
 	-- Parse regular tags
 	local tag
 	for i, part in ipairs(commentparts) do

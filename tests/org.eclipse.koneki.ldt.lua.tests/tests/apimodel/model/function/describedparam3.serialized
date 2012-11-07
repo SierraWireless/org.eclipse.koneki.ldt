@@ -1,0 +1,92 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 004F4E08]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 004FBDD0]]
+				}
+				--[[table: 004FBE20]],
+				description="",
+				tag="return"
+			}
+			--[[table: 004FBDF8]]
+		}
+		--[[table: 004F4E30]],
+		types={
+			["__=[paramname]__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__=[paramname]__1",
+				parent=nil --[[ref]],
+				returns={
+
+				}
+				--[[table: 005035E0]],
+				params={
+					[1]={
+						description="long param\ndescription with :\n\n    some code \n       indented ",
+						name="paramname",
+						tag="parameter"
+					}
+					--[[table: 00503590]]
+				}
+				--[[table: 005035B8]],
+				tag="functiontypedef"
+			}
+			--[[table: 00503568]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__=[paramname]__1",
+							tag="internaltyperef"
+						}
+						--[[table: 004FBEE8]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription="Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=232
+						}
+						--[[table: 00503540]],
+						occurrences={
+
+						}
+						--[[table: 00503518]],
+						tag="item"
+					}
+					--[[table: 004FD220]]
+				}
+				--[[table: 004FBE98]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 004FBEC0]],
+				tag="recordtypedef"
+			}
+			--[[table: 004FBE48]]
+		}
+		--[[table: 004F4DE0]],
+		tag="file"
+	}
+	--[[table: 004F4D90]];
+	_.types["__=[paramname]__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

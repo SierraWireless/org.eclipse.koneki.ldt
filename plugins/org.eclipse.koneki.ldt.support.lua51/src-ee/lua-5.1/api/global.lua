@@ -125,7 +125,8 @@
 -- Use to iterate over a table by index.
 -- Returns three values: an iterator function, the table `t`, and 0,
 -- so that the construction :
---    for i,v in ipairs(t) do *body* end
+-- 
+--     for i,v in ipairs(t) do *body* end
 -- will iterate over the pairs (`1,t[1]`), (`2,t[2]`), ..., up to the
 -- first integer key absent from the table.
 -- @function [parent=#global] ipairs
@@ -155,7 +156,8 @@
 -------------------------------------------------------------------------------
 -- Similar to `load`, but gets the chunk from the given string.
 -- To load and run a given string, use the idiom  
---    assert(loadstring(s))()
+-- 
+--     assert(loadstring(s))()
 -- When absent, `chunkname` defaults to the given string.
 -- @function [parent=#global] loadstring
 -- @param #string string lua code to load.
@@ -188,7 +190,8 @@
 -- Use to iterate over a table.
 -- Returns three values: the `next` function, the table `t`, and nil,
 -- so that the construction :
---    for k,v in pairs(t) do *body* end
+-- 
+--     for k,v in pairs(t) do *body* end
 -- will iterate over all key-value pairs of table `t`.
 -- 
 -- See function `next` for the caveats of modifying the table during its
@@ -313,7 +316,8 @@
 
 -------------------------------------------------------------------------------
 -- Returns the elements from the given table. This function is equivalent to
---    return list[i], list[i+1], ..., list[j]
+-- 
+--     return list[i], list[i+1], ..., list[j]
 -- except that the above code can be written only for a fixed number of
 -- elements. By default, `i` is 1 and `j` is the length of the list, as
 -- defined by the length operator.

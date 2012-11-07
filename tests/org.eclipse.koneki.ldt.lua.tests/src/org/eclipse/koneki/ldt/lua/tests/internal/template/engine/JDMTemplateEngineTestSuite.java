@@ -109,18 +109,6 @@ public class JDMTemplateEngineTestSuite extends AbstractLuaTestSuite {
 	@Override
 	protected List<String> createTestBlacklist() {
 		ArrayList<String> blacklist = new ArrayList<String>();
-
-		// Bug 389828
-		blacklist.add("code2.lua"); //$NON-NLS-1$
-
-		// Three following are due to bug 388163
-		blacklist.add("list.lua"); //$NON-NLS-1$
-		blacklist.add("list3.lua"); //$NON-NLS-1$
-		blacklist.add("list4.lua"); //$NON-NLS-1$
-
-		// Bug 389991
-		blacklist.add("title2.lua"); //$NON-NLS-1$
-
 		return blacklist;
 	}
 }

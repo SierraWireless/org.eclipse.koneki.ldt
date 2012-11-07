@@ -35,13 +35,15 @@
 -- replaced by a "directory separator" (such as "`/`" in Unix); then it will
 -- try to open the resulting file name. So, for instance, if the Lua path is
 -- the string
---    "./?.lua;./?.lc;/usr/local/?/init.lua"
+-- 
+--     "./?.lua;./?.lc;/usr/local/?/init.lua"
 -- the search for a Lua file for module `foo` will try to open the files
 -- `./foo.lua`, `./foo.lc`, and `/usr/local/foo/init.lua`, in that order.  
 -- 
 -- The third searcher looks for a loader as a C library, using the path given
 -- by the variable `package.cpath`. For instance, if the C path is the string
---    "./?.so;./?.dll;/usr/local/?/init.so"
+-- 
+--     "./?.so;./?.dll;/usr/local/?/init.so"
 -- the searcher for module `foo` will try to open the files `./foo.so`,
 -- `./foo.dll`, and `/usr/local/foo/init.so`, in that order. Once it finds
 -- a C library, this searcher first uses a dynamic link facility to link the

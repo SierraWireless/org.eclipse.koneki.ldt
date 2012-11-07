@@ -46,7 +46,7 @@ do local _ = {
 				}
 				--[[table: 0x95223f8]],
 				name = "typename",
-				shortdescription = " Type short description.",
+				shortdescription = "Type short description.",
 				parent = nil --[[ref]],
 				sourcerange = {
 					min = 25,

@@ -7,7 +7,7 @@
 -- Header level 2
 -----------------------
 --
---### Header level 3
+-- ### Header level 3
 --
 -- @module title
 

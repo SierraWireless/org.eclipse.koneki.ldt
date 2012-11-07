@@ -2,7 +2,7 @@
 
 --- 
 -- Type short description.
--- Type long description 
+-- Type long description
 -- @type typename
 -- @field #string fieldname
 return nil

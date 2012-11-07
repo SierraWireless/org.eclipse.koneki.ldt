@@ -34,7 +34,7 @@ do local _ = {
 						--[[table: 0x9e6cf10]],
 						description = "Field long description",
 						parent = nil --[[ref]],
-						shortdescription = " Field short description.",
+						shortdescription = "Field short description.",
 						name = "fieldname",
 						sourcerange = {
 							min = 45,

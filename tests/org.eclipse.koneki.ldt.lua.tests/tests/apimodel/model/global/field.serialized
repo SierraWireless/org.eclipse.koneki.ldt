@@ -27,7 +27,7 @@ do local _ = {
 				fields = {
 					fieldname = {
 						parent = nil --[[ref]],
-						shortdescription = " Field short description.",
+						shortdescription = "Field short description.",
 						name = "fieldname",
 						occurrences = {
 

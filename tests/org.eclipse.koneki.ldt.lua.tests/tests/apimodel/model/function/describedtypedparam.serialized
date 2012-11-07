@@ -24,7 +24,7 @@ do local _ = {
 		--[[table: 0x9fad0e0]],
 		types = {
 			["__=#string[paramname]__1"] = {
-				shortdescription = " Function short description.",
+				shortdescription = "Function short description.",
 				description = "Function long description",
 				name = "__=#string[paramname]__1",
 				parent = nil --[[ref]],
@@ -59,7 +59,7 @@ do local _ = {
 						--[[table: 0x9fb4190]],
 						description = "Function long description",
 						parent = nil --[[ref]],
-						shortdescription = " Function short description.",
+						shortdescription = "Function short description.",
 						name = "functionname",
 						sourcerange = {
 							min = 25,

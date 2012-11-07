@@ -4,7 +4,7 @@ do local _ = {
 
 		}
 		--[[table: 0x9f94070]],
-		shortdescription = " Module short description?",
+		shortdescription = "Module short description?",
 		name = "modulename",
 		returns = {
 			{

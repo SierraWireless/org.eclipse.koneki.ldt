@@ -11,7 +11,8 @@
 -------------------------------------------------------------------------------
 
 -- Fetch libraries form current plugin
-package.path = '../lib/?.lua;../lib/external/?.lua;../lib/external/?.luac;' .. package.path
+local arch = "32" --64
+package.path = '../lib/?.lua;../../../libraries/modelsbuilder/src/?.lua;../../../libraries/modelsbuilder/'..arch..'/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.lua;../lib/external/?.lua' .. package.path
 
 --
 -- Generate serialized lua API models files next to given file.

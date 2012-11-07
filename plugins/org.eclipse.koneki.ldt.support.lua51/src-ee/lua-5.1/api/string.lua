@@ -145,6 +145,7 @@
 -- match is kept in the string).
 --
 -- Here are some examples:
+-- 
 --     x = string.gsub("hello world", "(%w+)", "%1 %1")
 --     --> x="hello hello world world"
 --     x = string.gsub("hello world", "%w+", "%0 %0", 1)

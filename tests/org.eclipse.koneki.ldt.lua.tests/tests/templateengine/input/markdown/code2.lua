@@ -1,8 +1,7 @@
 ---
 -- Module to process.
---
---	<p>Some code here</p>
---		With indentation
+--     <p>Some code here</p>
+--         With indentation
 --
 -- @module code2
 
