@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
@@ -26,6 +23,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
+import org.eclipse.koneki.ldt.debug.ui.internal.DocumentationLinksConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Messages;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
@@ -41,7 +39,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
@@ -294,14 +291,8 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 		generalInfoGridDataFactory.applyTo(lnkDocumentation);
 		lnkDocumentation.setText(Messages.LuaAttachMainTab_documentation_link);
 		lnkDocumentation.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				try {
-					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(event.text));
-				} catch (PartInitException e) {
-					Activator.logWarning("unable to open documentation link in remote launch configuration", e); //$NON-NLS-1$
-				} catch (MalformedURLException e) {
-					Activator.logWarning("unable to open documentation link in remote launch configuration", e); //$NON-NLS-1$
-				}
+			public void handleEvent(final Event event) {
+				PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(DocumentationLinksConstants.SOURCE_MAPPING);
 			}
 		});
 	}
