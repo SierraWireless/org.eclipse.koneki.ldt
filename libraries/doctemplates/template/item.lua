@@ -95,7 +95,7 @@ return
 # 				paramline = paramline .. "</em></code>: "
 #
 #				if param.description and #param.description > 0 then
-#					paramline = paramline .. param.description
+#					paramline = paramline .. "\n" .. param.description
 #				end
 #
 				$( format (paramline))
@@ -141,7 +141,7 @@ return
 #				if #ret.types > 0 and #paramlist > 0 then
 #					local returnline = "<em>" .. paramlist .. "</em>"
 #				end
-#				returnline = returnline .. (ret.description and ret.description)
+#				returnline = returnline .. "\n" .. (ret.description and ret.description)
 				$( format (returnline))
 				</li>
 #			end
@@ -157,7 +157,7 @@ return
 #				returnline = "<em>"..paramlist.."</em>"
 #			end
 #			if isdescription then
-#				returnline = returnline .. fdef.returns[1].description
+#				returnline = returnline .. "\n" .. fdef.returns[1].description
 #			end
 				$( format(returnline))
 #		end
