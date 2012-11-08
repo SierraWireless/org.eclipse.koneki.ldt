@@ -28,19 +28,6 @@ public class LuaCompletionProposal extends ScriptCompletionProposal {
 		super(replacementString, replacementOffset, replacementLength, image, displayString, relevance, isInDoc);
 	}
 
-	@Override
-	protected boolean isSmartTrigger(final char trigger) {
-		switch (trigger) {
-		case '.':
-			return true;
-		case ':':
-			return true;
-
-		default:
-			return false;
-		}
-	}
-
 	protected boolean insertCompletion() {
 		// TODO clean Preferences ! not the good way to get the information...
 		// we must have a reflexion on the preference and where we should store it.

@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class LuaCompletionProposalCollector extends ScriptCompletionProposalCollector {
 
-	private static final char[] VAR_TRIGGER = { '\t', ' ', '=', ':', '.' };
+	private static final char[] VAR_TRIGGER = { ';' };
 
 	public LuaCompletionProposalCollector(ISourceModule module) {
 		super(module);
