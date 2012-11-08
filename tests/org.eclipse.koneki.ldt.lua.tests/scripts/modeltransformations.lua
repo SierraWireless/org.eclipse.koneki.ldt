@@ -57,7 +57,7 @@ function M.codetoserialisedmodel(sourcefilepath, resultextension, transformation
 
 	-- Define file name
 	local extreplacement = table.concat({'%1.', resultextension})--string.format('\%1.%s', resultextension)
-	local serializedfilename = sourcefilepath:gsub('([%w%-_/\]+)%.lua', extreplacement)
+	local serializedfilename = sourcefilepath:gsub('([%w%-_/\\]+)%.lua', extreplacement)
 
 	-- Save serialized model
 	local serializefile = io.open(serializedfilename, 'w')

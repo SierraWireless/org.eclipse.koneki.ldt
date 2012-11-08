@@ -316,9 +316,9 @@ initparser()
 -- get the string pattern to remove for each line of description
 -- the goal is to fix the indentation problems
 local function getstringtoremove (stringcomment,commentstart)
-	local _,_,capture = string.find(stringcomment,"\n?([\ \t]*)@[^{]+",commentstart)
+	local _,_,capture = string.find(stringcomment,"\n?([ \t]*)@[^{]+",commentstart)
 	if not capture then
-		_,_,capture = string.find(stringcomment,"^([\ \t]*)",commentstart)
+		_,_,capture = string.find(stringcomment,"^([ \t]*)",commentstart)
 	end
 	capture = string.gsub(capture,"(.)","%1?")
 	return capture 
@@ -388,7 +388,7 @@ local function split(stringcomment,commentstart)
 	
 	-- manage case where the comment start by @
 	-- (we must ignore the inline see tag @{..})
-	local at_startoffset, at_endoffset = stringcomment:find("^[\ \t]*@[^{]",partstart)
+	local at_startoffset, at_endoffset = stringcomment:find("^[ \t]*@[^{]",partstart)
 	if at_endoffset then
 		partstart = at_endoffset-1 -- we start before the @ and the non '{' character
 	end
@@ -396,7 +396,7 @@ local function split(stringcomment,commentstart)
 	-- split comment
 	-- (we must ignore the inline see tag @{..})
 	repeat
-		at_startoffset, at_endoffset = stringcomment:find("\n[\ \t]*@[^{]",partstart)
+		at_startoffset, at_endoffset = stringcomment:find("\n[ \t]*@[^{]",partstart)
 		local partend
 		if at_startoffset then
 			partend= at_startoffset-1 -- the end is before the separator pattern (just before the \n)
@@ -433,7 +433,7 @@ function M.parse(stringcomment)
 	-- retrieve the real start
 	local commentstart = 2 --after the first hyphen
 	-- if the first line is an empty comment line with at least 3 hyphens we ignore it
-	local  _ , endoffset = stringcomment:find("^-+[\ \t]*\n")
+	local  _ , endoffset = stringcomment:find("^-+[ \t]*\n")
 	if endoffset then
 		commentstart = endoffset+1
 	end
@@ -458,7 +458,7 @@ function M.parse(stringcomment)
 		-- if the comment part don't start by @ 
 		-- it's the part which contains descriptions
 		-- (there are an exception for the in-line see tag @{..})
-		local startoffset,endoffset = firstpart:find("[.?][\ \t]*\n?")
+		local startoffset,endoffset = firstpart:find("[.?][ \t]*\n?")
 		if startoffset then
 			_comment.shortdescription = firstpart:sub(1,startoffset)
 			_comment.description = firstpart:sub(endoffset+1,-1)

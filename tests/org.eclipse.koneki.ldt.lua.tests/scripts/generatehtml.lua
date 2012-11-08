@@ -9,7 +9,7 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
-
+ 
 -- Fetch libraries form current plugin
 local arch = "32" --64
 package.path = '../lib/?.lua;../../../libraries/modelsbuilder/src/?.lua;../../../libraries/modelsbuilder/'..arch..'/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.lua;../lib/external/?.lua' .. package.path
@@ -48,16 +48,16 @@ for k = 1, #arg do
 	-- Generate html form API Model
 	local htmlcode, errormessage = templateengine.applytemplate(apimodel)
 	if not htmlcode then
-		print( string.format('Unable to generate html for %s.\%s', luasourcepath, errormessage) )
+		print( string.format('Unable to generate html for %s.\n%s', luasourcepath, errormessage) )
 	end
 
 	-- Generate html form API Model
 	local htmlcode, errormessage = templateengine.applytemplate(apimodel)
 	if not htmlcode then
-		print( string.format('Unable to generate html for %s.\%s', luasourcepath, errormessage) )
+		print( string.format('Unable to generate html for %s.\n%s', luasourcepath, errormessage) )
 	end
 	
-	local htmlfilename = filename:gsub('([%w%-_/\]+)%.lua', '%1.html')
+	local htmlfilename = filename:gsub('([%w%-_/\\]+)%.lua', '%1.html')
 
 	-- Save serialized model
 	local htmlfile = io.open(htmlfilename, 'w')
