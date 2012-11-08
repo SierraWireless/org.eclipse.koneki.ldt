@@ -34,6 +34,8 @@ public class LuaGenericInterpreterConfigurer {
 
 	private static final String LUA_PATTERN = "?.lua;"; //$NON-NLS-1$
 	private static final String LUA_INIT_PATTERN = "?" + File.separator + "init.lua;"; //$NON-NLS-1$ //$NON-NLS-2$
+	private static final String LUAC_PATTERN = "?.luac;"; //$NON-NLS-1$
+	private static final String LUAC_INIT_PATTERN = "?" + File.separator + "init.luac;"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config) throws CoreException {
 
@@ -41,11 +43,7 @@ public class LuaGenericInterpreterConfigurer {
 		final String envLuaPath = config.getEnvVar(LuaDebugConstants.LUA_PATH);
 		final String interpreterPath = createLuaPath(launch, config);
 		if (envLuaPath != null) {
-			// check if the path ends by a ";"
-			if (envLuaPath.matches(".*;\\s*$")) //$NON-NLS-1$
-				config.addEnvVar(LuaDebugConstants.LUA_PATH, envLuaPath + interpreterPath);
-			else
-				config.addEnvVar(LuaDebugConstants.LUA_PATH, envLuaPath + ";" + interpreterPath); //$NON-NLS-1$
+			config.addEnvVar(LuaDebugConstants.LUA_PATH, interpreterPath + envLuaPath);
 		} else {
 			config.addEnvVar(LuaDebugConstants.LUA_PATH, interpreterPath);
 
@@ -79,12 +77,18 @@ public class LuaGenericInterpreterConfigurer {
 		// Create : set path command
 		StringBuilder command = new StringBuilder();
 		for (final IPath iPath : luaPath) {
-			command.append(iPath);
+			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
 			command.append(LUA_PATTERN);
-			command.append(iPath);
+			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
 			command.append(LUA_INIT_PATTERN);
+			command.append(iPath.toOSString());
+			command.append(File.separatorChar);
+			command.append(LUAC_PATTERN);
+			command.append(iPath.toOSString());
+			command.append(File.separatorChar);
+			command.append(LUAC_INIT_PATTERN);
 		}
 		return command.toString();
 	}
