@@ -47,6 +47,7 @@ public interface LuaDebugConstants {
 	 */
 	String SCRIPT_PATH = "script"; //$NON-NLS-1$
 	String DEBUGGER_PATH = SCRIPT_PATH + "/external"; //$NON-NLS-1$
+	String DEBUGGER_FILE_NAME = "debugger.lua"; //$NON-NLS-1$
 
 	/**
 	 * Environment variables

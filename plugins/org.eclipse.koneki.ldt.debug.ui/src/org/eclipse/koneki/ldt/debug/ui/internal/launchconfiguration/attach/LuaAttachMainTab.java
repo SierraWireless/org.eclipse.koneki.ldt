@@ -10,6 +10,14 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.commons.io.FileUtils;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.dltk.debug.core.DLTKDebugPlugin;
@@ -17,6 +25,9 @@ import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationT
 import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
 import org.eclipse.dltk.internal.launching.LaunchConfigurationUtils;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -25,14 +36,18 @@ import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.debug.ui.internal.DocumentationLinksConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Messages;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -193,6 +208,85 @@ public class LuaAttachMainTab extends ScriptLaunchConfigurationTab {
 		}
 
 		return true;
+	}
+
+	/*
+	 * @see ILaunchConfigurationTab#createControl(Composite)
+	 */
+	public void createControl(Composite parent) {
+		Composite comp = new Composite(parent, SWT.NONE);
+		setControl(comp);
+
+		GridLayout topLayout = new GridLayout();
+		topLayout.verticalSpacing = 0;
+		comp.setLayout(topLayout);
+
+		createClientInfo(comp);
+		createProjectEditor(comp);
+		createVerticalSpacer(comp, 1);
+
+		doCreateControl(comp);
+		createVerticalSpacer(comp, 1);
+
+		createDebugOptionsGroup(comp);
+
+		createCustomSections(comp);
+		Dialog.applyDialogFont(comp);
+	}
+
+	protected void createClientInfo(Composite parent) {
+		Composite comp = new Composite(parent, SWT.NONE);
+		GridLayoutFactory.swtDefaults().applyTo(comp);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(comp);
+
+		Link lnkDocumentation = new Link(comp, SWT.NONE);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(lnkDocumentation);
+		lnkDocumentation.setText(NLS.bind(
+				org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.Messages.LuaAttachMainTab_client_info_description,
+				LuaDebugConstants.DEBUGGER_FILE_NAME));
+
+		lnkDocumentation.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if (LuaDebugConstants.DEBUGGER_FILE_NAME.equals(event.text)) {
+					// get debugger file
+
+					// prompt a directory selection dialog
+					DirectoryDialog directoryDialog = new DirectoryDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+					String selectedDirPath = directoryDialog.open();
+					if (selectedDirPath != null) {
+						// if directory is selected :
+						File destDir = new File(selectedDirPath);
+
+						// get the debugger file
+						try {
+							URL debuggerEntry = org.eclipse.koneki.ldt.debug.core.internal.Activator.getDefault().getBundle()
+									.getEntry(LuaDebugConstants.DEBUGGER_PATH);
+							File debuggerFolder = new File(FileLocator.toFileURL(debuggerEntry).getFile());
+							File debuggerFile = new File(debuggerFolder, LuaDebugConstants.DEBUGGER_FILE_NAME);
+
+							// copy debugger file in selected directory
+							FileUtils.copyFileToDirectory(debuggerFile, destDir, true);
+
+							if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.Messages.LuaAttachMainTab_copy_done_title, NLS.bind(
+									org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.Messages.LuaAttachMainTab_copy_done_question,
+									LuaDebugConstants.DEBUGGER_FILE_NAME))) {
+								Program.launch(destDir.toString());
+							}
+
+						} catch (IOException e) {
+							ErrorDialog.openError(
+									PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+									org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.Messages.LuaAttachMainTab_copy_failed_title,
+									null,
+									new Status(IStatus.WARNING, Activator.PLUGIN_ID, NLS.bind(org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.attach.Messages.LuaAttachMainTab_copy_failed_description,
+											LuaDebugConstants.DEBUGGER_FILE_NAME), e));
+						}
+					}
+				} else
+					// open documentation
+					PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(DocumentationLinksConstants.ATTACH_DEBUG);
+			}
+		});
 	}
 
 	/*

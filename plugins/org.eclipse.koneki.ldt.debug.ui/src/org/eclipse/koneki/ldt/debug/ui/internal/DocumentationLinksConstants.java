@@ -11,5 +11,8 @@
 package org.eclipse.koneki.ldt.debug.ui.internal;
 
 public interface DocumentationLinksConstants {
-	String SOURCE_MAPPING = "/org.eclipse.koneki.ldt.doc.user/help/Koneki/LDT/Developer_Area/User_Guides/User_Guide_0.9/Concepts.html#Source_Mapping"; //$NON-NLS-1$
+
+	String BASE_URL = "/org.eclipse.koneki.ldt.doc.user/help/Koneki/LDT/Developer_Area/User_Guides/User_Guide_0.9/"; //$NON-NLS-1$
+	String SOURCE_MAPPING = BASE_URL + "Concepts.html#Source_Mapping"; //$NON-NLS-1$
+	String ATTACH_DEBUG = BASE_URL + "Tasks.html#Attach_session"; //$NON-NLS-1$
 }
