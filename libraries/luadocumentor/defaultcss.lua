@@ -102,6 +102,10 @@ p.name {
     padding-top: 1em;
 }
 
+p:first-child {
+    margin-top: 0px;
+}
+
 pre.example {
     background-color: rgb(245, 245, 245);
     border: 1px solid silver;
@@ -261,4 +265,5 @@ table.function_list td.summary { width: 100%; }
 dl.table dt, dl.function dt {border-top: 1px solid #ccc; padding-top: 1em;}
 dl.table dd, dl.function dd {padding-bottom: 1em; margin: 10px 0 0 20px;}
 dl.table h3, dl.function h3 {font-size: .95em;}
+
 ]]
