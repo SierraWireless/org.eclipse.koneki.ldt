@@ -62,4 +62,12 @@ public interface LuaDebugConstants {
 	String ENV_VAR_KEY_DBGP_WORKINGDIR = "DBGP_WORKINGDIR"; //$NON-NLS-1$
 	String ENV_VAR_KEY_DBGP_TRANSPORT = "DBGP_TRANSPORT"; //$NON-NLS-1$
 
+	/**
+	 * Path constant
+	 */
+	String WILDCARD_PATTERN = "?"; //$NON-NLS-1$
+	String LUA_PATTERN = WILDCARD_PATTERN + ".lua;"; //$NON-NLS-1$
+	String LUAC_PATTERN = WILDCARD_PATTERN + ".luac;"; //$NON-NLS-1$
+	String LUA_INIT_PATTERN = "init.lua;"; //$NON-NLS-1$
+	String LUAC_INIT_PATTERN = "init.luac;"; //$NON-NLS-1$ 
 }

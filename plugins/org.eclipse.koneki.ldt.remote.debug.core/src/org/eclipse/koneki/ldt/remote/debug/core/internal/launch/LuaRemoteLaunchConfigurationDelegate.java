@@ -203,13 +203,28 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 
 			// set environment var
 			Map<String, String> envVars = new HashMap<String, String>();
-			// add default lua envvar
 			String luaPath = luaSubSystem.getLuaPath();
-			if (luaPath != null && !luaPath.isEmpty())
-				envVars.put(LuaDebugConstants.LUA_PATH, luaPath);
+			if (luaPath == null || luaPath.isEmpty())
+				luaPath = "$LUA_PATH"; //  //$NON-NLS-1$ if no luapath defined at subsystem level used the default one.
+
+			// add default lua envvar
+			StringBuilder luaPathBuilder = new StringBuilder(luaPath);
+			// add working dir to lua path
+			luaPathBuilder.append(remoteApplicationFolderPath);
+			luaPathBuilder.append(remoteFileSubSystem.getSeparator());
+			luaPathBuilder.append(LuaDebugConstants.LUA_PATTERN);
+			// add init pattern for working dir to lua path
+			luaPathBuilder.append(remoteApplicationFolderPath);
+			luaPathBuilder.append(remoteFileSubSystem.getSeparator());
+			luaPathBuilder.append(LuaDebugConstants.WILDCARD_PATTERN);
+			luaPathBuilder.append(remoteFileSubSystem.getSeparator());
+			luaPathBuilder.append(LuaDebugConstants.LUA_INIT_PATTERN);
+			envVars.put(LuaDebugConstants.LUA_PATH, luaPathBuilder.toString());
+
 			String luaCPath = luaSubSystem.getCLuaPath();
 			if (luaCPath != null && !luaCPath.isEmpty())
 				envVars.put(LuaDebugConstants.LUA_CPATH, luaCPath);
+
 			String ldLibraryPath = luaSubSystem.getLDLibraryPath();
 			if (ldLibraryPath != null && !ldLibraryPath.isEmpty())
 				envVars.put(LuaDebugConstants.LUA_LDLIBRARYPATH, ldLibraryPath);

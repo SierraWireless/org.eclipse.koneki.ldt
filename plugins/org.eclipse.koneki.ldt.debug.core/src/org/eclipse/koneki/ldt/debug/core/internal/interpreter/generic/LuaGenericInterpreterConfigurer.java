@@ -32,10 +32,8 @@ import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 
 public class LuaGenericInterpreterConfigurer {
 
-	private static final String LUA_PATTERN = "?.lua;"; //$NON-NLS-1$
-	private static final String LUA_INIT_PATTERN = "?" + File.separator + "init.lua;"; //$NON-NLS-1$ //$NON-NLS-2$
-	private static final String LUAC_PATTERN = "?.luac;"; //$NON-NLS-1$
-	private static final String LUAC_INIT_PATTERN = "?" + File.separator + "init.luac;"; //$NON-NLS-1$ //$NON-NLS-2$
+	private static final String LUA_INIT_PATTERN = LuaDebugConstants.WILDCARD_PATTERN + File.separator + LuaDebugConstants.LUA_INIT_PATTERN;
+	private static final String LUAC_INIT_PATTERN = LuaDebugConstants.WILDCARD_PATTERN + File.separator + LuaDebugConstants.LUAC_INIT_PATTERN;
 
 	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config) throws CoreException {
 
@@ -79,13 +77,13 @@ public class LuaGenericInterpreterConfigurer {
 		for (final IPath iPath : luaPath) {
 			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
-			command.append(LUA_PATTERN);
+			command.append(LuaDebugConstants.LUA_PATTERN);
 			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
 			command.append(LUA_INIT_PATTERN);
 			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
-			command.append(LUAC_PATTERN);
+			command.append(LuaDebugConstants.LUAC_PATTERN);
 			command.append(iPath.toOSString());
 			command.append(File.separatorChar);
 			command.append(LUAC_INIT_PATTERN);

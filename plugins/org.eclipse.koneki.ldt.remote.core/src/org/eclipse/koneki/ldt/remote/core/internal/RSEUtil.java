@@ -73,6 +73,9 @@ public final class RSEUtil {
 	 * @return a remote file subsystem or null if none is found
 	 */
 	public static IRemoteFileSubSystem getRemoteFileSubsystem(IHost host) {
+		if (host == null)
+			return null;
+
 		ISubSystem[] subSystems = host.getSubSystems();
 		for (ISubSystem subsystem : subSystems) {
 			if (subsystem instanceof IRemoteFileSubSystem) {
