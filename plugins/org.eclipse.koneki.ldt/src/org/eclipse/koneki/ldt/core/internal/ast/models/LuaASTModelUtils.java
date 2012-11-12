@@ -173,7 +173,7 @@ public final class LuaASTModelUtils {
 		} else if (LuaASTUtils.isLocal(item)) {
 			// TODO retrieve local var which are in the model (so the local var in the first block)
 			// support local variable
-			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length() + 1, Declaration.AccPrivate);
+			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccPrivate);
 		} else if (LuaASTUtils.isGlobal(item)) {
 			// support global var
 			try {
