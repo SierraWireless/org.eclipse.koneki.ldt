@@ -1,6 +1,6 @@
 ---
 -- Module to process.
--- See @{#typename.fieldname}
+-- See @{#(typename).fieldname}
 -- @module modulename
 
 ---

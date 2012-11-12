@@ -25,28 +25,31 @@ function M.isempty(map)
 	local f = pairs(map)
 	return f(map) == nil
 end
+
 ---
 -- Provide a handling function for all supported anchor types
+--                 recordtypedef => #(typename)
+-- item (field of recordtypedef) => #(typename).itemname
+--                 item (global) => itemname
 M.anchortypes = {
-	file = function(o) return string.format('%s.html', o.name) end,
-	internaltyperef = function(o) return string.format('#(%s)', o.typename) end,
 	recordtypedef = function (o) return string.format('#(%s)', o.name) end,
-	item = function(modelobject)
-		-- Handle items referencing globals
-		if not modelobject.parent or modelobject.parent.tag == 'file' then
-			return modelobject.name
-		else
-			-- Prefix item name with parent anchor
-			local parent = modelobject.parent
-			local parentanchor = M.anchor(parent)
-			if not parentanchor then
-				return nil, string.format('Unable to generate anchor for `%s parent.',
-					parent and parent.tag or 'nil')
+	item = function(o)
+		if not o.parent or o.parent.tag == 'file' then
+			-- Handle items referencing globals
+			return o.name
+		elseif o.parent and o.parent.tag == 'recordtypedef' then
+			-- Handle items included in recordtypedef
+			local recordtypedef = o.parent
+			local recordtypedefanchor = M.anchor(recordtypedef)
+			if not recordtypedefanchor then
+				return nil, 'Unable to generate anchor for `recordtypedef parent.'
 			end
-			return string.format('%s.%s', parentanchor, modelobject.name)
+			return string.format('%s.%s', recordtypedefanchor, o.name)
 		end
+		return nil, 'Unable to generate anchor for `item'
 	end
 }
+
 ---
 -- Provides anchor string for an object of API mode
 --
@@ -63,68 +66,91 @@ function M.anchor( modelobject )
 	end
 	return nil, string.format('No anchor available for `%s', tag)
 end
+
+local function getexternalmodule( item )
+	-- Get file which contains this item
+	local file
+	if item.parent then
+		if item.parent.tag =='recordtypedef' then
+			local recordtypedefparent = item.parent.parent
+			if recordtypedefparent and recordtypedefparent.tag =='file'then
+				file = recordtypedefparent
+			end
+		elseif item.parent.tag =='file' then
+			file = item.parent
+		else
+			return nil, 'Unable to fetch item parent'
+		end
+	end
+	return file
+end
+
+---
+-- Provide a handling function for all supported link types
+--
+--                        internaltyperef => ##(typename)
+--                                        => #anchor(recordtyperef)
+--                        externaltyperef => modulename.html##(typename)
+--                                        => linkto(file)#anchor(recordtyperef)
+--                           file(module) => modulename.html
+--                                  index => index.html
+--                          recordtypedef => ##(typename)
+--                                        => #anchor(recordtyperef)
+-- item (internal field of recordtypedef) => ##(typename).itemname
+--                                        => #anchor(item)
+--                 item (internal global) => #itemname
+--                                        => #anchor(item)
+-- item (external field of recordtypedef) => modulename.html##(typename).itemname
+--                                        => linkto(file)#anchor(item)
+--                  item (externalglobal) => modulename.html#itemname
+--                                        => linkto(file)#anchor(item)
 M.linktypes = {
 	internaltyperef	= function(o) return string.format('##(%s)', o.typename) end,
 	externaltyperef	= function(o) return string.format('%s.html##(%s)', o.modulename, o.typename) end,
-	file = function(o) return string.format('%s.html', o.name) end,
-	index = function() return 'index.html' end,
-	recordtypedef = function(o)
+	file            = function(o) return string.format('%s.html', o.name) end,
+	index           = function() return 'index.html' end,
+	recordtypedef   = function(o)
 		local anchor = M.anchor(o)
-		return anchor or nil, 'Unable to generate anchor for `recordtypedef.'
+		if not anchor then
+			return nil, 'Unable to generate anchor for `recordtypedef.'
+		end
+		return string.format('#%s', anchor)
 	end,
-	item = function( apiobject )
+	item = function(o)
 
-		-- This item may be related to ...
-		if apiobject.parent.tag == 'recordtypedef' then
-
-			-- A type
-			
-			-- Fetch parent type
-			local parent = apiobject.parent
-			local parentanchor = M.anchor( parent )
-			if not parentanchor then
-				return nil, string.format('Unable to generate anchor for `%s parent.',
-					parentanchor and parentanchor.tag or 'nil')
-			end
-			
-			-- Fetch file containing parent type
-			local parentfile = apiobject.parent.parent
-			if parentfile then
-				local parentfileanchor = M.anchor( parentfile )
-				if not parentfileanchor then
-					return nil, string.format('Unable to generate anchor for `%s parent.',
-						parentfile.tag or 'nil')
-				end
-				return string.format('%s#%s.%s', parentfileanchor, parentanchor, apiobject.name)
-			end
-			return string.format('#%s.%s', parentanchor, apiobject.name)
+		-- For every item get anchor
+		local anchor = M.anchor(o)
+		if not anchor then
+			return nil, 'Unable to generate anchor for `item.'
 		end
 
-		-- Create anchor for current object
-		local currentapiobjectanchor = M.anchor( apiobject )
-		if not currentapiobjectanchor then
-			return nil, string.format('Unable to generate anchor for `%s object.', apiobject.tag)
-		end
+		-- Built local link to item
+		local linktoitem = string.format('#%s', anchor)
 
-		-- This item may be related to ...
-		if apiobject.parent and apiobject.parent.tag == 'file' then
+		--
+		-- For external item, prefix with the link to the module.
+		--
+		-- The "external item" concept is used only here for short/embedded
+		-- notation purposed. This concept and the `.external` field SHALL NOT
+		-- be used elsewhere.
+		--
+		if o.external then
 
-			-- A global defined in another module
-			local linktoparent = M.linkto( apiobject.parent )
-
-			-- Check if it is possible to create a link
-			if not linktoparent then
-				return nil, string.format('Unable to generate link for `%s parent.', apiobject.parent.tag)
+			-- Get link to file which contains this item
+			local file = getexternalmodule( o )
+			local linktofile = file and M.linkto( file )
+			if not linktofile then
+				return nil, 'Unable to generate link for external `item.'
 			end
 
-			-- Create actual link
-			return string.format('%s#%s', linktoparent, currentapiobjectanchor)
+			-- Built external link to item
+			linktoitem = string.format("%s%s", linktofile, linktoitem)
 		end
 
-		-- This item reference a global definition
-		return string.format('#%s', currentapiobjectanchor)
+		return linktoitem
 	end
 }
+
 ---
 -- Generates text for HTML links from API model element
 --
@@ -133,7 +159,6 @@ M.linktypes = {
 -- @result #string Links text for an API model element, this function __may rise an error__.
 -- @usage # -- In a template
 -- <a href="$( linkto(api) )">Some text</a>
-M.linktypes.file = M.linktypes.recordtypedef
 function M.linkto( apiobject )
 	local tag = apiobject.tag
 	if M.linktypes[ tag ] then
@@ -144,86 +169,106 @@ function M.linkto( apiobject )
 	end
 	return nil, string.format('No link generation available for `%s.', tag)
 end
+
+---
+-- Provide a handling function for all supported pretty name types
+--                                 primitivetyperef => #typename
+--                                  internaltyperef => #typename
+--                                  externaltyperef => modulename#typename
+--                                     file(module) => modulename
+--                                            index => index
+--                                    recordtypedef => typename
+--        item (internal function of recordtypedef) => typename.itemname(param1, param2,...)
+--  item (internal func with self of recordtypedef) => typename:itemname(param2)
+--  item (internal non func field of recordtypedef) => typename.itemname
+--                      item (internal func global) => functionname(param1, param2,...)
+--                  item (internal non func global) => itemname
+--        item (external function of recordtypedef) => modulename#typename.itemname(param1, param2,...)
+--  item (external func with self of recordtypedef) => modulename#typename:itemname(param2)
+--  item (external non func field of recordtypedef) => modulename#typename.itemname
+--                      item (external func global) => functionname(param1, param2,...)
+--                  item (external non func global) => itemname
 M.prettynametypes = {
 	primitivetyperef = function(o) return string.format('#%s', o.typename) end,
 	externaltyperef = function(o) return string.format('%s#%s', o.modulename, o.typename) end,
+	index = function(o) return "index" end,
 	file = function(o) return o.name end,
-	item = function( apiobject )
+	recordtypedef = function(o) return o.name end,
+	item = function( o )
 
-		-- Retrieve referenced type definition
-		local parent = apiobject.parent
-		local global = parent and parent.tag == 'file'
-		local typefield = parent and parent.tag == 'recordtypedef'
-		if not apiobject.type then
+		-- Determine type name
+		local parent = o.parent
 
-			-- Current item doesn't have any type reference enabling to math it
-			-- with a type, but we can still prefix it with its parent name
-			local prefix = ( typefield and parent.name ) and parent.name.. '.' or '' 
-			return prefix .. apiobject.name
+		-- Determine scope
+		local isglobal = parent and parent.tag == 'file'
+		local isfield = parent and parent.tag == 'recordtypedef'
 
-		end
-
-		--
 		-- Fetch item definition
-		--
-		local file 
 		local definition
-		if global then
-			definition = parent.types[ apiobject.type.typename ]
-		elseif typefield then
+		if isglobal then
+			definition = parent.types[ o.type.typename ]
+		elseif isfield then
 			-- Get definition container
-			file = parent.parent
-			if not file then
-				-- This type has no container,
-				-- it may be created from a shorcut notation
-				return string.format('#%s.%s', parent.name, apiobject.name)
+			local file = parent.parent
+			local parenttypename = o.type and o.type.typename
+			if file and parenttypename then
+				definition = file.types[ parenttypename ]
 			end
-			definition = file.types[ apiobject.type.typename ]
 		end
 
-		-- When type is not available, just provide item name prefixed with parent
-		if not definition then
-			local prefix = ( typefield and parent.name ) and parent.name.. '.' or '' 
-			return string.format('%s%s', prefix, apiobject.name)
+		--
+		-- Generating item names
+		--
+		local itemname = o.name
+		local typename = parent and string.format('%s.', parent.name) or ''
+		local externalmodule = o.external and getexternalmodule( o )
+		local externalmodulename = ''
+		if externalmodule and externalmodule.name then
+			externalmodulename = string.format("%s#", externalmodule.name)
+		end
+		if isglobal or not definition then
+
+			-- Globals
+			return string.format('%s%s', typename, itemname)
+
 		elseif definition.tag == 'recordtypedef' then
-			-- In case of record return item name prefixed with module name if available
-			if global then
-				return apiobject.name
-			else
-				return string.format('%s.%s', parent.name, apiobject.name)
-			end
+
+			-- Fields
+			return string.format('%s%s%s', externalmodulename, typename, itemname)
 		else
 			--
-			-- Dealing with a function
+			-- Functions
 			--
 
 			-- Build parameter list
 			local paramlist = {}
 			local hasfirstself = false
 			for position, param in ipairs(definition.params) do
-				-- When first parameter is 'self', it will not be part of listed parameters
+
+				-- When first parameter is 'self',
+				-- it will not be part of listed parameters
 				if position == 1 and param.name == 'self' then
 					hasfirstself = true
 				else
-					paramlist[#paramlist + 1] = param.name
+					table.insert(paramlist, param.name)
 					if position ~= #definition.params then
-						paramlist[#paramlist + 1] =  ', '
+						table.insert(paramlist, ', ')
 					end
 				end
 			end
-			-- Compose function prefix,
+
+			-- Determine function prefix operator,
 			-- ':' if 'self' is first parameter, '.' else way
-			local fname = ''
-			if not global then
-				fname = fname .. parent.name ..( hasfirstself and ':' or '.' )
-			end
+			local operator = hasfirstself and ':' or '.'
+
 			-- Append function parameters
-			return string.format('%s%s(%s)', fname, apiobject.name, table.concat(paramlist))
+			return string.format('%s%s%s%s(%s)', externalmodulename,
+				parent.name , operator, itemname, table.concat(paramlist))
 		end
 	end
 }
-M.prettynametypes.index = M.prettynametypes.file
 M.prettynametypes.internaltyperef = M.prettynametypes.primitivetyperef
+
 ---
 -- Provide human readable overview from an API model element
 --
@@ -243,6 +288,7 @@ function M.prettyname( apiobject )
 	end
 	return nil, string.format('No pretty name for `%s.', tag)
 end
+
 ---
 -- Just make a string print table in HTML.
 -- @function [parent = #docutils] securechevrons
@@ -285,23 +331,35 @@ end
 ---
 -- Transform a string like `module#(type).field` in an API Model item
 local field = function( str )
-	for mod, typename, fieldname in str:gmatch('([%a%.%d_]*)#%(?([%a%.%d_]+)%)?%.([%a%%d_]+)') do
-		local modulefield = apimodel._item( fieldname )
-		local moduletype = apimodel._recordtypedef(typename)
-		moduletype:addfield( modulefield )
-		local typeref
-		if #mod > 0 then
-			local modulefile = apimodel._file()
-			modulefile.name = mod
-			modulefile:addtype( moduletype )
-			typeref = apimodel._externaltypref(mod, typename)
-		else
-			typeref = apimodel._internaltyperef(typename)
+
+	-- Match `module#type.field`
+	local mod, typename, fieldname = str:gmatch('([%a%.%d_]*)#([%a%.%d_]+)%.([%a%.%d_]+)')()
+
+	-- Try matching `module#(type).field`
+	if not mod then
+		mod, typename, fieldname = str:gmatch('([%a%.%d_]*)#%(([%a%.%d_]+)%)%.([%a%.%d_]+)')()
+		if not mod then
+			-- No match
+			return nil
 		end
-		modulefield.type = typeref
-		return modulefield
 	end
-	return nil
+
+	-- Build according `item
+	local modulefielditem = apimodel._item( fieldname )
+	local moduletype = apimodel._recordtypedef(typename)
+	moduletype:addfield( modulefielditem )
+	local typeref
+	if #mod > 0 then
+		local modulefile = apimodel._file()
+		modulefile.name = mod
+		modulefile:addtype( moduletype )
+		typeref = apimodel._externaltypref(mod, typename)
+		modulefielditem.external = true
+	else
+		typeref = apimodel._internaltyperef(typename)
+	end
+	modulefielditem.type = typeref
+	return modulefielditem
 end
 
 ---
@@ -318,10 +376,20 @@ end
 ---
 -- Build an API external reference from a string like: `mod.ule#type`
 local extern = function (type)
-	for _, modulename, typename in type:gmatch('(([%a%.%d_]+)#([%a%.%d_]+))') do
-		return apimodel._externaltypref(modulename, typename)
+
+	-- Match `mod.ule#ty.pe`
+	local modulename, typename = type:gmatch('([%a%.%d_]+)#([%a%.%d_]+)')()
+
+	-- Trying  `mod.ule#(ty.pe)`
+	if not modulename then
+		modulename, typename = type:gmatch('([%a%.%d_]+)#%(([%a%.%d_]+)%)')()
+
+		-- No match at all
+		if not modulename then
+			return nil
+		end
 	end
-	return nil
+	return apimodel._externaltypref(modulename, typename)
 end
 
 ---
@@ -364,7 +432,6 @@ end
 -- @function [parent=#utils.table] sortedPairs
 -- @param t table to iterate.
 -- @return iterator function.
---
 function M.sortedpairs(t)
 	local a = {}
 	local insert = table.insert
