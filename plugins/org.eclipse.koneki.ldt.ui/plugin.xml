@@ -456,4 +456,18 @@
          label="%theme.ldtcategoryname">
    </themeElementCategory>
 </extension>
+<!-- =========================================================================== -->
+<!-- Compare                                                                     -->
+<!-- =========================================================================== -->
+   <extension point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            extensions="lua"
+            class="org.eclipse.koneki.ldt.ui.internal.compare.LuaMergeViewerCreator"
+            id="org.eclipse.koneki.ldt.ui.internal.compare.LuaMergeViewer">
+      </viewer>
+      <contentTypeBinding
+			contentTypeId="org.eclipse.koneki.ldt.content-type"
+            contentMergeViewerId="org.eclipse.koneki.ldt.ui.internal.compare.LuaMergeViewer">
+	  </contentTypeBinding>
+   </extension>
 </plugin>
