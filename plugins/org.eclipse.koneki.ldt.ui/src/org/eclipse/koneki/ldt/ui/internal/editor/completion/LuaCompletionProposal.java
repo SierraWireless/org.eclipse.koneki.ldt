@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.editor.completion;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -33,5 +34,10 @@ public class LuaCompletionProposal extends ScriptCompletionProposal {
 		// we must have a reflexion on the preference and where we should store it.
 		IPreferenceStore preference = Activator.getDefault().getPreferenceStore();
 		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
+	}
+
+	@Override
+	public Object getAdditionalProposalInfo(IProgressMonitor monitor) {
+		return DelegateLuaCompletionProposalMethods.getAdditionalProposalInfo(this, monitor);
 	}
 }

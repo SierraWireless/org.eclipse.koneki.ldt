@@ -28,19 +28,19 @@
    </extension>
  <extension point="org.eclipse.debug.ui.launchShortcuts">
   <shortcut
-    label="Lua Remote Application"
+    label="%launchshortcut.label"
     icon="icons/obj16/lua_remote.png"
     helpContextId="org.eclipse.jdt.debug.ui"
     modes="run, debug"
     class="org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.LuaRemoteLaunchShortcut"
-    description="Launch a Lua application on remote host"
+    description="%launchshortcut.description"
     id="org.eclipse.koneki.ldt.debug.ui.localLuaShortcut">
     <description
-     description="Run a Lua application on a remote host"
+     description="%runasshortcut.description"
      mode="run">
     </description>
     <description
-     description="Debug a Lua application on a remote host"
+     description="%debugasshortcut.description"
      mode="debug">
     </description>
   <contextualLaunch>

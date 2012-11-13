@@ -435,4 +435,25 @@
     class="org.eclipse.koneki.ldt.ui.internal.editor.text.folding.LuaCodeFoldingBlockProvider">
   </blockProvider>
 </extension>
+<extension
+      point="org.eclipse.ui.themes">
+   <colorDefinition
+         categoryId="org.eclipse.koneki.ldt.ui.theme"
+         id="org.eclipse.koneki.ldt.ui.docforeground"
+         isEditable="true"
+         label="%theme.docforeground"
+         value="COLOR_INFO_FOREGROUND">
+   </colorDefinition>
+   <colorDefinition
+         categoryId="org.eclipse.koneki.ldt.ui.theme"
+         id="org.eclipse.koneki.ldt.ui.docbackground"
+         isEditable="true"
+         label="%theme.docbackground"
+         value="COLOR_INFO_BACKGROUND">
+   </colorDefinition>
+   <themeElementCategory
+         id="org.eclipse.koneki.ldt.ui.theme"
+         label="%theme.ldtcategoryname">
+   </themeElementCategory>
+</extension>
 </plugin>
