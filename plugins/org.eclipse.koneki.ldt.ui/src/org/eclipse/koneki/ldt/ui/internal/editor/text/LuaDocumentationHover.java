@@ -15,16 +15,15 @@ import java.io.IOException;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.internal.ui.text.HTMLPrinter;
 import org.eclipse.dltk.internal.ui.text.hover.DocumentationHover;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptHoverMessages;
 import org.eclipse.dltk.ui.ScriptElementImageProvider;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationTitleAdapter;
 import org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess;
-import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.koneki.ldt.ui.internal.LuaDocumentationHelper;
+import org.eclipse.koneki.ldt.ui.internal.views.Messages;
 import org.eclipse.ui.IEditorPart;
 
 @SuppressWarnings("restriction")
@@ -74,35 +73,32 @@ public class LuaDocumentationHover extends DocumentationHover {
 	protected String getHoverInfo(String nature, Object[] result) {
 		String htmlContent = null;
 
+		// no result
 		int nResults = result.length;
 		if (nResults == 0)
 			return null;
 
-		boolean hasContents = false;
 		if (nResults > 0) {
-
+			// handle only the first result
 			Object element = result[0];
+
+			// try to get documentation
 			IDocumentationResponse response = ScriptDocumentationAccess.getDocumentation(nature, element, TITLE_ADAPTER);
-			// Provide hint why there's no doc
-			if (response == null) {
-				response = new TextDocumentationResponse(element, TITLE_ADAPTER.getTitle(element), TITLE_ADAPTER.getImage(element),
-						ScriptHoverMessages.ScriptdocHover_noAttachedInformation);
-			}
-			try {
-
-				htmlContent = HTMLPrinter.read(response.getReader());
-				hasContents = true;
-			} catch (IOException e) {
-				return null;
+			if (response != null) {
+				try {
+					htmlContent = HTMLPrinter.read(response.getReader());
+				} catch (IOException e) {
+					return null;
+				}
 			}
 
-		}
-		if (!hasContents)
-			return null;
-
-		if (!htmlContent.isEmpty()) {
+			// if no documentation, use default text info
+			if (htmlContent == null || htmlContent.isEmpty()) {
+				htmlContent = Messages.LuaDocView_NoDocumentationFound;
+			}
 			return LuaDocumentationHelper.generatePage(htmlContent);
 		}
+
 		return null;
 	}
 
