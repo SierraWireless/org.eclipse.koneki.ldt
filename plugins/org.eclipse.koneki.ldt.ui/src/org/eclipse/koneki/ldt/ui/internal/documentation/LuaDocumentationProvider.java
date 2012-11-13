@@ -27,6 +27,7 @@ import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension2;
 import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
 import org.eclipse.koneki.ldt.core.internal.Activator;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTModelUtils;
+import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.IDocumentationHolder;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 
@@ -43,7 +44,7 @@ public class LuaDocumentationProvider implements IScriptDocumentationProvider, I
 	public Reader getInfo(IMember element, boolean lookIntoParents, boolean lookIntoExternal) {
 		try {
 			String memberDocumentation = getMemberDocumentation(element);
-			if (memberDocumentation != null)
+			if (memberDocumentation != null && !memberDocumentation.isEmpty())
 				return new StringReader(memberDocumentation);
 		} catch (ModelException e) {
 			Activator.logWarning("unable to get documentation for :" + element, e); //$NON-NLS-1$
@@ -75,16 +76,16 @@ public class LuaDocumentationProvider implements IScriptDocumentationProvider, I
 	public IDocumentationResponse getDocumentationFor(Object element) {
 		try {
 			// Support Documentation for ISourceModule and IMember
+			String documentation = null;
 			if (element instanceof IMember) {
-				String memberDocumentation = getMemberDocumentation((IMember) element);
-
-				if (memberDocumentation != null)
-					return new TextDocumentationResponse(element, memberDocumentation);
+				documentation = getMemberDocumentation((IMember) element);
 			} else if (element instanceof ISourceModule) {
-				final String moduleDocumentation = getModuleDocumentation((ISourceModule) element);
-				if (moduleDocumentation != null)
-					return new TextDocumentationResponse(element, moduleDocumentation);
+				documentation = getModuleDocumentation((ISourceModule) element);
 			}
+
+			// return documentation
+			if (documentation != null && !documentation.isEmpty())
+				return new TextDocumentationResponse(element, null, documentation);
 		} catch (ModelException e) {
 			Activator.logWarning("unable to get documentation for :" + element, e); //$NON-NLS-1$
 		}
@@ -92,6 +93,12 @@ public class LuaDocumentationProvider implements IScriptDocumentationProvider, I
 	}
 
 	private String getMemberDocumentation(IMember member) throws ModelException {
+		// if member represent the module show module documentation
+		if (LuaDLTKModelUtils.isModule(member)) {
+			return getModuleDocumentation(member.getSourceModule());
+		}
+
+		// else return member documentation
 		ASTNode astNode = LuaASTModelUtils.getASTNode(member);
 		if (astNode instanceof IDocumentationHolder) {
 			return ((IDocumentationHolder) astNode).getDocumentation();
