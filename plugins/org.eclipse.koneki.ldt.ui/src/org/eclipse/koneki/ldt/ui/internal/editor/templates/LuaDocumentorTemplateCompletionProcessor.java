@@ -10,19 +10,27 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.ui.internal.editor.templates;
 
+import org.eclipse.dltk.core.DLTKLanguageManager;
+import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor;
 import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.window.Window;
 import org.eclipse.koneki.ldt.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.internal.ImageConstants;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.part.IWorkbenchPartOrientation;
 
 /**
  * LuaDocumentor template completion processor
@@ -82,5 +90,23 @@ public class LuaDocumentorTemplateCompletionProcessor extends ScriptTemplateComp
 	@Override
 	protected Image getImage(Template template) {
 		return Activator.getDefault().getImageRegistry().get(ImageConstants.TEMPLATE_LUADOC);
+	}
+
+	/**
+	 * Copy of super method, but returning a custom TemplateInformationControlCreator
+	 */
+	@Override
+	protected IInformationControlCreator getInformationControlCreator() {
+		int orientation = Window.getDefaultOrientation();
+		IEditorPart editor = getContext().getEditor();
+		if (editor == null)
+			editor = DLTKUIPlugin.getActivePage().getActiveEditor();
+		if (editor instanceof IWorkbenchPartOrientation)
+			orientation = ((IWorkbenchPartOrientation) editor).getOrientation();
+		IDLTKLanguageToolkit toolkit = null;
+		toolkit = DLTKLanguageManager.getLanguageToolkit(getContext().getLanguageNatureID());
+		if ((toolkit == null) && (editor instanceof ScriptEditor))
+			toolkit = ((ScriptEditor) editor).getLanguageToolkit();
+		return new LuaTemplateInformationControlCreator(orientation, toolkit);
 	}
 }
