@@ -142,7 +142,12 @@ function M._file(_file)
 
 	-- Enable links just for module file objects 
 	enablelinks()
-	local jfile = javaapimodelfactory.newfileapi(templateengine.applytemplate(_file, 1))
+	local jfile 
+	if _file.name then
+		jfile = javaapimodelfactory.newfileapi(templateengine.applytemplate(_file, 1))
+	else
+		jfile = javaapimodelfactory.newfileapi()
+	end
 	disablelinks()
 
 	-- Adding gloval variables

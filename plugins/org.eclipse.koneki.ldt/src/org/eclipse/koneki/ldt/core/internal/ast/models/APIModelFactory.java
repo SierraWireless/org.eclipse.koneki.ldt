@@ -377,10 +377,11 @@ public final class APIModelFactory {
 		return new NamedJavaFunction() {
 			@Override
 			public int invoke(LuaState l) {
-				String documentation = l.checkString(1);
+				String documentation = l.checkString(1, null);
 
 				LuaFileAPI luafileAPI = new LuaFileAPI();
-				luafileAPI.setDocumentation(documentation);
+				if (documentation != null)
+					luafileAPI.setDocumentation(documentation);
 
 				l.pushJavaObject(luafileAPI);
 				return 1;

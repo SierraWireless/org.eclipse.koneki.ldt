@@ -26,7 +26,7 @@ function J._internalcontent(_internalcontent)
 
 	-- Appending global variables
 	for _, _item in ipairs(_internalcontent.unknownglobalvars) do
-		local jitem = javaapimodelbuilder._item(_item)
+		local jitem = javaapimodelbuilder._item(_item,true)
 		javainternalmodelfactory.addunknownglobalvar(jinternalcontent,jitem)
 
 		-- add occurrences
