@@ -20,11 +20,9 @@ import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationTitleAdapter;
 import org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.koneki.ldt.ui.internal.LuaDocumentationHelper;
 import org.eclipse.koneki.ldt.ui.internal.views.Messages;
-import org.eclipse.ui.IEditorPart;
 
 @SuppressWarnings("restriction")
 public class LuaDocumentationHover extends DocumentationHover {
@@ -62,12 +60,6 @@ public class LuaDocumentationHover extends DocumentationHover {
 			return null;
 		}
 	};
-
-	public LuaDocumentationHover(IEditorPart editor, IPreferenceStore store) {
-		super();
-		setEditor(editor);
-		setPreferenceStore(store);
-	}
 
 	@Override
 	protected String getHoverInfo(String nature, Object[] result) {

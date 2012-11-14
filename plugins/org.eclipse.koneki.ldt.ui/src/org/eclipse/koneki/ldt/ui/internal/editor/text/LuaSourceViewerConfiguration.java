@@ -12,9 +12,6 @@
 package org.eclipse.koneki.ldt.ui.internal.editor.text;
 
 import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
-import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptCommentScanner;
@@ -28,7 +25,6 @@ import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -41,7 +37,6 @@ import org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaCompletionProcess
 import org.eclipse.koneki.ldt.ui.internal.editor.completion.LuaContentAssistPreference;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-@SuppressWarnings("restriction")
 public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 
 	// CHECKSTYLE:OFF
@@ -228,27 +223,5 @@ public class LuaSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 				}
 			}
 		};
-	}
-
-	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		final String natureId = getNatureId();
-		if (natureId == null) {
-			return null;
-		}
-		EditorTextHoverDescriptor[] hoverDescs = DLTKUIPlugin.getDefault().getEditorTextHoverDescriptors(fPreferenceStore, natureId);
-		for (EditorTextHoverDescriptor hoverDesc : hoverDescs) {
-			if (hoverDesc.isEnabled() && hoverDesc.getStateMask() == stateMask)
-				return new LuaDocumentationHover(getEditor(), fPreferenceStore);
-		}
-		return null;
-	}
-
-	private String getNatureId() {
-		final ITextEditor editor = getEditor();
-		if (editor == null || !(editor instanceof ScriptEditor)) {
-			return null;
-		}
-		return ((ScriptEditor) editor).getLanguageToolkit().getNatureId();
 	}
 }

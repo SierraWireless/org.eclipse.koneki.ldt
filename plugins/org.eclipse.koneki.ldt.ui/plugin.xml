@@ -470,4 +470,20 @@
             contentMergeViewerId="org.eclipse.koneki.ldt.ui.internal.compare.LuaMergeViewer">
 	  </contentTypeBinding>
    </extension>
+   <extension
+         point="org.eclipse.dltk.ui.correctionProcessor">
+      <correctionProcessor
+            class="org.eclipse.koneki.ldt.ui.internal.editor.quickfix.LuaScriptCorrectionProcessor"
+            nature="org.eclipse.koneki.ldt.nature">
+      </correctionProcessor>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.ui.editorTextHovers">
+      <hover
+            activate="true"
+            class="org.eclipse.koneki.ldt.ui.internal.editor.text.LuaDocumentationHover"
+            id="org.eclipse.koneki.ldt.ui.documentationhover"
+            nature="org.eclipse.koneki.ldt.nature">
+      </hover>
+   </extension>
 </plugin>
