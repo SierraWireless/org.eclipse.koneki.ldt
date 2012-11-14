@@ -230,7 +230,7 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 
 			// custom launch conf name
 			String fileNameWithoutExtension = script.getLocation().removeFileExtension().lastSegment();
-			String configNamePrefix = MessageFormat.format("{0}#{1}", script.getProject().getName(), fileNameWithoutExtension); //$NON-NLS-1$
+			String configNamePrefix = MessageFormat.format("{0}_{1}", script.getProject().getName(), fileNameWithoutExtension); //$NON-NLS-1$
 
 			wc = configType.newInstance(null, getLaunchManager().generateLaunchConfigurationName(configNamePrefix));
 			wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_SCRIPT_NATURE, getNatureId());
