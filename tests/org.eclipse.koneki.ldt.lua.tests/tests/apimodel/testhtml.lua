@@ -9,7 +9,6 @@
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
 require 'errnode'
-local apimodelbuilder = require 'models.apimodelbuilder'
 local domhandler      = require 'domhandler'
 local tablecompare    = require 'tablecompare'
 local templateengine  = require 'templateengine'

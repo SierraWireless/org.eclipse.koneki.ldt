@@ -1,0 +1,114 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x9ee4b20]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0xa02d670]]
+				}
+				--[[table: 0xa04c570]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x9fa9f08]]
+		}
+		--[[table: 0x9ee4b48]],
+		types={
+			["__othermodule#atype=__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__othermodule#atype=__1",
+				parent=nil --[[ref]],
+				returns={
+					[1]={
+						types={
+							[1]={
+								typename="atype",
+								modulename="othermodule",
+								tag="externaltyperef"
+							}
+							--[[table: 0x9ef38e8]]
+						}
+						--[[table: 0x9ef38c0]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0x9ef3898]],
+					[2]={
+						types={
+							[1]={
+								typename="secondtype",
+								modulename="othermodule",
+								tag="externaltyperef"
+							}
+							--[[table: 0x9f818b0]]
+						}
+						--[[table: 0x9fa6b70]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0xa079978]]
+				}
+				--[[table: 0x9f32c90]],
+				params={
+
+				}
+				--[[table: 0x9ef3910]],
+				tag="functiontypedef"
+			}
+			--[[table: 0xa00ec08]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__othermodule#atype=__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0xa012748]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription="Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=200
+						}
+						--[[table: 0xa00ebe0]],
+						occurrences={
+
+						}
+						--[[table: 0xa00ebb8]],
+						tag="item"
+					}
+					--[[table: 0xa09f870]]
+				}
+				--[[table: 0x9f40060]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0x9f40088]],
+				tag="recordtypedef"
+			}
+			--[[table: 0x9fa9f30]]
+		}
+		--[[table: 0x9ee4af8]],
+		tag="file"
+	}
+	--[[table: 0x9f27590]];
+	_.types["__othermodule#atype=__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

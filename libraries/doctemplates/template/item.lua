@@ -139,9 +139,9 @@ return
 #
 #				local paramlist = niceparmlist(ret.types)
 #				if #ret.types > 0 and #paramlist > 0 then
-#					local returnline = "<em>" .. paramlist .. "</em>"
+#					returnline = "<em>" .. paramlist .. "</em>"
 #				end
-#				returnline = returnline .. "\n" .. (ret.description and ret.description)
+#				returnline = returnline .. "\n" .. ret.description
 				$( format (returnline))
 				</li>
 #			end

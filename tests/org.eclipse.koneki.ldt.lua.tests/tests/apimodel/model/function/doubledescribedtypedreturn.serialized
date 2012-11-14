@@ -1,0 +1,112 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x9ef3ad0]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x9ef3998]]
+				}
+				--[[table: 0x9ef3a60]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x9ef39c0]]
+		}
+		--[[table: 0x9ef3af8]],
+		types={
+			["__#string=__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__#string=__1",
+				parent=nil --[[ref]],
+				returns={
+					[1]={
+						types={
+							[1]={
+								typename="string",
+								tag="primitivetyperef"
+							}
+							--[[table: 0x9f33dc0]]
+						}
+						--[[table: 0x9f33d98]],
+						description="return description",
+						tag="return"
+					}
+					--[[table: 0x9f33d70]],
+					[2]={
+						types={
+							[1]={
+								typename="table",
+								tag="primitivetyperef"
+							}
+							--[[table: 0x9f340b0]]
+						}
+						--[[table: 0x9f34088]],
+						description="return second description",
+						tag="return"
+					}
+					--[[table: 0x9f33fe8]]
+				}
+				--[[table: 0x9f33e10]],
+				params={
+
+				}
+				--[[table: 0x9f33de8]],
+				tag="functiontypedef"
+			}
+			--[[table: 0x9f33d28]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__#string=__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0x9f34220]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription="Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=219
+						}
+						--[[table: 0x9f33ce8]],
+						occurrences={
+
+						}
+						--[[table: 0x9f33cc0]],
+						tag="item"
+					}
+					--[[table: 0x9f33bb0]]
+				}
+				--[[table: 0x9f2ce38]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0x9f2ce60]],
+				tag="recordtypedef"
+			}
+			--[[table: 0x9f2cd28]]
+		}
+		--[[table: 0x9ef3aa8]],
+		tag="file"
+	}
+	--[[table: 0x9ef3970]];
+	_.types["__#string=__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

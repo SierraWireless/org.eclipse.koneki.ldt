@@ -1,0 +1,112 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x9fce4c8]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x9fce390]]
+				}
+				--[[table: 0x9fce458]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x9fce3b8]]
+		}
+		--[[table: 0x9fce4f0]],
+		types={
+			["__#string=__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__#string=__1",
+				parent=nil --[[ref]],
+				returns={
+					[1]={
+						types={
+							[1]={
+								typename="string",
+								tag="primitivetyperef"
+							}
+							--[[table: 0xa09e590]]
+						}
+						--[[table: 0xa09e568]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0xa09e540]],
+					[2]={
+						types={
+							[1]={
+								typename="table",
+								tag="primitivetyperef"
+							}
+							--[[table: 0xa09e870]]
+						}
+						--[[table: 0xa09e848]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0xa09e7a8]]
+				}
+				--[[table: 0xa09e5e0]],
+				params={
+
+				}
+				--[[table: 0xa09e5b8]],
+				tag="functiontypedef"
+			}
+			--[[table: 0xa09e4f8]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__#string=__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0xa09e9d0]],
+						description="Function long description",
+						parent=nil --[[ref]],
+						shortdescription="Function short description.",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=174
+						}
+						--[[table: 0xa09e4d0]],
+						occurrences={
+
+						}
+						--[[table: 0xa09e4a8]],
+						tag="item"
+					}
+					--[[table: 0xa09e398]]
+				}
+				--[[table: 0xa01bb18]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0xa01bb40]],
+				tag="recordtypedef"
+			}
+			--[[table: 0xa01ba08]]
+		}
+		--[[table: 0x9fce4a0]],
+		tag="file"
+	}
+	--[[table: 0x9fce368]];
+	_.types["__#string=__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end
