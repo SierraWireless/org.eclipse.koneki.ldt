@@ -458,10 +458,17 @@ function M.parse(stringcomment)
 		-- if the comment part don't start by @ 
 		-- it's the part which contains descriptions
 		-- (there are an exception for the in-line see tag @{..})
-		local startoffset,endoffset = firstpart:find("[.?][ \t]*\n?")
-		if startoffset then
-			_comment.shortdescription = firstpart:sub(1,startoffset)
-			_comment.description = firstpart:sub(endoffset+1,-1)
+		local shortdescription, description = string.match(firstpart,'^(.-[.?])(%s.+)')
+		-- store description
+		if shortdescription then
+			_comment.shortdescription = shortdescription
+			-- clean description
+			-- remove always the first space character
+			-- (this manage the case short and long description is on the same line)
+			description = string.gsub(description, "^[ \t]","")
+			-- if first line is only an empty string remove it 
+			description = string.gsub(description, "^[ \t]*\n","")
+			_comment.description = description
 		else
 			_comment.shortdescription = firstpart
 			_comment.description = ""
