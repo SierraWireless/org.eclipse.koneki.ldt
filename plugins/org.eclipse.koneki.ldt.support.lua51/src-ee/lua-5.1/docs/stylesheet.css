@@ -102,6 +102,10 @@ p.name {
     padding-top: 1em;
 }
 
+p:first-child {
+    margin-top: 0px;
+}
+
 pre.example {
     background-color: rgb(245, 245, 245);
     border: 1px solid silver;
