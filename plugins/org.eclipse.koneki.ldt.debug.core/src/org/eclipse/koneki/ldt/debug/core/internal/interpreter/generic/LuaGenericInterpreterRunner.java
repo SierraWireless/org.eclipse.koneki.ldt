@@ -34,4 +34,10 @@ public class LuaGenericInterpreterRunner extends AbstractInterpreterRunner {
 			Activator.log(e.getStatus());
 		}
 	}
+
+	@Override
+	protected String[] renderCommandLine(InterpreterConfig config) {
+		LuaGenericInterpreterCommandLineRenderer commandLineRenderer = new LuaGenericInterpreterCommandLineRenderer();
+		return commandLineRenderer.renderCommandLine(config, getInstall());
+	}
 }

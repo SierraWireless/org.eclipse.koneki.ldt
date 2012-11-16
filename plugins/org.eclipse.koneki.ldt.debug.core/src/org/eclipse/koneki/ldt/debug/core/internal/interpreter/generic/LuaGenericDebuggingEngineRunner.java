@@ -63,4 +63,10 @@ public class LuaGenericDebuggingEngineRunner extends DebuggingEngineRunner {
 		// return Activator.PLUGIN_ID + ".logfilenamekey";
 		return null;
 	}
+
+	@Override
+	protected String[] renderCommandLine(InterpreterConfig config) {
+		LuaGenericInterpreterCommandLineRenderer commandLineRenderer = new LuaGenericInterpreterCommandLineRenderer();
+		return commandLineRenderer.renderCommandLine(config, getInstall());
+	}
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.dltk.launching.ExecutionArguments;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.koneki.ldt.support.lua51.internal.Activator;
@@ -71,11 +72,24 @@ public class JNLua51InterpreterCommandLineRenderer {
 		items.add(getClassToRun());
 
 		// add interpreter arg
-		items.addAll(config.getInterpreterArgs());
-		final String[] interpreterOwnArgs = install.getInterpreterArguments();
-		if (interpreterOwnArgs != null) {
-			items.addAll(Arrays.asList(interpreterOwnArgs));
+		// final String[] interpreterOwnArgs =
+		// install.getInterpreterArguments();
+		// if (interpreterOwnArgs != null) {
+		// items.addAll(Arrays.asList(interpreterOwnArgs));
+		// }
+
+		// TODO BUG_ECLIPSE 390358
+		String args = install.getInterpreterArgs();
+		if (args != null && !args.isEmpty()) {
+			ExecutionArguments ex = new ExecutionArguments(args, ""); //$NON-NLS-1$
+			final String[] interpreterOwnArgs = ex.getInterpreterArgumentsArray();
+			if (interpreterOwnArgs != null) {
+				items.addAll(Arrays.asList(interpreterOwnArgs));
+			}
 		}
+		// end BUG_ECLIPSE 390358
+
+		items.addAll(config.getInterpreterArgs());
 
 		// add script to
 		items.add(config.getScriptFilePath().toOSString());

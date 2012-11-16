@@ -40,4 +40,10 @@ public class JNLua51InterpreterInstall extends AbstractInterpreterInstall {
 	protected IInterpreterRunner getDebugInterpreterRunner() {
 		return new JNLua51DebuggingEngineRunner(this);
 	}
+
+	@Override
+	public String[] getInterpreterArguments() {
+		// TODO BUG_ECLIPSE 390358
+		return new String[] { getInterpreterArgs() };
+	}
 }

@@ -45,4 +45,10 @@ public class LuaGenericInterpreterInstall extends AbstractInterpreterInstall {
 	public String toString() {
 		return getName();
 	}
+
+	@Override
+	public String[] getInterpreterArguments() {
+		// TODO BUG_ECLIPSE 390358
+		return new String[] { getInterpreterArgs() };
+	}
 }
