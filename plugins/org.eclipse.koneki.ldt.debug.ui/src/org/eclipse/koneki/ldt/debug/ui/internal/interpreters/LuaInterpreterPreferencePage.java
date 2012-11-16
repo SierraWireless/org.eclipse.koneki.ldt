@@ -125,7 +125,8 @@ public class LuaInterpreterPreferencePage extends ScriptInterpreterPreferencePag
 				IInterpreterInstall[] defaultInterpreter = fInterpretersBlock.getCheckedInterpreters();
 				IInterpreterInstall[] interpreters = fInterpretersBlock.getInterpreters();
 
-				InterpretersUpdater updater = new InterpretersUpdater();
+				// TODO BUG_ECLIPSE 390358
+				InterpretersUpdater updater = new LuaInterpretersUpdater();
 				if (!updater.updateInterpreterSettings(fInterpretersBlock.getCurrentNature(), interpreters, defaultInterpreter)) {
 					canceled[0] = true;
 				}
