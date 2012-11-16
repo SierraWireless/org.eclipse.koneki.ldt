@@ -32,7 +32,6 @@ public class JNLua51InterpreterInstall extends AbstractInterpreterInstall {
 		if (mode.equals(ILaunchManager.RUN_MODE)) {
 			return new JNLua51InterpreterRunner(this);
 		}
-
 		return null;
 	}
 
@@ -45,5 +44,9 @@ public class JNLua51InterpreterInstall extends AbstractInterpreterInstall {
 	public String[] getInterpreterArguments() {
 		// TODO BUG_ECLIPSE 390358
 		return new String[] { getInterpreterArgs() };
+	}
+
+	public String toString() {
+		return getName();
 	}
 }
