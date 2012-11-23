@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -28,12 +29,16 @@ import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchGroup;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.core.ProjectFragment;
 import org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut;
 import org.eclipse.dltk.launching.LaunchingMessages;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
@@ -41,14 +46,27 @@ import org.eclipse.dltk.launching.process.ScriptRuntimeProcessFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * Run As strategy:<br>
+ * launch the latest launch config for the selection<br>
+ * if not found : <br>
+ * 1) A file is selected <br>
+ * -> create a new one <br>
+ * 2) A folder is selected <br>
+ * -> the folder have only 1 file -> do 1)<br>
+ * -> the folder contains several files -> prompt the one to be selected, then do 1)<br>
+ * 3) A project is selected<br>
+ * -> there is a main module -> do 1)<br>
+ * -> there is no main module -> do 2)<br>
+ */
 @SuppressWarnings("restriction")
 public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
-
-	private String launchMode;
 
 	@Override
 	protected ILaunchConfigurationType getConfigurationType() {
@@ -62,167 +80,65 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 
 	@Override
 	public void searchAndLaunch(Object[] search, String mode, String selectMessage, String emptyMessage) {
-		this.launchMode = mode;
 
 		// As the Lua Application Run As menu is enable only when one item is selected (see extension point)
 		// the following code just take in account the first element
 		Object selection = search[0];
 
-		// 1 Launch last container config
-		try {
-			IContainer container = null;
-			if (selection instanceof IContainer) {
-				container = (IContainer) selection;
-			} else if (selection instanceof IScriptProject || selection instanceof IScriptFolder || selection instanceof IProjectFragment) {
-				container = (IContainer) ((IModelElement) selection).getCorrespondingResource();
-			}
+		// configuration to launch :
+		ILaunchConfiguration config = null;
 
-			if (container != null) {
-				ILaunchConfiguration config = findLaunchConfiguration(container);
-				if (config != null) {
-					DebugUITools.launch(config, mode);
-					return;
-				}
-			}
-		} catch (ModelException e) {
-			String message = MessageFormat.format("Unable to retreive Launch Configuration for the selection: {0}", selection); //$NON-NLS-1$
-			Activator.logWarning(message, e);
-			// CHECKSTYLE:OFF
-		} catch (InterruptedException e) {
-			// If the user cancel the search of last container launch configuration, there is nothing to do as we will let him choose the script is
-			// want to launch
-			// CHECKSTYLE:ON
-		} catch (CoreException e) {
-			String message = MessageFormat.format("Unable to retreive and launch Launch Configuration for the selection: {0}", selection); //$NON-NLS-1$
-			Activator.logWarning(message, e);
-		}
+		// find existing
+		config = findExistingLaunchConfiguration(selection, mode);
 
-		// Search for script
-		IResource[] scripts = null;
-		try {
-			scripts = findScripts(search, PlatformUI.getWorkbench().getProgressService());
-		} catch (InterruptedException e) {
-			return;
-		} catch (CoreException e) {
-			MessageDialog.openError(getShell(), LaunchingMessages.ScriptLaunchShortcut_0, e.getMessage());
-			return;
-		}
+		// not found create one
+		if (config == null)
+			config = createLaunchConfiguration(selection);
 
-		IResource script;
-		if (scripts.length == 0) {
-			MessageDialog.openError(getShell(), LaunchingMessages.ScriptLaunchShortcut_1, emptyMessage);
-		} else if (scripts.length == 1) {
-			// 2 launch most recent config for the file
-			ILaunchConfiguration config = findLaunchConfiguration(scripts[0], getConfigurationType());
-			if (config != null) {
-				DebugUITools.launch(config, mode);
-			}
-		} else if (scripts.length > 1) {
-			// 3 Try to get src/main.lua otherwise, prompt user to choose a script
-			script = chooseScript(scripts, selectMessage);
-			launch(script, mode);
-		}
+		// Launch
+		if (config != null)
+			DebugUITools.launch(config, mode);
 	}
 
-	private ILaunchConfiguration findLaunchConfiguration(IContainer container) throws CoreException, InterruptedException {
+	private ILaunchConfiguration createLaunchConfiguration(Object selection) {
 
-		List<ILaunchConfiguration> candidateConfigs = retreiveLaunchConfiguration();
-		candidateConfigs = filterConfig(container, candidateConfigs);
-
-		if (!candidateConfigs.isEmpty()) {
-			return candidateConfigs.get(0);
+		// script selection
+		if (selection instanceof IFile) {
+			return createLaunchConfiguration((IFile) selection);
+		} else if (selection instanceof ISourceModule) {
+			try {
+				IResource correspondingResource = ((ISourceModule) selection).getCorrespondingResource();
+				if (correspondingResource instanceof IFile)
+					return createLaunchConfiguration((IFile) correspondingResource);
+			} catch (ModelException e) {
+				Activator.logError(NLS.bind("Unable to get corresponding resource for module {0}", selection), e); //$NON-NLS-1$
+				return null;
+			}
+		}
+		// source folder selection
+		else if (selection instanceof IFolder) {
+			IModelElement sourcefolder = DLTKCore.create((IFolder) selection);
+			if (sourcefolder instanceof IScriptFolder)
+				return createLaunchConfiguration((IScriptFolder) sourcefolder);
+		} else if (selection instanceof IScriptFolder) {
+			return createLaunchConfiguration((IScriptFolder) selection);
+		}
+		// project selection
+		else if (selection instanceof IProject) {
+			IScriptProject project = DLTKCore.create((IProject) selection);
+			if (project != null)
+				return createLaunchConfiguration(project);
+		} else if (selection instanceof ProjectFragment) {
+			IScriptProject scriptProject = ((ProjectFragment) selection).getScriptProject();
+			if (scriptProject != null)
+				return createLaunchConfiguration(scriptProject);
+		} else if (selection instanceof IScriptProject) {
+			return createLaunchConfiguration((IScriptProject) selection);
 		}
 		return null;
 	}
 
-	/**
-	 * @see org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut#findLaunchConfiguration(org.eclipse.core.resources.IResource,
-	 *      org.eclipse.debug.core.ILaunchConfigurationType)
-	 */
-	@Override
-	protected ILaunchConfiguration findLaunchConfiguration(IResource script, ILaunchConfigurationType configType) {
-		try {
-			List<ILaunchConfiguration> candidateConfigs = retreiveLaunchConfiguration();
-			candidateConfigs = filterConfig(Arrays.asList(script), candidateConfigs);
-
-			if (!candidateConfigs.isEmpty()) {
-				return (ILaunchConfiguration) candidateConfigs.get(0);
-			}
-		} catch (CoreException e) {
-			String message = MessageFormat.format("Unable to retreive Launch Configuration for the given script: {0}", script); //$NON-NLS-1$
-			Activator.logWarning(message, e);
-		}
-		return createConfiguration(script);
-	}
-
-	private List<ILaunchConfiguration> retreiveLaunchConfiguration() throws CoreException {
-		ILaunchGroup group = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(getConfigurationType(), launchMode);
-		LaunchHistory history = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchHistory(group.getIdentifier());
-
-		List<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>();
-		candidateConfigs.addAll(Arrays.asList(history.getFavorites()));
-		candidateConfigs.addAll(Arrays.asList(history.getHistory()));
-
-		// if no history for our resource, let filter existing configs
-		if (candidateConfigs.isEmpty()) {
-			candidateConfigs.addAll(Arrays.asList(DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(getConfigurationType())));
-		}
-		return candidateConfigs;
-	}
-
-	private List<ILaunchConfiguration> filterConfig(IContainer container, List<ILaunchConfiguration> candidateConfigs) throws InterruptedException,
-			CoreException {
-		IResource[] scripts = findScripts(new Object[] { container }, PlatformUI.getWorkbench().getProgressService());
-		return filterConfig(Arrays.asList(scripts), candidateConfigs);
-	}
-
-	private List<ILaunchConfiguration> filterConfig(List<IResource> scripts, List<ILaunchConfiguration> configs) throws CoreException {
-		List<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>();
-		for (ILaunchConfiguration config : configs) {
-			for (IResource script : scripts) {
-				if (config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, Util.EMPTY_STRING).equals(
-						script.getProjectRelativePath().toString())
-						&& config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING).equals(
-								script.getProject().getName()) && config.getType().equals(getConfigurationType())) {
-					candidateConfigs.add(config);
-				}
-			}
-		}
-		return candidateConfigs;
-	}
-
-	/**
-	 * By default, select the main.lua script, if it does't exist, ask the user.
-	 * 
-	 * @see org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut#chooseScript(org.eclipse.core.resources.IResource[],
-	 *      java.lang.String)
-	 */
-	@Override
-	protected IResource chooseScript(IResource[] scripts, String title) {
-		IPath defaultPath = new Path(LuaConstants.SOURCE_FOLDER).append(LuaConstants.DEFAULT_MAIN_FILE);
-		for (IResource script : scripts) {
-			IPath scriptPath = script.getLocation();
-
-			// test if the script path ends with the default path
-			if (scriptPath.segmentCount() > defaultPath.segmentCount()) {
-
-				// remove the beginning of the script to test the end
-				int numberOfSegmentToTest = scriptPath.segmentCount() - defaultPath.segmentCount();
-				scriptPath = scriptPath.removeFirstSegments(numberOfSegmentToTest);
-
-				if (scriptPath.equals(defaultPath)) {
-					return script;
-				}
-			}
-		}
-		return super.chooseScript(scripts, title);
-	}
-
-	/**
-	 * Copy of the super method with a custom config name generation
-	 */
-	@Override
-	protected ILaunchConfiguration createConfiguration(IResource script) {
+	public ILaunchConfiguration createLaunchConfiguration(IFile script) {
 		ILaunchConfiguration config = null;
 		ILaunchConfigurationWorkingCopy wc = null;
 		try {
@@ -246,9 +162,123 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		return config;
 	}
 
+	public ILaunchConfiguration createLaunchConfiguration(IParent sourcecontainer) {
+		// Search scripts contains in this container
+		IResource[] scripts = null;
+		try {
+			scripts = findScripts(new Object[] { sourcecontainer }, PlatformUI.getWorkbench().getProgressService());
+		} catch (InterruptedException e) {
+			return null;
+		} catch (CoreException e) {
+			MessageDialog.openError(getShell(), LaunchingMessages.ScriptLaunchShortcut_0, e.getMessage());
+			return null;
+		}
+
+		IResource script;
+		if (scripts.length == 0) {
+			// no file in folder
+			MessageDialog.openError(getShell(), LaunchingMessages.ScriptLaunchShortcut_1, getSelectionEmptyMessage());
+		} else if (scripts.length == 1) {
+			// create a new one for this script
+			return createConfiguration(scripts[0]);
+		} else if (scripts.length > 1) {
+			// prompt user to choose a script
+			script = chooseScript(scripts, getScriptSelectionTitle());
+			if (script != null) {
+				return createLaunchConfiguration(scripts[0]);
+			}
+		}
+		return null;
+	}
+
+	public ILaunchConfiguration createLaunchConfiguration(IScriptProject project) {
+		// search a main file
+		String defaultModuleName = new Path(LuaConstants.DEFAULT_MAIN_FILE).removeFileExtension().toString();
+		IModuleSource mainModule = LuaUtils.getModuleSource(defaultModuleName, project);
+		if (mainModule != null) {
+			try {
+				return createConfiguration(mainModule.getModelElement().getCorrespondingResource());
+			} catch (ModelException e) {
+				Activator.logWarning("Unable to find ressource corresponding to main module", e); //$NON-NLS-1$
+			}
+		}
+
+		// if not found do the same as sourcefolder
+		return createLaunchConfiguration((IParent) project);
+	}
+
+	/**
+	 * find the last launch configuration for this container
+	 */
+	private ILaunchConfiguration findExistingLaunchConfiguration(Object container, String launchMode) {
+		try {
+			// get all existing config
+			List<ILaunchConfiguration> candidateConfigs = retreiveLaunchConfiguration(launchMode);
+
+			// search the first which match for this container
+			candidateConfigs = filterConfig(container, candidateConfigs);
+
+			if (!candidateConfigs.isEmpty()) {
+				return candidateConfigs.get(0);
+			}
+		} catch (CoreException e) {
+			Activator.logWarning("Unable to retrieve existing launch configuration.", e); //$NON-NLS-1$
+		} catch (InterruptedException e) {
+			return null;
+		}
+
+		return null;
+	}
+
+	/**
+	 * get all existing launch configuration for the current type and launch mode sorted by favorites then history.
+	 */
+	private List<ILaunchConfiguration> retreiveLaunchConfiguration(String launchMode) throws CoreException {
+		ILaunchGroup group = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(getConfigurationType(), launchMode);
+		LaunchHistory history = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchHistory(group.getIdentifier());
+
+		List<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>();
+		candidateConfigs.addAll(Arrays.asList(history.getFavorites()));
+		candidateConfigs.addAll(Arrays.asList(history.getHistory()));
+
+		// if no history for our resource, let filter existing configs
+		if (candidateConfigs.isEmpty()) {
+			candidateConfigs.addAll(Arrays.asList(DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations(getConfigurationType())));
+		}
+		return candidateConfigs;
+	}
+
+	/**
+	 * search the config in candidateConfigs list which match for this selection. <br>
+	 * 
+	 * see {@link org.eclipse.dltk.internal.debug.ui.launcher.AbstractScriptLaunchShortcut.getScriptResources(Object[], IProgressMonitor)}
+	 */
+	private List<ILaunchConfiguration> filterConfig(Object selection, List<ILaunchConfiguration> candidateConfigs) throws InterruptedException,
+			CoreException {
+		IResource[] scripts = findScripts(new Object[] { selection }, PlatformUI.getWorkbench().getProgressService());
+		return filterConfig(Arrays.asList(scripts), candidateConfigs);
+	}
+
+	/**
+	 * search the config in candidateConfigs list which match for this list of scripts.
+	 */
+	private List<ILaunchConfiguration> filterConfig(List<IResource> scripts, List<ILaunchConfiguration> configs) throws CoreException {
+		List<ILaunchConfiguration> candidateConfigs = new ArrayList<ILaunchConfiguration>();
+		for (ILaunchConfiguration config : configs) {
+			for (IResource script : scripts) {
+				if (config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME, Util.EMPTY_STRING).equals(
+						script.getProjectRelativePath().toString())
+						&& config.getAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME, Util.EMPTY_STRING).equals(
+								script.getProject().getName()) && config.getType().equals(getConfigurationType())) {
+					candidateConfigs.add(config);
+				}
+			}
+		}
+		return candidateConfigs;
+	}
+
 	@Override
 	protected void launch(final IResource script, final String mode) {
-		launchMode = mode;
-		super.launch(script, mode);
+		searchAndLaunch(new Object[] { script }, mode, null, null);
 	}
 }
