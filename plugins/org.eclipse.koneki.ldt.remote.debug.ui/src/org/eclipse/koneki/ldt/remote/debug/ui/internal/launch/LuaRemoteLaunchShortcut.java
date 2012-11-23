@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -47,7 +48,7 @@ public class LuaRemoteLaunchShortcut extends LuaApplicationLaunchShortcut {
 	 * Copy of the super method with a custom config name generation
 	 */
 	@Override
-	protected ILaunchConfiguration createConfiguration(IResource script) {
+	public ILaunchConfiguration createLaunchConfiguration(IFile script) {
 		ILaunchConfiguration config = null;
 		ILaunchConfigurationWorkingCopy wc = null;
 
@@ -62,7 +63,8 @@ public class LuaRemoteLaunchShortcut extends LuaApplicationLaunchShortcut {
 			List<IHost> hosts = findHosts();
 			if (hosts.isEmpty()) {
 				// ask user about creating a target
-				if (MessageDialog.openQuestion(getShell(), Messages.LuaRemoteLaunchShortcut_notargetdialog_title, Messages.LuaRemoteLaunchShortcut_notargetdialog_message)) {
+				if (MessageDialog.openQuestion(getShell(), Messages.LuaRemoteLaunchShortcut_notargetdialog_title,
+						Messages.LuaRemoteLaunchShortcut_notargetdialog_message)) {
 					SystemNewConnectionAction newConnectionAction = new SystemNewConnectionAction(getShell(), false, null);
 					newConnectionAction.run();
 					host = (IHost) newConnectionAction.getValue();
@@ -124,7 +126,5 @@ public class LuaRemoteLaunchShortcut extends LuaApplicationLaunchShortcut {
 			}
 		}
 		return newHostList;
-
 	}
-
 }
