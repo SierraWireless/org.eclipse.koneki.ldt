@@ -17,7 +17,7 @@ local core = require "debuggertransport"
 -- @param data (string) data to encode
 -- @return base64 encoded string
 core.b64 = function(data)
-    t = {}
+    local t = {}
     local b64_data = core.rawb64(data)
     for i=1, #b64_data, 76 do t[#t+1] = b64_data:sub(i, i+75).."\r\n" end
     return table.concat(t)

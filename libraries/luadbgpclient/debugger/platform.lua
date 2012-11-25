@@ -148,7 +148,7 @@ function M.init(executionplatform,workingdirectory)
             return false
         end
         
-        status, iswin = pcall(iswindows())
+        local status, iswin = pcall(iswindows)
         if status and iswin then
             platform = "win"
         else
