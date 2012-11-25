@@ -1,14 +1,13 @@
 #!/bin/bash
 # setup all tests environments using LuaDist
 
-TESTS_ROOT=$PWD/testroot
+SRCDIR=$(cd $(dirname "$0"); pwd)
+TESTS_ROOT=$SRCDIR/testroot
 LUADIST_DIR=$TESTS_ROOT/luadist
 LUADIST=$LUADIST_DIR/_install/bin/luadist
 
 # as some scripts uses LuaDist internal functions, checkout a working version (as some internals may change without notice)
 LUADIST_REV=215bc8569a897fd2af470b23a6eacb0859819a75
-
-SRCDIR=$(cd $(dirname "$0"); pwd)
 
 # install LuaDist
 mkdir -p $TESTS_ROOT

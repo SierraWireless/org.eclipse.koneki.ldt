@@ -16,7 +16,7 @@ local util = require "debugger.util"
 
 local M = { }
 
--- Get the execution plaform os (could be win or unix)
+-- Execution plaform (could be win or unix)
 -- Used to manage file path difference between the 2 platform
 local platform = nil
 
@@ -148,7 +148,7 @@ function M.init(executionplatform,workingdirectory)
             return false
         end
         
-        status, iswin = pcall(iswindows)
+        status, iswin = pcall(iswindows())
         if status and iswin then
             platform = "win"
         else

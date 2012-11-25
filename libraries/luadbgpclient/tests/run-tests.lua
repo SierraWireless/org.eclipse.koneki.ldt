@@ -11,7 +11,9 @@ local dist = require "dist"
 local sys  = require "dist.sys"
 local package = require "dist.package"
 
-local PKG_TMPL = "./packages/%s"
+local TESTS_SRC = sys.current_dir()
+
+local function fromsrc(relative_path) return TESTS_SRC .. "/" .. relative_path end
 
 local function run_tests()
   for _, case in ipairs(TESTS) do
@@ -34,11 +36,12 @@ local function environment(name, contents, transport)
   if not sys.is_dir(path) or FORCE_REBUILD then
     assert(sys.delete(path))
     -- clear every luadist tempoary files (can cause compile error due to cmake cache files)
-    if sys.is_dir(config.temp_dir) then assert(sys.delete(config.temp_dir)) end
-    assert(sys.make_dir(config.temp_dir))
+    --local dist_tmpdir = sys.make_path(config.root_dir, config.temp_dir)
+    --if sys.is_dir(dist_tmpdir) then assert(sys.delete(dist_tmpdir)) end
+    --assert(sys.make_dir(dist_tmpdir))
 
     for _, pkg in ipairs(contents) do
-      assert(package.install_pkg(PKG_TMPL:format(pkg), path, nil, true))
+      assert(package.install_pkg(fromsrc("packages/" .. pkg), path, nil, true))
     end
   end
 
@@ -46,29 +49,29 @@ local function environment(name, contents, transport)
   local modpath = path .. "/lib/lua/"
   if BUILD_DBG then
       -- build debugger single file
-      loadfile("../build.lua")(modpath .. "debugger.lua")
+      loadfile(fromsrc"../build.lua")(modpath .. "debugger.lua")
   else
-      sys.copy("../debugger", modpath)
+      sys.copy(fromsrc"../debugger", modpath)
       os.rename(modpath .. "debugger/init.lua", modpath .. "debugger.lua")
   end
   -- copy test dependencies
-  sys.copy("./3rd_party/luaxml", modpath)
-  sys.copy("./3rd_party/lunatest.lua", modpath)
+  sys.copy(fromsrc"3rd_party/luaxml", modpath)
+  sys.copy(fromsrc"3rd_party/lunatest.lua", modpath)
   --~ sys.copy("./3rd_party/dumper.lua", modpath .. "dumper.lua")
-  sys.copy("./script/lunatest_xassert.lua", modpath)
-  sys.copy("./script/test_debugger.lua", modpath)
-  sys.copy("./script/test_debugger_util.lua", modpath)
-  sys.copy("./script/test_debugintrospection.lua", modpath)
-  sys.copy("./script/debugger_bench.lua", modpath)
-
+  sys.copy(fromsrc"script/lunatest_xassert.lua", modpath)
+  sys.copy(fromsrc"script/test_debugger.lua", modpath)
+  sys.copy(fromsrc"script/test_debugger_util.lua", modpath)
+  sys.copy(fromsrc"script/test_debugintrospection.lua", modpath)
+  sys.copy(fromsrc"script/debugger_bench.lua", modpath)
+  
   -- test runner
-  sys.copy("runner.lua", path)
+  sys.copy(fromsrc"runner.lua", path)
 
   -- add to tests queue
   TESTS[#TESTS+1] = { path, transport }
 end
 
---environment("lua51-socket",   { "lua-5.1.5",           "luasocket-2.0.2" }, "luasocket")
+environment("lua51-socket",   { "lua-5.1.5",           "luasocket-2.0.2" }, "luasocket")
 -- LuaSocket is currently 5.1 only so all other tests are borken (cannot compile or does not pass tests)
 --environment("lua52-socket",   { "lua-5.2",             "luasocket-unstable" })
 --environment("luajit1-socket", { "luajit-1.1.8",        "luasocket-2.0.2" })
