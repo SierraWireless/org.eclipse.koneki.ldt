@@ -1,0 +1,17 @@
+Debugger tests are quite complex to run in a portable way. Thanks to LuaDist 
+this can be done pretty easily: it can build custom Lua environments from 
+scratch and run tests on many different configurations.
+
+*Limitation:* for now, *only Unix systems* are expected to work. This is due 
+to shell scripts that are not yet ported to Windows.
+
+To run the tests you need Git, CMake and a C toolchain (compiler, make, ...).
+
+1. Edit setup-env.sh script to match your environment (especially TESTS_ROOT)
+2. Run setup-env.sh: it will install LuaDist and download all packages required
+   for tests (Lua, LuaSocket, ...)
+3. Run the tests with run-tests.lua file. This file *must* be run with the
+   LuaDist Lua interpreter (located at $LUADIST_DIR/_install/bin/lua).
+
+To add more test environments, add required packages downloads in 
+packages/download.sh and add `environment(...)` lines in run-tests lines.

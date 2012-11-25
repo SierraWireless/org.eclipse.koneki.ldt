@@ -1,0 +1,12 @@
+name = "debuggertransport"
+version = "1.0.0"
+
+desc = "Minimal transport layer for DBGP debugger (POSIX only)"
+author = "Julien Desgats"
+url = "http://eclipse.org/koneki/ldt"
+license = "Eclipse Public License v1.0"
+maintainer = "Julien Desgats"
+
+depends = {
+  "lua >= 5.1"
+} 

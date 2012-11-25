@@ -1,0 +1,7 @@
+project ( debuggertransport C )
+cmake_minimum_required ( VERSION 2.6 )
+include ( dist.cmake )
+include ( lua.cmake )
+add_definitions( -DBUILD_SERVER )
+install_lua_module ( debuggertransport dbgtransport.c )
+install_lua_module ( debugger.transport.core core.lua )
