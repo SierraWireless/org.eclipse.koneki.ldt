@@ -71,12 +71,12 @@ end
 function data_oriented_factory(data, test)
     return function()
         for i, case in ipairs(data) do
-            local success, err = pcall(test, unpack(case))
+            local success, err = xpcall(function() test(unpack(case)) end, debug.traceback)
             if not success then
                 if type(err) == "table" and err.msg then
-                    err.msg = "[Running data set #"..tostring(i).."] " .. err.msg
+                    err = err.msg
                 end
-                error(err)
+                error("[Running data set #"..tostring(i).."] " .. err)
             end
         end
     end
