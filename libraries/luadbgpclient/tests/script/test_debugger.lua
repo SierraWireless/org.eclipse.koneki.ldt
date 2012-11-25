@@ -51,7 +51,7 @@ require "luaxml.handler"
 
 -- debugger stuff used to run tests (we do not actually start the debugger)
 require "debugger"
-local transport = require("debugger.transport."..DBGP_TRANSPORT)
+local transport = require(DBGP_TRANSPORT)
 local url = require "debugger.url"
 
 local function XMLparse(xml)
