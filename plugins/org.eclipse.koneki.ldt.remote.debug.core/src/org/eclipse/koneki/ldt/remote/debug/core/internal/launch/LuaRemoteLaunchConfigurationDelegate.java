@@ -204,11 +204,18 @@ public class LuaRemoteLaunchConfigurationDelegate extends LaunchConfigurationDel
 			// set environment var
 			Map<String, String> envVars = new HashMap<String, String>();
 			String luaPath = luaSubSystem.getLuaPath();
+
+			// if no luapath defined at subsystem level used the default one.
 			if (luaPath == null || luaPath.isEmpty())
-				luaPath = "$LUA_PATH"; //  //$NON-NLS-1$ if no luapath defined at subsystem level used the default one.
+				luaPath = "$LUA_PATH;"; //$NON-NLS-1$ 
 
 			// add default lua envvar
 			StringBuilder luaPathBuilder = new StringBuilder(luaPath);
+
+			// check if lua path don't end with a ";"
+			if (!luaPath.matches(".*;\\s*$")) //$NON-NLS-1$
+				luaPathBuilder.append(";"); //$NON-NLS-1$
+
 			// add working dir to lua path
 			luaPathBuilder.append(remoteApplicationFolderPath);
 			luaPathBuilder.append(remoteFileSubSystem.getSeparator());
