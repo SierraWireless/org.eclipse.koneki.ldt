@@ -234,7 +234,7 @@ M.prettynametypes = {
 		if not definition or definition.tag ~= 'functiontypedef' then
 			-- Fields
 			if isglobal or not typename then			   
-				prettyname = string.format('%s', itemname)
+				prettyname = itemname
 			else
 				prettyname = string.format('%s.%s', typename, itemname)
 			end
