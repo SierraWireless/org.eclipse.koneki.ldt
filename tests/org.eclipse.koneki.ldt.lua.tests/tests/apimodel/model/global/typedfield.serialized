@@ -1,70 +1,70 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
+			fieldname={
+				type={
+					typename="string",
+					tag="primitivetyperef"
+				}
+				--[[table: 00A35CB0]],
+				description="Field long description",
+				parent=nil --[[ref]],
+				shortdescription="Field short description.",
+				name="fieldname",
+				sourcerange={
+					min=18,
+					max=121
+				}
+				--[[table: 00A35C88]],
+				occurrences={
 
-		}
-		--[[table: 0x9eac348]],
-		shortdescription = "",
-		name = "mod",
-		returns = {
-			{
-				types = {
-					{
-						typename = "mod",
-						tag = "internaltyperef"
-					}
-					--[[table: 0x9eac210]]
 				}
-				--[[table: 0x9eac2b0]],
-				description = "",
-				tag = "return"
+				--[[table: 00A35C60]],
+				tag="item"
 			}
-			--[[table: 0x9f8ccd8]]
+			--[[table: 00A35C38]]
 		}
-		--[[table: 0x9eac370]],
-		types = {
-			mod = {
-				fields = {
-					fieldname = {
-						type = {
-							typename = "string",
-							tag = "primitivetyperef"
-						}
-						--[[table: 0x9fac318]],
-						description = "Field long description",
-						parent = nil --[[ref]],
-						shortdescription = "Field short description.",
-						name = "fieldname",
-						sourcerange = {
-							min = 18,
-							max = 118
-						}
-						--[[table: 0x9fac2f0]],
-						occurrences = {
+		--[[table: 00A337F8]],
+		shortdescription="",
+		name="mod",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="mod",
+						tag="internaltyperef"
+					}
+					--[[table: 00A343B0]]
+				}
+				--[[table: 00A34400]],
+				description="",
+				tag="return"
+			}
+			--[[table: 00A343D8]]
+		}
+		--[[table: 00A33820]],
+		types={
+			mod={
+				fields={
 
-						}
-						--[[table: 0x9fac2c8]],
-						tag = "item"
-					}
-					--[[table: 0x9fac1b8]]
 				}
-				--[[table: 0x9e63358]],
-				name = "mod",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 1,
-					max = 16
+				--[[table: 00A34450]],
+				name="mod",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=16
 				}
-				--[[table: 0x9e63380]],
-				tag = "recordtypedef"
+				--[[table: 00A34478]],
+				tag="recordtypedef"
 			}
-			--[[table: 0x9eac2f8]]
+			--[[table: 00A34428]]
 		}
-		--[[table: 0x9eac320]],
-		tag = "file"
+		--[[table: 00A337D0]],
+		tag="file"
 	}
-	--[[table: 0x9eac1e8]];
-	_.types.mod.fields.fieldname.parent = _.types.mod;
-	_.types.mod.parent = _;
+	--[[table: 00A33780]];
+	_.globalvars.fieldname.parent=_;
+	_.types.mod.parent=_;
 	return _;
 end

@@ -1,0 +1,87 @@
+do local _={
+		description="",
+		globalvars={
+			functionname={
+				type={
+					typename="__=__1",
+					tag="internaltyperef"
+				}
+				--[[table: 00A130D0]],
+				description="Function long description",
+				parent=nil --[[ref]],
+				shortdescription="Function short description.",
+				name="functionname",
+				sourcerange={
+					min=18,
+					max=125
+				}
+				--[[table: 00A14458]],
+				occurrences={
+
+				}
+				--[[table: 00A14430]],
+				tag="item"
+			}
+			--[[table: 00A14408]]
+		}
+		--[[table: 00A12428]],
+		shortdescription="",
+		name="mod",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="mod",
+						tag="internaltyperef"
+					}
+					--[[table: 00A12FE0]]
+				}
+				--[[table: 00A13030]],
+				description="",
+				tag="return"
+			}
+			--[[table: 00A13008]]
+		}
+		--[[table: 00A12450]],
+		types={
+			["__=__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__=__1",
+				parent=nil --[[ref]],
+				returns={
+
+				}
+				--[[table: 00A144D0]],
+				params={
+
+				}
+				--[[table: 00A144A8]],
+				tag="functiontypedef"
+			}
+			--[[table: 00A14480]],
+			mod={
+				fields={
+
+				}
+				--[[table: 00A13080]],
+				name="mod",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=16
+				}
+				--[[table: 00A130A8]],
+				tag="recordtypedef"
+			}
+			--[[table: 00A13058]]
+		}
+		--[[table: 00A12400]],
+		tag="file"
+	}
+	--[[table: 00A123B0]];
+	_.globalvars.functionname.parent=_;
+	_.types["__=__1"].parent=_;
+	_.types.mod.parent=_;
+	return _;
+end

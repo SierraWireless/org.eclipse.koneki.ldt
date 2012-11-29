@@ -196,58 +196,57 @@ M.prettynametypes = {
 	recordtypedef = function(o) return o.name end,
 	item = function( o )
 
-		-- Determine type name
-		local parent = o.parent
-
+		-- Determine item name
+		-- ----------------------
+		local itemname = o.name
+		
 		-- Determine scope
+		-- ----------------------
+		local parent = o.parent
 		local isglobal = parent and parent.tag == 'file'
 		local isfield = parent and parent.tag == 'recordtypedef'
 
+		-- Determine type name
+		-- ----------------------
+		 
+		local typename = isfield and parent.name
+
 		-- Fetch item definition
-		local definition
+		-- ----------------------
+		-- Get file object
+		local file
 		if isglobal then
-			definition = parent.types[ o.type.typename ]
+			file = parent
 		elseif isfield then
-			-- Get definition container
-			local file = parent.parent
-			local parenttypename = o.type and o.type.typename
-			if file and parenttypename then
-				definition = file.types[ parenttypename ]
-			end
+			file = parent.parent
 		end
-
-		--
-		-- Generating item names
-		--
-		local itemname = o.name
-		local typename = parent and string.format('%s.', parent.name) or ''
-		local externalmodule = o.external and getexternalmodule( o )
-		local externalmodulename = ''
-		if externalmodule and externalmodule.name then
-			externalmodulename = string.format("%s#", externalmodule.name)
-		end
-		if isglobal or not definition then
-
-			-- Globals
-			return string.format('%s%s', typename, itemname)
-
-		elseif definition.tag == 'recordtypedef' then
-
+		-- Get definition
+		local definition
+		if file and o.type and o.type.typename then
+			definition = file.types[ o.type.typename ]
+		end				
+		
+		
+		
+		-- Build prettyname 
+		-- ----------------------
+		local prettyname
+		if not definition or definition.tag ~= 'functiontypedef' then
 			-- Fields
-			return string.format('%s%s%s', externalmodulename, typename, itemname)
+			if isglobal or not typename then			   
+				prettyname = string.format('%s', itemname)
+			else
+				prettyname = string.format('%s.%s', typename, itemname)
+			end
 		else
-			--
 			-- Functions
-			--
-
 			-- Build parameter list
 			local paramlist = {}
 			local hasfirstself = false
 			for position, param in ipairs(definition.params) do
-
-				-- When first parameter is 'self',
+				-- For non global function, when first parameter is 'self',
 				-- it will not be part of listed parameters
-				if position == 1 and param.name == 'self' then
+				if position == 1 and param.name == 'self' and isfield then
 					hasfirstself = true
 				else
 					table.insert(paramlist, param.name)
@@ -257,13 +256,27 @@ M.prettynametypes = {
 				end
 			end
 
-			-- Determine function prefix operator,
-			-- ':' if 'self' is first parameter, '.' else way
-			local operator = hasfirstself and ':' or '.'
-
-			-- Append function parameters
-			return string.format('%s%s%s%s(%s)', externalmodulename,
-				parent.name , operator, itemname, table.concat(paramlist))
+			if isglobal or not typename then
+				prettyname = string.format('%s(%s)',itemname, table.concat(paramlist))
+			else
+				-- Determine function prefix operator,
+				-- ':' if 'self' is first parameter, '.' else way
+				local operator = hasfirstself and ':' or '.'
+	
+				-- Append function parameters
+				prettyname = string.format('%s%s%s(%s)',typename, operator, itemname, table.concat(paramlist))
+			end
+		end
+		
+		-- Manage external Item prettyname 
+		-- ----------------------
+		local externalmodule = o.external and getexternalmodule( o )
+		local externalmodulename = externalmodule and externalmodule.name
+		
+		if externalmodulename then
+			return string.format('%s#%s',externalmodulename,prettyname)
+		else
+			return prettyname
 		end
 	end
 }

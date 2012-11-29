@@ -3,5 +3,5 @@
 ---
 -- Field short description.
 -- Field long description
--- @field[parent = #mod] #string fieldname
+-- @field[parent = #global] #string fieldname
 return nil
