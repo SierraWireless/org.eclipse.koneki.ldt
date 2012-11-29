@@ -6,43 +6,43 @@ do local _={
 					typename="__=__1",
 					tag="internaltyperef"
 				}
-				--[[table: 00A130D0]],
+				--[[table: 009EBBB8]],
 				description="Function long description",
 				parent=nil --[[ref]],
 				shortdescription="Function short description.",
 				name="functionname",
 				sourcerange={
-					min=18,
-					max=125
+					min=25,
+					max=132
 				}
-				--[[table: 00A14458]],
+				--[[table: 009ECF40]],
 				occurrences={
 
 				}
-				--[[table: 00A14430]],
+				--[[table: 009ECF18]],
 				tag="item"
 			}
-			--[[table: 00A14408]]
+			--[[table: 009ECEF0]]
 		}
-		--[[table: 00A12428]],
+		--[[table: 009EAF60]],
 		shortdescription="",
-		name="mod",
+		name="modulename",
 		returns={
 			[1]={
 				types={
 					[1]={
-						typename="mod",
+						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 00A12FE0]]
+					--[[table: 009EBAC8]]
 				}
-				--[[table: 00A13030]],
+				--[[table: 009EBB18]],
 				description="",
 				tag="return"
 			}
-			--[[table: 00A13008]]
+			--[[table: 009EBAF0]]
 		}
-		--[[table: 00A12450]],
+		--[[table: 009EAF88]],
 		types={
 			["__=__1"]={
 				shortdescription="Function short description.",
@@ -52,36 +52,36 @@ do local _={
 				returns={
 
 				}
-				--[[table: 00A144D0]],
+				--[[table: 009ECFB8]],
 				params={
 
 				}
-				--[[table: 00A144A8]],
+				--[[table: 009ECF90]],
 				tag="functiontypedef"
 			}
-			--[[table: 00A14480]],
-			mod={
+			--[[table: 009ECF68]],
+			modulename={
 				fields={
 
 				}
-				--[[table: 00A13080]],
-				name="mod",
+				--[[table: 009EBB68]],
+				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
-					max=16
+					max=23
 				}
-				--[[table: 00A130A8]],
+				--[[table: 009EBB90]],
 				tag="recordtypedef"
 			}
-			--[[table: 00A13058]]
+			--[[table: 009EBB40]]
 		}
-		--[[table: 00A12400]],
+		--[[table: 009EAF38]],
 		tag="file"
 	}
-	--[[table: 00A123B0]];
+	--[[table: 009EAEE8]];
 	_.globalvars.functionname.parent=_;
 	_.types["__=__1"].parent=_;
-	_.types.mod.parent=_;
+	_.types.modulename.parent=_;
 	return _;
 end

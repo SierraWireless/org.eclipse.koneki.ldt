@@ -55,14 +55,14 @@ return[[#
 #  	local typeref = _file.returns[1].types[1]
 #  	if typeref.tag == "internaltyperef" then 
 #			local typedef = _file.types[typeref.typename]
-#			if typedef and typedef.tag == "recordtypdef" then
+#			if typedef and typedef.tag == "recordtypedef" then
 #				currenttype = typedef 
 #			end
 #		end 
 #	end
 #
 # -- show quick description type exposed by module
-# if currenttype then
+# if currenttype and not isempty(currenttype.fields) then
 	<h$(i+1)><a id="$(anchor(currenttype))" >Type <code>$(currenttype.name)</code></a></h$(i+1)>
 	$( applytemplate(currenttype, i+2, 'index') )
 # end
@@ -71,7 +71,7 @@ return[[#
 # --
 # if _file.types then
 #	for name, type in sortedpairs( _file.types ) do
-#		if type ~= currenttype and type.tag == 'recordtypedef' then
+#		if type ~= currenttype and type.tag == 'recordtypedef' and not isempty(type.fields) then
 			<h$(i+1)><a id="$(anchor(type))">Type <code>$(name)</code></a></h$(i+1)>
 			$( applytemplate(type, i+2, 'index') )
 #		end
@@ -90,7 +90,7 @@ return[[#
 # -- Long description of current type
 # --
 # if currenttype then
-	<h$(i+1)>Type <code>$(currenttype.name)</code></h$(i+1)>
+	<h$(i+1)><a id="$(anchor(currenttype))" >Type <code>$(currenttype.name)</code></a></h$(i+1)>
 	$( applytemplate(currenttype, i+2) )
 # end
 # --
@@ -99,7 +99,7 @@ return[[#
 # if not isempty( _file.types ) then
 #	for name, type in sortedpairs( _file.types ) do
 #		if type ~= currenttype  and type.tag == 'recordtypedef' then
-			<h$(i+1)>Type <code>$(name)</code></h$(i+1)>
+			<h$(i+1)><a id="$(anchor(type))" >Type <code>$(name)</code></a></h$(i+1)>
 			$( applytemplate(type, i+2) )
 #		end
 #	end

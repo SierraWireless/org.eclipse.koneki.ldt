@@ -1,4 +1,4 @@
---- @module mod
+--- @module modulename
 
 ---
 -- Field short description.

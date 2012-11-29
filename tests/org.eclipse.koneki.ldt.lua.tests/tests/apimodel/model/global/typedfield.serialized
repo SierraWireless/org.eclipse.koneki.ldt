@@ -6,65 +6,65 @@ do local _={
 					typename="string",
 					tag="primitivetyperef"
 				}
-				--[[table: 00A35CB0]],
+				--[[table: 00918C40]],
 				description="Field long description",
 				parent=nil --[[ref]],
 				shortdescription="Field short description.",
 				name="fieldname",
 				sourcerange={
-					min=18,
-					max=121
+					min=25,
+					max=128
 				}
-				--[[table: 00A35C88]],
+				--[[table: 00918B50]],
 				occurrences={
 
 				}
-				--[[table: 00A35C60]],
+				--[[table: 00918AD8]],
 				tag="item"
 			}
-			--[[table: 00A35C38]]
+			--[[table: 00919000]]
 		}
-		--[[table: 00A337F8]],
+		--[[table: 00934C20]],
 		shortdescription="",
-		name="mod",
+		name="modulename",
 		returns={
 			[1]={
 				types={
 					[1]={
-						typename="mod",
+						typename="modulename",
 						tag="internaltyperef"
 					}
-					--[[table: 00A343B0]]
+					--[[table: 00935B70]]
 				}
-				--[[table: 00A34400]],
+				--[[table: 00933C30]],
 				description="",
 				tag="return"
 			}
-			--[[table: 00A343D8]]
+			--[[table: 00933C58]]
 		}
-		--[[table: 00A33820]],
+		--[[table: 00934EA0]],
 		types={
-			mod={
+			modulename={
 				fields={
 
 				}
-				--[[table: 00A34450]],
-				name="mod",
+				--[[table: 009356C0]],
+				name="modulename",
 				parent=nil --[[ref]],
 				sourcerange={
 					min=1,
-					max=16
+					max=23
 				}
-				--[[table: 00A34478]],
+				--[[table: 00934798]],
 				tag="recordtypedef"
 			}
-			--[[table: 00A34428]]
+			--[[table: 00935698]]
 		}
-		--[[table: 00A337D0]],
+		--[[table: 00934B80]],
 		tag="file"
 	}
-	--[[table: 00A33780]];
+	--[[table: 00932380]];
 	_.globalvars.fieldname.parent=_;
-	_.types.mod.parent=_;
+	_.types.modulename.parent=_;
 	return _;
 end
