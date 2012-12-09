@@ -15,7 +15,7 @@ require "lunatest"
 function assert_table_equal(exp, got, msg)
     local key_stack = {}
     local function equal(vexp, vgot)
-        if type(vexp) == "table" and type(vgot) == "table" then 
+        if type(vexp) == "table" and type(vgot) == "table" then
             -- check that values in got tables are as expected
             for k,v in pairs(vexp) do
                 table.insert(key_stack, tostring(k))
@@ -36,7 +36,7 @@ function assert_table_equal(exp, got, msg)
         else return false, string.format("expected '%s' (%s) got '%s' (%s) for key [%s]", tostring(vexp), type(vexp), tostring(vgot), type(vgot), table.concat(key_stack, "]["))
         end
     end
-    
+
     local success, err = equal(exp, got)
     if not success then fail(msg and (msg.."("..err..")" ) or err) end
 end
@@ -46,7 +46,7 @@ end
 function assert_table_subset(exp, got, msg)
     local key_stack = {}
     local function equal(vexp, vgot)
-        if type(vexp) == "table" and type(vgot) == "table" then 
+        if type(vexp) == "table" and type(vgot) == "table" then
             for k,v in pairs(vexp) do
                 table.insert(key_stack, tostring(k))
                 if v ~= rawget(vgot, k) then -- first try basic equals, triggering __eq if available
@@ -60,26 +60,9 @@ function assert_table_subset(exp, got, msg)
         else return false, string.format("expected '%s' (%s) got '%s' (%s) for key [%s]", tostring(vexp), type(vexp), tostring(vgot), type(vgot), table.concat(key_stack, "]["))
         end
     end
-    
+
     local success, err = equal(exp, got)
     if not success then fail(msg and (msg.."("..err..")" ) or err) end
-end
-
---- Creates a data-oriented test which calls test function with each provided data set.
--- @param data table of tables (sequences) that contains test case data
--- @param test test function, called with each row of data as argument
-function data_oriented_factory(data, test)
-    return function()
-        for i, case in ipairs(data) do
-            local success, err = xpcall(function() test(unpack(case)) end, debug.traceback)
-            if not success then
-                if type(err) == "table" and err.msg then
-                    err = err.msg
-                end
-                error("[Running data set #"..tostring(i).."] " .. err)
-            end
-        end
-    end
 end
 
 local function table_print (tt, indent, done)
@@ -107,6 +90,24 @@ local function table_print (tt, indent, done)
     return tt .. "\n"
   end
 end
+
+--- Creates a data-oriented test which calls test function with each provided data set.
+-- @param data table of tables (sequences) that contains test case data
+-- @param test test function, called with each row of data as argument
+function data_oriented_factory(data, test)
+    return function()
+        for i, case in ipairs(data) do
+            local success, err = xpcall(function() test(unpack(case)) end, debug.traceback)
+            if not success then
+                if type(err) == "table" then
+                    err = err.msg or table_print(err)
+                end
+                error("[Running data set #"..tostring(i).."] " .. tostring(err))
+            end
+        end
+    end
+end
+
 
 function dump_value( tbl )
     local result
