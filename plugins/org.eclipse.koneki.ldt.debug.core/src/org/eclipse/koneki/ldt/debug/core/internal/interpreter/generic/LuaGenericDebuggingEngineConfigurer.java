@@ -66,7 +66,7 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 
 		// get the dbgp connection corresponding to this config.
 		DbgpConnectionConfig dbgpConnectionConfig = DbgpConnectionConfig.load(initialConfig);
-		String host = dbgpConnectionConfig.getHost();
+		String host = "127.0.0.1"; //$NON-NLS-1$
 		int port = dbgpConnectionConfig.getPort();
 		String sessionId = dbgpConnectionConfig.getSessionId();
 		IPath workingDirectory = config.getWorkingDirectoryPath();
