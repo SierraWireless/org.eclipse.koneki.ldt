@@ -32,7 +32,7 @@ public class JNLua51DebuggingEngineRunner extends LuaGenericDebuggingEngineRunne
 	@Override
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config, PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
 		JNLua51DebuggingEngineConfigurer configurer = new JNLua51DebuggingEngineConfigurer();
-		InterpreterConfig alteredConfig = configurer.alterConfig(launch, config);
+		InterpreterConfig alteredConfig = configurer.alterConfig(launch, config, getInstall());
 		return alteredConfig;
 	}
 }

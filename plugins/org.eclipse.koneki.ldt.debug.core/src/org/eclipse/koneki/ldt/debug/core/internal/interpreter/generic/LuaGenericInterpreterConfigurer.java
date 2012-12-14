@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -22,7 +23,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.launching.EnvironmentVariable;
+import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor;
@@ -35,7 +39,25 @@ public class LuaGenericInterpreterConfigurer {
 	private static final String LUA_INIT_PATTERN = LuaDebugConstants.WILDCARD_PATTERN + File.separator + LuaDebugConstants.LUA_INIT_PATTERN;
 	private static final String LUAC_INIT_PATTERN = LuaDebugConstants.WILDCARD_PATTERN + File.separator + LuaDebugConstants.LUAC_INIT_PATTERN;
 
-	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config) throws CoreException {
+	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config, final IInterpreterInstall interpreterinstall)
+			throws CoreException {
+
+		// TODO HACK ENV_VAR : make environment variable defined at interpreter level less priority
+		// ****************************************************************************
+		// get launch conf env var
+		@SuppressWarnings("unchecked")
+		final Map<String, String> configEnvs = launch.getLaunchConfiguration().getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
+				(Map<?, ?>) null);
+		EnvironmentVariable[] interEnvs = interpreterinstall.getEnvironmentVariables();
+		// add var defined at interpreter level only if it was not defined at launch conf level
+		if (interEnvs != null) {
+			for (EnvironmentVariable envVar : interEnvs) {
+				if (configEnvs == null || !configEnvs.containsKey(envVar.getName()))
+					config.addEnvVar(envVar.getName(), envVar.getValue());
+			}
+		}
+		// END HACK
+		// ****************************************************************************
 
 		// Append project path to $LUA_PATH
 		final String envLuaPath = config.getEnvVar(LuaDebugConstants.LUA_PATH);
