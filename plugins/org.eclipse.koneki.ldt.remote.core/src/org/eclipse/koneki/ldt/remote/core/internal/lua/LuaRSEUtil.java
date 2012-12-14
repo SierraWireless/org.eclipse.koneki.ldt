@@ -79,6 +79,9 @@ public final class LuaRSEUtil {
 	}
 
 	public static LuaSubSystem getLuaSubSystem(IHost host) {
+		if (host == null)
+			return null;
+
 		for (ISubSystem subsytem : host.getSubSystems()) {
 			if (subsytem instanceof LuaSubSystem) {
 				return (LuaSubSystem) subsytem;
