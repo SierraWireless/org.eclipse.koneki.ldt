@@ -1,0 +1,87 @@
+do local _={
+		description="",
+		globalvars={
+			functionname={
+				type={
+					typename="__=__1",
+					tag="internaltyperef"
+				}
+				--[[table: 009EBBB8]],
+				description="Function long description",
+				parent=nil --[[ref]],
+				shortdescription="Function short description.",
+				name="functionname",
+				sourcerange={
+					min=25,
+					max=132
+				}
+				--[[table: 009ECF40]],
+				occurrences={
+
+				}
+				--[[table: 009ECF18]],
+				tag="item"
+			}
+			--[[table: 009ECEF0]]
+		}
+		--[[table: 009EAF60]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 009EBAC8]]
+				}
+				--[[table: 009EBB18]],
+				description="",
+				tag="return"
+			}
+			--[[table: 009EBAF0]]
+		}
+		--[[table: 009EAF88]],
+		types={
+			["__=__1"]={
+				shortdescription="Function short description.",
+				description="Function long description",
+				name="__=__1",
+				parent=nil --[[ref]],
+				returns={
+
+				}
+				--[[table: 009ECFB8]],
+				params={
+
+				}
+				--[[table: 009ECF90]],
+				tag="functiontypedef"
+			}
+			--[[table: 009ECF68]],
+			modulename={
+				fields={
+
+				}
+				--[[table: 009EBB68]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 009EBB90]],
+				tag="recordtypedef"
+			}
+			--[[table: 009EBB40]]
+		}
+		--[[table: 009EAF38]],
+		tag="file"
+	}
+	--[[table: 009EAEE8]];
+	_.globalvars.functionname.parent=_;
+	_.types["__=__1"].parent=_;
+	_.types.modulename.parent=_;
+	return _;
+end

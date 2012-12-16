@@ -166,15 +166,15 @@ public final class LuaRemoteLaunchConfigurationUtil {
 	}
 
 	public static String getRemoteApplicationPath(ILaunchConfiguration configuration) {
-		IHost host = getHost(configuration);
+
+		final IHost host = getHost(configuration);
 		if (host == null)
 			return ""; //$NON-NLS-1$
 
-		IRemoteFileSubSystem remoteFileSubSystem = RSEUtil.getRemoteFileSubsystem(host);
-		if (remoteFileSubSystem == null)
+		final IRemoteFileSubSystem remoteFileSubSystem = RSEUtil.getRemoteFileSubsystem(host);
+		final LuaSubSystem luaSubSystem = LuaRSEUtil.getLuaSubSystem(host);
+		if (luaSubSystem == null || remoteFileSubSystem == null)
 			return ""; //$NON-NLS-1$
-
-		LuaSubSystem luaSubSystem = LuaRSEUtil.getLuaSubSystem(host);
 		return luaSubSystem.getOutputDirectory() + remoteFileSubSystem.getSeparator() + configuration.getName();
 	}
 }

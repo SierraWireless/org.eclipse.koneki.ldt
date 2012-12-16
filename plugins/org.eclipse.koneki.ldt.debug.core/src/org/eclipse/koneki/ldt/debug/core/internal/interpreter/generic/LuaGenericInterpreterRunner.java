@@ -28,7 +28,7 @@ public class LuaGenericInterpreterRunner extends AbstractInterpreterRunner {
 		LuaGenericInterpreterConfigurer luaGenericInterpreterConfigurer = new LuaGenericInterpreterConfigurer();
 
 		try {
-			luaGenericInterpreterConfigurer.alterConfig(launch, config);
+			luaGenericInterpreterConfigurer.alterConfig(launch, config, getInstall());
 		} catch (CoreException e) {
 			// TODO we should be able to raise a core exception here (We should open a DLTK bug ?)
 			Activator.log(e.getStatus());
@@ -40,4 +40,15 @@ public class LuaGenericInterpreterRunner extends AbstractInterpreterRunner {
 		LuaGenericInterpreterCommandLineRenderer commandLineRenderer = new LuaGenericInterpreterCommandLineRenderer();
 		return commandLineRenderer.renderCommandLine(config, getInstall());
 	}
+
+	// TODO HACK ENV_VAR : make environment variable defined at interpreter
+	// level less priority
+	// ****************************************************************************
+	@Override
+	protected String[] getEnvironmentVariablesAsStrings(InterpreterConfig config) {
+		return config.getEnvironmentAsStrings();
+	}
+	// END HACK
+	// ****************************************************************************
+
 }

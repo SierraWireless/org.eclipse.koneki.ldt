@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
 import org.eclipse.koneki.ldt.debug.core.internal.Activator;
@@ -33,11 +34,12 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 	private InterpreterConfig initialConfig;
 
 	@Override
-	public InterpreterConfig alterConfig(ILaunch launch, InterpreterConfig config) throws CoreException {
+	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config, final IInterpreterInstall interpreterinstall)
+			throws CoreException {
 		// In debug engine the config must not be alter, surely because it is used as key to retreive the DBGPConnectionConfig.
 		initialConfig = config;
 		InterpreterConfig interpreterConfig = (InterpreterConfig) config.clone();
-		return super.alterConfig(launch, interpreterConfig);
+		return super.alterConfig(launch, interpreterConfig, interpreterinstall);
 	}
 
 	protected List<IPath> getLuaPath(ILaunch launch, InterpreterConfig config) throws CoreException {
@@ -66,7 +68,7 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 
 		// get the dbgp connection corresponding to this config.
 		DbgpConnectionConfig dbgpConnectionConfig = DbgpConnectionConfig.load(initialConfig);
-		String host = dbgpConnectionConfig.getHost();
+		String host = "127.0.0.1"; //$NON-NLS-1$
 		int port = dbgpConnectionConfig.getPort();
 		String sessionId = dbgpConnectionConfig.getSessionId();
 		IPath workingDirectory = config.getWorkingDirectoryPath();

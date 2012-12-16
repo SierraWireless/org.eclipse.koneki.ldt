@@ -32,8 +32,6 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.LuaDLTKModelUtils;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.osgi.util.NLS;
 
-import com.naef.jnlua.LuaException;
-
 /**
  * Generates AST from Metalua analysis, {@link ASTNode}s are created straight from Lua
  * 
@@ -119,7 +117,8 @@ public class LuaSourceParser extends AbstractSourceParser {
 				final OffsetFixer fixer = new OffsetFixer(source);
 
 				// Fix AST
-				module.traverse(new EncodingVisitor(fixer));
+				if (module != null)
+					module.traverse(new EncodingVisitor(fixer));
 
 				// Fix problems
 				if (reporter instanceof ProblemCollector) {
@@ -128,23 +127,27 @@ public class LuaSourceParser extends AbstractSourceParser {
 						problem.setSourceEnd(fixer.getCharacterPosition(problem.getSourceEnd()));
 					}
 				}
-
-			} catch (final LuaException e) {
-				Activator.logError(NLS.bind("Unable to load metalua ast builder for {0}.", input.getFileName()), e); //$NON-NLS-1$
-				// CHECKSTYLE:OFF
-			} catch (final Exception e) {
+			}
+			// CHECKSTYLE:OFF
+			catch (final Exception e) {
 				// CHECKSTYLE:ON
-				Activator.logWarning(NLS.bind("Unable to backpatch encoding shifts for {0}.", input.getFileName()), e); //$NON-NLS-1$
+				Activator.logWarning(NLS.bind("Unable to parse file {0}.", input.getFileName()), e); //$NON-NLS-1$
+				// the module is probably on error.
+				if (module == null)
+					module = new LuaSourceRoot(input.getSourceContents().length());
+				module.setProblem(1, 1, 0, "This file probably contains a syntax error."); //$NON-NLS-1$
 			}
 
 			// Deal with errors on Lua side
 			if (module != null) {
+				// if module contains a syntax error
 				if (module.hasError()) {
+					// add error to repoter
 					final DefaultProblem problem = module.getProblem();
 					problem.setOriginatingFileName(input.getFileName());
 					reporter.reportProblem(problem);
 
-					// manage cache
+					// use AST in cache
 					if (input.getModelElement() != null) {
 						final LuaSourceRoot cached = (LuaSourceRoot) cache.get(input.getModelElement());
 						if (cached != null) {
@@ -153,6 +156,7 @@ public class LuaSourceParser extends AbstractSourceParser {
 						}
 					}
 				} else if (input.getModelElement() != null) {
+					// if there are no error, put the new AST in cache
 					cache.put(input.getModelElement(), module);
 				}
 			}
