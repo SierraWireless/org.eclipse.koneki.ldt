@@ -49,6 +49,9 @@ public class LuaGenericInterpreterInstall extends AbstractInterpreterInstall {
 	@Override
 	public String[] getInterpreterArguments() {
 		// TODO BUG_ECLIPSE 390358
+		String interpreterArgs = getInterpreterArgs();
+		if (interpreterArgs == null || interpreterArgs.isEmpty())
+			return null;
 		return new String[] { getInterpreterArgs() };
 	}
 }

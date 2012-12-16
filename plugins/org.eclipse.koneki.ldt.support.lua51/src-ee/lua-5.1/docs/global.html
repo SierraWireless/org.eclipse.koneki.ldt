@@ -40,222 +40,222 @@ All the preloaded module of Lua are declared here.</p>
 	<h2>Global(s)</h2>
 	<table class="function_list">
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#_G">global._G</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#_G">_G</a></td>
 		<td class="summary">
 <p>A global variable (not a function) that holds the global environment
 (that is, <code>_G._G = _G</code>).</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#_VERSION">global._VERSION</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#_VERSION">_VERSION</a></td>
 		<td class="summary">
 <p>A global variable (not a function) that holds a string containing the
 current interpreter version.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#assert">global.assert</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#assert">assert(v, message)</a></td>
 		<td class="summary">
 <p>Issues an error when the value of its argument <code>v</code> is false (i.e.,
 <strong>nil</strong> or <strong>false</strong>); otherwise, returns all its arguments.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#collectgarbage">global.collectgarbage</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#collectgarbage">collectgarbage(opt, arg)</a></td>
 		<td class="summary">
 <p>This function is a generic interface to the garbage collector.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#coroutine">global.coroutine</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#coroutine">coroutine</a></td>
 		<td class="summary">
 <p>This library provides generic functions for coroutine manipulation.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#debug">global.debug</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#debug">debug</a></td>
 		<td class="summary">
 <p>The Debug Library.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#dofile">global.dofile</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#dofile">dofile(filename)</a></td>
 		<td class="summary">
 <p>Opens the named file and executes its contents as a Lua chunk.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#error">global.error</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#error">error(message, level)</a></td>
 		<td class="summary">
 <p>Terminates the last protected function called and returns <code>message</code>
 as the error message.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#getfenv">global.getfenv</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#getfenv">getfenv(f)</a></td>
 		<td class="summary">
 <p>Returns the current environment in use by the function.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#getmetatable">global.getmetatable</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#getmetatable">getmetatable(object)</a></td>
 		<td class="summary">
 <p>If <code>object</code> does not have a metatable, returns nil.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#io">global.io</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#io">io</a></td>
 		<td class="summary">
 <p>The I/O library provides function for file manipulation.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#ipairs">global.ipairs</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#ipairs">ipairs(t)</a></td>
 		<td class="summary">
 <p>Use to iterate over a table by index.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#load">global.load</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#load">load(func, chunkname)</a></td>
 		<td class="summary">
 <p>Loads a chunk using function <code>func</code> to get its pieces.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#loadfile">global.loadfile</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#loadfile">loadfile(filename)</a></td>
 		<td class="summary">
 <p>Similar to <code>load</code>, but gets the chunk from file <code>filename</code> or from the
 standard input, if no file name is given.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#loadstring">global.loadstring</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#loadstring">loadstring(string, chunkname)</a></td>
 		<td class="summary">
 <p>Similar to <code>load</code>, but gets the chunk from the given string.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#math">global.math</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#math">math</a></td>
 		<td class="summary">
 <p>This library is an interface to the standard C math library.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#next">global.next</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#next">next(table, index)</a></td>
 		<td class="summary">
 <p>Allows a program to traverse all fields of a table.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#os">global.os</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#os">os</a></td>
 		<td class="summary">
 <p>Operating System Facilities.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#package">global.package</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#package">package</a></td>
 		<td class="summary">
 <p>The package library provides basic facilities for loading and building modules in Lua.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#pairs">global.pairs</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#pairs">pairs(t)</a></td>
 		<td class="summary">
 <p>Use to iterate over a table.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#pcall">global.pcall</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#pcall">pcall(f, ...)</a></td>
 		<td class="summary">
 <p>Calls function <code>f</code> with the given arguments in <em>protected mode</em>.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#print">global.print</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#print">print(...)</a></td>
 		<td class="summary">
 <p>Receives any number of arguments, and prints their values to <code>stdout</code>,
 using the <code>tostring</code> function to convert them to strings.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#rawequal">global.rawequal</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#rawequal">rawequal(v1, v2)</a></td>
 		<td class="summary">
 <p>Checks whether <code>v1</code> is equal to <code>v2</code>, without invoking any
 metamethod.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#rawget">global.rawget</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#rawget">rawget(table, index)</a></td>
 		<td class="summary">
 <p>Gets the real value of <code>table[index]</code>, without invoking any
 metamethod.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#rawset">global.rawset</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#rawset">rawset(table, index, value)</a></td>
 		<td class="summary">
 <p>Sets the real value of <code>table[index]</code> to <code>value</code>, without invoking any
 metamethod.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#require">global.require</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#require">require(modname)</a></td>
 		<td class="summary">
 <p>Loads the given module.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#select">global.select</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#select">select(index, ...)</a></td>
 		<td class="summary">
 <p>If <code>index</code> is a number, returns all arguments after argument number
 <code>index</code>.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#setfenv">global.setfenv</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#setfenv">setfenv(f, table)</a></td>
 		<td class="summary">
 <p>Sets the environment to be used by the given function.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#setmetatable">global.setmetatable</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#setmetatable">setmetatable(table, metatable)</a></td>
 		<td class="summary">
 <p>Sets the metatable for the given table.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#string">global.string</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#string">string</a></td>
 		<td class="summary">
 <p>This library provides generic functions for string manipulation.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#table">global.table</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#table">table</a></td>
 		<td class="summary">
 <p>This library provides generic functions for table manipulation.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#tonumber">global.tonumber</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#tonumber">tonumber(e, base)</a></td>
 		<td class="summary">
 <p>Tries to convert its argument to a number.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#tostring">global.tostring</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#tostring">tostring(e)</a></td>
 		<td class="summary">
 <p>Receives an argument of any type and converts it to a string in a
 reasonable format.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#unpack">global.unpack</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#unpack">unpack(list, i, j)</a></td>
 		<td class="summary">
 <p>Returns the elements from the given table.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#xpcall">global.xpcall</a></a></td>
+		<td class="name" nowrap="nowrap"><a href="#xpcall">xpcall(f, err)</a></td>
 		<td class="summary">
 <p>This function is similar to <code>pcall</code>, except that you can set a new
 error handler.</p>
@@ -267,7 +267,7 @@ error handler.</p>
 <dt>
 		<em>#table</em>
 <a id="_G" >
-<strong>global._G</strong>
+<strong>_G</strong>
 </a>
 </dt>
 <dd>
@@ -286,7 +286,7 @@ to change environments.)</p>
 <dt>
 		<em>#string</em>
 <a id="_VERSION" >
-<strong>global._VERSION</strong>
+<strong>_VERSION</strong>
 </a>
 </dt>
 <dd>
@@ -303,7 +303,7 @@ current interpreter version.</p>
 		<dl class="function">
 <dt>
 <a id="assert" >
-<strong>global.assert</strong>
+<strong>assert(v, message)</strong>
 </a>
 </dt>
 <dd>
@@ -341,7 +341,7 @@ an error message. defaults value is <em>"assertion failed"</em>.</p>
 		<dl class="function">
 <dt>
 <a id="collectgarbage" >
-<strong>global.collectgarbage</strong>
+<strong>collectgarbage(opt, arg)</strong>
 </a>
 </dt>
 <dd>
@@ -388,7 +388,7 @@ the argument of the command. (optional)</p>
 <dt>
 		<em><a href="coroutine.html##(coroutine)">coroutine#coroutine</a></em>
 <a id="coroutine" >
-<strong>global.coroutine</strong>
+<strong>coroutine</strong>
 </a>
 </dt>
 <dd>
@@ -404,7 +404,7 @@ the argument of the command. (optional)</p>
 <dt>
 		<em><a href="debug.html##(debug)">debug#debug</a></em>
 <a id="debug" >
-<strong>global.debug</strong>
+<strong>debug</strong>
 </a>
 </dt>
 <dd>
@@ -419,7 +419,7 @@ the argument of the command. (optional)</p>
 		<dl class="function">
 <dt>
 <a id="dofile" >
-<strong>global.dofile</strong>
+<strong>dofile(filename)</strong>
 </a>
 </dt>
 <dd>
@@ -448,7 +448,7 @@ the path to the file. (optional)</p>
 		<dl class="function">
 <dt>
 <a id="error" >
-<strong>global.error</strong>
+<strong>error(message, level)</strong>
 </a>
 </dt>
 <dd>
@@ -489,7 +489,7 @@ specifies how to get the error position, default value is <code>1</code>.</p>
 		<dl class="function">
 <dt>
 <a id="getfenv" >
-<strong>global.getfenv</strong>
+<strong>getfenv(f)</strong>
 </a>
 </dt>
 <dd>
@@ -514,7 +514,7 @@ global environment. The default for <code>f</code> is <code>1</code>.</p>
 		<dl class="function">
 <dt>
 <a id="getmetatable" >
-<strong>global.getmetatable</strong>
+<strong>getmetatable(object)</strong>
 </a>
 </dt>
 <dd>
@@ -546,7 +546,7 @@ the metatable of object.</p>
 <dt>
 		<em><a href="io.html##(io)">io#io</a></em>
 <a id="io" >
-<strong>global.io</strong>
+<strong>io</strong>
 </a>
 </dt>
 <dd>
@@ -561,7 +561,7 @@ the metatable of object.</p>
 		<dl class="function">
 <dt>
 <a id="ipairs" >
-<strong>global.ipairs</strong>
+<strong>ipairs(t)</strong>
 </a>
 </dt>
 <dd>
@@ -592,7 +592,7 @@ a table by index.</p>
 		<dl class="function">
 <dt>
 <a id="load" >
-<strong>global.load</strong>
+<strong>load(func, chunkname)</strong>
 </a>
 </dt>
 <dd>
@@ -632,7 +632,7 @@ chunk name used for error messages and debug information, default value is "<cod
 		<dl class="function">
 <dt>
 <a id="loadfile" >
-<strong>global.loadfile</strong>
+<strong>loadfile(filename)</strong>
 </a>
 </dt>
 <dd>
@@ -655,7 +655,7 @@ the path to the file. (optional)</p>
 		<dl class="function">
 <dt>
 <a id="loadstring" >
-<strong>global.loadstring</strong>
+<strong>loadstring(string, chunkname)</strong>
 </a>
 </dt>
 <dd>
@@ -691,7 +691,7 @@ chunk name used for error messages and debug information, default value is the g
 <dt>
 		<em><a href="math.html##(math)">math#math</a></em>
 <a id="math" >
-<strong>global.math</strong>
+<strong>math</strong>
 </a>
 </dt>
 <dd>
@@ -706,7 +706,7 @@ chunk name used for error messages and debug information, default value is the g
 		<dl class="function">
 <dt>
 <a id="next" >
-<strong>global.next</strong>
+<strong>next(table, index)</strong>
 </a>
 </dt>
 <dd>
@@ -755,7 +755,7 @@ initial index.</p>
 <dt>
 		<em><a href="os.html##(os)">os#os</a></em>
 <a id="os" >
-<strong>global.os</strong>
+<strong>os</strong>
 </a>
 </dt>
 <dd>
@@ -771,7 +771,7 @@ initial index.</p>
 <dt>
 		<em><a href="package.html##(package)">package#package</a></em>
 <a id="package" >
-<strong>global.package</strong>
+<strong>package</strong>
 </a>
 </dt>
 <dd>
@@ -786,7 +786,7 @@ initial index.</p>
 		<dl class="function">
 <dt>
 <a id="pairs" >
-<strong>global.pairs</strong>
+<strong>pairs(t)</strong>
 </a>
 </dt>
 <dd>
@@ -819,7 +819,7 @@ table to traverse.</p>
 		<dl class="function">
 <dt>
 <a id="pcall" >
-<strong>global.pcall</strong>
+<strong>pcall(f, ...)</strong>
 </a>
 </dt>
 <dd>
@@ -870,7 +870,7 @@ true plus the result of <code>f</code> function if its call succeeds without err
 		<dl class="function">
 <dt>
 <a id="print" >
-<strong>global.print</strong>
+<strong>print(...)</strong>
 </a>
 </dt>
 <dd>
@@ -898,7 +898,7 @@ values to print to <code>stdout</code>.</p>
 		<dl class="function">
 <dt>
 <a id="rawequal" >
-<strong>global.rawequal</strong>
+<strong>rawequal(v1, v2)</strong>
 </a>
 </dt>
 <dd>
@@ -933,7 +933,7 @@ true if <code>v1</code> is equal to <code>v2</code>. </p>
 		<dl class="function">
 <dt>
 <a id="rawget" >
-<strong>global.rawget</strong>
+<strong>rawget(table, index)</strong>
 </a>
 </dt>
 <dd>
@@ -970,7 +970,7 @@ metamethod.</p>
 		<dl class="function">
 <dt>
 <a id="rawset" >
-<strong>global.rawset</strong>
+<strong>rawset(table, index, value)</strong>
 </a>
 </dt>
 <dd>
@@ -1009,7 +1009,7 @@ any Lua value.</p>
 		<dl class="function">
 <dt>
 <a id="require" >
-<strong>global.require</strong>
+<strong>require(modname)</strong>
 </a>
 </dt>
 <dd>
@@ -1060,7 +1060,7 @@ name of module to load.</p>
 		<dl class="function">
 <dt>
 <a id="select" >
-<strong>global.select</strong>
+<strong>select(index, ...)</strong>
 </a>
 </dt>
 <dd>
@@ -1091,7 +1091,7 @@ a number or the string <code>"#"</code></p>
 		<dl class="function">
 <dt>
 <a id="setfenv" >
-<strong>global.setfenv</strong>
+<strong>setfenv(f, table)</strong>
 </a>
 </dt>
 <dd>
@@ -1131,7 +1131,7 @@ used as environment for <code>f</code>.</p>
 		<dl class="function">
 <dt>
 <a id="setmetatable" >
-<strong>global.setmetatable</strong>
+<strong>setmetatable(table, metatable)</strong>
 </a>
 </dt>
 <dd>
@@ -1170,7 +1170,7 @@ This function returns <code>table</code>.</p>
 <dt>
 		<em><a href="string.html##(string)">string#string</a></em>
 <a id="string" >
-<strong>global.string</strong>
+<strong>string</strong>
 </a>
 </dt>
 <dd>
@@ -1186,7 +1186,7 @@ This function returns <code>table</code>.</p>
 <dt>
 		<em><a href="table.html##(table)">table#table</a></em>
 <a id="table" >
-<strong>global.table</strong>
+<strong>table</strong>
 </a>
 </dt>
 <dd>
@@ -1201,7 +1201,7 @@ This function returns <code>table</code>.</p>
 		<dl class="function">
 <dt>
 <a id="tonumber" >
-<strong>global.tonumber</strong>
+<strong>tonumber(e, base)</strong>
 </a>
 </dt>
 <dd>
@@ -1246,7 +1246,7 @@ a number if conversion succeeds else <strong>nil</strong>.</p>
 		<dl class="function">
 <dt>
 <a id="tostring" >
-<strong>global.tostring</strong>
+<strong>tostring(e)</strong>
 </a>
 </dt>
 <dd>
@@ -1282,7 +1282,7 @@ a string in a reasonable format.</p>
 		<dl class="function">
 <dt>
 <a id="unpack" >
-<strong>global.unpack</strong>
+<strong>unpack(list, i, j)</strong>
 </a>
 </dt>
 <dd>
@@ -1325,7 +1325,7 @@ index of last value.</p>
 		<dl class="function">
 <dt>
 <a id="xpcall" >
-<strong>global.xpcall</strong>
+<strong>xpcall(f, err)</strong>
 </a>
 </dt>
 <dd>

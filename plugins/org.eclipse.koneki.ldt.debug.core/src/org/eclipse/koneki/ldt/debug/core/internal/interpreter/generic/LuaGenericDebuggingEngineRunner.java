@@ -32,7 +32,7 @@ public class LuaGenericDebuggingEngineRunner extends DebuggingEngineRunner {
 	@Override
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config, PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
 		LuaGenericDebuggingEngineConfigurer luaGenericDebuggingEngineConfigurer = new LuaGenericDebuggingEngineConfigurer();
-		InterpreterConfig alteredConfig = luaGenericDebuggingEngineConfigurer.alterConfig(launch, config);
+		InterpreterConfig alteredConfig = luaGenericDebuggingEngineConfigurer.alterConfig(launch, config, getInstall());
 		return alteredConfig;
 	}
 
@@ -69,4 +69,15 @@ public class LuaGenericDebuggingEngineRunner extends DebuggingEngineRunner {
 		LuaGenericInterpreterCommandLineRenderer commandLineRenderer = new LuaGenericInterpreterCommandLineRenderer();
 		return commandLineRenderer.renderCommandLine(config, getInstall());
 	}
+
+	// TODO HACK ENV_VAR : make environment variable defined at interpreter
+	// level less priority
+	// ****************************************************************************
+	@Override
+	protected String[] getEnvironmentVariablesAsStrings(InterpreterConfig config) {
+		return config.getEnvironmentAsStrings();
+	}
+	// END HACK
+	// ****************************************************************************
+
 }

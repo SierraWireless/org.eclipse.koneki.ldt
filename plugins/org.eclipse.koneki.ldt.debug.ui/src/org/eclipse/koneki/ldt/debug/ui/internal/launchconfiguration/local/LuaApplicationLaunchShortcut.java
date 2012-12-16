@@ -180,7 +180,7 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 			MessageDialog.openError(getShell(), LaunchingMessages.ScriptLaunchShortcut_1, getSelectionEmptyMessage());
 		} else if (scripts.length == 1) {
 			// create a new one for this script
-			return createConfiguration(scripts[0]);
+			return createLaunchConfiguration(scripts[0]);
 		} else if (scripts.length > 1) {
 			// prompt user to choose a script
 			script = chooseScript(scripts, getScriptSelectionTitle());
@@ -197,7 +197,7 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 		IModuleSource mainModule = LuaUtils.getModuleSource(defaultModuleName, project);
 		if (mainModule != null) {
 			try {
-				return createConfiguration(mainModule.getModelElement().getCorrespondingResource());
+				return createLaunchConfiguration(mainModule.getModelElement().getCorrespondingResource());
 			} catch (ModelException e) {
 				Activator.logWarning("Unable to find ressource corresponding to main module", e); //$NON-NLS-1$
 			}
@@ -280,5 +280,14 @@ public class LuaApplicationLaunchShortcut extends AbstractScriptLaunchShortcut {
 	@Override
 	protected void launch(final IResource script, final String mode) {
 		searchAndLaunch(new Object[] { script }, mode, null, null);
+	}
+
+	/**
+	 * @Deprecated use createLaunchConfiguration
+	 */
+	@Override
+	@Deprecated
+	protected ILaunchConfiguration createConfiguration(IResource script) {
+		return super.createConfiguration(script);
 	}
 }

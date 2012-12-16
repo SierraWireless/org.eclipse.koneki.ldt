@@ -27,6 +27,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.koneki.ldt.core.LuaConstants;
 import org.eclipse.koneki.ldt.core.LuaNature;
 import org.eclipse.koneki.ldt.remote.core.internal.RSEUtil;
+import org.eclipse.koneki.ldt.remote.core.internal.lua.LuaRSEUtil;
 import org.eclipse.koneki.ldt.remote.debug.core.internal.LuaRemoteDebugConstant;
 import org.eclipse.koneki.ldt.remote.debug.core.internal.launch.LuaRemoteLaunchConfigurationUtil;
 import org.eclipse.koneki.ldt.remote.debug.ui.internal.Activator;
@@ -215,10 +216,13 @@ public class LuaRemoteLaunchConfigurationMainTab extends AbstractLaunchConfigura
 		}
 		configuration.setAttribute(LuaRemoteDebugConstant.SCRIPT_NAME, defaultScript);
 
-		// get first available target
-		IHost[] hosts = RSECorePlugin.getTheSystemRegistry().getHosts();
-		if (hosts.length > 0) {
-			LuaRemoteLaunchConfigurationUtil.setConnectionId(configuration, hosts[0]);
+		// get first available target with luaSsh subsystem
+		final IHost[] hosts = RSECorePlugin.getTheSystemRegistry().getHosts();
+		for (int i = 0; i < hosts.length && LuaRemoteLaunchConfigurationUtil.getHost(configuration) == null; i++) {
+			final IHost host = hosts[i];
+			if (LuaRSEUtil.getLuaSubSystem(host) != null) {
+				LuaRemoteLaunchConfigurationUtil.setConnectionId(configuration, host);
+			}
 		}
 		configuration.setAttribute(LuaRemoteDebugConstant.DBGP_LOGGING, false);
 		configuration.setAttribute(LuaRemoteDebugConstant.BREAK_ON_FIRST_LINE, false);
