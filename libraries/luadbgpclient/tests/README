@@ -1,17 +1,27 @@
-Debugger tests are quite complex to run in a portable way. Thanks to LuaDist 
-this can be done pretty easily: it can build custom Lua environments from 
-scratch and run tests on many different configurations.
+Debugger tests are quite complex to run in a portable way, as the debugger must
+be tested on multiple different configurations (VM, transport backend), ...
+Also, there is binary dependencies that can be quite difficult to deploy.
 
-*Limitation:* for now, *only Unix systems* are expected to work. This is due 
+For this reason, a Python 'bootstrapper' script is provided: it will download
+and set up a complete sandboxed Lua environment to run tests on.
+
+**Limitation:** for now, **only Unix systems** are expected to work. This is due
 to shell scripts that are not yet ported to Windows.
 
-To run the tests you need Git, CMake and a C toolchain (compiler, make, ...).
+To run the tests you need Python 2.x, Git and a C toolchain (compiler, make, ...).
 
-1. Edit setup-env.sh script to match your environment (especially TESTS_ROOT)
-2. Run setup-env.sh: it will install LuaDist and download all packages required
-   for tests (Lua, LuaSocket, ...)
-3. Run the tests with run-tests.lua file. This file *must* be run with the
-   LuaDist Lua interpreter (located at $LUADIST_DIR/_install/bin/lua).
+1. Run `bootstrap.py`, il will set up the different test environments
+2. Test environments are built into `test-environments`
+3. Go into any test environment, you sould see a `runner.lua` file, run it with
+   the environment Lua interpreter: `./bin/lua runner.lua`. By default debugger
+   is tested into its splitted form, if you want to test the single-file one,
+   run `./bin/lua runner.lua build`
 
-To add more test environments, add required packages downloads in 
-packages/download.sh and add `environment(...)` lines in run-tests lines.
+The debugger is actually copied to test environment by `runner.lua` so you don't
+need to run `bootstrap.py` file each time you want to run tests.
+
+To add more environments, see bootstrap.py file.
+
+Python was choosen as bootstrapping method because it is pretty common on Unix
+system and batteries included. On Windows, well... Windows is a pain in the ass
+and Python is the most easy and portable way to setup test environments.
