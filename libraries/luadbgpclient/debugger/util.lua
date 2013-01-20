@@ -113,7 +113,7 @@ if _VERSION == "Lua 5.1" then
         end
     end
 
-    if jit then
+    if rawget(_G, "jit") then
         MainThread = {
             [1] = "main", -- as the raw thread object is used as table keys, provide a replacement.
             -- LuaJIT completely eliminates tail calls from stack, so get_script_level retunrs wrong result in this case
