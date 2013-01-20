@@ -410,7 +410,7 @@ local function debugger_hook(event, line)
     end
 end
 
-if jit then
+if rawget(_G, "jit") then
     debugger_hook = function(event, line)
         local thread = corunning() or "main"
         if event == "call" then
