@@ -296,6 +296,17 @@ function core.previous_context_response(self, reason)
     self.previous_context = nil
 end
 
+local function cleanup()
+    coroutine.resume, coroutine.wrap = coresume, cowrap
+    for _, coro in pairs(core.active_coroutines.from_id) do
+        debug.sethook(coro)
+    end
+    -- to remove hook on the main coroutine, it must be the current one (otherwise, this is a no-op) and this function
+    -- have to be called adain later on the main thread to finish cleaup
+    debug.sethook()
+    core.active_coroutines.from_id, core.active_coroutines.from_coro = { }, { }
+end
+
 --- This function handles the debugger commands while the execution is paused. This does not use coroutines because there is no
 -- way to get main coro in Lua 5.1 (only in 5.2)
 local function debugger_loop(self, async_packet)
@@ -312,7 +323,13 @@ local function debugger_loop(self, async_packet)
     
     while true do
         -- reads packet
-        local packet = async_packet or assert(dbgp.read_packet(self.skt))
+        local packet = async_packet or dbgp.read_packet(self.skt)
+        if not packet then
+          log("WARNING", "lost debugger connection")
+          cleanup()
+          break
+        end
+
         async_packet = nil
         log("DEBUG", packet)
         local cmd, args, data = dbgp.cmd_parse(packet)
