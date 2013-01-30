@@ -22,7 +22,6 @@ import org.eclipse.dltk.ui.documentation.IScriptDocumentationTitleAdapter;
 import org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.koneki.ldt.ui.internal.LuaDocumentationHelper;
-import org.eclipse.koneki.ldt.ui.internal.views.Messages;
 
 @SuppressWarnings("restriction")
 public class LuaDocumentationHover extends DocumentationHover {
@@ -84,9 +83,13 @@ public class LuaDocumentationHover extends DocumentationHover {
 				}
 			}
 
-			// if no documentation, use default text info
+			// if no documentation, don't display any tooltip
 			if (htmlContent == null || htmlContent.isEmpty()) {
-				htmlContent = Messages.LuaDocView_NoDocumentationFound;
+				// Because DLTK have a default tooltip really hard to remove, the only way to
+				// don't have a tooltip is to kill the thread responsible to display the hover by throwing an exception.
+				// Workaround for dltk Bug 399414 and/or 399468
+				throw new RuntimeException("Exception to avoid to create a tooltip, currently a workaround for dltk"); //$NON-NLS-1$
+				// return null;
 			}
 			return LuaDocumentationHelper.generatePage(htmlContent);
 		}
