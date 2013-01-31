@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.help.toc">
       <toc
-            file="help/Koneki-LDT-Developer-Area-User-Guides-User-Guide-0-9-toc.xml"
+            file="help/Koneki-LDT-Developer-Area-User-Guides-User-Guide-1-0-toc.xml"
             primary="true">
       </toc>
    </extension>

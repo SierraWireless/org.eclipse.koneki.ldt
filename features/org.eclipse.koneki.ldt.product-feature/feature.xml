@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.koneki.ldt.product"
       label="Lua Development Tools - branding (Incubation)"
-      version="0.9.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name="Koneki"
       plugin="org.eclipse.koneki.ldt.branding">
 

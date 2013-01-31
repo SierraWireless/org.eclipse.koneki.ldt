@@ -30,7 +30,7 @@
 				failonvalidationerror="true" prependImagePrefix="images" formatoutput="true"
 				defaultAbsoluteLinkTarget="doc_external" dest="${basedir}/help" helpPrefix="help"
 				generateUnifiedToc="false" navigationimages="true">
-				<path name="Koneki/LDT/Developer_Area/User_Guides/User_Guide_0.9" title="LDT User Guide" generateToc="true" />
+				<path name="Koneki/LDT/Developer_Area/User_Guides/User_Guide_1.0" title="LDT User Guide" generateToc="true" />
 				<pageAppendum>
 
 					= Updating This Document =
