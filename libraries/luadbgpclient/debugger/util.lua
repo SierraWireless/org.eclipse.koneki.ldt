@@ -87,41 +87,57 @@ local CurrentThreadMT = {
 CurrentThreadMT.__index = CurrentThreadMT
 function M.CurrentThread(coro) return setmetatable({ coro }, CurrentThreadMT) end
 
--- Fallback method to inspect running thread (only for main thread in 5.1 or for conditional breakpoints)
---- Gets a script stack level with additional debugger logic added
--- @param l (number) stack level to get for debugged script (0 based)
--- @return real Lua stack level suitable to be passed through deubg functions
-local function get_script_level(l)
-    local hook = debug.gethook()
-    for i=2, math.huge do
-        if assert(debug.getinfo(i, "f")).func == hook then
-            return i + l -- the script to level is just below, but because of the extra call to this function, the level is ok for callee
-        end
-    end
-end
-M.MainThread = {
-    [1] = "main", -- as the raw thread object is used as table keys, provide a replacement.
-    getinfo  = function(self, level, what)     return getinfo(get_script_level(level), what:gsub("t", "", 1)) end,
-    getlocal = function(self, level, idx)      return getlocal(get_script_level(level), idx) end,
-    setlocal = function(self, level, idx, val) return setlocal(get_script_level(level), idx, val) end,
-}
 
 -- Some version dependant functions
 if _VERSION == "Lua 5.1" then
-    local loadstring, getfenv, setfenv, debug_getinfo = loadstring, getfenv, setfenv, debug.getinfo
-    
+    local loadstring, getfenv, setfenv, debug_getinfo, MainThread =
+          loadstring, getfenv, setfenv, debug.getinfo, nil
+
     -- in 5.1 "t" flag does not exist and trigger an error so remove it from what
     CurrentThreadMT.getinfo = function(self, level, what) return getinfo(self[1], level + 2, what:gsub("t", "", 1)) end
     ForeignThreadMT.getinfo = function(self, level, what) return getinfo(self[1], level, what:gsub("t", "", 1)) end
-    
-    -- If the VM is vanilla Lua 5.1, there is no way to get a reference to the main coroutine, so fall back to direct mode:
-    -- the debugger loop is started on the top of main thread and the actual level is recomputed each time
-    if not jit then
-        -- allow CurrentThread to take a nil parameter
-        local oldCurrentThread = M.CurrentThread
-        M.CurrentThread = function(coro) return coro and oldCurrentThread(coro) or M.MainThread end
+
+    -- when we're forced to start debug loop on top of program stack (when on main coroutine)
+    -- this requires some hackery to get right stack level
+
+    -- Fallback method to inspect running thread (only for main thread in 5.1 or for conditional breakpoints)
+    --- Gets a script stack level with additional debugger logic added
+    -- @param l (number) stack level to get for debugged script (0 based)
+    -- @return real Lua stack level suitable to be passed through deubg functions
+    local function get_script_level(l)
+        local hook = debug.gethook()
+        for i=2, math.huge do
+            if assert(debug.getinfo(i, "f")).func == hook then
+                return i + l -- the script to level is just below, but because of the extra call to this function, the level is ok for callee
+            end
+        end
     end
-    
+
+    if jit then
+        MainThread = {
+            [1] = "main", -- as the raw thread object is used as table keys, provide a replacement.
+            -- LuaJIT completely eliminates tail calls from stack, so get_script_level retunrs wrong result in this case
+            getinfo  = function(self, level, what)     return getinfo(get_script_level(level) - 1, what:gsub("t", "", 1)) end,
+            getlocal = function(self, level, idx)      return getlocal(get_script_level(level) - 1, idx) end,
+            setlocal = function(self, level, idx, val) return setlocal(get_script_level(level) - 1, idx, val) end,
+        }
+    else
+        MainThread = {
+            [1] = "main",
+            getinfo  = function(self, level, what)     return getinfo(get_script_level(level) , what:gsub("t", "", 1)) end,
+            getlocal = function(self, level, idx)      return getlocal(get_script_level(level), idx) end,
+            setlocal = function(self, level, idx, val) return setlocal(get_script_level(level), idx, val) end,
+        }
+    end
+
+
+
+    -- If the VM is vanilla Lua 5.1 or LuaJIT 2 without 5.2 compatibility, there is no way to get a reference to
+    -- the main coroutine, so fall back to direct mode: the debugger loop is started on the top of main thread
+    -- and the actual level is recomputed each time
+    local oldCurrentThread = M.CurrentThread
+    M.CurrentThread = function(coro) return coro and oldCurrentThread(coro) or MainThread end
+
     -- load a piece of code alog with its environment
     function M.loadin(code, env)
         local f = loadstring(code)
