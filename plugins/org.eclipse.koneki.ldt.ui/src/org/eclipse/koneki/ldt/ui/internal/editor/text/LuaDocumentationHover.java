@@ -85,9 +85,9 @@ public class LuaDocumentationHover extends DocumentationHover {
 
 			// if no documentation, don't display any tooltip
 			if (htmlContent == null || htmlContent.isEmpty()) {
+				// TODO BUG_ECLIPSE 399414 and/or 399468
 				// Because DLTK have a default tooltip really hard to remove, the only way to
 				// don't have a tooltip is to kill the thread responsible to display the hover by throwing an exception.
-				// Workaround for dltk Bug 399414 and/or 399468
 				throw new RuntimeException("Exception to avoid to create a tooltip, currently a workaround for dltk"); //$NON-NLS-1$
 				// return null;
 			}
