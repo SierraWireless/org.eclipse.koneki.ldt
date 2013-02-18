@@ -76,4 +76,11 @@
              id="org.eclipse.koneki.ldt.debug.core.LuaGenericInterpreterInstallType">
        </interpreterInstallType>
     </extension>
+ <extension
+       point="org.eclipse.emf.ecore.generated_package">
+    <package
+          class="org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.InterpreterPackage"
+          uri="http://eclipse.org/koneki">
+    </package>
+ </extension>
 </plugin>

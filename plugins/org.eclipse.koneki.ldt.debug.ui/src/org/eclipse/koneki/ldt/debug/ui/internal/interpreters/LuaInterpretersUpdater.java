@@ -147,6 +147,7 @@ public class LuaInterpretersUpdater extends InterpretersUpdater {
 
 	private void saveInterpreterDefinitions(final InterpreterDefinitionsContainer container) {
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			@SuppressWarnings("deprecation")
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
 					monitor.beginTask(InterpretersMessages.InterpretersUpdater_0, 100);

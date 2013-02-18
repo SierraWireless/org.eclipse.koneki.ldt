@@ -20,11 +20,14 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 
 public class LuaGenericInterpreterCommandLineRenderer {
 
-	public String[] renderCommandLine(InterpreterConfig config, IInterpreterInstall install) {
+	public String[] renderCommandLine(final InterpreterConfig config, final IInterpreterInstall install) {
 		final List<String> items = new ArrayList<String>();
 
 		items.add(install.getInstallLocation().toOSString());
 
+		/*                                                              */
+		/* This code must be used when work around below become useless */
+		/*                                                              */
 		// final String[] interpreterOwnArgs =
 		// install.getInterpreterArguments();
 		// if (interpreterOwnArgs != null) {
@@ -32,9 +35,9 @@ public class LuaGenericInterpreterCommandLineRenderer {
 		// }
 
 		// TODO BUG_ECLIPSE 390358
-		String args = install.getInterpreterArgs();
+		final String args = install.getInterpreterArgs();
 		if (args != null && !args.isEmpty()) {
-			ExecutionArguments ex = new ExecutionArguments(args, ""); //$NON-NLS-1$
+			final ExecutionArguments ex = new ExecutionArguments(args, ""); //$NON-NLS-1$
 			final String[] interpreterOwnArgs = ex.getInterpreterArgumentsArray();
 			if (interpreterOwnArgs != null) {
 				items.addAll(Arrays.asList(interpreterOwnArgs));
@@ -43,8 +46,11 @@ public class LuaGenericInterpreterCommandLineRenderer {
 		// end BUG_ECLIPSE 390358
 		items.addAll(config.getInterpreterArgs());
 
-		items.add(install.getEnvironment().convertPathToString(config.getScriptFilePath()));
-		items.addAll(config.getScriptArgs());
+		// Precise script and argument only when interpreter handles script as arguments
+		if (LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(install)) {
+			items.add(install.getEnvironment().convertPathToString(config.getScriptFilePath()));
+			items.addAll(config.getScriptArgs());
+		}
 
 		return items.toArray(new String[items.size()]);
 	}

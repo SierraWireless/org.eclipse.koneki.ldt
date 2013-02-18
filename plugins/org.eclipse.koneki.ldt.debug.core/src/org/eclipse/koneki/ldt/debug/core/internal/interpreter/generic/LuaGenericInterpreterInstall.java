@@ -17,7 +17,7 @@ import org.eclipse.dltk.launching.IInterpreterRunner;
 
 public class LuaGenericInterpreterInstall extends AbstractInterpreterInstall {
 
-	public LuaGenericInterpreterInstall(IInterpreterInstallType type, String id) {
+	public LuaGenericInterpreterInstall(final IInterpreterInstallType type, final String id) {
 		super(type, id);
 	}
 

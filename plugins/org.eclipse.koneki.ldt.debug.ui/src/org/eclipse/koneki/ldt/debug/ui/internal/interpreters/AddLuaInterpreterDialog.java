@@ -29,6 +29,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,6 +41,11 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.koneki.ldt.debug.core.IEmbeddedInterpreterInstallType;
 import org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterInstallType;
+import org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterUtil;
+import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info;
+import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.InterpreterFactory;
+import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InterpreterFactoryImpl;
+import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.impl.InterpreterPackageImpl;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
 import org.eclipse.swt.SWT;
@@ -46,14 +53,18 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+@SuppressWarnings("restriction")
 public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInterpreterDialog {
 
 	private IAddInterpreterDialogRequestor requestor;
@@ -68,9 +79,13 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 	private Button browseButton;
 	private Text argsText;
 	private LuaInterpreterEnvironmentVariablesBlock environementVariableBlock;
+	private Button handlesExecutionOption;
+	private Group capabilitiesGroup;
+	private Label capabilitiesDesctiptionLabel;
+	private Button handlesFilesAsArguments;
 
-	public AddLuaInterpreterDialog(IAddInterpreterDialogRequestor requestor, Shell shell, IEnvironment environment,
-			IInterpreterInstallType[] interpreterInstallTypes, IInterpreterInstall standin) {
+	public AddLuaInterpreterDialog(final IAddInterpreterDialogRequestor requestor, final Shell shell, final IEnvironment environment,
+			final IInterpreterInstallType[] interpreterInstallTypes, final IInterpreterInstall standin) {
 		super(shell);
 		this.requestor = requestor;
 		this.environment = environment;
@@ -96,30 +111,46 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 		GridLayoutFactory.swtDefaults().spacing(spacing).margins(margin).numColumns(3).applyTo(container);
 		GridDataFactory.swtDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).applyTo(container);
 
-		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterEnvironmentType); //$NON-NLS-1$
+		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterEnvironmentType);
 		typesCombo = new ComboViewer(container);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER).span(2, 1).applyTo(typesCombo.getControl());
 
-		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterExecutableName); //$NON-NLS-1$
+		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterExecutableName);
 		pathText = new Text(container, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.CENTER).hint(300, SWT.DEFAULT).applyTo(pathText);
 		browseButton = new Button(container, SWT.PUSH);
 		browseButton.setText(InterpretersMessages.addInterpreterDialog_browse1);
 		GridDataFactory.swtDefaults().hint(SWTUtil.getButtonWidthHint(browseButton), -1).applyTo(browseButton);
 
-		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterEnvironmentName); //$NON-NLS-1$
+		createLabel(container, InterpretersMessages.addInterpreterDialog_InterpreterEnvironmentName);
 		nameText = new Text(container, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.swtDefaults().grab(true, false).span(2, 1).align(SWT.FILL, SWT.CENTER).applyTo(nameText);
 
-		createLabel(container, InterpretersMessages.AddInterpreterDialog_iArgs); //$NON-NLS-1$
+		createLabel(container, InterpretersMessages.AddInterpreterDialog_iArgs);
 		argsText = new Text(container, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.swtDefaults().grab(true, false).span(2, 1).align(SWT.FILL, SWT.CENTER).applyTo(argsText);
 
 		environementVariableBlock = new LuaInterpreterEnvironmentVariablesBlock(new AddInterpreterDialogAdapter(requestor, getShell(),
 				interpreterInstallTypes, currentInterperter));
-		Composite environementComposite = (Composite) environementVariableBlock.createControl(container);
-		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(environementComposite);
-		GridDataFactory.swtDefaults().grab(true, true).span(3, 1).align(SWT.FILL, SWT.FILL).applyTo(environementComposite);
+		final Composite environmentComposite = (Composite) environementVariableBlock.createControl(container);
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(environmentComposite);
+		GridDataFactory.swtDefaults().grab(true, true).span(3, 1).align(SWT.FILL, SWT.FILL).applyTo(environmentComposite);
+
+		// Interpreter Capabilities
+		capabilitiesGroup = new Group(container, SWT.None);
+		capabilitiesGroup.setText(Messages.AddLuaInterpreterDialog_CapabilitesGroupLabel);
+		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(1).applyTo(capabilitiesGroup);
+		GridDataFactory.swtDefaults().grab(true, false).span(3, 1).align(SWT.FILL, SWT.FILL).applyTo(capabilitiesGroup);
+
+		capabilitiesDesctiptionLabel = new Label(capabilitiesGroup, SWT.NONE);
+		toItalic(capabilitiesDesctiptionLabel);
+		GridDataFactory.swtDefaults().span(3, 1).grab(true, false).align(SWT.FILL, SWT.FILL).applyTo(capabilitiesDesctiptionLabel);
+
+		handlesExecutionOption = new Button(capabilitiesGroup, SWT.CHECK);
+		handlesExecutionOption.setText(Messages.AddLuaInterpreterDialog_ExecutionOption);
+
+		handlesFilesAsArguments = new Button(capabilitiesGroup, SWT.CHECK);
+		handlesFilesAsArguments.setText(Messages.AddLuaInterpreterDialog_FilesAsArguments);
 
 		applyDialogFont(container);
 		hookListeners();
@@ -128,10 +159,20 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 		return container;
 	}
 
-	private void createLabel(Composite container, String text) {
-		Label label = new Label(container, SWT.NONE);
+	private <T extends Control> T toItalic(final T control) {
+		final FontRegistry fontRegistry = JFaceResources.getFontRegistry();
+		for (final FontData fontData : control.getFont().getFontData()) {
+			final Font font = fontRegistry.getItalic(fontData.getName());
+			control.setFont(font);
+		}
+		return control;
+	}
+
+	private Label createLabel(final Composite container, final String text) {
+		final Label label = new Label(container, SWT.NONE);
 		label.setText(text);
 		GridDataFactory.swtDefaults().applyTo(label);
+		return label;
 	}
 
 	private void hookListeners() {
@@ -175,6 +216,10 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 	}
 
 	private void init() {
+
+		handlesExecutionOption.setSelection(LuaGenericInterpreterUtil.interpreterHandlesExecuteOption(currentInterperter));
+		handlesFilesAsArguments.setSelection(LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(currentInterperter));
+
 		// init type combo
 		typesCombo.setContentProvider(new ArrayContentProvider());
 		typesCombo.setLabelProvider(new LabelProvider() {
@@ -216,20 +261,33 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 		environementVariableBlock.update();
 	}
 
+	/** Disables all {@link Control}s from {@link #capabilitiesGroup} */
+	private void setCapabilityGroupEnabled(final boolean enabled) {
+		final Control[] controls = { capabilitiesGroup, handlesExecutionOption, handlesFilesAsArguments };
+		for (final Control control : controls)
+			if (control != null)
+				control.setEnabled(enabled);
+		if (enabled)
+			capabilitiesDesctiptionLabel.setText(Messages.AddLuaInterpreterDialog_WhatAreCapabilitiesLabel);
+		else
+			capabilitiesDesctiptionLabel.setText(Messages.AddLuaInterpreterDialog_InterpreterNotConfigurable);
+	}
+
 	private void updateOnInterpreterTypeChange() {
-		IInterpreterInstallType selectedType = getSelectedInterpreterType();
-		boolean isEmbedded = selectedType instanceof IEmbeddedInterpreterInstallType;
-		pathText.setEnabled(!isEmbedded);
+		final IInterpreterInstallType selectedType = getSelectedInterpreterType();
+		final boolean isEmbedded = selectedType instanceof IEmbeddedInterpreterInstallType;
 		browseButton.setEnabled(!isEmbedded);
+		pathText.setEnabled(!isEmbedded);
+		setCapabilityGroupEnabled(!isEmbedded);
 
 		// Set path text as Embedded because we are unable to retrieve the default path of the embedded interpreter type
-		String embeddedPathValue = "(Embedded)"; //$NON-NLS-1$
+		final String embeddedPathValue = "(Embedded)"; //$NON-NLS-1$
 		if (isEmbedded) {
 			pathText.setText(embeddedPathValue);
 		} else if (embeddedPathValue.equals(pathText.getText())) {
 			pathText.setText(""); //$NON-NLS-1$
 		} else if (currentInterperter != null) {
-			pathText.setText(currentInterperter.getInstallLocation().toOSString()); //$NON-NLS-1$
+			pathText.setText(currentInterperter.getInstallLocation().toOSString());
 		}
 	}
 
@@ -275,12 +333,28 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 		currentInterperter.setInstallLocation(new LazyFileHandle(environment.getId(), new Path(pathText.getText().trim())));
 		currentInterperter.setName(nameText.getText().trim());
 
-		String argString = argsText.getText().trim();
+		final String argString = argsText.getText().trim();
 		if (argString != null && argString.length() > 0) {
 			currentInterperter.setInterpreterArgs(argString);
 		} else {
 			currentInterperter.setInterpreterArgs(null);
 		}
+
+		/*
+		 * Update interpreter capabilities
+		 */
+
+		// Execution option
+		final boolean executionOptionChecked = handlesExecutionOption != null && handlesExecutionOption.getSelection();
+
+		// Files as argument option
+		final boolean filesAsArgumentOptionChecked = handlesFilesAsArguments != null && handlesFilesAsArguments.getSelection();
+
+		final InterpreterFactory factory = InterpreterFactoryImpl.eINSTANCE;
+		final Info info = factory.createInfo();
+		info.setExecuteOptionCapable(executionOptionChecked);
+		info.setFileAsArgumentsCapable(filesAsArgumentOptionChecked);
+		currentInterperter.replaceExtension(InterpreterPackageImpl.eINSTANCE.getInfo(), info);
 
 		environementVariableBlock.performApply(currentInterperter);
 	}
@@ -305,7 +379,6 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 				updateStatus(Status.OK_STATUS);
 			}
 		}
-
 	}
 
 	/**
@@ -317,7 +390,7 @@ public class AddLuaInterpreterDialog extends StatusDialog implements IScriptInte
 	}
 
 	/**
-	 * Adapter for the Environement Variable Block The block doesn't take a IAddScriptInterpreter dialog but a AddScriptInterpreterDialog
+	 * Adapter for the Environment Variable Block The block doesn't take a IAddScriptInterpreter dialog but a AddScriptInterpreterDialog
 	 */
 	private class AddInterpreterDialogAdapter extends AddScriptInterpreterDialog {
 

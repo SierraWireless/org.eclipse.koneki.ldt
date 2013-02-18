@@ -18,7 +18,7 @@ import java.util.Vector;
 import org.eclipse.debug.core.DebugPlugin;
 
 /**
- * Writes to the input stream of a system process, queueing output if the stream is blocked.
+ * Writes to the input stream of a system process, queuing output if the stream is blocked.
  * 
  * The input stream monitor writes to system in via an output stream.
  */

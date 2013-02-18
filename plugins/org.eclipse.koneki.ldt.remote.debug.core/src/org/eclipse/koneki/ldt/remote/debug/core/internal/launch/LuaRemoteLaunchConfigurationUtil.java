@@ -130,7 +130,9 @@ public final class LuaRemoteLaunchConfigurationUtil {
 		if (script == null || !script.exists()) {
 			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_script_desnt_exist, scriptName);
 		}
-		if (script.getType() != IResource.FILE || !script.getFileExtension().equals("lua")) { //$NON-NLS-1$
+		final String scriptExtension = script.getFileExtension();
+		final boolean scriptIsLuaFile = scriptExtension != null && scriptExtension.equals("lua"); //$NON-NLS-1$
+		if (script.getType() != IResource.FILE || !scriptIsLuaFile) {
 			return NLS.bind(Messages.LuaRemoteLaunchConfigurationUtil_error_script_not_lua_file, scriptName);
 		}
 

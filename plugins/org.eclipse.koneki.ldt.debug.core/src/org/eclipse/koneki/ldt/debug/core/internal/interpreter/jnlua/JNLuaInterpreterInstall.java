@@ -29,7 +29,7 @@ public abstract class JNLuaInterpreterInstall extends AbstractInterpreterInstall
 			return runner;
 		}
 
-		if (mode.equals(ILaunchManager.RUN_MODE)) {
+		if (ILaunchManager.RUN_MODE.equals(mode)) {
 			return createInterpreterRunner();
 		}
 		return null;

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.koneki.ldt.support.lua51.internal.interpreter;
 
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterInstall;
@@ -23,6 +24,20 @@ public class JNLua51InterpreterInstall extends JNLuaInterpreterInstall {
 	@Override
 	protected IInterpreterRunner createInterpreterRunner() {
 		return new JNLua51InterpreterRunner(this);
+	}
+
+	@Override
+	public IInterpreterRunner getInterpreterRunner(final String mode) {
+		final IInterpreterRunner runner = super.getInterpreterRunner(mode);
+
+		if (runner != null) {
+			return runner;
+		}
+
+		if (ILaunchManager.RUN_MODE.equals(mode)) {
+			return new JNLua51InterpreterRunner(this);
+		}
+		return null;
 	}
 
 	@Override

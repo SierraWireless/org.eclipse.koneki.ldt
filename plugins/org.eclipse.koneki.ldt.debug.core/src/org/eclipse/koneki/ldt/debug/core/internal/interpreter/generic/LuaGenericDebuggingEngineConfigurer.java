@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -36,7 +37,7 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 	@Override
 	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config, final IInterpreterInstall interpreterinstall)
 			throws CoreException {
-		// In debug engine the config must not be alter, surely because it is used as key to retreive the DBGPConnectionConfig.
+		// In debug engine the config must not be alter, surely because it is used as key to retrieve the DBGPConnectionConfig.
 		initialConfig = config;
 		InterpreterConfig interpreterConfig = (InterpreterConfig) config.clone();
 		return super.alterConfig(launch, interpreterConfig, interpreterinstall);
@@ -58,56 +59,58 @@ public class LuaGenericDebuggingEngineConfigurer extends LuaGenericInterpreterCo
 	}
 
 	@Override
-	protected void addCommands(List<String> commandList, ILaunch launch, InterpreterConfig config) throws CoreException {
-		// add debugger command to existing ones
-		super.addCommands(commandList, launch, config);
-		commandList.add(createRunDebuggerCommand(launch, config));
+	protected List<String> addCommands(final ILaunch launch, final InterpreterConfig config) throws CoreException {
+		// Add debugger command to existing ones
+		final List<String> parentList = super.addCommands(launch, config);
+		parentList.add(createRunDebuggerCommand(launch, config));
+		return parentList;
 	}
 
-	protected String createRunDebuggerCommand(ILaunch launch, InterpreterConfig config) {
+	@Override
+	protected Map<String, String> addEnvironmentVariables(final ILaunch launch, final InterpreterConfig config) throws CoreException {
 
-		// get the dbgp connection corresponding to this config.
-		DbgpConnectionConfig dbgpConnectionConfig = DbgpConnectionConfig.load(initialConfig);
-		String host = "127.0.0.1"; //$NON-NLS-1$
-		int port = dbgpConnectionConfig.getPort();
-		String sessionId = dbgpConnectionConfig.getSessionId();
-		IPath workingDirectory = config.getWorkingDirectoryPath();
-		String oS = Platform.getOS();
-		String transportLayer = getTransportLayer();
+		// Get the dbgp connection corresponding to this config.
+		final Map<String, String> envVars = super.addEnvironmentVariables(launch, config);
+		final DbgpConnectionConfig dbgpConnectionConfig = DbgpConnectionConfig.load(initialConfig);
 
-		// create command
-		StringBuilder command = new StringBuilder();
-		command.append("require ('debugger')"); //$NON-NLS-1$
-		command.append("("); //$NON-NLS-1$
 		// HOST
-		command.append("'").append(host).append("'"); //$NON-NLS-1$//$NON-NLS-2$
-		command.append(","); //$NON-NLS-1$
-		// PORT
-		command.append(port);
-		command.append(","); //$NON-NLS-1$
-		// SESSION ID
-		command.append("'").append(sessionId).append("'");//$NON-NLS-1$//$NON-NLS-2$
-		command.append(","); //$NON-NLS-1$
-		// TRANSPORT LAYER
-		if (transportLayer == null)
-			command.append("nil");//$NON-NLS-1$
-		else
-			command.append("'").append(transportLayer).append("'");//$NON-NLS-1$ //$NON-NLS-2$
-		command.append(","); //$NON-NLS-1$
-		// PLATFORM
-		if (oS.equals(Platform.OS_WIN32))
-			command.append("'win'");//$NON-NLS-1$
-		else
-			command.append("'unix'");//$NON-NLS-1$
-		command.append(","); //$NON-NLS-1$
-		// WORKING DIRECTORY
-		if (workingDirectory.isEmpty())
-			command.append("nil");//$NON-NLS-1$
-		else
-			command.append("'").append(workingDirectory.toOSString()).append("'");//$NON-NLS-1$//$NON-NLS-2$
-		command.append(");"); //$NON-NLS-1$
+		final String host = "127.0.0.1"; //$NON-NLS-1$
+		envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_HOST, host);
 
-		return command.toString();
+		// PORT
+		final int port = dbgpConnectionConfig.getPort();
+		envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_PORT, Integer.toString(port));
+
+		// SESSION ID
+		final String sessionId = dbgpConnectionConfig.getSessionId();
+		envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_IDE_KEY, sessionId);
+
+		// TRANSPORT LAYER
+		final String transportLayer = getTransportLayer();
+		if (transportLayer != null && config.getEnvVar(LuaDebugConstants.ENV_VAR_KEY_DBGP_TRANSPORT) == null)
+			envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_TRANSPORT, transportLayer);
+
+		// PLATFORM
+		final String os = Platform.getOS();
+		if (os.equals(Platform.OS_WIN32))
+			envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_PLATFORM, "win");//$NON-NLS-1$
+		else
+			envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_PLATFORM, "unix");//$NON-NLS-1$
+
+		// WORKING DIRECTORY
+		final IPath workingDirectory = config.getWorkingDirectoryPath();
+		if (!workingDirectory.isEmpty())
+			envVars.put(LuaDebugConstants.ENV_VAR_KEY_DBGP_WORKINGDIR, workingDirectory.toPortableString());
+
+		// Indicate client it's being debugged
+		envVars.put(LuaDebugConstants.ENV_VAR_DEBUGGING, "true"); //$NON-NLS-1$
+
+		return envVars;
+	}
+
+	protected String createRunDebuggerCommand(final ILaunch launch, final InterpreterConfig config) {
+		// Create command
+		return "require ('debugger')();"; //$NON-NLS-1$
 	}
 
 	protected String getTransportLayer() {

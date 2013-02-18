@@ -13,8 +13,10 @@ package org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -29,10 +31,12 @@ import org.eclipse.dltk.launching.EnvironmentVariable;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.koneki.ldt.core.IProjectSourceRootFolderVisitor;
 import org.eclipse.koneki.ldt.core.LuaUtils;
 import org.eclipse.koneki.ldt.core.LuaUtils.ProjectFragmentFilter;
 import org.eclipse.koneki.ldt.debug.core.internal.LuaDebugConstants;
+import org.eclipse.koneki.ldt.debug.core.internal.model.interpreter.Info;
 
 public class LuaGenericInterpreterConfigurer {
 
@@ -42,7 +46,7 @@ public class LuaGenericInterpreterConfigurer {
 	public InterpreterConfig alterConfig(final ILaunch launch, final InterpreterConfig config, final IInterpreterInstall interpreterinstall)
 			throws CoreException {
 
-		// TODO HACK ENV_VAR : make environment variable defined at interpreter level less priority
+		// TODO HACK ENV_VAR : make environment variable defined at interpreter level less a priority
 		// ****************************************************************************
 		// get launch conf env var
 		@SuppressWarnings("unchecked")
@@ -59,35 +63,37 @@ public class LuaGenericInterpreterConfigurer {
 		// END HACK
 		// ****************************************************************************
 
-		// Append project path to $LUA_PATH
-		final String envLuaPath = config.getEnvVar(LuaDebugConstants.LUA_PATH);
-		final String interpreterPath = createLuaPath(launch, config);
-		if (envLuaPath != null) {
-			config.addEnvVar(LuaDebugConstants.LUA_PATH, interpreterPath + envLuaPath);
-		} else {
-			config.addEnvVar(LuaDebugConstants.LUA_PATH, interpreterPath);
+		// Append environment variables
+		for (final Entry<String, String> entry : addEnvironmentVariables(launch, config).entrySet())
+			config.addEnvVar(entry.getKey(), entry.getValue());
 
-		}
-
-		// Create commands to execute
-		final List<String> commandList = new ArrayList<String>();
-		addCommands(commandList, launch, config);
-
-		// Flatten commands
-		if (!commandList.isEmpty()) {
+		// Flatten commands and add commands to execute as interpreter argument if possible
+		final List<String> commandList = addCommands(launch, config);
+		if (!commandList.isEmpty() && LuaGenericInterpreterUtil.interpreterHandlesExecuteOption(interpreterinstall)) {
 			final StringBuilder commands = new StringBuilder();
 			for (final String cmd : commandList) {
 				commands.append(cmd);
 			}
-
-			// Add commands to execute as interpreter argument
 			config.addInterpreterArg("-e"); //$NON-NLS-1$
 			config.addInterpreterArg(commands.toString());
 		}
 		return config;
 	}
 
-	protected void addCommands(final List<String> commandList, final ILaunch launch, final InterpreterConfig config) throws CoreException {
+	protected List<String> addCommands(final ILaunch launch, final InterpreterConfig config) throws CoreException {
+		return new ArrayList<String>();
+	}
+
+	protected Map<String, String> addEnvironmentVariables(final ILaunch launch, final InterpreterConfig config) throws CoreException {
+		final HashMap<String, String> envVars = new HashMap<String, String>();
+		final String envLuaPath = config.getEnvVar(LuaDebugConstants.LUA_PATH);
+		final String interpreterPath = createLuaPath(launch, config);
+		if (envLuaPath != null) {
+			envVars.put(LuaDebugConstants.LUA_PATH, interpreterPath + envLuaPath);
+		} else {
+			envVars.put(LuaDebugConstants.LUA_PATH, interpreterPath);
+		}
+		return envVars;
 	}
 
 	protected String createLuaPath(final ILaunch launch, final InterpreterConfig config) throws CoreException {
