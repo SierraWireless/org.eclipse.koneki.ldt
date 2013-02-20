@@ -12,9 +12,7 @@ package org.eclipse.koneki.ldt.remote.debug.ui.internal.launch;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * TODO Comment this class
- */
+// CHECKSTYLE:OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.remote.debug.ui.internal.launch.messages"; //$NON-NLS-1$
 	public static String LuaRemoteLaunchShortcut_notargetdialog_message;
@@ -29,3 +27,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE:ON

@@ -12,9 +12,7 @@ package org.eclipse.koneki.ldt.ui.internal.views;
 
 import org.eclipse.osgi.util.NLS;
 
-/**
- * TODO Comment this class
- */
+// CHECKSTYLE:OFF
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.koneki.ldt.ui.internal.views.messages"; //$NON-NLS-1$
 	public static String LuaDocView_NoDocumentationFound;
@@ -26,3 +24,4 @@ public class Messages extends NLS {
 	private Messages() {
 	}
 }
+// CHECKSTYLE:ON
