@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: com.naef.jnlua.linux64
+Bundle-Version: 1.0.3.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Fragment-Host: com.naef.jnlua;bundle-version="1.0.3"
+Eclipse-PlatformFilter: (&(osgi.os=linux)(osgi.arch=x86_64))
+Bundle-NativeCode: lib/libjnlua52.so ; lib/liblua52.so
+Bundle-ClassPath: lib/,
+  .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

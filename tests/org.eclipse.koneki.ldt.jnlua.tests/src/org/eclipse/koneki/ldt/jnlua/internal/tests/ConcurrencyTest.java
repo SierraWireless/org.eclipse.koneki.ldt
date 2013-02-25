@@ -53,7 +53,7 @@ public class ConcurrencyTest extends TestCase {
 			state.call(0, 0);
 
 			// Retrieve function in Lua
-			state.getField(LuaState.GLOBALSINDEX, "fibo"); //$NON-NLS-1$
+			state.getGlobal("fibo"); //$NON-NLS-1$
 
 			// Pass an argument to the function
 			state.pushNumber(32);
@@ -64,6 +64,7 @@ public class ConcurrencyTest extends TestCase {
 
 			// Clean stack
 			state.pop(1);
+
 		}
 	}
 

@@ -11,9 +11,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.dltk.core,
  org.eclipse.koneki.ldt.debug.core,
- com.naef.jnlua;bundle-version="0.9.1",
  org.apache.commons.codec;bundle-version="1.3.0",
- org.eclipse.dltk.debug
+ org.eclipse.dltk.debug,
+ com.naef.jnlua;bundle-version="[0.9.1,1.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.koneki.ldt.support.lua51.internal;x-internal:=true,

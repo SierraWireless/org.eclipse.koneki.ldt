@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Sierra Wireless and others.
+ * Copyright (c) 2013 Sierra Wireless and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaDebugginEngineCommandLineRenderer;
+import org.eclipse.koneki.ldt.support.lua51.internal.Activator;
 import org.osgi.framework.Bundle;
 
-public class JNLua51DebugginEngineCommandLineRenderer extends JNLua51InterpreterCommandLineRenderer {
+public class JNLua51DebugginEngineCommandLineRenderer extends JNLuaDebugginEngineCommandLineRenderer {
 
 	private static final String COMMONS_CODEC_BUNDLE_VERSION = "1.3.0"; //$NON-NLS-1$
 	private static final String COMMONS_CODEC_BUNDLE_ID = "org.apache.commons.codec"; //$NON-NLS-1$
@@ -59,6 +61,22 @@ public class JNLua51DebugginEngineCommandLineRenderer extends JNLua51Interpreter
 	 */
 	@Override
 	protected String getClassToRun() {
-		return JNLuaDebugLauncher.class.getCanonicalName();
+		return JNLua51DebugLauncher.class.getCanonicalName();
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterCommandLineRenderer#getJNLuaBundleVersion()
+	 */
+	@Override
+	protected String getJNLuaBundleVersion() {
+		return JNLua51InterpreterCommandLineRenderer.JNLUA_BUNDLE_VERSION;
+	}
+
+	/**
+	 * @see org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpreterCommandLineRenderer#getLauncherClassBundle()
+	 */
+	@Override
+	protected Bundle getLauncherClassBundle() {
+		return Activator.getDefault().getBundle();
 	}
 }

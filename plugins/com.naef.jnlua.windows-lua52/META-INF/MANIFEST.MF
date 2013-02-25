@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: com.naef.jnlua.windows
+Bundle-Version: 1.0.3.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Fragment-Host: com.naef.jnlua;bundle-version="1.0.3"
+Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86))
+Bundle-NativeCode: lib/lua52.dll ; lib/jnlua52.dll
+Bundle-ClassPath: lib/,
+  .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

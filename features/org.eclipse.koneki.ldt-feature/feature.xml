@@ -73,57 +73,14 @@
          id="com.naef.jnlua"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.9.1.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.naef.jnlua.linux"
-         os="linux"
-         arch="x86"
+         id="com.naef.jnlua"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.macosx"
-         os="macosx"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows"
-         os="win32"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.linux64"
-         os="linux"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="com.naef.jnlua.windows64"
-         os="win32"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
+         version="1.0.3.qualifier"
          unpack="false"/>
 
    <plugin
@@ -159,6 +116,113 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.koneki.ldt.support.lua52"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux"
+         os="linux"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.9.1.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux"
+         os="linux"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux64"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.9.1.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.linux64"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.macosx"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.9.1.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.macosx"
+         os="macosx"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows"
+         os="win32"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.9.1.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows"
+         os="win32"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows64"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.9.1.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="com.naef.jnlua.windows64"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="1.0.3.qualifier"
+         fragment="true"
          unpack="false"/>
 
 </feature>

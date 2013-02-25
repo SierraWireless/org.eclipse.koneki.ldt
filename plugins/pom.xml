@@ -13,12 +13,18 @@
   <packaging>pom</packaging>
   <modules>
  	<module>com.cforcoding.jmd</module> 
-    <module>com.naef.jnlua</module>
-    <module>com.naef.jnlua.linux</module>
-    <module>com.naef.jnlua.linux64</module>
-    <module>com.naef.jnlua.macosx</module>
-    <module>com.naef.jnlua.windows</module>
-    <module>com.naef.jnlua.windows64</module>
+    <module>com.naef.jnlua-lua51</module>
+    <module>com.naef.jnlua-lua52</module>
+    <module>com.naef.jnlua.linux-lua51</module>
+    <module>com.naef.jnlua.linux-lua52</module>
+    <module>com.naef.jnlua.linux64-lua51</module>
+    <module>com.naef.jnlua.linux64-lua52</module>
+    <module>com.naef.jnlua.macosx-lua51</module>
+    <module>com.naef.jnlua.macosx-lua52</module>
+    <module>com.naef.jnlua.windows-lua51</module>
+    <module>com.naef.jnlua.windows-lua52</module>
+    <module>com.naef.jnlua.windows64-lua51</module>
+    <module>com.naef.jnlua.windows64-lua52</module>
     <module>org.eclipse.koneki.ldt</module>
     <module>org.eclipse.koneki.ldt.branding</module>
     <module>org.eclipse.koneki.ldt.doc.user</module>
@@ -29,6 +35,7 @@
     <module>org.eclipse.koneki.ldt.debug.core</module>
     <module>org.eclipse.koneki.ldt.debug.ui</module>
     <module>org.eclipse.koneki.ldt.support.lua51</module>
+    <module>org.eclipse.koneki.ldt.support.lua52</module>
     <module>org.eclipse.koneki.ldt.remote.core</module>
     <module>org.eclipse.koneki.ldt.remote.ui</module>
     <module>org.eclipse.koneki.ldt.remote.debug.core</module>
