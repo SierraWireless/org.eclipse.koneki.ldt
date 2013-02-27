@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 
 import com.naef.jnlua.LuaState;
-import com.naef.jnlua.osgi.Activator;
+import com.naef.jnlua.internal.osgi.Activator;
 
 
 

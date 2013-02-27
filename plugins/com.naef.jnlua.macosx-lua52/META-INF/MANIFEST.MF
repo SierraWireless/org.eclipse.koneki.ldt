@@ -6,7 +6,6 @@ Bundle-Version: 1.0.3.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: com.naef.jnlua;bundle-version="1.0.3"
 Eclipse-PlatformFilter: (&(osgi.os=macosx)(osgi.arch=x86_64))
-Bundle-NativeCode: lib/libjnlua52.jnilib; lib/liblua52.jnilib
-Bundle-ClassPath: .,
- lib/
+Bundle-NativeCode: lib/libjnlua52.dylib; lib/liblua52.dylib
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

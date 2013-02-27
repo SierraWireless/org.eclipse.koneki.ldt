@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: com.naef.jnlua
 Bundle-Version: 1.0.3.qualifier
-Bundle-Activator: com.naef.jnlua.internal.Activator
+Bundle-Activator: com.naef.jnlua.internal.osgi.Activator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -12,6 +12,6 @@ Eclipse-BuddyPolicy: dependent
 Bundle-ActivationPolicy: lazy
 Export-Package: com.naef.jnlua,
  com.naef.jnlua.console,
- com.naef.jnlua.internal,
+ com.naef.jnlua.internal.osgi,
  com.naef.jnlua.script,
  com.naef.jnlua.util

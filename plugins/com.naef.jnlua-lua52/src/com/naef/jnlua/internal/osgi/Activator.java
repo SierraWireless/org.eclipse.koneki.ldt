@@ -1,4 +1,4 @@
-package com.naef.jnlua.internal;
+package com.naef.jnlua.internal.osgi;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
