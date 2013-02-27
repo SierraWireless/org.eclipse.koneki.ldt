@@ -30,5 +30,5 @@ public class JNLua52DebugginEngineCommandLineRenderer extends JNLuaDebugginEngin
 	protected Bundle getLauncherClassBundle() {
 		return Activator.getDefault().getBundle();
 	}
-	
+
 }

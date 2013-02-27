@@ -20,7 +20,6 @@ public class JNLua52DebuggingEngineRunner extends JNLuaDebuggingEngineRunner {
 		super(install);
 	}
 
-
 	@Override
 	protected JNLuaDebugginEngineCommandLineRenderer createRenderCommandLine() {
 		return new JNLua52DebugginEngineCommandLineRenderer();

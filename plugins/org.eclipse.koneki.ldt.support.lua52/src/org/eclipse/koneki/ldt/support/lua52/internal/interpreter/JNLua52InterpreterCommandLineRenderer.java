@@ -14,10 +14,10 @@ import org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua.JNLuaInterpr
 import org.eclipse.koneki.ldt.support.lua52.internal.Activator;
 import org.osgi.framework.Bundle;
 
-public class JNLua52InterpreterCommandLineRenderer extends JNLuaInterpreterCommandLineRenderer{
+public class JNLua52InterpreterCommandLineRenderer extends JNLuaInterpreterCommandLineRenderer {
 
 	public static final String JNLUA_BUNDLE_VERSION = "1.0.3"; //$NON-NLS-1$
-	
+
 	@Override
 	protected String getClassToRun() {
 		return JNLua52Launcher.class.getCanonicalName();
@@ -27,7 +27,7 @@ public class JNLua52InterpreterCommandLineRenderer extends JNLuaInterpreterComma
 	protected String getJNLuaBundleVersion() {
 		return JNLUA_BUNDLE_VERSION;
 	}
-	
+
 	@Override
 	protected Bundle getLauncherClassBundle() {
 		return Activator.getDefault().getBundle();

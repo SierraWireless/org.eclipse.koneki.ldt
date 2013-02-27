@@ -13,7 +13,6 @@ package org.eclipse.koneki.ldt.support.lua52.internal.interpreter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.naef.jnlua.LuaState;
 
 public class JNLua52Launcher {
@@ -23,9 +22,9 @@ public class JNLua52Launcher {
 	}
 
 	public void run(String[] args) {
-		
+
 		loadLuaLibrary();
-		
+
 		// create Lua VM
 		final LuaState l = new LuaState();
 
@@ -131,7 +130,7 @@ public class JNLua52Launcher {
 
 	protected void loadLuaLibrary() {
 		System.loadLibrary("lua52"); //$NON-NLS-1$
-		
+
 	}
 
 	protected void loadlibraries(LuaState l) {
