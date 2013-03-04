@@ -22,7 +22,7 @@
 		<download-publish-rootpath>/home/data/httpd/download.eclipse.org/koneki/</download-publish-rootpath>
 		<download-publish-relativepath>updates-nightly/ldt</download-publish-relativepath>
 		<download-publish-path>${download-publish-rootpath}${download-publish-relativepath}</download-publish-path>
-		<eclipse-site>http://download.eclipse.org/releases/juno</eclipse-site>
+		<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
 	</properties>
 	
 	<!-- Precise git as scm for the buildnumber-maven-plugin plugin for the documentor build-->
