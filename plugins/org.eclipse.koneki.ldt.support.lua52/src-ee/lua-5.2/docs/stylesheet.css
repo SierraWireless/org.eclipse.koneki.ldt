@@ -153,8 +153,9 @@ table.index td { text-align: left; vertical-align: top; }
     width: 18em;
     vertical-align: top;
     background-color: #f0f0f0;
-    overflow: visible;
+    overflow: scroll;
     position: fixed;
+    height:100%;
 }
 
 #navigation h2 {

@@ -1,8 +1,14 @@
 -------------------------------------------------------------------------------
 -- Lua global variables.
--- The basic library provides some core functions to Lua.
--- All the preloaded module of Lua are declared here.
+-- The basic library provides core functions to Lua. If you do not include this
+-- library in your application, you should check carefully whether you need to
+-- provide implementations for some of its facilities. 
 -- @module global
+
+------------------------------------------------------------------------------
+-- This library provides generic functions for bitwise manipulation.
+-- This is a global variable which hold the preloaded @{bit32} module.
+-- @field[parent = #global] bit32#bit32 bit32 preloaded module
 
 ------------------------------------------------------------------------------
 -- This library provides generic functions for coroutine manipulation.
@@ -50,28 +56,40 @@
 -- message; when absent, it defaults to *"assertion failed!"*.
 -- @function [parent=#global] assert
 -- @param v if this argument is false an error is issued.
--- @param #string message an error message. defaults value is *"assertion failed"*.
+-- @param #string message an error message (optional, *"assertion failed"* by default)
 -- @return All its arguments.
 
 -------------------------------------------------------------------------------
--- This function is a generic interface to the garbage collector.
--- It performs different functions according to its first argument, `opt`:
---
---   * **"stop":** stops the garbage collector.
---   * **"restart":** restarts the garbage collector.
---   * **"collect":** performs a full garbage-collection cycle.
---   * **"count":** returns the total memory in use by Lua (in Kbytes).
---   * **"step":** performs a garbage-collection step. The step "size" is controlled
---       by `arg` (larger values mean more steps) in a non-specified way. If you
---       want to control the step size you must experimentally tune the value of
---      `arg`. Returns true if the step finished a collection cycle.
---   * **"setpause":** sets `arg` as the new value for the *pause* of the collector.
---       Returns the previous value for *pause*.
---   * **"setstepmul":** sets `arg` as the new value for the *step multiplier*
---       of the collector. Returns the previous value for *step*.
+-- This function is a generic interface to the garbage collector. It performs
+-- different functions according to its first argument, `opt`:
+-- 
+-- * _"collect"_: performs a full garbage-collection cycle. This is the default option.
+-- * _"stop"_: stops automatic execution of the garbage collector. The collector will
+-- run only when explicitly invoked, until a call to restart it.
+-- * _"restart"_: restarts automatic execution of the garbage collector.
+-- * _"count"_: returns the total memory in use by Lua (in Kbytes) and a second 
+-- value with the total memory in bytes modulo `1024`. The first value has a fractional
+-- part, so the following equality is always true:
+-- (The second result is useful when Lua is compiled with a non floating-point type for numbers.)
+-- 
+--         k, b = collectgarbage("count")
+--         assert(k*1024 == math.floor(k)*1024 + b)
+-- 
+-- * _"step"_: performs a garbage-collection step. The step "size" is controlled by
+-- arg (larger values mean more steps) in a non-specified way. If you want to control
+-- the step size you must experimentally tune the value of arg. Returns **true** if
+-- the step finished a collection cycle.
+-- * _"setpause"_: sets `arg` as the new value for the pause of the collector.
+-- Returns the previous value for pause.
+-- * _"setstepmul"_: sets `arg` as the new value for the step multiplier of the collector.
+-- Returns the previous value for step.
+-- * _"isrunning"_: returns a boolean that tells whether the collector is running
+-- (i.e., not stopped).
+-- * _"generational"_: changes the collector to generational mode. This is an experimental feature.
+-- * _"incremental"_: changes the collector to incremental mode. This is the default mode.
 -- @function [parent=#global] collectgarbage
--- @param #string opt the command to send.
--- @param arg the argument of the command. (optional)
+-- @param #string opt the command to send (optional, "collect" by default)
+-- @param arg the argument of the command (optional).
 
 -------------------------------------------------------------------------------
 -- Opens the named file and executes its contents as a Lua chunk. When
@@ -81,6 +99,7 @@
 -- the error to its caller (that is, `dofile` does not run in protected mode).
 -- @function [parent=#global] dofile
 -- @param #string filename the path to the file. (optional)
+-- @return values returned by the chunk
 
 -------------------------------------------------------------------------------
 -- Terminates the last protected function called and returns `message`
@@ -96,79 +115,86 @@
 -- Passing a level 0 avoids the addition of error position information to the message.
 -- @function [parent=#global] error
 -- @param #string message an error message.
--- @param #number level specifies how to get the error position, default value is `1`.
+-- @param #number level specifies how to get the error position (optional, `1` by default).
 
 -------------------------------------------------------------------------------
 -- A global variable (not a function) that holds the global environment
 -- (that is, `_G._G = _G`). Lua itself does not use this variable; changing
--- its value does not affect any environment, nor vice-versa. (Use `setfenv`
--- to change environments.)
+-- its value does not affect any environment, nor vice-versa.
 -- @field [parent = #global] #table _G
 
 -------------------------------------------------------------------------------
--- Returns the current environment in use by the function.
--- @function [parent=#global] getfenv
--- @param f can be a Lua function or a number that specifies the function at that
--- stack level: Level 1 is the function calling `getfenv`. If the given
--- function is not a Lua function, or if `f` is `0`, `getfenv` returns the
--- global environment. The default for `f` is `1`.
-
--------------------------------------------------------------------------------
--- If `object` does not have a metatable, returns nil. Otherwise, if the
+-- If `object` does not have a metatable, returns **nil**. Otherwise, if the
 -- object's metatable has a `"__metatable"` field, returns the associated
 -- value. Otherwise, returns the metatable of the given object.
 -- @function [parent=#global] getmetatable
 -- @param object
 -- @return #table the metatable of object.
+-- @return #nil if no metatable was found
 
 -------------------------------------------------------------------------------
--- Use to iterate over a table by index.
--- Returns three values: an iterator function, the table `t`, and 0,
--- so that the construction :
+-- If t has a metamethod __ipairs, calls it with t as argument and returns the
+-- first three results from the call.
+-- Otherwise, returns three values: an iterator function, the table `t`, and `0`,
+-- so that the construction
 -- 
---     for i,v in ipairs(t) do *body* end
--- will iterate over the pairs (`1,t[1]`), (`2,t[2]`), ..., up to the
--- first integer key absent from the table.
+--      for i,v in ipairs(t) do body end
+-- 
+-- will iterate over the pairs `(1,t[1]), (2,t[2]), ...,` up to the first integer
+-- key absent from the table. 
 -- @function [parent=#global] ipairs
 -- @param #table t a table by index.
+-- @return iterator function, table `t`, the value `0`
 
 -------------------------------------------------------------------------------
--- Loads a chunk using function `func` to get its pieces. Each call to
--- `func` must return a string that concatenates with previous results. A
--- return of an empty string, **nil,** or no value signals the end of the chunk.
---
--- If there are no errors, returns the compiled chunk as a function; otherwise,
--- returns nil plus the error message. The environment of the returned function
--- is the global environment.
---
--- `chunkname` is used as the chunk name for error messages and debug
--- information. When absent, it defaults to "`=(load)`".
+-- Loads a chunk.
+-- If `ld` is a string, the chunk is this string. If `ld` is a function, load calls
+-- it repeatedly to get the chunk pieces. Each call to `ld` must return a string
+-- that concatenates with previous results. A return of an empty string, **nil**, or
+-- no value signals the end of the chunk.
+-- 
+-- If there are no syntactic errors, returns the compiled chunk as a function;
+-- otherwise, returns **nil** plus the error message.
+-- 
+-- If the resulting function has upvalues, the first upvalue is set to the value
+-- of `env`, if that parameter is given, or to the value of the global environment.
+-- (When you load a main chunk, the resulting function will always have exactly one
+-- upvalue, the `_ENV` variable. When you load a binary chunk created from
+-- a function (see `string.dump`), the resulting function can have arbitrary upvalues.)
+-- 
+-- `source` is used as the source of the chunk for error messages and debug information.
+-- When absent, it defaults to `ld`, if `ld` is a string, or to `"=(load)"` otherwise.
+-- 
+-- The string mode controls whether the chunk can be text or binary
+-- (that is, a precompiled chunk). It may be the string `"b"` (only binary chunks),
+-- `"t"` (only text chunks), or `"bt"` (both binary and text). The default is `"bt"`. 
 -- @function [parent=#global] load
--- @param func function which loads the chunk.
--- @param #string chunkname chunk name used for error messages and debug information, default value is "`=(load)`".
+-- @param ld string or function representing the chunk.
+-- @param #string source used as source code (optional, by default `ld` if `ld` is a
+-- string, or to `"=(load)"`otherwise.
+-- @param #string mode `"b"` for only binary chunk, `"t"` for only text chunks,
+-- `bt` for both binary and text (optional, "bt" by default).
+-- @param env environment where to set the first upvalue if any.
+-- @return compiled chunk as a function
+-- @return #nil, #string error message
 
 -------------------------------------------------------------------------------
 -- Similar to `load`, but gets the chunk from file `filename` or from the
 -- standard input, if no file name is given.
 -- @function [parent=#global] loadfile
 -- @param #string filename the path to the file. (optional)
-
--------------------------------------------------------------------------------
--- Similar to `load`, but gets the chunk from the given string.
--- To load and run a given string, use the idiom  
--- 
---     assert(loadstring(s))()
--- When absent, `chunkname` defaults to the given string.
--- @function [parent=#global] loadstring
--- @param #string string lua code to load.
--- @param #string chunkname chunk name used for error messages and debug information, default value is the given string.
+-- @param #string mode `"b"` for only binary chunk, `"t"` for only text chunks,
+-- `bt` for both binary and text (optional, "bt" by default).
+-- @param env environment where to set the first upvalue if any.
+-- @return compiled chunk as a function
+-- @return #nil, #string error message
 
 -------------------------------------------------------------------------------
 -- Allows a program to traverse all fields of a table. Its first argument is
 -- a table and its second argument is an index in this table. `next` returns
 -- the next index of the table and its associated value.
 --
--- When called with nil
+-- When called with **nil**
 -- as its second argument, `next` returns an initial index and its associated
 -- value. When called with the last index, or with nil in an empty table, `next`
 -- returns nil.
@@ -176,28 +202,31 @@
 -- If the second argument is absent, then it is interpreted as
 -- nil. In particular, you can use `next(t)` to check whether a table is empty.
 -- The order in which the indices are enumerated is not specified, *even for
--- numeric indices*. (To traverse a table in numeric order, use a numerical
--- for or the `ipairs` function.)
+-- numeric indices*. (To traverse a table in numeric order, use a numerical **for**.)
 --
--- The behavior of `next` is *undefined* if, during the traversal, you assign
+-- The behavior of `next` is undefined if, during the traversal, you assign
 -- any value to a non-existent field in the table. You may however modify
 -- existing fields. In particular, you may clear existing fields.
 -- @function [parent=#global] next
 -- @param #table table table to traverse.
--- @param index initial index.
+-- @param index initial index (optional).
+-- @return index, value
+-- @return #nil if called on the last index or on an empty table
 
 -------------------------------------------------------------------------------
--- Use to iterate over a table.
--- Returns three values: the `next` function, the table `t`, and nil,
--- so that the construction :
+-- If t has a metamethod `__pairs`, calls it with t as argument and returns the
+-- first three results from the call.
 -- 
---     for k,v in pairs(t) do *body* end
--- will iterate over all key-value pairs of table `t`.
+-- Otherwise, returns three values: the `next` function, the table t, and nil,
+-- so that the construction
 -- 
--- See function `next` for the caveats of modifying the table during its
--- traversal.
+--      for k,v in pairs(t) do body end
+--  
+-- will iterate over all key–value pairs of table `t`.
+-- See function next for the caveats of modifying the table during its traversal. 
 -- @function [parent=#global] pairs
 -- @param #table t table to traverse.
+-- @return iterator function, table `t`, the value `0`
 
 -------------------------------------------------------------------------------
 -- Calls function `f` with the given arguments in *protected mode*. This
@@ -205,18 +234,18 @@
 -- the error and returns a status code. Its first result is the status code (a
 -- boolean), which is true if the call succeeds without errors. In such case,
 -- `pcall` also returns all results from the call, after this first result. In
--- case of any error, `pcall` returns false plus the error message.
+-- case of any error, `pcall` returns **false** plus the error message.
 -- @function [parent=#global] pcall
 -- @param f function to be call in *protected mode*.
 -- @param ... function arguments.
 -- @return #boolean true plus the result of `f` function if its call succeeds without errors.
--- @return #boolean,#string  false plus the error message in case of any error.
+-- @return #boolean,#string false plus the error message in case of any error.
 
 -------------------------------------------------------------------------------
--- Receives any number of arguments, and prints their values to `stdout`,
--- using the `tostring` function to convert them to strings. `print` is not
--- intended for formatted output, but only as a quick way to show a value,
--- typically for debugging. For formatted output, use `string.format`.
+-- Receives any number of arguments and prints their values to `stdout`, using the
+-- `tostring` function to convert each argument to a string. print is not intended
+-- for formatted output, but only as a quick way to show a value, for instance for
+-- debugging. For complete control over the output, use `string.format` and `io.write`. 
 -- @function [parent=#global] print
 -- @param ... values to print to `stdout`.
 
@@ -224,18 +253,25 @@
 -- Checks whether `v1` is equal to `v2`, without invoking any
 -- metamethod. Returns a boolean.
 -- @function [parent=#global] rawequal
--- @param v1
--- @param v2
+-- @param v1 first operand
+-- @param v2 second operand
 -- @return #boolean true if `v1` is equal to `v2`. 
 
 -------------------------------------------------------------------------------
 -- Gets the real value of `table[index]`, without invoking any
 -- metamethod. `table` must be a table; `index` may be any value.
 -- @function [parent=#global] rawget
--- @param #table table
--- @param index may be any value.
+-- @param #table table table to looking for
+-- @param index index in the table
 -- @return The real value of `table[index]`, without invoking any
 -- metamethod.
+
+-------------------------------------------------------------------------------
+-- Returns the length of the object `v`, which must be a table or a string, without
+-- invoking any metamethod. Returns an integer number. 
+-- @function [parent=#global] rawlen
+-- @param v table or a string
+-- @return #number length of `v`
 
 -------------------------------------------------------------------------------
 -- Sets the real value of `table[index]` to `value`, without invoking any
@@ -246,6 +282,7 @@
 -- @param #table table
 -- @param index any value different from nil.
 -- @param value any Lua value.
+-- @return #table the given table
 
 -------------------------------------------------------------------------------
 -- If `index` is a number, returns all arguments after argument number
@@ -254,17 +291,8 @@
 -- @function [parent=#global] select
 -- @param index a number or the string `"#"`
 -- @param ...
-
--------------------------------------------------------------------------------
--- Sets the environment to be used by the given function. `f` can be a Lua
--- function or a number that specifies the function at that stack level: Level
--- 1 is the function calling `setfenv`. `setfenv` returns the given function.  
--- As a special case, when `f` is 0 `setfenv` changes the environment of the
--- running thread. In this case, `setfenv` returns no values.
--- @function [parent=#global] setfenv
--- @param f a Lua function or a number that specifies the stack level.
--- @param #table table used as environment for `f`.
--- @return The given function.
+-- @return all arguments after argument number `index`
+-- @return total number of extra arguments
 
 -------------------------------------------------------------------------------
 -- Sets the metatable for the given table. (You cannot change the metatable
@@ -275,132 +303,84 @@
 -- @function [parent=#global] setmetatable
 -- @param #table table 
 -- @param #table metatable
--- @return The first argument `table`. 
+-- @return #table The first argument `table`.
 
 -------------------------------------------------------------------------------
--- Tries to convert its argument to a number. If the argument is already
--- a number or a string convertible to a number, then `tonumber` returns this
--- number; otherwise, it returns **nil.**
---
--- An optional argument specifies the base to interpret the numeral. The base
--- may be any integer between 2 and 36, inclusive. In bases above 10, the
--- letter '`A`' (in either upper or lower case) represents 10, '`B`' represents
--- 11, and so forth, with '`Z`' representing 35. In base 10 (the default),
--- the number can have a decimal part, as well as an optional exponent part.
--- In other bases, only unsigned integers are accepted.
+-- When called with no base, tonumber tries to convert its argument to a number.
+-- If the argument is already a number or a string convertible to a number,
+-- then tonumber returns this number; otherwise, it returns **nil**.
+--  
+-- When called with base, then e should be a string to be interpreted as an
+-- integer numeral in that base. The base may be any integer between `2` and `36`,
+-- inclusive. In bases above `10`, the letter 'A' (in either upper or lower case)
+-- represents `10`, 'B' represents `11`, and so forth, with 'Z' representing `35`.
+-- If the string `e` is not a valid numeral in the given base,
+-- the function returns **nil**. 
 -- @function [parent=#global] tonumber
 -- @param e a number or string to convert to a number.
--- @param #number base the base to interpret the numeral, any integer between 2 and 36.(default is 10).
--- @return #number a number if conversion succeeds else **nil**.
+-- @param #number base the base to interpret the numeral, any integer between `2` and `36` (optional, `10` by default).
+-- @return #number converted number
+-- @return #nil if convertion fail.
 
 -------------------------------------------------------------------------------
 -- Receives an argument of any type and converts it to a string in a
--- reasonable format. For complete control of how numbers are converted, use
--- `string.format`.
+-- reasonable format. (For complete control of how numbers are converted, use
+-- `string.format`.)
 --
--- If the metatable of `e` has a `"__tostring"` field, then `tostring` calls
--- the corresponding value with `e` as argument, and uses the result of the
+-- If the metatable of `v` has a `"__tostring"` field, then `tostring` calls
+-- the corresponding value with `v` as argument, and uses the result of the
 -- call as its result.
 -- @function [parent=#global] tostring
--- @param e an argument of any type.
+-- @param v an argument of any type.
 -- @return #string a string in a reasonable format.
 
 -------------------------------------------------------------------------------
 -- Returns the type of its only argument, coded as a string. The possible
 -- results of this function are "
--- `nil`" (a string, not the value nil), "`number`", "`string`", "`boolean`",
+-- `nil`" (a string, not the value **nil**), "`number`", "`string`", "`boolean`",
 -- "`table`", "`function`", "`thread`", and "`userdata`".
 -- @function [parent=#global] type
 -- @param v any value.
 -- @return #string the type of `v`.
 
 -------------------------------------------------------------------------------
--- Returns the elements from the given table. This function is equivalent to
--- 
---     return list[i], list[i+1], ..., list[j]
--- except that the above code can be written only for a fixed number of
--- elements. By default, `i` is 1 and `j` is the length of the list, as
--- defined by the length operator.
--- @function [parent=#global] unpack
--- @param #table list a table by index
--- @param i index of first value.
--- @param j index of last value.
-
--------------------------------------------------------------------------------
 -- A global variable (not a function) that holds a string containing the
 -- current interpreter version. The current contents of this variable is
--- "`Lua 5.1`".
+-- "`Lua 5.2`".
 -- @field [parent = #global] #string _VERSION
 
 -------------------------------------------------------------------------------
--- This function is similar to `pcall`, except that you can set a new
--- error handler.
---
--- `xpcall` calls function `f` in protected mode, using `err` as the error
--- handler. Any error inside `f` is not propagated; instead, `xpcall` catches
--- the error, calls the `err` function with the original error object, and
--- returns a status code. Its first result is the status code (a boolean),
--- which is true if the call succeeds without errors. In this case, `xpcall`
--- also returns all results from the call, after this first result. In case
--- of any error, `xpcall` returns false plus the result from `err`.
--- @function [parent=#global] xpcall
+-- This function is similar to pcall, except that it sets a new message handler msgh. 
 -- @param f function to be call in *protected mode*.
--- @param err function used as error handler.
+-- @param msgh error message handler
+-- @param ... function arguments.
 -- @return #boolean true plus the result of `f` function if its call succeeds without errors.
--- @return #boolean,#string  false plus the result of `err` function. 
+-- @return #boolean false if the call raise an error
 
 -------------------------------------------------------------------------------
--- Creates a module. If there is a table in `package.loaded[name]`,
--- this table is the module. Otherwise, if there is a global table `t`
--- with the given name, this table is the module. 
+-- Loads the given module. The function starts by looking into the `package.loaded` table to 
+-- determine whether modname is already loaded. If it is, then require returns the value stored 
+-- at `package.loaded[modname]`. Otherwise, it tries to find a loader for the module.
 -- 
--- Otherwise creates a new table `t` and sets it as the value of the global 
--- `name` and the value of `package.loaded[name]`. 
---  This function also initializes `t._NAME` with the
--- given name, `t._M` with the module (`t` itself), and `t._PACKAGE` with the
--- package name (the full module name minus last component; see below). Finally,
--- `module` sets `t` as the new environment of the current function and the
--- new value of `package.loaded[name]`, so that `require` returns `t`.
+-- To find a loader, require is guided by the `package.searchers` sequence. By changing this sequence,
+-- we can change how require looks for a module. The following explanation is based on the default
+-- configuration for `package.searchers`.
+-- 
+-- First require queries `package.preload[modname]`. If it has a value, this value (which should be a function)
+-- is the loader. Otherwise require searches for a Lua loader using the path stored in `package.path`.
+-- If that also fails, it searches for a C loader using the path stored in `package.cpath`. If that also
+-- fails, it tries an all-in-one loader (see `package.searchers`).
+-- 
+-- Once a loader is found, require calls the loader with two arguments: modname and an extra value dependent
+-- on how it got the loader. (If the loader came from a file, this extra value is the file name.) If the loader
+-- returns any non-nil value, require assigns the returned value to package.loaded[modname]. If the loader
+-- does not return a non-nil value and has not assigned any value to package.loaded[modname], then require
+-- assigns `true` to this entry. In any case, require returns the final value of package.loaded[modname].
 --
--- If `name` is a compound name (that is, one with components separated by
--- dots), `module` creates (or reuses, if they already exist) tables for each
--- component. For instance, if `name` is `a.b.c`, then `module` stores the
--- module table in field `c` of field `b` of global `a`.
---
--- This function can receive optional *options* after the module name, where
--- each option is a function to be applied over the module.
--- @function [parent=#global] module
--- @param name the module name.
-
--------------------------------------------------------------------------------
--- Loads the given module. The function starts by looking into the
--- `package.loaded` table to determine whether `modname` is already
--- loaded. If it is, then `require` returns the value stored at
--- `package.loaded[modname]`. Otherwise, it tries to find a *loader* for
--- the module.
---
--- To find a loader, `require` is guided by the `package.loaders` array. By
--- changing this array, we can change how `require` looks for a module. The
--- following explanation is based on the default configuration for
--- `package.loaders`.
---
--- First `require` queries `package.preload[modname]`. If it has a value,
--- this value (which should be a function) is the loader. Otherwise `require`
--- searches for a Lua loader using the path stored in `package.path`. If
--- that also fails, it searches for a C loader using the path stored in
--- `package.cpath`. If that also fails, it tries an *all-in-one* loader (see
--- `package.loaders`).
---
--- Once a loader is found, `require` calls the loader with a single argument,
--- `modname`. If the loader returns any value, `require` assigns the returned
--- value to `package.loaded[modname]`. If the loader returns no value and
--- has not assigned any value to `package.loaded[modname]`, then `require`
--- assigns true to this entry. In any case, `require` returns the final value
--- of `package.loaded[modname]`.
---
--- If there is any error loading or running the module, or if it cannot find
--- any loader for the module, then `require` signals an error.
+-- If there is any error loading or running the module, or if it cannot find any loader for the module,
+-- then require raises an error. 
 -- @function [parent=#global] require
 -- @param #string modname name of module to load.
+-- @return loaded module
 
 return nil

@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li>coroutine</li>
 					<li><a href="debug.html">debug</a></li>
 					<li><a href="global.html">global</a></li>
@@ -36,14 +37,14 @@
    
 <p>The operations related to coroutines comprise a sub-library of the basic library 
 and come inside the table coroutine.
-See http://www.lua.org/manual/5.1/manual.html#2.11 for a general description of coroutines.</p>
+See <a href="http://www.lua.org/manual/5.2/manual.html#2.6">http://www.lua.org/manual/5.2/manual.html#2.6</a> for a general description of coroutines.</p>
 
 	<h2><a id="#(coroutine)" >Type <code>coroutine</code></a></h2>
 		<table class="function_list">
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(coroutine).create">coroutine.create(f)</a></td>
 		<td class="summary">
-<p>Creates a new coroutine, with body <code>f</code>.</p>
+<p>Creates a new coroutine, with body f.</p>
 </td>
 		</tr>
 		<tr>
@@ -55,18 +56,13 @@ See http://www.lua.org/manual/5.1/manual.html#2.11 for a general description of 
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(coroutine).running">coroutine.running()</a></td>
 		<td class="summary">
-<p>Returns the running coroutine, or nil when called by the main thread.</p>
+<p>Returns the running coroutine plus a boolean, true when the running coroutine is the main one.</p>
 </td>
 		</tr>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(coroutine).status">coroutine.status(co)</a></td>
 		<td class="summary">
-<p>Returns the status of coroutine <code>co</code>, as a string: <code>"running"</code>, if
-the coroutine is running (that is, it called <code>status</code>); <code>"suspended"</code>, if
-the coroutine is suspended in a call to <code>yield</code>, or if it has not started
-running yet; <code>"normal"</code> if the coroutine is active but not running (that
-is, it has resumed another coroutine); and <code>"dead"</code> if the coroutine has
-finished its body function, or if it has stopped with an error.</p>
+<p>Returns the status of coroutine <code>co</code>.</p>
 </td>
 		</tr>
 		<tr>
@@ -93,11 +89,11 @@ finished its body function, or if it has stopped with an error.</p>
 </dt>
 <dd>
 	
-<p>Creates a new coroutine, with body <code>f</code>.</p>
+<p>Creates a new coroutine, with body f.</p>
 
 	
-<p><code>f</code> must be a Lua
-function. Returns this new coroutine, an object with type <code>"thread"</code>.</p>
+<p>f must be a Lua function. Returns this new coroutine,
+an object with type "thread". </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -136,7 +132,7 @@ as the results from the yield.</p>
 <p>If the coroutine runs without any errors, <code>resume</code> returns true plus any
 values passed to <code>yield</code> (if the coroutine yields) or any values returned
 by the body function (if the coroutine terminates). If there is any error,
-<code>resume</code> returns false plus the error message.</p>
+<code>resume</code> returns <code>false</code> plus the error message.</p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -180,7 +176,7 @@ false plus an error message.</p>
 </dt>
 <dd>
 	
-<p>Returns the running coroutine, or nil when called by the main thread.</p>
+<p>Returns the running coroutine plus a boolean, true when the running coroutine is the main one.</p>
 
 		<h3>Return value</h3>
 				
@@ -198,7 +194,10 @@ the running coroutine, or nil when called by the main thread.</p>
 </dt>
 <dd>
 	
-<p>Returns the status of coroutine <code>co</code>, as a string: <code>"running"</code>, if
+<p>Returns the status of coroutine <code>co</code>.</p>
+
+	
+<p>as a string. <code>"running"</code>, if
 the coroutine is running (that is, it called <code>status</code>); <code>"suspended"</code>, if
 the coroutine is suspended in a call to <code>yield</code>, or if it has not started
 running yet; <code>"normal"</code> if the coroutine is active but not running (that

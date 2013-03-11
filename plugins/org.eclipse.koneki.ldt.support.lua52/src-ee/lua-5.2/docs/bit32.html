@@ -1,0 +1,534 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" href="stylesheet.css" type="text/css"/>
+	</head>
+<body>
+<div id="container">
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div>
+<div id="main">
+	<div id="navigation">
+		<h2>Modules</h2>
+			<ul><li>
+				<a href="index.html">index</a>
+			</li></ul>
+		<ul>
+					<li>bit32</li>
+					<li><a href="coroutine.html">coroutine</a></li>
+					<li><a href="debug.html">debug</a></li>
+					<li><a href="global.html">global</a></li>
+					<li><a href="io.html">io</a></li>
+					<li><a href="math.html">math</a></li>
+					<li><a href="os.html">os</a></li>
+					<li><a href="package.html">package</a></li>
+					<li><a href="string.html">string</a></li>
+					<li><a href="table.html">table</a></li>
+		</ul>
+	</div>
+	<div id="content">
+   <h1>Module <code>bit32</code></h1>
+   
+<p>Bitwise Operations.</p>
+
+   
+<p>This library provides bitwise operations. It provides all its functions inside the table <code>bit32</code>.
+Unless otherwise stated, all functions accept numeric arguments in the range <code>(-2^51,+2^51);</code>
+each argument is normalized to the remainder of its division by <code>2^32</code> and truncated to an integer
+(in some unspecified way), so that its final value falls in the range <code>[0,2^32 - 1]</code>.
+Similarly, all results are in the range <code>[0,2^32 - 1]</code>. Note that <code>bit32.bnot(0)</code> is <code>0xFFFFFFFF</code>,
+which is different from <code>-1</code>.</p>
+
+	<h2><a id="#(bit32)" >Type <code>bit32</code></a></h2>
+		<table class="function_list">
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).arshift">bit32.arshift(x, disp)</a></td>
+		<td class="summary">
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the right.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).band">bit32.band()</a></td>
+		<td class="summary">
+<p>Returns the bitwise <code>and</code> of its operands.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).bnot">bit32.bnot(x)</a></td>
+		<td class="summary">
+<p>Returns the bitwise negation of <code>x</code>.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).bor">bit32.bor()</a></td>
+		<td class="summary">
+<p>Returns the bitwise <code>or</code> of its operands.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).btest">bit32.btest()</a></td>
+		<td class="summary">
+<p>Returns a boolean signaling whether the bitwise <code>and</code> of its operands is different from zero.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).bxor">bit32.bxor()</a></td>
+		<td class="summary">
+<p>Returns the bitwise exclusive <code>or</code> of its operands.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).extract">bit32.extract(n, width)</a></td>
+		<td class="summary">
+<p>Returns the unsigned number formed by the bits <code>field</code> to <code>field + width - 1</code> from <code>n</code>.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).lrotate">bit32.lrotate(x, disp)</a></td>
+		<td class="summary">
+<p>Returns the number <code>x</code> rotated <code>disp</code> bits to the left.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).lshift">bit32.lshift(x, disp)</a></td>
+		<td class="summary">
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the left.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).replace">bit32.replace(n, v, width)</a></td>
+		<td class="summary">
+<p>Returns a copy of <code>n</code> with the bits <code>field</code> to <code>field + width - 1</code> replaced by the value <code>v</code>.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).rrotate">bit32.rrotate(x, disp)</a></td>
+		<td class="summary">
+<p>Returns the number <code>x</code> rotated <code>disp</code> bits to the right.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(bit32).rshift">bit32.rshift(x, disp)</a></td>
+		<td class="summary">
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the right.</p>
+</td>
+		</tr>
+	</table>
+
+	<h2><a id="#(bit32)" >Type <code>bit32</code></a></h2>
+		<h3>Field(s)</h3>
+		<dl class="function">
+<dt>
+<a id="#(bit32).arshift" >
+<strong>bit32.arshift(x, disp)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the right.</p>
+
+	
+<p>The number <code>disp</code> may be any
+representable integer. Negative displacements shift to the left.</p>
+
+<p>This shift operation is what is called arithmetic shift.
+Vacant bits on the left are filled with copies of the higher bit of <code>x</code>;
+vacant bits on the right are filled with zeros. In particular, displacements with
+absolute values higher than 31 result in zero or <code>0xFFFFFFFF</code>
+(all original bits are shifted out).</p>
+
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+value to shift</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number disp </em></code>: 
+the number of shift, may an positive or negative integer</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+shifted number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).band" >
+<strong>bit32.band()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the bitwise <code>and</code> of its operands.</p>
+
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+bitwise <code>and</code> of operands</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).bnot" >
+<strong>bit32.bnot(x)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the bitwise negation of <code>x</code>.</p>
+
+	
+<p>For any integer <code>x</code>, the following identity holds:</p>
+
+<pre><code>    assert(bit32.bnot(x) == (-1 - x) % 2^32)
+    
+</code></pre>
+
+		<h3>Parameter</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+Number to proceed</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+bitwise negation </p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).bor" >
+<strong>bit32.bor()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the bitwise <code>or</code> of its operands.</p>
+
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+bitwise <code>or</code> of operands</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).btest" >
+<strong>bit32.btest()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns a boolean signaling whether the bitwise <code>and</code> of its operands is different from zero.</p>
+
+		<h3>Return value</h3>
+				
+<p><em>#boolean:</em>
+true if the bitwise <code>and</code> of its operands is different from zero</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).bxor" >
+<strong>bit32.bxor()</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the bitwise exclusive <code>or</code> of its operands.</p>
+
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+bitwise exclusive <code>or</code> of its operands.</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).extract" >
+<strong>bit32.extract(n, width)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the unsigned number formed by the bits <code>field</code> to <code>field + width - 1</code> from <code>n</code>.</p>
+
+	
+<p>Bits are numbered from <code>0</code> (least significant) to <code>31</code> (most significant).
+All accessed bits must be in the range <code>[0, 31]</code>.</p>
+
+<p>The default for <code>width</code> is <code>1</code>.</p>
+
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number n </em></code>: 
+input number</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number width </em></code>: 
+the number of bit to take in account (optional, 1 by default)</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+extracted number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).lrotate" >
+<strong>bit32.lrotate(x, disp)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the number <code>x</code> rotated <code>disp</code> bits to the left.</p>
+
+	
+<p>The number <code>disp</code> may be
+any representable integer.
+For any valid displacement, the following identity holds:</p>
+
+<pre><code>assert(bit32.lrotate(x, disp) == bit32.lrotate(x, disp % 32))
+</code></pre>
+
+<p>In particular, negative displacements rotate to the right.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+original number</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number disp </em></code>: 
+number of rotate</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+rotated number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).lshift" >
+<strong>bit32.lshift(x, disp)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the left.</p>
+
+	
+<p>The number <code>disp</code> may be any representable integer.
+Negative displacements shift to the right. In any direction, vacant bits are filled with zeros.
+In particular, displacements with absolute values higher than <code>31</code> result in zero (all bits are shifted out).
+For positive displacements, the following equality holds:</p>
+
+<pre><code> assert(bit32.lshift(b, disp) == (b * 2^disp) % 2^32)
+</code></pre>
+
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+original number</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number disp </em></code>: 
+the number of shift</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+shifted number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).replace" >
+<strong>bit32.replace(n, v, width)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns a copy of <code>n</code> with the bits <code>field</code> to <code>field + width - 1</code> replaced by the value <code>v</code>.</p>
+
+	
+<p>See <code>bit32.extract</code> for details about field and width.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number n </em></code>: 
+the number to copy</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number v </em></code>: 
+the value v</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number width </em></code>: 
+the number of bit to take in account (optional, 1 by default)</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+replaced number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).rrotate" >
+<strong>bit32.rrotate(x, disp)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the number <code>x</code> rotated <code>disp</code> bits to the right.</p>
+
+	
+<p>The number <code>disp</code> may be any representable integer.
+For any valid displacement, the following identity holds:</p>
+
+<pre><code> assert(bit32.rrotate(x, disp) == bit32.rrotate(x, disp % 32))
+</code></pre>
+
+<p>In particular, negative displacements rotate to the left.</p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+original number</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number disp </em></code>: 
+number of bits to rotate</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+rotated number</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(bit32).rshift" >
+<strong>bit32.rshift(x, disp)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the number <code>x</code> shifted <code>disp</code> bits to the right.</p>
+
+	
+<p>The number <code>disp</code> may be any
+representable integer. Negative displacements shift to the left. In any direction,
+vacant bits are filled with zeros. In particular, displacements with absolute
+values higher than <code>31</code> result in zero (all bits are shifted out).</p>
+
+<p>For positive displacements, the following equality holds:</p>
+
+<pre><code> assert(bit32.rshift(b, disp) == math.floor(b % 2^32 / 2^disp))
+</code></pre>
+
+<p>This shift operation is what is called logical shift. </p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#number x </em></code>: 
+original number</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number disp </em></code>: 
+the number of shift</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+shifted number</p>
+
+
+</dd>
+</dl>
+
+</div>
+
+</div>
+</body>
+</html>

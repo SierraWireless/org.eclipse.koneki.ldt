@@ -5,10 +5,20 @@
 -- @module package
 
 -------------------------------------------------------------------------------
--- The path used by `require` to search for a C loader.
--- Lua initializes the C path `package.cpath` in the same way it initializes
--- the Lua path `package.path`, using the environment variable `LUA_CPATH`
--- or a default path defined in `luaconf.h`.
+-- A string describing some compile-time configurations for packages. This string is a sequence of lines:
+-- * The first line is the directory separator string. Default is '\' for Windows and '/' for all other systems.
+-- * The second line is the character that separates templates in a path. Default is ';'.
+-- * The third line is the string that marks the substitution points in a template. Default is '?'.
+-- * The fourth line is a string that, in a path in Windows, is replaced by the executable's directory. Default is '!'.
+-- * The fifth line is a mark to ignore all text before it when building the luaopen_ function name. Default is '-'.
+-- @field [parent=#package] #string config
+
+-------------------------------------------------------------------------------
+--  The path used by require to search for a C loader.
+--
+-- Lua initializes the C path `package.cpath` in the same way it initializes the Lua path
+-- package.path, using the environment variable `LUA_CPATH_5_2` or the environment variable
+-- `LUA_CPATH` or a default path defined in `luaconf.h`.
 -- @field [parent=#package] #string cpath
 
 -------------------------------------------------------------------------------
@@ -93,14 +103,55 @@
 
 -------------------------------------------------------------------------------
 -- A table to store loaders for specific modules (see `require`).
--- function package.preload end
+-- This variable is only a reference to the real table; assignments to this variable
+-- do not change the table used by require.
 -- @field [parent=#package] #table preload
+
+-------------------------------------------------------------------------------
+-- A table used by `require` to control how to load modules.
+--
+-- Each entry in this table is a `searcher function`. When looking for a module, `require`
+-- calls each of these searchers in ascending order, with the module name
+-- (the argument given to `require`) as its sole parameter. The function can return another
+-- function (the module `loader`) plus an extra value that will be passed to that loader, or a
+-- string explaining why it did not find that module (or **nil** if it has nothing to say).
+--
+-- Lua initializes this table with four searcher functions.
+-- The first searcher simply looks for a loader in the `package.preload` table.
+-- The second searcher looks for a loader as a Lua library, using the path stored at
+-- `package.path`. The search is done as described in function `package.searchpath`.
+--
+-- The third searcher looks for a loader as a C library, using the path given by the variable
+-- `package.cpath`. Again, the search is done as described in function `package.searchpath`. For instance,
+-- if the C path is the string
+--
+--     ./?.so;./?.dll;/usr/local/?/init.so
+--
+-- the searcher for module foo will try to open the files `./foo.so`, `./foo.dll`, and `/usr/local/foo/init.so`,
+-- in that order. Once it finds a C library, this searcher first uses a dynamic link facility to link the
+-- application with the library. Then it tries to find a C function inside the library to be used as the loader.
+-- The name of this C function is the string "luaopen_" concatenated with a copy of the module name
+-- where each dot is replaced by an underscore. Moreover, if the module name has a hyphen, its prefix up to
+-- (and including) the first hyphen is removed. For instance, if the module name is a.v1-b.c, the function name
+-- will be luaopen_b_c.
+--
+-- The fourth searcher tries an `all-in-one loader`. It searches the C path for a library for the root name of
+-- the given module. For instance, when requiring a.b.c, it will search for a C library for a. If found, it
+-- looks into it for an open function for the submodule; in our example, that would be luaopen_a_b_c. With this
+-- facility, a package can pack several C submodules into one single library, with each submodule keeping its original
+-- open function.
+--
+-- All searchers except the first one (preload) return as the extra value the file name where the module
+-- was found, as returned by `package.searchpath`. The first searcher returns no extra value. 
+-- @field [parent=#package] #table searchers
 
 -------------------------------------------------------------------------------
 -- Sets a metatable for `module` with its `__index` field referring to the
 -- global environment, so that this module inherits values from the global
 -- environment. To be used as an option to function `module`.
--- @function [parent=#package] seeall
--- @param #table module
+-- @function [parent=#package] searchpath
+-- @param #string name
+-- @param #string path
+-- @param #string name
 
 return nil

@@ -12,22 +12,26 @@
 -- When using explicit file descriptors, the operation io.open returns a file descriptor
 -- and then all operations are supplied as methods of the file descriptor.
 -- 
--- The table io also provides three predefined file descriptors with their usual meanings from C: io.stdin, io.stdout, and io.stderr.
+-- The table io also provides three predefined file descriptors with their usual meanings from C: `io.stdin`, `io.stdout`, and `io.stderr`.
 -- The I/O library never closes these files.
 -- 
--- Unless otherwise stated, all I/O functions return nil on failure (plus an error message as a second result and a system-dependent error code as a third result)
--- and some value different from nil on success.
+-- Unless otherwise stated, all I/O functions return **nil** on failure (plus an error
+-- message as a second result and a system-dependent error code as a third result)
+-- and some value different from **nil** on success. On non-Posix systems, the computation
+-- of the error message and error code in case of errors may be not thread safe,
+-- because they rely on the global C variable `errno`.
 -- @module io 
 
 -------------------------------------------------------------------------------
--- Equivalent to `file:close`. Without a `file`, closes the default
--- output file.
+-- Equivalent to `file:close`. Without a `file`, closes the default output file.
 -- @function [parent=#io] close
--- @param #file file file to close.
+-- @param #file file file to close (optional).
+-- @return A status code which is system-dependent (optional).
 
 -------------------------------------------------------------------------------
--- Equivalent to `file:flush` over the default output file.
+-- Equivalent to `io.output():flush()`. 
 -- @function [parent=#io] flush
+-- 
 
 -------------------------------------------------------------------------------
 -- When called with a file name, it opens the named file (in text mode),
@@ -42,24 +46,23 @@
 -- @return #file the default input file handle.
 
 -------------------------------------------------------------------------------
--- Opens the given file name in read mode and returns an iterator function
--- that, each time it is called, returns a new line from the file. Therefore,
--- the construction 
--- 
---     for line in io.lines(filename) do *body* end
--- will iterate over all lines of the file. When the iterator function detects
--- the end of file, it returns nil (to finish the loop) and automatically
+-- Opens the given file name in read mode and returns an iterator function that
+-- works like file:lines(...) over the opened file. When the iterator function
+-- detects the end of file, it returns **nil** (to finish the loop) and automatically
 -- closes the file.
--- 
--- The call `io.lines()` (with no file name) is equivalent to
--- `io.input():lines()`; that is, it iterates over the lines of the default
--- input file. In this case it does not close the file when the loop ends.
+--
+-- The call `io.lines()` (with no file name) is equivalent to `io.input():lines()`;
+-- that is, it iterates over the lines of the default input file. In this
+-- case it does not close the file when the loop ends.
+--
+-- In case of errors this function raises the error, instead of returning an error code. 
 -- @function [parent=#io] lines
--- @param a filename or a file handle. (default value is `io.input()`)
+-- @param filename a filename or a file handle. (default value is `io.input()`)
+-- @return iterator function on lines
 
 -------------------------------------------------------------------------------
 -- This function opens a file, in the mode specified in the string `mode`. It
--- returns a new file handle, or, in case of errors, nil plus an error message.
+-- returns a new file handle, or, in case of errors, **nil** plus an error message.
 -- The `mode` string can be any of the following:
 -- 
 --  * _"r"_: read mode (the default);
@@ -71,11 +74,10 @@
 --   allowed at the end of file.
 --   
 -- The `mode` string can also have a '`b`' at the end, which is needed in
--- some systems to open the file in binary mode. This string is exactly what
--- is used in the standard C function `fopen`.
+-- some systems to open the file in binary mode.
 -- @function [parent=#io] open
--- @param #string filename path to the file. 
--- @param #string mode used to specify the open mode.
+-- @param #string filename path to the file.
+-- @param #string mode used to specify the open mode (optional).
 -- @return #file a file handle.
 
 -------------------------------------------------------------------------------
@@ -85,7 +87,7 @@
 -- @return #file the default ouput file handle.
 
 -------------------------------------------------------------------------------
--- Starts program `prog` in a separated process and returns a file handle
+-- Starts program `prog` in a separated process. Returns a file handle
 -- that you can use to read data from this program (if `mode` is `"r"`,
 -- the default) or to write data to this program (if `mode` is `"w"`).
 -- 
@@ -98,7 +100,9 @@
 -------------------------------------------------------------------------------
 -- Equivalent to `io.input():read`.
 -- @function [parent=#io] read
--- @param format
+-- @param format _"*n"_, _"*a"_, _"*l"_ or a number.
+-- @return A string (or a number) with the characters read
+-- @return #nil if it cannot read data with the specified format.
 
 -------------------------------------------------------------------------------
 -- io.stderr: Standard error.
@@ -121,14 +125,16 @@
 -------------------------------------------------------------------------------
 -- Checks whether `obj` is a valid file handle. Returns the string `"file"`
 -- if `obj` is an open file handle, `"closed file"` if `obj` is a closed file
--- handle, or nil if `obj` is not a file handle.
+-- handle, or **nil** if `obj` is not a file handle.
 -- @function [parent=#io] type
 -- @param obj
 
 -------------------------------------------------------------------------------
 -- Equivalent to `io.output():write`.
 -- @function [parent=#io] write
--- @param ...
+-- @param ... must be strings or numbers.
+-- @return #file the standard output
+-- @return #nil, #string an error message, if it failed.
 
 -------------------------------------------------------------------------------
 -- A file handle.
@@ -138,8 +144,12 @@
 -- Closes `file`. Note that files are automatically closed when their
 -- handles are garbage collected, but that takes an unpredictable amount of
 -- time to happen.
+-- 
+-- When closing a file handle created with `io.popen`, `file:close` returns the
+-- same values returned by `os.execute`. 
 -- @function [parent=#file] close
 -- @param self
+-- @return A status code which is system-dependent (optional).
 
 -------------------------------------------------------------------------------
 -- Saves any written data to `file`.
@@ -147,14 +157,19 @@
 -- @param self
 
 -------------------------------------------------------------------------------
--- Returns an iterator function that, each time it is called, returns a
--- new line from the file. Therefore, the construction
+-- Returns an iterator function that, each time it is called, reads the file
+-- according to the given formats. When no format is given, uses "`*l`" as a
+-- default. As an example, the construction 
 -- 
---     for line in file:lines() do *body* end
--- will iterate over all lines of the file. (Unlike `io.lines`, this function
--- does not close the file when the loop ends.)
+--     for line in file:lines() do body end
+--     
+-- will iterate over all lines of the file. Unlike `io.lines`, this function
+-- does not close the file when the loop ends.
+-- In case of errors this function raises the error, instead of returning an error code. 
 -- @function [parent=#file] lines
 -- @param self
+-- @param ... reading formats (optional, "`*l`" by default)
+-- @return iterator function over the file
 
 -------------------------------------------------------------------------------
 -- Reads the file `file`, according to the given formats, which specify
@@ -168,28 +183,29 @@
 --   instead of a string.
 --   * _"*a"_: reads the whole file, starting at the current position. On end of
 --   file, it returns the empty string.
---   * _"*l"_: reads the next line (skipping the end of line), returning nil on
+--   * _"*l"_: reads the next line (skipping the end of line), returning **nil** on
 --   end of file. This is the default format.
 --   * _number_: reads a string with up to this number of characters, returning
---   nil on end of file. If number is zero, it reads nothing and returns an
---   empty string, or nil on end of file.
+--   **nil** on end of file. If number is zero, it reads nothing and returns an
+--   empty string, or **nil** on end of file.
 -- @function [parent=#file] read
 -- @param self
 -- @param format _"*n"_, _"*a"_, _"*l"_ or a number.
--- @return A string (or a number) with the characters read, or nil if it cannot read data with the specified format.
+-- @return A string (or a number) with the characters read
+-- @return #nil if it cannot read data with the specified format
  
 -------------------------------------------------------------------------------
 -- Sets and gets the file position. It is measured from the beginning of the
 -- file, to the position given by `offset` plus a base specified by the string
 -- `whence`, as follows:
 -- 
---  * `"set"`: base is position 0 (beginning of the file);
---  * `"cur"`: base is current position;
---  * `"end"`: base is end of file;
+--  * _"set"_: base is position 0 (beginning of the file);
+--  * _"cur"_: base is current position;
+--  * _"end"_: base is end of file;
 --  
 -- In case of success, function `seek` returns the final file position,
 -- measured in bytes from the beginning of the file. If this function fails,
--- it returns nil, plus a string describing the error.
+-- it returns **nil**, plus a string describing the error.
 -- The default value for `whence` is `"cur"`, and for `offset` is 0. Therefore,
 -- the call `file:seek()` returns the current file position, without changing
 -- it; the call `file:seek("set")` sets the position to the beginning of the
@@ -197,8 +213,8 @@
 -- to the end of the file, and returns its size.
 -- @function [parent=#file] seek
 -- @param self
--- @param #string whence  `"set"`, `"cur"` or `"end"` (default value is `"cur"`)
--- @param #number offset offset of end position. (default value is 0)
+-- @param #string whence  `"set"`, `"cur"` or `"end"` (optional, default value is `"cur"`)
+-- @param #number offset offset of end position. (optional, default value is `0`)
 -- @return #number the final file position in bytes, if it succeed.
 -- @return #nil, #string an error message, if it failed.
 
@@ -208,7 +224,7 @@
 --
 --  * `"no"` : no buffering; the result of any output operation appears immediately.
 --  * `"full"` : full buffering; output operation is performed only when the
---   buffer is full (or when you explicitly `flush` the file (see `io.flush`)).
+--   buffer is full or when you explicitly `flush` the file (see `io.flush`).
 --  * `"line"` : line buffering; output is buffered until a newline is output or
 --   there is any input from some special files (such as a terminal device).
 --   
@@ -222,10 +238,12 @@
 
 -------------------------------------------------------------------------------
 -- Writes the value of each of its arguments to the `file`. The arguments
--- must be strings or numbers. To write other values, use `tostring` or
--- `string.format` before `write`.
+-- must be strings or numbers. In case of success, this function returns file.
+-- Otherwise it returns nil plus a string describing the error. 
 -- @function [parent=#file] write
 -- @param self
--- @param ... must be strings or a numbers.
+-- @param ... must be strings or numbers.
+-- @return #file edited file
+-- @return #nil, #string an error message, if it failed.
 
 return nil

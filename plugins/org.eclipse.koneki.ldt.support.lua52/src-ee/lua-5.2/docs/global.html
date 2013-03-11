@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li><a href="coroutine.html">coroutine</a></li>
 					<li><a href="debug.html">debug</a></li>
 					<li>global</li>
@@ -34,8 +35,9 @@
 <p>Lua global variables.</p>
 
    
-<p>The basic library provides some core functions to Lua.
-All the preloaded module of Lua are declared here.</p>
+<p>The basic library provides core functions to Lua. If you do not include this
+library in your application, you should check carefully whether you need to
+provide implementations for some of its facilities. </p>
 
 	<h2>Global(s)</h2>
 	<table class="function_list">
@@ -58,6 +60,12 @@ current interpreter version.</p>
 		<td class="summary">
 <p>Issues an error when the value of its argument <code>v</code> is false (i.e.,
 <strong>nil</strong> or <strong>false</strong>); otherwise, returns all its arguments.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="#bit32">bit32</a></td>
+		<td class="summary">
+<p>This library provides generic functions for bitwise manipulation.</p>
 </td>
 		</tr>
 		<tr>
@@ -92,15 +100,9 @@ as the error message.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#getfenv">getfenv(f)</a></td>
-		<td class="summary">
-<p>Returns the current environment in use by the function.</p>
-</td>
-		</tr>
-		<tr>
 		<td class="name" nowrap="nowrap"><a href="#getmetatable">getmetatable(object)</a></td>
 		<td class="summary">
-<p>If <code>object</code> does not have a metatable, returns nil.</p>
+<p>If <code>object</code> does not have a metatable, returns <strong>nil</strong>.</p>
 </td>
 		</tr>
 		<tr>
@@ -112,26 +114,21 @@ as the error message.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="#ipairs">ipairs(t)</a></td>
 		<td class="summary">
-<p>Use to iterate over a table by index.</p>
+<p>If t has a metamethod __ipairs, calls it with t as argument and returns the
+first three results from the call.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#load">load(func, chunkname)</a></td>
+		<td class="name" nowrap="nowrap"><a href="#load">load(ld, source, mode, env)</a></td>
 		<td class="summary">
-<p>Loads a chunk using function <code>func</code> to get its pieces.</p>
+<p>Loads a chunk.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#loadfile">loadfile(filename)</a></td>
+		<td class="name" nowrap="nowrap"><a href="#loadfile">loadfile(filename, mode, env)</a></td>
 		<td class="summary">
 <p>Similar to <code>load</code>, but gets the chunk from file <code>filename</code> or from the
 standard input, if no file name is given.</p>
-</td>
-		</tr>
-		<tr>
-		<td class="name" nowrap="nowrap"><a href="#loadstring">loadstring(string, chunkname)</a></td>
-		<td class="summary">
-<p>Similar to <code>load</code>, but gets the chunk from the given string.</p>
 </td>
 		</tr>
 		<tr>
@@ -161,7 +158,8 @@ standard input, if no file name is given.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="#pairs">pairs(t)</a></td>
 		<td class="summary">
-<p>Use to iterate over a table.</p>
+<p>If t has a metamethod <code>__pairs</code>, calls it with t as argument and returns the
+first three results from the call.</p>
 </td>
 		</tr>
 		<tr>
@@ -173,8 +171,8 @@ standard input, if no file name is given.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="#print">print(...)</a></td>
 		<td class="summary">
-<p>Receives any number of arguments, and prints their values to <code>stdout</code>,
-using the <code>tostring</code> function to convert them to strings.</p>
+<p>Receives any number of arguments and prints their values to <code>stdout</code>, using the
+<code>tostring</code> function to convert each argument to a string.</p>
 </td>
 		</tr>
 		<tr>
@@ -189,6 +187,13 @@ metamethod.</p>
 		<td class="summary">
 <p>Gets the real value of <code>table[index]</code>, without invoking any
 metamethod.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="#rawlen">rawlen(v)</a></td>
+		<td class="summary">
+<p>Returns the length of the object <code>v</code>, which must be a table or a string, without
+invoking any metamethod.</p>
 </td>
 		</tr>
 		<tr>
@@ -212,12 +217,6 @@ metamethod.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#setfenv">setfenv(f, table)</a></td>
-		<td class="summary">
-<p>Sets the environment to be used by the given function.</p>
-</td>
-		</tr>
-		<tr>
 		<td class="name" nowrap="nowrap"><a href="#setmetatable">setmetatable(table, metatable)</a></td>
 		<td class="summary">
 <p>Sets the metatable for the given table.</p>
@@ -238,27 +237,14 @@ metamethod.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="#tonumber">tonumber(e, base)</a></td>
 		<td class="summary">
-<p>Tries to convert its argument to a number.</p>
+<p>When called with no base, tonumber tries to convert its argument to a number.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="#tostring">tostring(e)</a></td>
+		<td class="name" nowrap="nowrap"><a href="#tostring">tostring(v)</a></td>
 		<td class="summary">
 <p>Receives an argument of any type and converts it to a string in a
 reasonable format.</p>
-</td>
-		</tr>
-		<tr>
-		<td class="name" nowrap="nowrap"><a href="#unpack">unpack(list, i, j)</a></td>
-		<td class="summary">
-<p>Returns the elements from the given table.</p>
-</td>
-		</tr>
-		<tr>
-		<td class="name" nowrap="nowrap"><a href="#xpcall">xpcall(f, err)</a></td>
-		<td class="summary">
-<p>This function is similar to <code>pcall</code>, except that you can set a new
-error handler.</p>
 </td>
 		</tr>
 	</table>
@@ -277,8 +263,7 @@ error handler.</p>
 
 	
 <p>Lua itself does not use this variable; changing
-its value does not affect any environment, nor vice-versa. (Use <code>setfenv</code>
-to change environments.)</p>
+its value does not affect any environment, nor vice-versa.</p>
 
 </dd>
 </dl>
@@ -296,7 +281,7 @@ current interpreter version.</p>
 
 	
 <p>The current contents of this variable is
-"<code>Lua 5.1</code>".</p>
+"<code>Lua 5.2</code>".</p>
 
 </dd>
 </dl>
@@ -326,7 +311,7 @@ if this argument is false an error is issued.</p>
 				<li>
 				
 <p><code><em>#string message </em></code>: 
-an error message. defaults value is <em>"assertion failed"</em>.</p>
+an error message (optional, <em>"assertion failed"</em> by default)</p>
 
 				</li>
 		</ul>
@@ -335,6 +320,22 @@ an error message. defaults value is <em>"assertion failed"</em>.</p>
 
 <p>All its arguments.</p>
 
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+		<em><a href="bit32.html##(bit32)">bit32#bit32</a></em>
+<a id="bit32" >
+<strong>bit32</strong>
+</a>
+</dt>
+<dd>
+	
+<p>This library provides generic functions for bitwise manipulation.</p>
+
+	
+<p>This is a global variable which hold the preloaded <a href="bit32.html">bit32</a> module.</p>
 
 </dd>
 </dl>
@@ -349,21 +350,34 @@ an error message. defaults value is <em>"assertion failed"</em>.</p>
 <p>This function is a generic interface to the garbage collector.</p>
 
 	
-<p>It performs different functions according to its first argument, <code>opt</code>:</p>
+<p>It performs
+different functions according to its first argument, <code>opt</code>:</p>
 
 <ul>
-    <li><strong>"stop":</strong> stops the garbage collector.</li>
-    <li><strong>"restart":</strong> restarts the garbage collector.</li>
-    <li><strong>"collect":</strong> performs a full garbage-collection cycle.</li>
-    <li><strong>"count":</strong> returns the total memory in use by Lua (in Kbytes).</li>
-    <li><strong>"step":</strong> performs a garbage-collection step. The step "size" is controlled
-      by <code>arg</code> (larger values mean more steps) in a non-specified way. If you
-      want to control the step size you must experimentally tune the value of
-     <code>arg</code>. Returns true if the step finished a collection cycle.</li>
-    <li><strong>"setpause":</strong> sets <code>arg</code> as the new value for the <em>pause</em> of the collector.
-      Returns the previous value for <em>pause</em>.</li>
-    <li><strong>"setstepmul":</strong> sets <code>arg</code> as the new value for the <em>step multiplier</em>
-      of the collector. Returns the previous value for <em>step</em>.</li>
+    <li><p><em>"collect"</em>: performs a full garbage-collection cycle. This is the default option.</p></li>
+    <li><p><em>"stop"</em>: stops automatic execution of the garbage collector. The collector will
+    run only when explicitly invoked, until a call to restart it.</p></li>
+    <li><p><em>"restart"</em>: restarts automatic execution of the garbage collector.</p></li>
+    <li><p><em>"count"</em>: returns the total memory in use by Lua (in Kbytes) and a second 
+value with the total memory in bytes modulo <code>1024</code>. The first value has a fractional
+part, so the following equality is always true:
+(The second result is useful when Lua is compiled with a non floating-point type for numbers.)</p>
+
+<pre><code>k, b = collectgarbage("count")
+assert(k*1024 == math.floor(k)*1024 + b)
+</code></pre></li>
+    <li><p><em>"step"</em>: performs a garbage-collection step. The step "size" is controlled by
+    arg (larger values mean more steps) in a non-specified way. If you want to control
+    the step size you must experimentally tune the value of arg. Returns <strong>true</strong> if
+    the step finished a collection cycle.</p></li>
+    <li><p><em>"setpause"</em>: sets <code>arg</code> as the new value for the pause of the collector.
+    Returns the previous value for pause.</p></li>
+    <li><p><em>"setstepmul"</em>: sets <code>arg</code> as the new value for the step multiplier of the collector.
+    Returns the previous value for step.</p></li>
+    <li><p><em>"isrunning"</em>: returns a boolean that tells whether the collector is running
+    (i.e., not stopped).</p></li>
+    <li><p><em>"generational"</em>: changes the collector to generational mode. This is an experimental feature.</p></li>
+    <li><p><em>"incremental"</em>: changes the collector to incremental mode. This is the default mode.</p></li>
 </ul>
 
 		<h3>Parameters</h3>
@@ -371,13 +385,13 @@ an error message. defaults value is <em>"assertion failed"</em>.</p>
 				<li>
 				
 <p><code><em>#string opt </em></code>: 
-the command to send.</p>
+the command to send (optional, "collect" by default)</p>
 
 				</li>
 				<li>
 				
 <p><code><em> arg </em></code>: 
-the argument of the command. (optional)</p>
+the argument of the command (optional).</p>
 
 
 				</li>
@@ -440,9 +454,14 @@ the error to its caller (that is, <code>dofile</code> does not run in protected 
 <p><code><em>#string filename </em></code>: 
 the path to the file. (optional)</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>values returned by the chunk</p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -479,32 +498,7 @@ an error message.</p>
 				<li>
 				
 <p><code><em>#number level </em></code>: 
-specifies how to get the error position, default value is <code>1</code>.</p>
-
-
-				</li>
-		</ul>
-</dd>
-</dl>
-		<dl class="function">
-<dt>
-<a id="getfenv" >
-<strong>getfenv(f)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>Returns the current environment in use by the function.</p>
-
-		<h3>Parameter</h3>
-		<ul>
-				<li>
-				
-<p><code><em> f </em></code>: 
-can be a Lua function or a number that specifies the function at that
-stack level: Level 1 is the function calling <code>getfenv</code>. If the given
-function is not a Lua function, or if <code>f</code> is <code>0</code>, <code>getfenv</code> returns the
-global environment. The default for <code>f</code> is <code>1</code>.</p>
+specifies how to get the error position (optional, <code>1</code> by default).</p>
 
 
 				</li>
@@ -519,7 +513,7 @@ global environment. The default for <code>f</code> is <code>1</code>.</p>
 </dt>
 <dd>
 	
-<p>If <code>object</code> does not have a metatable, returns nil.</p>
+<p>If <code>object</code> does not have a metatable, returns <strong>nil</strong>.</p>
 
 	
 <p>Otherwise, if the
@@ -534,12 +528,22 @@ value. Otherwise, returns the metatable of the given object.</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 <p><em>#table:</em>
 the metatable of object.</p>
 
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+if no metatable was found</p>
 
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -566,16 +570,18 @@ the metatable of object.</p>
 </dt>
 <dd>
 	
-<p>Use to iterate over a table by index.</p>
+<p>If t has a metamethod __ipairs, calls it with t as argument and returns the
+first three results from the call.</p>
 
 	
-<p>Returns three values: an iterator function, the table <code>t</code>, and 0,
-so that the construction :</p>
+<p>Otherwise, returns three values: an iterator function, the table <code>t</code>, and <code>0</code>,
+so that the construction</p>
 
-<pre><code>for i,v in ipairs(t) do *body* end
+<pre><code> for i,v in ipairs(t) do body end
 </code></pre>
-<p>will iterate over the pairs (<code>1,t[1]</code>), (<code>2,t[2]</code>), ..., up to the
-first integer key absent from the table.</p>
+
+<p>will iterate over the pairs <code>(1,t[1]), (2,t[2]), ...,</code> up to the first integer
+key absent from the table. </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -584,55 +590,99 @@ first integer key absent from the table.</p>
 <p><code><em>#table t </em></code>: 
 a table by index.</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>iterator function, table <code>t</code>, the value <code>0</code></p>
+
+
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="load" >
-<strong>load(func, chunkname)</strong>
+<strong>load(ld, source, mode, env)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Loads a chunk using function <code>func</code> to get its pieces.</p>
+<p>Loads a chunk.</p>
 
 	
-<p>Each call to
-<code>func</code> must return a string that concatenates with previous results. A
-return of an empty string, <strong>nil,</strong> or no value signals the end of the chunk.</p>
+<p>If <code>ld</code> is a string, the chunk is this string. If <code>ld</code> is a function, load calls
+it repeatedly to get the chunk pieces. Each call to <code>ld</code> must return a string
+that concatenates with previous results. A return of an empty string, <strong>nil</strong>, or
+no value signals the end of the chunk.</p>
 
-<p>If there are no errors, returns the compiled chunk as a function; otherwise,
-returns nil plus the error message. The environment of the returned function
-is the global environment.</p>
+<p>If there are no syntactic errors, returns the compiled chunk as a function;
+otherwise, returns <strong>nil</strong> plus the error message.</p>
 
-<p><code>chunkname</code> is used as the chunk name for error messages and debug
-information. When absent, it defaults to "<code>=(load)</code>".</p>
+<p>If the resulting function has upvalues, the first upvalue is set to the value
+of <code>env</code>, if that parameter is given, or to the value of the global environment.
+(When you load a main chunk, the resulting function will always have exactly one
+upvalue, the <code>_ENV</code> variable. When you load a binary chunk created from
+a function (see <code>string.dump</code>), the resulting function can have arbitrary upvalues.)</p>
+
+<p><code>source</code> is used as the source of the chunk for error messages and debug information.
+When absent, it defaults to <code>ld</code>, if <code>ld</code> is a string, or to <code>"=(load)"</code> otherwise.</p>
+
+<p>The string mode controls whether the chunk can be text or binary
+(that is, a precompiled chunk). It may be the string <code>"b"</code> (only binary chunks),
+<code>"t"</code> (only text chunks), or <code>"bt"</code> (both binary and text). The default is <code>"bt"</code>. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em> func </em></code>: 
-function which loads the chunk.</p>
+<p><code><em> ld </em></code>: 
+string or function representing the chunk.</p>
 
 				</li>
 				<li>
 				
-<p><code><em>#string chunkname </em></code>: 
-chunk name used for error messages and debug information, default value is "<code>=(load)</code>".</p>
+<p><code><em>#string source </em></code>: 
+used as source code (optional, by default <code>ld</code> if <code>ld</code> is a
+string, or to <code>"=(load)"</code>otherwise.</p>
 
+				</li>
+				<li>
+				
+<p><code><em>#string mode </em></code>: 
+<code>"b"</code> for only binary chunk, <code>"t"</code> for only text chunks,
+<code>bt</code> for both binary and text (optional, "bt" by default).</p>
+
+				</li>
+				<li>
+				
+<p><code><em> env </em></code>: 
+environment where to set the first upvalue if any.</p>
 
 				</li>
 		</ul>
+		<h3>Return values</h3>
+			<ol>
+				<li>
+				
+
+<p>compiled chunk as a function</p>
+
+				</li>
+				<li>
+				
+<p><em>#nil, #string:</em>
+error message</p>
+
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="loadfile" >
-<strong>loadfile(filename)</strong>
+<strong>loadfile(filename, mode, env)</strong>
 </a>
 </dt>
 <dd>
@@ -640,51 +690,44 @@ chunk name used for error messages and debug information, default value is "<cod
 <p>Similar to <code>load</code>, but gets the chunk from file <code>filename</code> or from the
 standard input, if no file name is given.</p>
 
-		<h3>Parameter</h3>
+		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#string filename </em></code>: 
 the path to the file. (optional)</p>
 
-
 				</li>
-		</ul>
-</dd>
-</dl>
-		<dl class="function">
-<dt>
-<a id="loadstring" >
-<strong>loadstring(string, chunkname)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>Similar to <code>load</code>, but gets the chunk from the given string.</p>
-
-	
-<p>To load and run a given string, use the idiom  </p>
-
-<pre><code>assert(loadstring(s))()
-</code></pre>
-<p>When absent, <code>chunkname</code> defaults to the given string.</p>
-
-		<h3>Parameters</h3>
-		<ul>
 				<li>
 				
-<p><code><em>#string string </em></code>: 
-lua code to load.</p>
+<p><code><em>#string mode </em></code>: 
+<code>"b"</code> for only binary chunk, <code>"t"</code> for only text chunks,
+<code>bt</code> for both binary and text (optional, "bt" by default).</p>
 
 				</li>
 				<li>
 				
-<p><code><em>#string chunkname </em></code>: 
-chunk name used for error messages and debug information, default value is the given string.</p>
-
+<p><code><em> env </em></code>: 
+environment where to set the first upvalue if any.</p>
 
 				</li>
 		</ul>
+		<h3>Return values</h3>
+			<ol>
+				<li>
+				
+
+<p>compiled chunk as a function</p>
+
+				</li>
+				<li>
+				
+<p><em>#nil, #string:</em>
+error message</p>
+
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -718,7 +761,7 @@ chunk name used for error messages and debug information, default value is the g
 a table and its second argument is an index in this table. <code>next</code> returns
 the next index of the table and its associated value.</p>
 
-<p>When called with nil
+<p>When called with <strong>nil</strong>
 as its second argument, <code>next</code> returns an initial index and its associated
 value. When called with the last index, or with nil in an empty table, <code>next</code>
 returns nil.</p>
@@ -726,10 +769,9 @@ returns nil.</p>
 <p>If the second argument is absent, then it is interpreted as
 nil. In particular, you can use <code>next(t)</code> to check whether a table is empty.
 The order in which the indices are enumerated is not specified, <em>even for
-numeric indices</em>. (To traverse a table in numeric order, use a numerical
-for or the <code>ipairs</code> function.)</p>
+numeric indices</em>. (To traverse a table in numeric order, use a numerical <strong>for</strong>.)</p>
 
-<p>The behavior of <code>next</code> is <em>undefined</em> if, during the traversal, you assign
+<p>The behavior of <code>next</code> is undefined if, during the traversal, you assign
 any value to a non-existent field in the table. You may however modify
 existing fields. In particular, you may clear existing fields.</p>
 
@@ -744,11 +786,26 @@ table to traverse.</p>
 				<li>
 				
 <p><code><em> index </em></code>: 
-initial index.</p>
-
+initial index (optional).</p>
 
 				</li>
 		</ul>
+		<h3>Return values</h3>
+			<ol>
+				<li>
+				
+
+<p>index, value</p>
+
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+if called on the last index or on an empty table</p>
+
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -791,18 +848,19 @@ initial index.</p>
 </dt>
 <dd>
 	
-<p>Use to iterate over a table.</p>
+<p>If t has a metamethod <code>__pairs</code>, calls it with t as argument and returns the
+first three results from the call.</p>
 
 	
-<p>Returns three values: the <code>next</code> function, the table <code>t</code>, and nil,
-so that the construction :</p>
 
-<pre><code>for k,v in pairs(t) do *body* end
+<p>Otherwise, returns three values: the <code>next</code> function, the table t, and nil,
+so that the construction</p>
+
+<pre><code> for k,v in pairs(t) do body end
 </code></pre>
-<p>will iterate over all key-value pairs of table <code>t</code>.</p>
 
-<p>See function <code>next</code> for the caveats of modifying the table during its
-traversal.</p>
+<p>will iterate over all key–value pairs of table <code>t</code>.
+See function next for the caveats of modifying the table during its traversal. </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -811,9 +869,14 @@ traversal.</p>
 <p><code><em>#table t </em></code>: 
 table to traverse.</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>iterator function, table <code>t</code>, the value <code>0</code></p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -832,7 +895,7 @@ means that any error inside <code>f</code> is not propagated; instead, <code>pca
 the error and returns a status code. Its first result is the status code (a
 boolean), which is true if the call succeeds without errors. In such case,
 <code>pcall</code> also returns all results from the call, after this first result. In
-case of any error, <code>pcall</code> returns false plus the error message.</p>
+case of any error, <code>pcall</code> returns <strong>false</strong> plus the error message.</p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -860,7 +923,7 @@ true plus the result of <code>f</code> function if its call succeeds without err
 				<li>
 				
 <p><em>#boolean, #string:</em>
- false plus the error message in case of any error.</p>
+false plus the error message in case of any error.</p>
 
 
 				</li>
@@ -875,13 +938,13 @@ true plus the result of <code>f</code> function if its call succeeds without err
 </dt>
 <dd>
 	
-<p>Receives any number of arguments, and prints their values to <code>stdout</code>,
-using the <code>tostring</code> function to convert them to strings.</p>
+<p>Receives any number of arguments and prints their values to <code>stdout</code>, using the
+<code>tostring</code> function to convert each argument to a string.</p>
 
 	
-<p><code>print</code> is not
-intended for formatted output, but only as a quick way to show a value,
-typically for debugging. For formatted output, use <code>string.format</code>.</p>
+<p>print is not intended
+for formatted output, but only as a quick way to show a value, for instance for
+debugging. For complete control over the output, use <code>string.format</code> and <code>io.write</code>. </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -913,12 +976,14 @@ metamethod.</p>
 		<ul>
 				<li>
 				
-<p><code><em> v1 </em></code>: </p>
+<p><code><em> v1 </em></code>: 
+first operand</p>
 
 				</li>
 				<li>
 				
-<p><code><em> v2 </em></code>: </p>
+<p><code><em> v2 </em></code>: 
+second operand</p>
 
 				</li>
 		</ul>
@@ -948,13 +1013,14 @@ metamethod.</p>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: </p>
+<p><code><em>#table table </em></code>: 
+table to looking for</p>
 
 				</li>
 				<li>
 				
 <p><code><em> index </em></code>: 
-may be any value.</p>
+index in the table</p>
 
 				</li>
 		</ul>
@@ -963,6 +1029,37 @@ may be any value.</p>
 
 <p>The real value of <code>table[index]</code>, without invoking any
 metamethod.</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="rawlen" >
+<strong>rawlen(v)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Returns the length of the object <code>v</code>, which must be a table or a string, without
+invoking any metamethod.</p>
+
+	
+<p>Returns an integer number. </p>
+
+		<h3>Parameter</h3>
+		<ul>
+				<li>
+				
+<p><code><em> v </em></code>: 
+table or a string</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#number:</em>
+length of <code>v</code></p>
 
 
 </dd>
@@ -1001,9 +1098,14 @@ any value different from nil.</p>
 <p><code><em> value </em></code>: 
 any Lua value.</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#table:</em>
+the given table</p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -1017,33 +1119,27 @@ any Lua value.</p>
 <p>Loads the given module.</p>
 
 	
-<p>The function starts by looking into the
-<code>package.loaded</code> table to determine whether <code>modname</code> is already
-loaded. If it is, then <code>require</code> returns the value stored at
-<code>package.loaded[modname]</code>. Otherwise, it tries to find a <em>loader</em> for
-the module.</p>
+<p>The function starts by looking into the <code>package.loaded</code> table to 
+determine whether modname is already loaded. If it is, then require returns the value stored 
+at <code>package.loaded[modname]</code>. Otherwise, it tries to find a loader for the module.</p>
 
-<p>To find a loader, <code>require</code> is guided by the <code>package.loaders</code> array. By
-changing this array, we can change how <code>require</code> looks for a module. The
-following explanation is based on the default configuration for
-<code>package.loaders</code>.</p>
+<p>To find a loader, require is guided by the <code>package.searchers</code> sequence. By changing this sequence,
+we can change how require looks for a module. The following explanation is based on the default
+configuration for <code>package.searchers</code>.</p>
 
-<p>First <code>require</code> queries <code>package.preload[modname]</code>. If it has a value,
-this value (which should be a function) is the loader. Otherwise <code>require</code>
-searches for a Lua loader using the path stored in <code>package.path</code>. If
-that also fails, it searches for a C loader using the path stored in
-<code>package.cpath</code>. If that also fails, it tries an <em>all-in-one</em> loader (see
-<code>package.loaders</code>).</p>
+<p>First require queries <code>package.preload[modname]</code>. If it has a value, this value (which should be a function)
+is the loader. Otherwise require searches for a Lua loader using the path stored in <code>package.path</code>.
+If that also fails, it searches for a C loader using the path stored in <code>package.cpath</code>. If that also
+fails, it tries an all-in-one loader (see <code>package.searchers</code>).</p>
 
-<p>Once a loader is found, <code>require</code> calls the loader with a single argument,
-<code>modname</code>. If the loader returns any value, <code>require</code> assigns the returned
-value to <code>package.loaded[modname]</code>. If the loader returns no value and
-has not assigned any value to <code>package.loaded[modname]</code>, then <code>require</code>
-assigns true to this entry. In any case, <code>require</code> returns the final value
-of <code>package.loaded[modname]</code>.</p>
+<p>Once a loader is found, require calls the loader with two arguments: modname and an extra value dependent
+on how it got the loader. (If the loader came from a file, this extra value is the file name.) If the loader
+returns any non-nil value, require assigns the returned value to package.loaded[modname]. If the loader
+does not return a non-nil value and has not assigned any value to package.loaded[modname], then require
+assigns <code>true</code> to this entry. In any case, require returns the final value of package.loaded[modname].</p>
 
-<p>If there is any error loading or running the module, or if it cannot find
-any loader for the module, then <code>require</code> signals an error.</p>
+<p>If there is any error loading or running the module, or if it cannot find any loader for the module,
+then require raises an error. </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -1052,9 +1148,14 @@ any loader for the module, then <code>require</code> signals an error.</p>
 <p><code><em>#string modname </em></code>: 
 name of module to load.</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>loaded module</p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -1086,46 +1187,22 @@ a number or the string <code>"#"</code></p>
 
 				</li>
 		</ul>
-</dd>
-</dl>
-		<dl class="function">
-<dt>
-<a id="setfenv" >
-<strong>setfenv(f, table)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>Sets the environment to be used by the given function.</p>
-
-	
-<p><code>f</code> can be a Lua
-function or a number that specifies the function at that stack level: Level
-1 is the function calling <code>setfenv</code>. <code>setfenv</code> returns the given function. <br/>
-As a special case, when <code>f</code> is 0 <code>setfenv</code> changes the environment of the
-running thread. In this case, <code>setfenv</code> returns no values.</p>
-
-		<h3>Parameters</h3>
-		<ul>
+		<h3>Return values</h3>
+			<ol>
 				<li>
 				
-<p><code><em> f </em></code>: 
-a Lua function or a number that specifies the stack level.</p>
+
+<p>all arguments after argument number <code>index</code></p>
 
 				</li>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-used as environment for <code>f</code>.</p>
+
+<p>total number of extra arguments</p>
+
 
 				</li>
-		</ul>
-		<h3>Return value</h3>
-				
-
-<p>The given function.</p>
-
-
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -1160,8 +1237,8 @@ This function returns <code>table</code>.</p>
 		</ul>
 		<h3>Return value</h3>
 				
-
-<p>The first argument <code>table</code>. </p>
+<p><em>#table:</em>
+The first argument <code>table</code>.</p>
 
 
 </dd>
@@ -1206,19 +1283,18 @@ This function returns <code>table</code>.</p>
 </dt>
 <dd>
 	
-<p>Tries to convert its argument to a number.</p>
+<p>When called with no base, tonumber tries to convert its argument to a number.</p>
 
 	
-<p>If the argument is already
-a number or a string convertible to a number, then <code>tonumber</code> returns this
-number; otherwise, it returns <strong>nil.</strong></p>
+<p>If the argument is already a number or a string convertible to a number,
+then tonumber returns this number; otherwise, it returns <strong>nil</strong>.</p>
 
-<p>An optional argument specifies the base to interpret the numeral. The base
-may be any integer between 2 and 36, inclusive. In bases above 10, the
-letter '<code>A</code>' (in either upper or lower case) represents 10, '<code>B</code>' represents
-11, and so forth, with '<code>Z</code>' representing 35. In base 10 (the default),
-the number can have a decimal part, as well as an optional exponent part.
-In other bases, only unsigned integers are accepted.</p>
+<p>When called with base, then e should be a string to be interpreted as an
+integer numeral in that base. The base may be any integer between <code>2</code> and <code>36</code>,
+inclusive. In bases above <code>10</code>, the letter 'A' (in either upper or lower case)
+represents <code>10</code>, 'B' represents <code>11</code>, and so forth, with 'Z' representing <code>35</code>.
+If the string <code>e</code> is not a valid numeral in the given base,
+the function returns <strong>nil</strong>. </p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -1231,22 +1307,32 @@ a number or string to convert to a number.</p>
 				<li>
 				
 <p><code><em>#number base </em></code>: 
-the base to interpret the numeral, any integer between 2 and 36.(default is 10).</p>
+the base to interpret the numeral, any integer between <code>2</code> and <code>36</code> (optional, <code>10</code> by default).</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 <p><em>#number:</em>
-a number if conversion succeeds else <strong>nil</strong>.</p>
+converted number</p>
+
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+if convertion fail.</p>
 
 
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="tostring" >
-<strong>tostring(e)</strong>
+<strong>tostring(v)</strong>
 </a>
 </dt>
 <dd>
@@ -1255,18 +1341,18 @@ a number if conversion succeeds else <strong>nil</strong>.</p>
 reasonable format.</p>
 
 	
-<p>For complete control of how numbers are converted, use
-<code>string.format</code>.</p>
+<p>(For complete control of how numbers are converted, use
+<code>string.format</code>.)</p>
 
-<p>If the metatable of <code>e</code> has a <code>"__tostring"</code> field, then <code>tostring</code> calls
-the corresponding value with <code>e</code> as argument, and uses the result of the
+<p>If the metatable of <code>v</code> has a <code>"__tostring"</code> field, then <code>tostring</code> calls
+the corresponding value with <code>v</code> as argument, and uses the result of the
 call as its result.</p>
 
 		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
-<p><code><em> e </em></code>: 
+<p><code><em> v </em></code>: 
 an argument of any type.</p>
 
 				</li>
@@ -1277,103 +1363,6 @@ an argument of any type.</p>
 a string in a reasonable format.</p>
 
 
-</dd>
-</dl>
-		<dl class="function">
-<dt>
-<a id="unpack" >
-<strong>unpack(list, i, j)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>Returns the elements from the given table.</p>
-
-	
-<p>This function is equivalent to</p>
-
-<pre><code>return list[i], list[i+1], ..., list[j]
-</code></pre>
-<p>except that the above code can be written only for a fixed number of
-elements. By default, <code>i</code> is 1 and <code>j</code> is the length of the list, as
-defined by the length operator.</p>
-
-		<h3>Parameters</h3>
-		<ul>
-				<li>
-				
-<p><code><em>#table list </em></code>: 
-a table by index</p>
-
-				</li>
-				<li>
-				
-<p><code><em> i </em></code>: 
-index of first value.</p>
-
-				</li>
-				<li>
-				
-<p><code><em> j </em></code>: 
-index of last value.</p>
-
-
-				</li>
-		</ul>
-</dd>
-</dl>
-		<dl class="function">
-<dt>
-<a id="xpcall" >
-<strong>xpcall(f, err)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>This function is similar to <code>pcall</code>, except that you can set a new
-error handler.</p>
-
-	
-
-<p><code>xpcall</code> calls function <code>f</code> in protected mode, using <code>err</code> as the error
-handler. Any error inside <code>f</code> is not propagated; instead, <code>xpcall</code> catches
-the error, calls the <code>err</code> function with the original error object, and
-returns a status code. Its first result is the status code (a boolean),
-which is true if the call succeeds without errors. In this case, <code>xpcall</code>
-also returns all results from the call, after this first result. In case
-of any error, <code>xpcall</code> returns false plus the result from <code>err</code>.</p>
-
-		<h3>Parameters</h3>
-		<ul>
-				<li>
-				
-<p><code><em> f </em></code>: 
-function to be call in <em>protected mode</em>.</p>
-
-				</li>
-				<li>
-				
-<p><code><em> err </em></code>: 
-function used as error handler.</p>
-
-				</li>
-		</ul>
-		<h3>Return values</h3>
-			<ol>
-				<li>
-				
-<p><em>#boolean:</em>
-true plus the result of <code>f</code> function if its call succeeds without errors.</p>
-
-				</li>
-				<li>
-				
-<p><em>#boolean, #string:</em>
- false plus the result of <code>err</code> function. </p>
-
-
-				</li>
-			</ol>
 </dd>
 </dl>
 </div>

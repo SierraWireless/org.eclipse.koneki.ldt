@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
 -- Operating System Facilities.
--- This library is implemented through table os. 
+-- This library is implemented through table os.
 -- @module os
 
 
@@ -39,9 +39,11 @@
 -- When called without arguments, `date` returns a reasonable date and time
 -- representation that depends on the host system and on the current locale
 -- (that is, `os.date()` is equivalent to `os.date("%c")`).
+-- On non-Posix systems, this function may be not thread safe because of its
+-- reliance on C function gmtime and C function localtime.
 -- @function [parent=#os] date
--- @param #string format format of date. (optional)
--- @param #number time time to format. (default value is current time) 
+-- @param #string format format of date (optional).
+-- @param #number time time to format (optional, default value is current time) 
 -- @return #string a formatted string representation of `time`. 
 
 -------------------------------------------------------------------------------
@@ -53,39 +55,53 @@
 -- @return #number the number of seconds from time `t1` to time `t2`.
 
 -------------------------------------------------------------------------------
--- This function is equivalent to the C function `system`. It passes
--- `command` to be executed by an operating system shell. It returns a status
--- code, which is system-dependent. If `command` is absent, then it returns
--- nonzero if a shell is available and zero otherwise.
+-- This function is equivalent to the ANSI C function `system`. It passes command
+-- to be executed by an operating system shell. Its first result is **true** if
+-- the command terminated successfully, or **nil** otherwise. After this first
+-- result the function returns a string and a number, as follows:
+--  
+-- * _"exit"_: the command terminated normally; the following number is
+-- the exit status of the command.
+-- * _"signal"_: the command was terminated by a signal; the following number
+-- is the signal that terminated the command.
+-- 
+-- When called without a command, os.execute returns a boolean that is true
+-- if a shell is available.
 -- @function [parent=#os] execute
--- @param #string command command to be executed.
+-- @param #string command command to be executed (optional).
 -- @return A status code which is system-dependent.
+-- @return #boolean true if a shell is available
 
 -------------------------------------------------------------------------------
--- Calls the C function `exit`, with an optional `code`, to terminate the
--- host program. The default value for `code` is the success code.
+-- Calls the ANSI C function exit to terminate the host program. If code is **true**,
+-- the returned status is `EXIT_SUCCESS`; if code is **false**, the returned status is
+-- `EXIT_FAILURE`; if code is a number, the returned status is this number.
+-- The default value for code is `true`.
+-- 
+-- If the optional second argument `close` is **true**, closes the Lua state before exiting. 
 -- @function [parent=#os] exit
--- @param #number code an exit code. (default is the success code)
+-- @param #number code an exit code. (optional, **true** by default)
+-- @param #boolean close indicate if the Lua state have to be closed (optional, **false** by default)
 
 -------------------------------------------------------------------------------
 -- Returns the value of the process environment variable `varname`, or
--- nil if the variable is not defined.
+-- **nil** if the variable is not defined.
 -- @function [parent=#os] getenv
 -- @param #string varname an environment variable name.  
--- @return The value of the process environment variable `varname`, or
--- nil if the variable is not defined.
+-- @return The value of the process environment variable `varname`
+-- @return #nil if the variable is not defined.
 
 -------------------------------------------------------------------------------
--- Deletes the file or directory with the given name. Directories must be
--- empty to be removed. If this function fails, it returns nil, plus a string
--- describing the error.
+-- Deletes the file (or empty directory, on POSIX systems) with the given name.
+-- If this function fails, it returns **nil**, plus a string describing the error
+-- and the error code. 
 -- @function [parent=#os] remove
 -- @param filename the path to the file or directory to delete.
 -- @return #nil, #string an error message if it failed.
 
 -------------------------------------------------------------------------------
 -- Renames file or directory named `oldname` to `newname`. If this function
--- fails, it returns nil, plus a string describing the error.
+-- fails, it returns **nil**, plus a string describing the error.
 -- @function [parent=#os] rename
 -- @param oldname the path to the file or directory to rename.
 -- @param newname the new path.
@@ -96,7 +112,7 @@
 -- a locale; `category` is an optional string describing which category to
 -- change: `"all"`, `"collate"`, `"ctype"`, `"monetary"`, `"numeric"`, or
 -- `"time"`; the default category is `"all"`. The function returns the name
--- of the new locale, or nil if the request cannot be honored.
+-- of the new locale, or **nil** if the request cannot be honored.
 -- 
 -- If `locale` is the empty string, the current locale is set to an
 -- implementation-defined native locale. If `locale` is the string "`C`",
@@ -111,31 +127,31 @@
 -- @return #string the current locale.
 
 -------------------------------------------------------------------------------
--- Returns the current time when called without arguments, or a time
--- representing the date and time specified by the given table. This table
--- must have fields `year`, `month`, and `day`, and may have fields `hour`,
--- `min`, `sec`, and `isdst` (for a description of these fields, see the
--- `os.date` function).
+-- Returns the current time when called without arguments, or a time representing
+-- the date and time specified by the given table. This table must have fields
+-- `year`, `month`, and `day`, and may have fields `hour` (default is `12`),
+-- `min` (default is `0`), `sec` (default is `0`), and `isdst` (default is **nil**).
+-- For a description of these fields, see the `os.date` function.
 -- 
--- The returned value is a number, whose meaning depends on your system. In
--- POSIX, Windows, and some other systems, this number counts the number
--- of seconds since some given start time (the "epoch"). In other systems,
--- the meaning is not specified, and the number returned by `time` can be
--- used only as an argument to `date` and `difftime`.
+-- The returned value is a number, whose meaning depends on your system. In POSIX,
+-- Windows, and some other systems, this number counts the number of seconds since
+-- some given start time (the "epoch"). In other systems, the meaning is not specified,
+-- and the number returned by `time` can be used only as an argument to `os.date`
+-- and `os.difftime`.
 -- @function [parent=#os] time
--- @param #table table a table which describes a date.
--- @return #number a number meaning a date.
+-- @param #table table A table describing the time (optional)
+-- @return #number timestamp formatted according to the current system.
 
 -------------------------------------------------------------------------------
 -- Returns a string with a file name that can be used for a temporary
 -- file. The file must be explicitly opened before its use and explicitly
 -- removed when no longer needed.
 -- 
--- On some systems (POSIX), this function also creates a file with that
--- name, to avoid security risks. (Someone else might create the file with
--- wrong permissions in the time between getting the name and creating the
--- file.) You still have to open the file to use it and to remove it (even
--- if you do not use it).
+-- On POSIX systems, this function also creates a file with that name,
+-- to avoid security risks. (Someone else might create the file with wrong
+-- permissions in the time between getting the name and creating the file.)
+-- You still have to open the file to use it and to remove it
+-- (even if you do not use it). 
 -- 
 -- When possible, you may prefer to use `io.tmpfile`, which automatically
 -- removes the file when the program ends.

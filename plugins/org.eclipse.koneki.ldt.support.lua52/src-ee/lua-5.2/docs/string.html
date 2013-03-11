@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li><a href="coroutine.html">coroutine</a></li>
 					<li><a href="debug.html">debug</a></li>
 					<li><a href="global.html">global</a></li>
@@ -50,8 +51,7 @@ For instance, string.byte(s, i) can be written as s:byte(i).</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(string).byte">string.byte(s, i, j)</a></td>
 		<td class="summary">
-<p>Returns the internal numerical codes of the characters <code>s[i]</code>, <code>s[i+1]</code>,
-..., <code>s[j]</code>.</p>
+<p>Returns the internal numerical codes of the characters <code>s[i], s[i+1], ..., s[j]</code>.</p>
 </td>
 		</tr>
 		<tr>
@@ -63,9 +63,8 @@ For instance, string.byte(s, i) can be written as s:byte(i).</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(string).dump">string.dump(f)</a></td>
 		<td class="summary">
-<p>Returns a string containing a binary representation of the given
-function, so that a later <code>loadstring</code> on this string returns a copy of
-the function.</p>
+<p>Returns a string containing a binary representation of the given function,
+so that a later <code>load</code> on this string returns a copy of the function (but with new upvalues). </p>
 </td>
 		</tr>
 		<tr>
@@ -77,8 +76,8 @@ the function.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(string).format">string.format(formatstring, ...)</a></td>
 		<td class="summary">
-<p>Returns a formatted version of its variable number of arguments following
-the description given in its first argument (which must be a string).</p>
+<p>Returns a formatted version of its variable number of arguments following the description given
+in its first argument (which must be a string).</p>
 </td>
 		</tr>
 		<tr>
@@ -91,9 +90,9 @@ next captures from <code>pattern</code> over string <code>s</code>.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(string).gsub">string.gsub(s, pattern, repl, n)</a></td>
 		<td class="summary">
-<p>Returns a copy of <code>s</code> in which all (or the first <code>n</code>, if given)
-occurrences of the <code>pattern</code> have been replaced by a replacement string
-specified by <code>repl</code>, which can be a string, a table, or a function.</p>
+<p>Returns a copy of <code>s</code> in which all (or the first <code>n</code>, if given) occurrences of 
+the pattern have been replaced by a replacement string specified by <code>repl</code>, 
+which can be a string, a table, or a function.</p>
 </td>
 		</tr>
 		<tr>
@@ -153,13 +152,15 @@ letters changed to uppercase.</p>
 </dt>
 <dd>
 	
-<p>Returns the internal numerical codes of the characters <code>s[i]</code>, <code>s[i+1]</code>,
-..., <code>s[j]</code>.</p>
+<p>Returns the internal numerical codes of the characters <code>s[i], s[i+1], ..., s[j]</code>.</p>
 
 	
-<p>The default value for <code>i</code> is 1; the default value for <code>j</code>
-is <code>i</code>.
-Note that numerical codes are not necessarily portable across platforms.</p>
+<p>The default value
+for i is 1; the default value for j is i. These indices are corrected following the same rules of
+function <code>string.sub</code>.</p>
+
+<p>Numerical codes are not necessarily portable across platforms.</p>
+
 
 		<h3>Parameters</h3>
 		<ul>
@@ -234,12 +235,8 @@ code equal to its corresponding argument.</p>
 </dt>
 <dd>
 	
-<p>Returns a string containing a binary representation of the given
-function, so that a later <code>loadstring</code> on this string returns a copy of
-the function.</p>
-
-	
-<p><code>function</code> must be a Lua function without upvalues.</p>
+<p>Returns a string containing a binary representation of the given function,
+so that a later <code>load</code> on this string returns a copy of the function (but with new upvalues). </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -271,16 +268,15 @@ a string representation of the given function.</p>
 	
 <p>If it finds a
 match, then <code>find</code> returns the indices of <code>s</code> where this occurrence starts
-and ends; otherwise, it returns nil.A third, optional numerical argument
+and ends; otherwise, it returns <strong>nil</strong>. A third, optional numerical argument
 <code>init</code> specifies where to start the search; its default value is 1 and
-can be negative. A value of true as a fourth, optional argument <code>plain</code>
+can be negative. A value of <strong>true</strong> as a fourth, optional argument <code>plain</code>
 turns off the pattern matching facilities, so the function does a plain
 "find substring" operation, with no characters in <code>pattern</code> being considered
-"magic". </p>
+"magic". Note that if plain is given, then init must be given as well. </p>
 
-<p>Note that if <code>plain</code> is given, then <code>init</code> must be given as well.
-If the pattern has captures, then in a successful match the captured values
-are also returned, after the two indices.</p>
+<p>If the pattern has captures, then in a successful match the captured values
+are also returned, after the two indices. </p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -314,7 +310,7 @@ set to true to search without pattern matching. (default value is false)</p>
 				<li>
 				
 <p><em>#number, #number:</em>
-start and end indices of first occurence.</p>
+start and end indices of first occurrence.</p>
 
 				</li>
 				<li>
@@ -335,18 +331,15 @@ if pattern not found.</p>
 </dt>
 <dd>
 	
-<p>Returns a formatted version of its variable number of arguments following
-the description given in its first argument (which must be a string).</p>
+<p>Returns a formatted version of its variable number of arguments following the description given
+in its first argument (which must be a string).</p>
 
 	
-<p>The
-format string follows the same rules as the <code>printf</code> family of standard C
-functions. The only differences are that the options/modifiers <code>*</code>, <code>l</code>,
-<code>L</code>, <code>n</code>, <code>p</code>, and <code>h</code> are not supported and that there is an extra option,
-<code>q</code>. The <code>q</code> option formats a string in a form suitable to be safely read
-back by the Lua interpreter: the string is written between double quotes,
-and all double quotes, newlines, embedded zeros, and backslashes in the
-string are correctly escaped when written. For instance, the call</p>
+<p>The format string follows the same rules as the
+ANSI C function <code>sprintf</code>. The only differences are that the options/modifiers <code>*</code>, <code>h</code>, <code>L</code>, <code>l</code>, <code>n</code>, and
+<code>p</code> are not supported and that there is an extra option, <code>q</code>. The <code>q</code> option formats a string between
+double quotes, using escape sequences when necessary to ensure that it can safely be read back
+by the Lua interpreter. For instance, the call </p>
 
 <pre><code>string.format('%q', 'a string with "quotes" and \n new line')
 </code></pre>
@@ -357,10 +350,11 @@ string are correctly escaped when written. For instance, the call</p>
     new line"
 </code></pre>
 
-<p>The options <code>c</code>, <code>d</code>, <code>E</code>, <code>e</code>, <code>f</code>, <code>g</code>, <code>G</code>, <code>i</code>, <code>o</code>, <code>u</code>, <code>X</code>, and
-<code>x</code> all expect a number as argument, whereas <code>q</code> and <code>s</code> expect a string.
-This function does not accept string values containing embedded zeros,
-except as arguments to the <code>q</code> option.</p>
+<p>Options <code>A</code> and <code>a</code> (when available), <code>E</code>, <code>e</code>, <code>f</code>, <code>G</code>, and <code>g</code> all expect a number as argument.
+Options <code>c</code>, <code>d</code>, <code>i</code>, <code>o</code>, <code>u</code>, <code>X</code>, and <code>x</code> also expect a number, but the range of that number
+may be limited by the underlying C implementation. For options <code>o</code>, <code>u</code>, <code>X</code>, and <code>x</code>, the number cannot
+be negative. Option <code>q</code> expects a string; option <code>s</code> expects a string without embedded zeros.
+If the argument to option <code>s</code> is not a string, it is converted to one following the same rules of <code>tostring</code>. </p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -399,7 +393,7 @@ next captures from <code>pattern</code> over string <code>s</code>.</p>
 	
 <p>If <code>pattern</code> specifies no
 captures, then the whole match is produced in each call.
-As an example, the following loop</p>
+ As an example, the following loop will iterate over all the words from string s, printing one per line:</p>
 
 <pre><code>s = "hello world from Lua"
 for w in string.gmatch(s, "%a+") do
@@ -407,9 +401,7 @@ for w in string.gmatch(s, "%a+") do
 end
 </code></pre>
 
-<p>will iterate over all the words from string <code>s</code>, printing one per line. The
-next example collects all pairs <code>key=value</code> from the given string into
-a table:</p>
+<p>The next example collects all pairs key=value from the given string into a table:</p>
 
 <pre><code>t = {}
 s = "from=world, to=Lua"
@@ -434,9 +426,14 @@ string to handle.</p>
 <p><code><em>#string pattern </em></code>: 
 pattern to search.</p>
 
-
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>Iterator of captures.</p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -447,13 +444,14 @@ pattern to search.</p>
 </dt>
 <dd>
 	
-<p>Returns a copy of <code>s</code> in which all (or the first <code>n</code>, if given)
-occurrences of the <code>pattern</code> have been replaced by a replacement string
-specified by <code>repl</code>, which can be a string, a table, or a function.</p>
+<p>Returns a copy of <code>s</code> in which all (or the first <code>n</code>, if given) occurrences of 
+the pattern have been replaced by a replacement string specified by <code>repl</code>, 
+which can be a string, a table, or a function.</p>
 
 	
-<p><code>gsub</code>
-also returns, as its second value, the total number of matches that occurred.</p>
+<p><code>gsub</code> also returns, as its second 
+value, the total number of matches that occurred. The name <code>gsub</code> comes from 
+<code>Global SUBstitution</code>. </p>
 
 <p>If <code>repl</code> is a string, then its value is used for replacement. The character
 <code>%</code> works as an escape character: any sequence in <code>repl</code> of the form <code>%n</code>,
@@ -461,38 +459,39 @@ with <em>n</em> between 1 and 9, stands for the value of the <em>n</em>-th captu
 substring (see below). The sequence <code>%0</code> stands for the whole match. The
 sequence <code>%%</code> stands for a single <code>%</code>.</p>
 
-<p>If <code>repl</code> is a table, then the table is queried for every match, using
-the first capture as the key; if the pattern specifies no captures, then
-the whole match is used as the key.</p>
+<p>If <code>repl</code> is a table, then the table is queried for every match, using the first capture as the key. </p>
 
-<p>If <code>repl</code> is a function, then this function is called every time a match
-occurs, with all captured substrings passed as arguments, in order; if
-the pattern specifies no captures, then the whole match is passed as a
-sole argument.</p>
+<p>If <code>repl</code> is a function, then this function is called every time a match occurs, 
+with all captured substrings passed as arguments, in order. </p>
 
-<p>If the value returned by the table query or by the function call is a
-string or a number, then it is used as the replacement string; otherwise,
-if it is false or nil, then there is no replacement (that is, the original
-match is kept in the string).</p>
+<p>If the value returned by the table query or by the function call is a string or
+a number, then it is used as the replacement string; otherwise, if it is <strong>false</strong> or <strong>nil</strong>,
+then there is no replacement (that is, the original match is kept in the string). </p>
 
 <p>Here are some examples:</p>
 
 <pre><code>x = string.gsub("hello world", "(%w+)", "%1 %1")
 --&gt; x="hello hello world world"
+
 x = string.gsub("hello world", "%w+", "%0 %0", 1)
 --&gt; x="hello hello world"
+
 x = string.gsub("hello world from Lua", "(%w+)%s*(%w+)", "%2 %1")
 --&gt; x="world hello Lua from"
+
 x = string.gsub("home = $HOME, user = $USER", "%$(%w+)", os.getenv)
 --&gt; x="home = /home/roberto, user = roberto"
+
 x = string.gsub("4+5 = $return 4+5$", "%$(.-)%$", function (s)
       return loadstring(s)()
     end)
 --&gt; x="4+5 = 9"
+
 local t = {name="lua", version="5.1"}
 x = string.gsub("$name-$version.tar.gz", "%$(%w+)", t)
---&gt; x="lua-5.1.tar.gz"
+--&gt; x="lua-5.2.tar.gz"
 </code></pre>
+
 
 		<h3>Parameters</h3>
 		<ul>
@@ -605,7 +604,7 @@ a lower case version of <code>s</code>.</p>
 	
 <p>If it
 finds one, then <code>match</code> returns the captures from the pattern; otherwise
-it returns nil. If <code>pattern</code> specifies no captures, then the whole match
+it returns <strong>nil</strong>. If <code>pattern</code> specifies no captures, then the whole match
 is returned. A third, optional numerical argument <code>init</code> specifies where
 to start the search; its default value is 1 and can be negative.</p>
 
@@ -713,7 +712,12 @@ the string <code>s</code> reversed.</p>
 <p>If <code>j</code> is absent, then it is assumed to
 be equal to -1 (which is the same as the string length). In particular,
 the call <code>string.sub(s,1,j)</code> returns a prefix of <code>s</code> with length <code>j</code>, and
-<code>string.sub(s, -i)</code> returns a suffix of <code>s</code> with length <code>i</code>.</p>
+<code>string.sub(s, -i)</code> returns a suffix of <code>s</code> with length <code>i</code>.
+If, after the translation of negative indices, i is less than 1, it is corrected to 1.</p>
+
+<p>If <code>j</code> is greater than the string length, it is corrected to that length. If, after these
+corrections, <code>i</code> is greater than <code>j</code>, the function returns the empty string.</p>
+
 
 		<h3>Parameters</h3>
 		<ul>

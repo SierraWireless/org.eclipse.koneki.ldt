@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li><a href="coroutine.html">coroutine</a></li>
 					<li><a href="debug.html">debug</a></li>
 					<li><a href="global.html">global</a></li>
@@ -31,51 +32,57 @@
 	<div id="content">
    <h1>Module <code>table</code></h1>
    
-<p>Table Manipulation
-This library provides generic functions for table manipulation.</p>
+<p>Table Manipulation.</p>
 
    
-<p>It provides all its functions inside the table table.</p>
+<p>This library provides generic functions for table manipulation. It provides
+all its functions inside the table <code>table</code>.</p>
 
-<p>Most functions in the table library assume that the table represents an array or a list.
-For these functions, when we talk about the "length" of a table we mean the result of the length operator.</p>
+<p>Remember that, whenever an operation needs the length of a table, the table
+should be a proper sequence or have a <code>__len</code> metamethod. All
+functions ignore non-numeric keys in tables given as arguments.</p>
+
+<p>For performance reasons, all table accesses (get/set) performed by these functions are raw. </p>
 
 	<h2><a id="#(table)" >Type <code>table</code></a></h2>
 		<table class="function_list">
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(table).concat">table.concat(table, sep, i, j)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(table).concat">table.concat(list, sep, i, j)</a></td>
 		<td class="summary">
-<p>Given an array where all elements are strings or numbers, returns
-<code>table[i]..sep..table[i+1]...sep..table[j]</code>.</p>
+<p>Given a list where all elements are strings or numbers, returns the string
+`list[i]..sep..list[i+1] ...</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(table).insert">table.insert(table, pos, value)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(table).insert">table.insert(list, pos, value)</a></td>
 		<td class="summary">
-<p>Inserts element <code>value</code> at position <code>pos</code> in <code>table</code>, shifting up
+<p>Inserts element <code>value</code> at position <code>pos</code> in <code>list</code>, shifting up
 other elements to open space, if necessary.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(table).maxn">table.maxn(table)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(table).pack">table.pack(...)</a></td>
 		<td class="summary">
-<p>Returns the largest positive numerical index of the given table, or
-zero if the table has no positive numerical indices.</p>
+<p>Returns a new table with all parameters stored into keys 1, 2, etc.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(table).remove">table.remove(table, pos)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(table).remove">table.remove(list, pos)</a></td>
 		<td class="summary">
-<p>Removes from <code>table</code> the element at position <code>pos</code>, shifting down other
-elements to close the space, if necessary.</p>
+<p>Removes from list the element at position <code>pos</code>, shifting down the elements
+<code>list[pos+1], list[pos+2], ..., list[#list]</code> and erasing element <code>list[#list]</code>.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(table).sort">table.sort(table, comp)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(table).sort">table.sort(list, comp)</a></td>
 		<td class="summary">
-<p>Sorts table elements in a given order,
-<em>in-place</em>, from <code>table[1]</code> to <code>table[n]</code>, where <code>n</code> is the length of the
-table.</p>
+<p>Sorts list elements in a given order, in-place, from <code>list[1]</code> to <code>list[#list]</code>.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(table).unpack">table.unpack(list, i, j)</a></td>
+		<td class="summary">
+<p> Returns the elements from the given table.</p>
 </td>
 		</tr>
 	</table>
@@ -85,83 +92,92 @@ table.</p>
 		<dl class="function">
 <dt>
 <a id="#(table).concat" >
-<strong>table.concat(table, sep, i, j)</strong>
+<strong>table.concat(list, sep, i, j)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Given an array where all elements are strings or numbers, returns
-<code>table[i]..sep..table[i+1]...sep..table[j]</code>.</p>
+<p>Given a list where all elements are strings or numbers, returns the string
+`list[i]..sep..list[i+1] ...</p>
 
 	
-<p>The default value for
-<code>sep</code> is the empty string, the default for <code>i</code> is 1, and the default for
-<code>j</code> is the length of the table. If <code>i</code> is greater than <code>j</code>, returns the
-empty string.</p>
+<p>sep..list[j]<code>. The default value for</code>sep` is 
+the empty string, the default for <code>i</code> is <code>1</code>, and the default for <code>j</code> is <code>#list</code>.
+If <code>i</code> is greater than <code>j</code>, returns the empty string. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-table to handle.</p>
+<p><code><em>#table list </em></code>: 
+list to handle.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#string sep </em></code>: 
-the separator, default value is an empty string. </p>
+the separator (optional, empty string by default). </p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number i </em></code>: 
-start index, default value is 1.</p>
+start index (optional, 1 by default).</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number j </em></code>: 
-end index, default value is lenght of the table.</p>
+end index (optional, <code>list</code> length by default)</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 <p><em>#string:</em>
-the concatenated table.</p>
+the concatenated list.</p>
+
+				</li>
+				<li>
+				
+<p><em>#string:</em>
+empty string if <code>i</code> is greater than <code>j</code></p>
 
 
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="#(table).insert" >
-<strong>table.insert(table, pos, value)</strong>
+<strong>table.insert(list, pos, value)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Inserts element <code>value</code> at position <code>pos</code> in <code>table</code>, shifting up
+<p>Inserts element <code>value</code> at position <code>pos</code> in <code>list</code>, shifting up
 other elements to open space, if necessary.</p>
 
 	
 <p>The default value for <code>pos</code> is
-<code>n+1</code>, where <code>n</code> is the length of the table, so that a call
-<code>table.insert(t,x)</code> inserts <code>x</code> at the end of table <code>t</code>.</p>
+<code>n+1</code>, where <code>n</code> is the length of the list, so that a call
+<code>table.insert(t,x)</code> inserts <code>x</code> at the end of list <code>t</code>.</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-table to modify.</p>
+<p><code><em>#table list </em></code>: 
+list to modify.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number pos </em></code>: 
-index of insertion.</p>
+index of insertion (optional, insert at the end of the table by default)</p>
 
 				</li>
 				<li>
@@ -176,33 +192,32 @@ value to insert.</p>
 </dl>
 		<dl class="function">
 <dt>
-<a id="#(table).maxn" >
-<strong>table.maxn(table)</strong>
+<a id="#(table).pack" >
+<strong>table.pack(...)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Returns the largest positive numerical index of the given table, or
-zero if the table has no positive numerical indices.</p>
+<p>Returns a new table with all parameters stored into keys 1, 2, etc.</p>
 
 	
-<p>(To do its job this
-function does a linear traversal of the whole table.)</p>
+<p>and with 
+a field <code>n</code> with the total number of parameters. Note that the resulting
+table may not be a sequence. </p>
 
 		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-table to traverse.</p>
+<p><code><em> ... </em></code>: 
+items to pack</p>
 
 				</li>
 		</ul>
 		<h3>Return value</h3>
 				
-<p><em>#number:</em>
-the largest positive numerical index of the given table, or
-zero if the table has no positive numerical indices.</p>
+<p><em>#table:</em>
+the created table from given parameters</p>
 
 
 </dd>
@@ -210,32 +225,30 @@ zero if the table has no positive numerical indices.</p>
 		<dl class="function">
 <dt>
 <a id="#(table).remove" >
-<strong>table.remove(table, pos)</strong>
+<strong>table.remove(list, pos)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Removes from <code>table</code> the element at position <code>pos</code>, shifting down other
-elements to close the space, if necessary.</p>
+<p>Removes from list the element at position <code>pos</code>, shifting down the elements
+<code>list[pos+1], list[pos+2], ..., list[#list]</code> and erasing element <code>list[#list]</code>.</p>
 
 	
-<p>Returns the value of the removed
-element. The default value for <code>pos</code> is <code>n</code>, where <code>n</code> is the length of the
-table, so that a call <code>table.remove(t)</code> removes the last element of table
-<code>t</code>.</p>
+<p>Returns the value of the removed element. The default value for pos is <code>#list</code>,
+so that a call <code>table.remove(t)</code> removes the last element of list <code>t</code>. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-table to modify.</p>
+<p><code><em>#table list </em></code>: 
+list to modify.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number pos </em></code>: 
-index of deletion. (default value is the lenght of the table)</p>
+index of deletion (optional, length of the list by default)</p>
 
 
 				</li>
@@ -245,38 +258,85 @@ index of deletion. (default value is the lenght of the table)</p>
 		<dl class="function">
 <dt>
 <a id="#(table).sort" >
-<strong>table.sort(table, comp)</strong>
+<strong>table.sort(list, comp)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Sorts table elements in a given order,
-<em>in-place</em>, from <code>table[1]</code> to <code>table[n]</code>, where <code>n</code> is the length of the
-table.</p>
+<p>Sorts list elements in a given order, in-place, from <code>list[1]</code> to <code>list[#list]</code>.</p>
 
 	
-<p>If <code>comp</code> is given, then it must be a function that receives two
-table elements, and returns true when the first is less than the second
-(so that <code>not comp(a[i+1],a[i])</code> will be true after the sort). Lua operator &lt; is used instead.</p>
+<p>If <code>comp</code> is given, then it must be a function that receives two list elements
+and returns true when the first element must come before the second in the
+final order (so that <code>not comp(list[i+1],list[i]</code>) will be true after the sort).
+If <code>comp</code> is not given, then the standard Lua operator &lt; is used instead. </p>
 
-<p>The sort algorithm is not stable; that is, elements considered equal by the given order may have their relative positions changed by the sort.</p>
+<p>The sort algorithm is not stable; that is, elements considered equal by the
+given order may have their relative positions changed by the sort.</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-table to sort.</p>
+<p><code><em>#table list </em></code>: 
+list to sort.</p>
 
 				</li>
 				<li>
 				
 <p><code><em> comp </em></code>: 
-a function which take to table and returns true when the first is less than the second.</p>
+a function which take two lists and returns true when the first is less than the second (optional).</p>
 
 
 				</li>
 		</ul>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(table).unpack" >
+<strong>table.unpack(list, i, j)</strong>
+</a>
+</dt>
+<dd>
+	
+<p> Returns the elements from the given table.</p>
+
+	
+<p>This function is equivalent to</p>
+
+<pre><code>return list[i], list[i+1], ..., list[j]
+</code></pre>
+
+<p>By default, <code>i</code> is 1 and <code>j</code> is <code>#list</code>. </p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#table list </em></code>: 
+list to unpack</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number i </em></code>: 
+start index (optional, 1 by default).</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number j </em></code>: 
+end index (optional, length of the list by default).</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+
+<p>Return each table elements as separated values</p>
+
+
 </dd>
 </dl>
 

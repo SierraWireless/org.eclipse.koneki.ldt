@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li><a href="coroutine.html">coroutine</a></li>
 					<li>debug</li>
 					<li><a href="global.html">global</a></li>
@@ -35,16 +36,13 @@
 
    
 <p>This library provides the functionality of the debug interface to Lua programs.
-You should exert care when using this library.
-The functions provided here should be used exclusively for debugging and similar tasks,
-such as profiling.
-Please resist the temptation to use them as a usual programming tool:
-they can be very slow. Moreover, several of these functions violate some assumptions 
-about Lua code (e.g., that variables local to a function cannot be accessed from outside 
-or that userdata metatables cannot be changed by Lua code) and therefore can compromise
-otherwise secure code.</p>
+You should exert care when using this library. Several of its functions violate
+basic assumptions about Lua code (e.g., that variables local to a function
+cannot be accessed from outside; that userdata metatables cannot be changed
+by Lua code; that Lua programs do not crash) and therefore can compromise
+otherwise secure code. Moreover, some functions in this library may be slow.</p>
 
-<p>All functions in this library are provided inside the debug table.
+<p>All functions in this library are provided inside the <code>debug</code> table.
 All functions that operate over a thread have an optional first argument
 which is the thread to operate over. The default is always the current thread. </p>
 
@@ -55,12 +53,6 @@ which is the thread to operate over. The default is always the current thread. <
 		<td class="summary">
 <p>Enters an interactive mode with the user, running each string that
 the user enters.</p>
-</td>
-		</tr>
-		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).getfenv">debug.getfenv(o)</a></td>
-		<td class="summary">
-<p>Returns the environment of object <code>o</code>.</p>
 </td>
 		</tr>
 		<tr>
@@ -78,16 +70,16 @@ current hook function, the current hook mask, and the current hook count
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).getlocal">debug.getlocal(thread, level, local)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(debug).getlocal">debug.getlocal(thread, f, local)</a></td>
 		<td class="summary">
-<p>This function returns the name and the value of the local variable with
-index <code>local</code> of the function at level <code>level</code> of the stack.</p>
+<p>This function returns the name and the value of the <code>local</code> variable with index
+local of the function at level <code>f</code> of the stack.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).getmetatable">debug.getmetatable(object)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(debug).getmetatable">debug.getmetatable(value)</a></td>
 		<td class="summary">
-<p>Returns the metatable of the given <code>object</code> or nil if it does not have
+<p>Returns the metatable of the given <code>value</code> or <strong>nil</strong> if it does not have
 a metatable.</p>
 </td>
 		</tr>
@@ -98,16 +90,16 @@ a metatable.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).getupvalue">debug.getupvalue(func, up)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(debug).getupvalue">debug.getupvalue(f, up)</a></td>
 		<td class="summary">
 <p>This function returns the name and the value of the upvalue with index
-<code>up</code> of the function <code>func</code>.</p>
+<code>up</code> of the function <code>f</code>.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).setfenv">debug.setfenv(object, table)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(debug).getuservalue">debug.getuservalue(u)</a></td>
 		<td class="summary">
-<p>Sets the environment of the given <code>object</code> to the given <code>table</code>.</p>
+<p>Returns the Lua value associated to <code>u</code>.</p>
 </td>
 		</tr>
 		<tr>
@@ -124,17 +116,37 @@ index <code>local</code> of the function at level <code>level</code> of the stac
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(debug).setmetatable">debug.setmetatable(object, table)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(debug).setmetatable">debug.setmetatable(value, table)</a></td>
 		<td class="summary">
-<p>Sets the metatable for the given <code>object</code> to the given <code>table</code> (which
-can be nil).</p>
+<p>Sets the metatable for the given <code>value</code> to the given <code>table</code> (which
+can be <strong>nil</strong>).</p>
 </td>
 		</tr>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(debug).setupvalue">debug.setupvalue(func, up, value)</a></td>
 		<td class="summary">
 <p>This function assigns the value <code>value</code> to the upvalue with index <code>up</code>
-of the function <code>func</code>.</p>
+of the function <code>f</code>.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(debug).traceback">debug.traceback(thread, message, level)</a></td>
+		<td class="summary">
+<p>If <code>message</code> is present but is neither a <code>#string</code> nor <strong>nil</strong>, this function returns
+message without further processing.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(debug).upvalueid">debug.upvalueid(f, n)</a></td>
+		<td class="summary">
+<p> Returns an unique identifier (as a light userdata) for the upvalue <code>n</code>
+ from the given function.</p>
+</td>
+		</tr>
+		<tr>
+		<td class="name" nowrap="nowrap"><a href="##(debug).upvaluejoin">debug.upvaluejoin(f1, n1, f2, n2)</a></td>
+		<td class="summary">
+<p>Make the <code>n1</code>-th upvalue of the Lua closure <code>f1</code> refer to the <code>n2</code>-th upvalue of the Lua closure <code>f2</code>. </p>
 </td>
 		</tr>
 	</table>
@@ -165,33 +177,6 @@ function, and so have no direct access to local variables.</p>
 </dl>
 		<dl class="function">
 <dt>
-<a id="#(debug).getfenv" >
-<strong>debug.getfenv(o)</strong>
-</a>
-</dt>
-<dd>
-	
-<p>Returns the environment of object <code>o</code>.</p>
-
-		<h3>Parameter</h3>
-		<ul>
-				<li>
-				
-<p><code><em> o </em></code>: 
-object to handle.</p>
-
-				</li>
-		</ul>
-		<h3>Return value</h3>
-				
-<p><em>#table:</em>
-the environment of object <code>o</code>.</p>
-
-
-</dd>
-</dl>
-		<dl class="function">
-<dt>
 <a id="#(debug).gethook" >
 <strong>debug.gethook(thread)</strong>
 </a>
@@ -207,7 +192,7 @@ current hook function, the current hook mask, and the current hook count
 				<li>
 				
 <p><code><em>#thread thread </em></code>: 
-thread to handle.</p>
+thread to handle (optional).</p>
 
 
 				</li>
@@ -250,7 +235,7 @@ information about the <code>print</code> function.</p>
 				<li>
 				
 <p><code><em>#thread thread </em></code>: 
-thread to handle.</p>
+thread to handle (optional).</p>
 
 				</li>
 				<li>
@@ -262,7 +247,7 @@ the function or a number which means the function running at level <code>func</c
 				<li>
 				
 <p><code><em>#string what </em></code>: 
-used to precise information returned.</p>
+used to precise information returned (optional).</p>
 
 				</li>
 		</ul>
@@ -277,36 +262,42 @@ with information about the function <code>func</code>.</p>
 		<dl class="function">
 <dt>
 <a id="#(debug).getlocal" >
-<strong>debug.getlocal(thread, level, local)</strong>
+<strong>debug.getlocal(thread, f, local)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>This function returns the name and the value of the local variable with
-index <code>local</code> of the function at level <code>level</code> of the stack.</p>
+<p>This function returns the name and the value of the <code>local</code> variable with index
+local of the function at level <code>f</code> of the stack.</p>
 
 	
-<p>(The first
-parameter or local variable has index 1, and so on, until the last active
-local variable.) The function returns nil if there is no local variable
-with the given index, and raises an error when called with a <code>level</code> out
-of range. (You can call <code>debug.getinfo</code> to check whether the level is valid.)</p>
+<p>This function accesses not only
+xplicit local variables, but also parameters, temporaries, etc.</p>
 
-<p>Variable names starting with '<code>(</code>' (open parentheses) represent internal
-variables (loop control variables, temporaries, and C function locals).</p>
+<p>The first parameter or local variable has index <code>1</code>, and so on, until the last
+active variable. Negative indices refer to vararg parameters; <code>-1</code> is the first
+vararg parameter. The function returns <strong>nil</strong> if there is no variable with the
+given index, and raises an error when called with a level out of range.
+(You can call <code>debug.getinfo</code> to check whether the level is valid.)</p>
+
+<p>Variable names starting with '(' (open parenthesis) represent internal
+variables (loop control variables, temporaries, varargs, and C function locals).</p>
+
+<p>The parameter <code>f</code> may also be a function. In that case, getlocal returns
+only the name of function parameters. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#thread thread </em></code>: 
-thread which owns the local variable.</p>
+thread which owns the local variable (optional).</p>
 
 				</li>
 				<li>
 				
-<p><code><em>#number level </em></code>: 
-the stack level.</p>
+<p><code><em> f </em></code>: 
+the stack level or a function</p>
 
 				</li>
 				<li>
@@ -316,32 +307,42 @@ the index of the local variable.</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
-
-<p>The name and the value of the local variable with
+<p><em>#string:</em>
+The name and the value of the local variable with
 index <code>local</code> of the function at level <code>level</code> of the stack.</p>
 
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+if no variable was found</p>
 
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="#(debug).getmetatable" >
-<strong>debug.getmetatable(object)</strong>
+<strong>debug.getmetatable(value)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Returns the metatable of the given <code>object</code> or nil if it does not have
+<p>Returns the metatable of the given <code>value</code> or <strong>nil</strong> if it does not have
 a metatable.</p>
 
 		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
-<p><code><em> object </em></code>: 
-object to handle.</p>
+<p><code><em> value </em></code>: 
+value to handle.</p>
 
 				</li>
 		</ul>
@@ -364,82 +365,100 @@ a metatable.</p>
 	
 <p>Returns the registry table.</p>
 
+		<h3>Return value</h3>
+				
+<p><em>#table:</em>
+The registry table</p>
+
+
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="#(debug).getupvalue" >
-<strong>debug.getupvalue(func, up)</strong>
+<strong>debug.getupvalue(f, up)</strong>
 </a>
 </dt>
 <dd>
 	
 <p>This function returns the name and the value of the upvalue with index
-<code>up</code> of the function <code>func</code>.</p>
+<code>up</code> of the function <code>f</code>.</p>
 
 	
-<p>The function returns nil if there is no
+<p>The function returns <strong>nil</strong> if there is no
 upvalue with the given index.</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em> func </em></code>: 
+<p><code><em> f </em></code>: 
 function which owns the upvalue.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number up </em></code>: 
-index of upvalue. </p>
+index of upvalue.</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 
-<p>The name and the value of the upvalue with index
-<code>up</code> of the function <code>func</code>.</p>
+<p>The name and the value of the upvalue of the function <code>f</code>.</p>
+
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+no upvalue found.</p>
 
 
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
-<a id="#(debug).setfenv" >
-<strong>debug.setfenv(object, table)</strong>
+<a id="#(debug).getuservalue" >
+<strong>debug.getuservalue(u)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Sets the environment of the given <code>object</code> to the given <code>table</code>.</p>
+<p>Returns the Lua value associated to <code>u</code>.</p>
 
 	
-<p>Returns
-<code>object</code>.</p>
+<p>If <code>u</code> is not a userdata, returns <strong>nil</strong>. </p>
 
-		<h3>Parameters</h3>
+		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
-<p><code><em> object </em></code>: 
-object to handle.</p>
+<p><code><em>#userdata u </em></code>: 
+userdata</p>
+
+				</li>
+		</ul>
+		<h3>Return values</h3>
+			<ol>
+				<li>
+				
+
+<p>the value of the userdata</p>
 
 				</li>
 				<li>
 				
-<p><code><em>#table table </em></code>: 
-the environment to set.</p>
+<p><em>#nil:</em>
+no userdata found</p>
+
 
 				</li>
-		</ul>
-		<h3>Return value</h3>
-				
-
-<p>the given object.</p>
-
-
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -474,16 +493,14 @@ return"<code>, when simulating a return from a tail call),</code>"line"`, and
 <code>"count"</code>. For line events, the hook also gets the new line number as its
 second parameter. Inside a hook, you can call <code>getinfo</code> with level 2 to
 get more information about the running function (level 0 is the <code>getinfo</code>
-function, and level 1 is the hook function), unless the event is `"tail
-return"`. In this case, Lua is only simulating the return, and a call to
-<code>getinfo</code> will return invalid data.</p>
+function, and level 1 is the hook function).</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#thread thread </em></code>: 
-thread on which the hook is set.</p>
+thread on which the hook is set (optional).</p>
 
 				</li>
 				<li>
@@ -501,7 +518,7 @@ could be <code>"c"</code>, <code>"r"</code> or <code>"l"</code>.</p>
 				<li>
 				
 <p><code><em>#number count </em></code>: 
-the hook is called after every <code>count</code> instructions.</p>
+the hook is called after every <code>count</code> instructions (optional).</p>
 
 
 				</li>
@@ -521,17 +538,18 @@ index <code>local</code> of the function at level <code>level</code> of the stac
 
 	
 <p>The function
-returns nil if there is no local variable with the given index, and raises
+returns <strong>nil</strong> if there is no local variable with the given index, and raises
 an error when called with a <code>level</code> out of range. (You can call <code>getinfo</code>
 to check whether the level is valid.) Otherwise, it returns the name of
-the local variable.</p>
+the local variable.
+See debug.getlocal for more information about variable indices and names. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#thread thread </em></code>: 
-thread which owns the local variable. </p>
+thread which owns the local variable (optional). </p>
 
 				</li>
 				<li>
@@ -564,7 +582,7 @@ the name of the variable if it succeed.</p>
 				<li>
 				
 <p><em>#nil:</em>
-if there no local variable with the given index.</p>
+no local variable with the given index.</p>
 
 
 				</li>
@@ -574,30 +592,38 @@ if there no local variable with the given index.</p>
 		<dl class="function">
 <dt>
 <a id="#(debug).setmetatable" >
-<strong>debug.setmetatable(object, table)</strong>
+<strong>debug.setmetatable(value, table)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Sets the metatable for the given <code>object</code> to the given <code>table</code> (which
-can be nil).</p>
+<p>Sets the metatable for the given <code>value</code> to the given <code>table</code> (which
+can be <strong>nil</strong>).</p>
+
+	
+<p>Returns <code>value</code>. </p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
-<p><code><em> object </em></code>: 
-object to handle.</p>
+<p><code><em> value </em></code>: 
+value to handle.</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#table table </em></code>: 
-the metatable for <code>object</code>. </p>
-
+the metatable for <code>object</code>.</p>
 
 				</li>
 		</ul>
+		<h3>Return value</h3>
+				
+
+<p>the given value </p>
+
+
 </dd>
 </dl>
 		<dl class="function">
@@ -609,10 +635,10 @@ the metatable for <code>object</code>. </p>
 <dd>
 	
 <p>This function assigns the value <code>value</code> to the upvalue with index <code>up</code>
-of the function <code>func</code>.</p>
+of the function <code>f</code>.</p>
 
 	
-<p>The function returns nil if there is no upvalue
+<p>The function returns <strong>nil</strong> if there is no upvalue
 with the given index. Otherwise, it returns the name of the upvalue.</p>
 
 		<h3>Parameters</h3>
@@ -625,7 +651,7 @@ function which owns the upvalue.</p>
 				</li>
 				<li>
 				
-<p><code><em> up </em></code>: 
+<p><code><em>#number up </em></code>: 
 index of the upvalue.</p>
 
 				</li>
@@ -652,6 +678,132 @@ if there no upvalue with the given index.</p>
 
 				</li>
 			</ol>
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(debug).traceback" >
+<strong>debug.traceback(thread, message, level)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>If <code>message</code> is present but is neither a <code>#string</code> nor <strong>nil</strong>, this function returns
+message without further processing.</p>
+
+	
+<p>Otherwise, it returns a string with
+a traceback of the call stack. An optional <code>message</code> string is appended at
+the beginning of the traceback. An optional <code>level</code> number tells at which
+level to start the traceback (default is 1, the function calling traceback). </p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em>#thread thread </em></code>: 
+thread which owns the local variable (optional). </p>
+
+				</li>
+				<li>
+				
+<p><code><em>#string message </em></code>: 
+ original message (optional).</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number level </em></code>: 
+(1 by default, optional).</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#string:</em>
+message with additional traceback informations.</p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(debug).upvalueid" >
+<strong>debug.upvalueid(f, n)</strong>
+</a>
+</dt>
+<dd>
+	
+<p> Returns an unique identifier (as a light userdata) for the upvalue <code>n</code>
+ from the given function.</p>
+
+	
+<p> 
+These unique identifiers allow a program to check whether different closures
+share upvalues. Lua closures that share an upvalue (that is, that access a same
+external local variable) will return identical ids for those upvalue indices. </p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em> f </em></code>: 
+function which owns the upvalue.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number n </em></code>: 
+index of the upvalue.</p>
+
+				</li>
+		</ul>
+		<h3>Return value</h3>
+				
+<p><em>#userdata:</em>
+id of the upvalue </p>
+
+
+</dd>
+</dl>
+		<dl class="function">
+<dt>
+<a id="#(debug).upvaluejoin" >
+<strong>debug.upvaluejoin(f1, n1, f2, n2)</strong>
+</a>
+</dt>
+<dd>
+	
+<p>Make the <code>n1</code>-th upvalue of the Lua closure <code>f1</code> refer to the <code>n2</code>-th upvalue of the Lua closure <code>f2</code>. </p>
+
+		<h3>Parameters</h3>
+		<ul>
+				<li>
+				
+<p><code><em> f1 </em></code>: 
+function.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number n1 </em></code>: 
+upvalue index in the function.</p>
+
+				</li>
+				<li>
+				
+<p><code><em> f2 </em></code>: 
+targeted function.</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#number n2 </em></code>: 
+ upvalue index in the targeted function.</p>
+
+
+				</li>
+		</ul>
 </dd>
 </dl>
 

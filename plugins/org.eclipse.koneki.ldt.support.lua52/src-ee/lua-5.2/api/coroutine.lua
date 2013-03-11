@@ -2,14 +2,12 @@
 -- Coroutine Manipulation.
 -- The operations related to coroutines comprise a sub-library of the basic library 
 -- and come inside the table coroutine.
--- See http://www.lua.org/manual/5.1/manual.html#2.11 for a general description of coroutines.
+-- See [http://www.lua.org/manual/5.2/manual.html#2.6](http://www.lua.org/manual/5.2/manual.html#2.6) for a general description of coroutines.
 -- @module coroutine
 
-
-
 -------------------------------------------------------------------------------
--- Creates a new coroutine, with body `f`. `f` must be a Lua
--- function. Returns this new coroutine, an object with type `"thread"`.
+-- Creates a new coroutine, with body f. f must be a Lua function. Returns this new coroutine,
+-- an object with type "thread". 
 -- @function [parent=#coroutine] create
 -- @param f a function used as coroutine body.  
 -- @return #thread a new coroutine.
@@ -24,7 +22,7 @@
 -- If the coroutine runs without any errors, `resume` returns true plus any
 -- values passed to `yield` (if the coroutine yields) or any values returned
 -- by the body function (if the coroutine terminates). If there is any error,
--- `resume` returns false plus the error message.
+-- `resume` returns `false` plus the error message.
 -- @function [parent=#coroutine] resume
 -- @param #thread co coroutine to start or resume.
 -- @param ... arguments passed to the body function or as result of yield call.
@@ -33,12 +31,12 @@
 -- @return #boolean false plus an error message.
 
 -------------------------------------------------------------------------------
--- Returns the running coroutine, or nil when called by the main thread.
+-- Returns the running coroutine plus a boolean, true when the running coroutine is the main one.
 -- @function [parent=#coroutine] running
 -- @return #thread the running coroutine, or nil when called by the main thread.
 
 -------------------------------------------------------------------------------
--- Returns the status of coroutine `co`, as a string: `"running"`, if
+-- Returns the status of coroutine `co`. as a string. `"running"`, if
 -- the coroutine is running (that is, it called `status`); `"suspended"`, if
 -- the coroutine is suspended in a call to `yield`, or if it has not started
 -- running yet; `"normal"` if the coroutine is active but not running (that

@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Mathematical Functions.
 -- This library is an interface to the standard C math library.
--- It provides all its functions inside the table math.
+-- It provides all its functions inside the table `math`.
 -- @module math
 
 
@@ -103,27 +103,25 @@
 -- @return #number
 
 -------------------------------------------------------------------------------
--- Returns the natural logarithm of `x`.
+-- Returns the logarithm of `x` in the given base. The default for `base` is `e` 
+-- (so that the function returns the natural logarithm of `x`). 
 -- @function [parent=#math] log
 -- @param #number x
--- @return #number
-
--------------------------------------------------------------------------------
--- Returns the base-10 logarithm of `x`.
--- @function [parent=#math] log10
--- @param #number x
+-- @param #number base
 -- @return #number
 
 -------------------------------------------------------------------------------
 -- Returns the maximum value among its arguments.
 -- @function [parent=#math] max
--- @param #number x
+-- @param #number x first number
+-- @param #number ... other numbers
 -- @return #number
 
 -------------------------------------------------------------------------------
 -- Returns the minimum value among its arguments.
 -- @function [parent=#math] min
--- @param #number x
+-- @param #number x first number
+-- @param #number ... other numbers
 -- @return #number
 
 -------------------------------------------------------------------------------

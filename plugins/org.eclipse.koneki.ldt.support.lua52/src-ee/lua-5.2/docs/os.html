@@ -17,6 +17,7 @@
 				<a href="index.html">index</a>
 			</li></ul>
 		<ul>
+					<li><a href="bit32.html">bit32</a></li>
 					<li><a href="coroutine.html">coroutine</a></li>
 					<li><a href="debug.html">debug</a></li>
 					<li><a href="global.html">global</a></li>
@@ -34,7 +35,7 @@
 <p>Operating System Facilities.</p>
 
    
-<p>This library is implemented through table os. </p>
+<p>This library is implemented through table os.</p>
 
 	<h2><a id="#(os)" >Type <code>os</code></a></h2>
 		<table class="function_list">
@@ -61,27 +62,26 @@ to the given string <code>format</code>.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(os).execute">os.execute(command)</a></td>
 		<td class="summary">
-<p>This function is equivalent to the C function <code>system</code>.</p>
+<p>This function is equivalent to the ANSI C function <code>system</code>.</p>
 </td>
 		</tr>
 		<tr>
-		<td class="name" nowrap="nowrap"><a href="##(os).exit">os.exit(code)</a></td>
+		<td class="name" nowrap="nowrap"><a href="##(os).exit">os.exit(code, close)</a></td>
 		<td class="summary">
-<p>Calls the C function <code>exit</code>, with an optional <code>code</code>, to terminate the
-host program.</p>
+<p>Calls the ANSI C function exit to terminate the host program.</p>
 </td>
 		</tr>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(os).getenv">os.getenv(varname)</a></td>
 		<td class="summary">
 <p>Returns the value of the process environment variable <code>varname</code>, or
-nil if the variable is not defined.</p>
+<strong>nil</strong> if the variable is not defined.</p>
 </td>
 		</tr>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(os).remove">os.remove(filename)</a></td>
 		<td class="summary">
-<p>Deletes the file or directory with the given name.</p>
+<p>Deletes the file (or empty directory, on POSIX systems) with the given name.</p>
 </td>
 		</tr>
 		<tr>
@@ -99,8 +99,8 @@ nil if the variable is not defined.</p>
 		<tr>
 		<td class="name" nowrap="nowrap"><a href="##(os).time">os.time(table)</a></td>
 		<td class="summary">
-<p>Returns the current time when called without arguments, or a time
-representing the date and time specified by the given table.</p>
+<p>Returns the current time when called without arguments, or a time representing
+the date and time specified by the given table.</p>
 </td>
 		</tr>
 		<tr>
@@ -171,20 +171,22 @@ Universal Time. After this optional character, if <code>format</code> is the str
 formatted according to the same rules as the C function <code>strftime</code>.
 When called without arguments, <code>date</code> returns a reasonable date and time
 representation that depends on the host system and on the current locale
-(that is, <code>os.date()</code> is equivalent to <code>os.date("%c")</code>).</p>
+(that is, <code>os.date()</code> is equivalent to <code>os.date("%c")</code>).
+On non-Posix systems, this function may be not thread safe because of its
+reliance on C function gmtime and C function localtime.</p>
 
 		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#string format </em></code>: 
-format of date. (optional)</p>
+format of date (optional).</p>
 
 				</li>
 				<li>
 				
 <p><code><em>#number time </em></code>: 
-time to format. (default value is current time) </p>
+time to format (optional, default value is current time) </p>
 
 				</li>
 		</ul>
@@ -239,51 +241,81 @@ the number of seconds from time <code>t1</code> to time <code>t2</code>.</p>
 </dt>
 <dd>
 	
-<p>This function is equivalent to the C function <code>system</code>.</p>
+<p>This function is equivalent to the ANSI C function <code>system</code>.</p>
 
 	
-<p>It passes
-<code>command</code> to be executed by an operating system shell. It returns a status
-code, which is system-dependent. If <code>command</code> is absent, then it returns
-nonzero if a shell is available and zero otherwise.</p>
+<p>It passes command
+to be executed by an operating system shell. Its first result is <strong>true</strong> if
+the command terminated successfully, or <strong>nil</strong> otherwise. After this first
+result the function returns a string and a number, as follows:</p>
+
+<ul>
+    <li><em>"exit"</em>: the command terminated normally; the following number is
+    the exit status of the command.</li>
+    <li><em>"signal"</em>: the command was terminated by a signal; the following number
+    is the signal that terminated the command.</li>
+</ul>
+
+<p>When called without a command, os.execute returns a boolean that is true
+if a shell is available.</p>
 
 		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#string command </em></code>: 
-command to be executed.</p>
+command to be executed (optional).</p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 
 <p>A status code which is system-dependent.</p>
 
+				</li>
+				<li>
+				
+<p><em>#boolean:</em>
+true if a shell is available</p>
 
+
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
 <dt>
 <a id="#(os).exit" >
-<strong>os.exit(code)</strong>
+<strong>os.exit(code, close)</strong>
 </a>
 </dt>
 <dd>
 	
-<p>Calls the C function <code>exit</code>, with an optional <code>code</code>, to terminate the
-host program.</p>
+<p>Calls the ANSI C function exit to terminate the host program.</p>
 
 	
-<p>The default value for <code>code</code> is the success code.</p>
+<p>If code is <strong>true</strong>,
+the returned status is <code>EXIT_SUCCESS</code>; if code is <strong>false</strong>, the returned status is
+<code>EXIT_FAILURE</code>; if code is a number, the returned status is this number.
+The default value for code is <code>true</code>.</p>
 
-		<h3>Parameter</h3>
+<p>If the optional second argument <code>close</code> is <strong>true</strong>, closes the Lua state before exiting. </p>
+
+		<h3>Parameters</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#number code </em></code>: 
-an exit code. (default is the success code)</p>
+an exit code. (optional, <strong>true</strong> by default)</p>
+
+				</li>
+				<li>
+				
+<p><code><em>#boolean close </em></code>: 
+indicate if the Lua state have to be closed (optional, <strong>false</strong> by default)</p>
 
 
 				</li>
@@ -299,7 +331,7 @@ an exit code. (default is the success code)</p>
 <dd>
 	
 <p>Returns the value of the process environment variable <code>varname</code>, or
-nil if the variable is not defined.</p>
+<strong>nil</strong> if the variable is not defined.</p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -310,13 +342,22 @@ an environment variable name.  </p>
 
 				</li>
 		</ul>
-		<h3>Return value</h3>
+		<h3>Return values</h3>
+			<ol>
+				<li>
 				
 
-<p>The value of the process environment variable <code>varname</code>, or
-nil if the variable is not defined.</p>
+<p>The value of the process environment variable <code>varname</code></p>
+
+				</li>
+				<li>
+				
+<p><em>#nil:</em>
+if the variable is not defined.</p>
 
 
+				</li>
+			</ol>
 </dd>
 </dl>
 		<dl class="function">
@@ -327,12 +368,11 @@ nil if the variable is not defined.</p>
 </dt>
 <dd>
 	
-<p>Deletes the file or directory with the given name.</p>
+<p>Deletes the file (or empty directory, on POSIX systems) with the given name.</p>
 
 	
-<p>Directories must be
-empty to be removed. If this function fails, it returns nil, plus a string
-describing the error.</p>
+<p>If this function fails, it returns <strong>nil</strong>, plus a string describing the error
+and the error code. </p>
 
 		<h3>Parameter</h3>
 		<ul>
@@ -363,7 +403,7 @@ an error message if it failed.</p>
 
 	
 <p>If this function
-fails, it returns nil, plus a string describing the error.</p>
+fails, it returns <strong>nil</strong>, plus a string describing the error.</p>
 
 		<h3>Parameters</h3>
 		<ul>
@@ -403,7 +443,7 @@ an error message if it failed.</p>
 a locale; <code>category</code> is an optional string describing which category to
 change: <code>"all"</code>, <code>"collate"</code>, <code>"ctype"</code>, <code>"monetary"</code>, <code>"numeric"</code>, or
 <code>"time"</code>; the default category is <code>"all"</code>. The function returns the name
-of the new locale, or nil if the request cannot be honored.</p>
+of the new locale, or <strong>nil</strong> if the request cannot be honored.</p>
 
 <p>If <code>locale</code> is the empty string, the current locale is set to an
 implementation-defined native locale. If <code>locale</code> is the string "<code>C</code>",
@@ -444,34 +484,34 @@ the current locale.</p>
 </dt>
 <dd>
 	
-<p>Returns the current time when called without arguments, or a time
-representing the date and time specified by the given table.</p>
+<p>Returns the current time when called without arguments, or a time representing
+the date and time specified by the given table.</p>
 
 	
-<p>This table
-must have fields <code>year</code>, <code>month</code>, and <code>day</code>, and may have fields <code>hour</code>,
-<code>min</code>, <code>sec</code>, and <code>isdst</code> (for a description of these fields, see the
-<code>os.date</code> function).</p>
+<p>This table must have fields
+<code>year</code>, <code>month</code>, and <code>day</code>, and may have fields <code>hour</code> (default is <code>12</code>),
+<code>min</code> (default is <code>0</code>), <code>sec</code> (default is <code>0</code>), and <code>isdst</code> (default is <strong>nil</strong>).
+For a description of these fields, see the <code>os.date</code> function.</p>
 
-<p>The returned value is a number, whose meaning depends on your system. In
-POSIX, Windows, and some other systems, this number counts the number
-of seconds since some given start time (the "epoch"). In other systems,
-the meaning is not specified, and the number returned by <code>time</code> can be
-used only as an argument to <code>date</code> and <code>difftime</code>.</p>
+<p>The returned value is a number, whose meaning depends on your system. In POSIX,
+Windows, and some other systems, this number counts the number of seconds since
+some given start time (the "epoch"). In other systems, the meaning is not specified,
+and the number returned by <code>time</code> can be used only as an argument to <code>os.date</code>
+and <code>os.difftime</code>.</p>
 
 		<h3>Parameter</h3>
 		<ul>
 				<li>
 				
 <p><code><em>#table table </em></code>: 
-a table which describes a date.</p>
+A table describing the time (optional)</p>
 
 				</li>
 		</ul>
 		<h3>Return value</h3>
 				
 <p><em>#number:</em>
-a number meaning a date.</p>
+timestamp formatted according to the current system.</p>
 
 
 </dd>
@@ -491,11 +531,11 @@ file.</p>
 <p>The file must be explicitly opened before its use and explicitly
 removed when no longer needed.</p>
 
-<p>On some systems (POSIX), this function also creates a file with that
-name, to avoid security risks. (Someone else might create the file with
-wrong permissions in the time between getting the name and creating the
-file.) You still have to open the file to use it and to remove it (even
-if you do not use it).</p>
+<p>On POSIX systems, this function also creates a file with that name,
+to avoid security risks. (Someone else might create the file with wrong
+permissions in the time between getting the name and creating the file.)
+You still have to open the file to use it and to remove it
+(even if you do not use it). </p>
 
 <p>When possible, you may prefer to use <code>io.tmpfile</code>, which automatically
 removes the file when the program ends.</p>
