@@ -6,7 +6,7 @@ Bundle-Version: 0.9.1.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: com.naef.jnlua;bundle-version="[0.9.1,1.0.0)"
 Eclipse-PlatformFilter: (&(osgi.os=linux)(osgi.arch=x86))
-Bundle-NativeCode: lib/libjnlua5.1.so ; lib/liblua5.1.so
+Bundle-NativeCode: lib/libjnlua5.1.so ; lib/liblua5.1.so; platform=linux; processor=x86
 Bundle-ClassPath: lib/,
   .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
