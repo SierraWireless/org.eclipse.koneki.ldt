@@ -95,6 +95,12 @@
             priority="0">
       </selectionEngine>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.koneki.ldt.core.internal.PreferenceInitializer">
+      </initializer>
+   </extension>
    <!--
    <extension
          point="org.eclipse.dltk.core.search">

@@ -21,6 +21,7 @@ public class Messages extends NLS {
 	public static String LuaExecutionEnvironmentPreferencePage_addbutton;
 	public static String LuaExecutionEnvironmentPreferencePage_availableEELink;
 	public static String LuaExecutionEnvironmentPreferencePage_removeButton;
+	public static String LuaExecutionEnvironmentPreferencePage_warning_nodefault;
 	public static String LuaExecutionEnvironmentPreferencePageTitle;
 	public static String LuaTodoTaskPreferencePage_description;
 	public static String LuaSmartConfigurationBlockBraces;

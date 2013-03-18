@@ -14,12 +14,15 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Observable;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.koneki.ldt.ui.LuaExecutionEnvironmentUIManager;
@@ -34,6 +37,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaExecutionEnvironmentGroup extends Observable {
 
@@ -154,7 +158,21 @@ public class LuaExecutionEnvironmentGroup extends Observable {
 
 			// Select first execution environment when available
 			if (installedExecutionEnvironments.size() > 0) {
-				installedEEsComboViewer.setSelection(new StructuredSelection(installedExecutionEnvironments.get(0)));
+
+				// look for default EE
+				ScopedPreferenceStore preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault()
+						.getPreferenceQualifier());
+				String defaultEEId = preferenceStore.getString(PreferenceInitializer.EE_DEFAULT_ID);
+				for (LuaExecutionEnvironment execEnv : installedExecutionEnvironments) {
+					if (execEnv.getEEIdentifier().equals(defaultEEId))
+						installedEEsComboViewer.setSelection(new StructuredSelection(execEnv));
+				}
+
+				// if no default EE were found, select the first one
+				if (installedEEsComboViewer.getSelection().isEmpty()) {
+					installedEEsComboViewer.setSelection(new StructuredSelection(installedExecutionEnvironments.get(0)));
+				}
+
 				eeButton.setEnabled(true);
 				eeButton.setSelection(true);
 				noEEButton.setSelection(false);

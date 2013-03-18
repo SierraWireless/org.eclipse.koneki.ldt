@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -24,12 +25,16 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.RowDataFactory;
 import org.eclipse.jface.layout.RowLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.koneki.ldt.core.internal.LuaLanguageToolkit;
+import org.eclipse.koneki.ldt.core.internal.PreferenceInitializer;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironment;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentConstants;
 import org.eclipse.koneki.ldt.core.internal.buildpath.LuaExecutionEnvironmentManager;
@@ -56,12 +61,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.activities.ActivityEvent;
 import org.eclipse.ui.activities.IActivity;
 import org.eclipse.ui.activities.IActivityListener;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static final String AVAILABLE_EXECUTION_ENVIRONEMENT_URL = "http://wiki.eclipse.org/Koneki/LDT/User_Area/Available_Execution_Environments"; //$NON-NLS-1$
 
-	private TreeViewer eeTreeViewer;
+	private CheckboxTreeViewer eeTreeViewer;
 	private Button removeButton;
 
 	private Set<IActivity> activitiesWatched = new HashSet<IActivity>();
@@ -81,7 +87,7 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 
 	@Override
 	public void init(IWorkbench workbench) {
-
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, LuaLanguageToolkit.getDefault().getPreferenceQualifier()));
 	}
 
 	@Override
@@ -92,7 +98,7 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 		Composite containerComposite = new Composite(parent, SWT.NONE);
 		GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(2).applyTo(containerComposite);
 
-		eeTreeViewer = new TreeViewer(containerComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		eeTreeViewer = new CheckboxTreeViewer(containerComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		eeTreeViewer.setContentProvider(new LuaExecutionEnvironmentContentProvider());
 		eeTreeViewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new LuaExecutionEnvironmentLabelProvider()));
 		eeTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -103,6 +109,28 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			}
 		});
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(eeTreeViewer.getControl());
+
+		// add a listener to allow only one default EE
+		eeTreeViewer.addCheckStateListener(new ICheckStateListener() {
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				LuaExecutionEnvironment defaultEE = (LuaExecutionEnvironment) event.getElement();
+				if (event.getChecked()) {
+
+					// allow to check only one element of the table
+					eeTreeViewer.setCheckedElements(new Object[] { defaultEE });
+					getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, defaultEE.getEEIdentifier());
+
+					// remove warning no default EE message if any
+					setMessage(null);
+				} else {
+
+					// removing the default ee from pref
+					getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, "none"); //$NON-NLS-1$
+					setMessage(Messages.LuaExecutionEnvironmentPreferencePage_warning_nodefault, WARNING);
+				}
+			}
+		});
 
 		// create buttons
 		Composite buttonsComposite = new Composite(containerComposite, SWT.NONE);
@@ -217,6 +245,13 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			// Remove selected Execution Environment
 			LuaExecutionEnvironmentManager.uninstallLuaExecutionEnvironment(ee);
 
+			// remove default EE if juste removed
+			if (getPreferenceStore().getString(PreferenceInitializer.EE_DEFAULT_ID).equals(ee.getEEIdentifier())) {
+				getPreferenceStore().setValue(PreferenceInitializer.EE_DEFAULT_ID, "none"); //$NON-NLS-1$
+
+				setMessage(Messages.LuaExecutionEnvironmentPreferencePage_warning_nodefault, WARNING);
+			}
+
 			// Recompute page content
 			initializePage();
 		} catch (final CoreException e) {
@@ -255,7 +290,14 @@ public class LuaExecutionEnvironmentPreferencePage extends PreferencePage implem
 			return;
 
 		// Refresh list
-		eeTreeViewer.setInput(LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments());
+		List<LuaExecutionEnvironment> availableExecutionEnvironments = LuaExecutionEnvironmentUIManager.getAvailableExecutionEnvironments();
+		eeTreeViewer.setInput(availableExecutionEnvironments);
+
+		// Set default interpreter
+		String defaultEEId = getPreferenceStore().getString(PreferenceInitializer.EE_DEFAULT_ID);
+		for (LuaExecutionEnvironment execEnv : availableExecutionEnvironments) {
+			eeTreeViewer.setChecked(execEnv, execEnv.getEEIdentifier().equals(defaultEEId));
+		}
 
 		// As list is refreshed, they is no selection
 		refreshRemoveButton();
