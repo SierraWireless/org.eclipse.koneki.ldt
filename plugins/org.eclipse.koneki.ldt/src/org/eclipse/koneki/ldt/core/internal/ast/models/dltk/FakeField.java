@@ -55,7 +55,7 @@ public class FakeField extends SourceField implements ISourceRange {
 
 	@Override
 	public String getType() throws ModelException {
-		return ""; //$NON-NLS-1$
+		return null; //$NON-NLS-1$
 	}
 
 	/**
