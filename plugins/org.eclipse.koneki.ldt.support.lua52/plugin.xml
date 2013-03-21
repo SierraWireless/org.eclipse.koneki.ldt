@@ -30,6 +30,7 @@
       <interpreterInstall
             home="(Embedded)"
             id="org.eclipse.koneki.ldt.support.lua52.JNLua52InterpreterInstall"
+            interpreterArgs="-e &quot;io.stdout:setvbuf(&apos;no&apos;)&quot;"
             interpreterInstallType="org.eclipse.koneki.ldt.support.lua52.JNLua52InterpreterInstallType"
             name="Lua 5.2 on JNLua">
       </interpreterInstall>
