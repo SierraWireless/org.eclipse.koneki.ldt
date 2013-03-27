@@ -8,7 +8,10 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
-require ('metalua.compiler')
+local mlc = require ('metalua.compiler').new()
+local gg = require 'metalua.grammar.generator'
+local lexer = require 'metalua.grammar.lexer'
+local mlp = mlc.parser
 
 local M = {} -- module
 local lx -- lexer used to parse tag

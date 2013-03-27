@@ -9,7 +9,9 @@
 --       Kevin KIN-FOO <kkinfoo@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
-require 'metalua.compiler'
+require 'metalua.package'
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
 local apimodelbuilder = require 'models.apimodelbuilder'
 local M = {}
 
@@ -71,11 +73,11 @@ function M.generateapimodule(filename, code)
 	if not commentfile then
 		return nil, 'Unable to create api module for "'..filename..'".\n'..error
 	end
-	local status, ast = pcall(mlc.luastring_to_ast, commentfile)
+	local status, ast = pcall(mlc.src_to_ast, mlc, commentfile)
 	if not status then
 		return nil, 'Unable to compute ast for "'..filename..'".\n'..ast
 	end
-	local status, error = pcall(mlc.check_ast, ast)
+	local status, error = pcall(compiler.check_ast, ast)
 	if not status then
 		return nil, '"'..filename..'" contains an error.\n'..error
 	end

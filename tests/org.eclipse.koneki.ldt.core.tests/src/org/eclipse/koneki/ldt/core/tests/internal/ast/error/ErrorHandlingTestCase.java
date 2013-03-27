@@ -139,7 +139,7 @@ public class ErrorHandlingTestCase {
 
 	@Test
 	public void testIncompleteLocal() {
-		parseAndCheckErrors("local", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("local", 1, 5); //$NON-NLS-1$
 	}
 
 	@Test
@@ -178,7 +178,7 @@ public class ErrorHandlingTestCase {
 		sb.append("x"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 1, 2, sb.length());
+		parseAndCheckErrors(sb.toString(), 2, 1, sb.length());
 	}
 
 	@Test
@@ -189,12 +189,12 @@ public class ErrorHandlingTestCase {
 		wrongFunction.append("return x x");//$NON-NLS-1$
 		wrongFunction.append(NEW_LINE);
 		wrongFunction.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(wrongFunction.toString(), 1, 4);
+		parseAndCheckErrors(wrongFunction.toString(), 2, 24);
 	}
 
 	@Test
 	public void testWrongStatements() {
-		parseAndCheckErrors("function n(x x)end", 1, 10); //$NON-NLS-1$
+		parseAndCheckErrors("function n(x x)end", 1, 13); //$NON-NLS-1$
 		parseAndCheckErrors("local ="); //$NON-NLS-1$
 		parseAndCheckErrors("for _,_ ine x do end"); //$NON-NLS-1$
 	}

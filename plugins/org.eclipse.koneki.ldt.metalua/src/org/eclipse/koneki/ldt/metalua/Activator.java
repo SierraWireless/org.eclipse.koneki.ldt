@@ -94,4 +94,42 @@ public class Activator extends AbstractUIPlugin {
 	public static void log(final IStatus status) {
 		getDefault().getLog().log(status);
 	}
+
+	/**
+	 * Log a error message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the error
+	 */
+	public static void logError(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a simple warning message
+	 * 
+	 * @param message
+	 *            message to log
+	 */
+	public static void logWarning(final String message) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message);
+		getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Log a warning message caused by the given exception
+	 * 
+	 * @param message
+	 *            message to log
+	 * @param throwable
+	 *            exception which causes the warning
+	 */
+	public static void logWarning(final String message, final Throwable throwable) {
+		IStatus status = new Status(IStatus.WARNING, PLUGIN_ID, message, throwable);
+		getDefault().getLog().log(status);
+	}
+
 }

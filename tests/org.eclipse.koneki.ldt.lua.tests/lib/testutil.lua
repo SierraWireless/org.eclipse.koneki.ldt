@@ -10,7 +10,6 @@
 -------------------------------------------------------------------------------
 -- A module containing generic function for test
 -- @module testutil
-require 'errnode'
 local apimodelbuilder = require 'models.apimodelbuilder'
 local domhandler      = require 'domhandler'
 local tablecompare    = require 'tablecompare'

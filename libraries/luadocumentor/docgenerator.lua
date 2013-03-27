@@ -9,7 +9,6 @@
 --       Kevin KIN-FOO <kkinfoo@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
-require 'metalua.compiler'
 
 --
 -- Load documentation generator and update its path

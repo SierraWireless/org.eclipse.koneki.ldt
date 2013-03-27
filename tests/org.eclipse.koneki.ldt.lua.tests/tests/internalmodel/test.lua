@@ -8,8 +8,9 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
-require 'errnode'
-require 'metalua.compiler'
+require 'metalua.package'
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
 local internalmodelbuilder = require 'models.internalmodelbuilder'
 local tablecompare         = require 'tablecompare'
 
@@ -28,14 +29,10 @@ function M.test(luasourcepath, serializedreferencepath)
 	luafile:close()
 
 	-- Generate AST
-	local ast, errormessage = getast( luasource )
-	assert(
-		ast,
-		string.format('Unable to generate AST for %s.\n%s', luasourcepath, errormessage or '')
-	)
+	local ast = mlc:src_to_ast( luasource )
 
 	-- Check if an error occurred
-	local status, astisvalid, msg = pcall(mlc.check_ast, ast)
+	local status, astisvalid, msg = pcall(compiler.check_ast, ast)
 	assert(
 		status and astisvalid,
 		string.format('Generated AST contains an error.\n%s', msg or '')

@@ -17,6 +17,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.koneki.ldt.metalua.Activator;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 import com.naef.jnlua.LuaException;
@@ -60,7 +61,8 @@ public final class MetaluaStateFactory {
 		// Update path in order to be able to load Metalua
 		String metaluaPath = MetaluaStateFactory.sourcesPath();
 		StringBuilder path = new StringBuilder();
-		path.append("package.path = [[" + metaluaPath + "?.luac;" + metaluaPath + "?.lua]]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		path.append(NLS.bind("package.path  = [[{0}?.luac;{0}?.lua]]", metaluaPath));//$NON-NLS-1$
+		path.append(NLS.bind("package.mpath = [[{0}?.mlua]]", metaluaPath));//$NON-NLS-1$
 		path.append("package.cpath = ''");//$NON-NLS-1$
 
 		// Load Metalua's byte code

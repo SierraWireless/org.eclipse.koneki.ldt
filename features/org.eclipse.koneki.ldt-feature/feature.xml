@@ -54,22 +54,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.koneki.ldt.metalua.32bits"
-         arch="x86"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
-         id="org.eclipse.koneki.ldt.metalua.64bits"
-         arch="x86_64"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
-
-   <plugin
          id="com.naef.jnlua"
          download-size="0"
          install-size="0"

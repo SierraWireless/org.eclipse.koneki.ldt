@@ -28,7 +28,6 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 	public static final String EXTERNAL_LIB_PATH = "/script/external";//$NON-NLS-1$
 
 	public static final String MODELS_BUILDER = "javamodelsbuilder";//$NON-NLS-1$
-	public static final String MODELS_BUILDER_SCRIPT = MODELS_BUILDER + ".mlua";//$NON-NLS-1$
 
 	public static final String INTERNAL_MODEL_BUILDER = "models/internalmodelbuilder";//$NON-NLS-1$
 	public static final String INTERNAL_MODEL_BUILDER_SCRIPT = INTERNAL_MODEL_BUILDER + ".mlua";//$NON-NLS-1$
@@ -77,13 +76,9 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 		return sourcepaths;
 	}
 
-	/**
-	 * @see org.eclipse.koneki.ldt.metalua.AbstractMetaLuaModule#getMetaLuaFileToCompile()
-	 */
 	@Override
 	protected List<String> getMetaLuaFileToCompile() {
-		ArrayList<String> sourcepaths = new ArrayList<String>();
-		sourcepaths.add(MODELS_BUILDER_SCRIPT);
+		final ArrayList<String> sourcepaths = new ArrayList<String>();
 		sourcepaths.add(INTERNAL_MODEL_BUILDER_SCRIPT);
 		sourcepaths.add(API_MODEL_BUILDER_SCRIPT);
 		return sourcepaths;
@@ -110,7 +105,7 @@ public class ModelsBuilderLuaModule extends AbstractMetaLuaModule {
 	 */
 	@Override
 	protected List<String> getLuaSourcePaths() {
-		ArrayList<String> sourcepaths = new ArrayList<String>();
+		final ArrayList<String> sourcepaths = new ArrayList<String>();
 		sourcepaths.add(LOCAL_LIB_PATH);
 		sourcepaths.add(EXTERNAL_LIB_PATH);
 		return sourcepaths;

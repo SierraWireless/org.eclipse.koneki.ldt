@@ -9,7 +9,7 @@
 --       Simon BERNARD <sbernard@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
--{ extension 'match' }
+-{ extension ('match', ...) }
 require 'metalua.walk'
 require 'metalua.walk.bindings'
 local ldp = require "models.ldparser"

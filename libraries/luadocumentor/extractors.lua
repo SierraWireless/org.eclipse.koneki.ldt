@@ -10,7 +10,9 @@
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
 local M = {}
-require 'metalua.compiler'
+require 'metalua.package'
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
 local Q = require 'metalua.treequery'
 
 -- Enable to retrieve all Javadoc-like comments from C code
@@ -30,14 +32,14 @@ end
 function M.lua( code )
 	if not code then return nil, 'No code provided' end
 	-- Get ast from file
-	local status, ast = pcall(mlc.luastring_to_ast, code)
+	local status, ast = pcall(mlc.src_to_ast, mlc, code)
 	--
 	-- Detect parsing errors
 	--
 	if not status then
 		return nil, 'There might be a syntax error.\n' .. ast
 	end
-	local status, error = pcall(mlc.check_ast, ast)
+	local status, error = pcall(compiler.check_ast, ast)
 	if not status then
 		return nil, 'An error occurred while parsing.\n'..error
 	end

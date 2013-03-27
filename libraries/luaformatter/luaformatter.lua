@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2011, 2012 Sierra Wireless and others.
+-- Copyright (c) 2011, 2013 Sierra Wireless and others.
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
 -- which accompanies this distribution, and is available at
@@ -15,7 +15,9 @@
 --
 -- @module luaformatter
 local M = {}
-require 'metalua.compiler'
+require 'metalua.package'
+local compiler = require 'metalua.compiler'
+local mlc  = compiler.new()
 local math = require 'math'
 
 ---
@@ -122,9 +124,9 @@ local function getindentlevel(source,indenttable)
 	end
 
 	-- Walk through AST to build linetodepth
-	local ast = mlc.luastring_to_ast(source)
-	if mlc.check_ast( ast ) then
-		require 'metalua.walk'
+	local ast = mlc:src_to_ast(source)
+	if compiler.check_ast( ast ) then
+		local walk = require 'metalua.walk'
 		walk.block(walker, ast)
 	end
 	return linetodepth
@@ -174,7 +176,7 @@ function M.indentcode(source, delimiter,indenttable, ...)
 		end
 	else
 		local char = select(1, ...)
-		-- When tabulation character is given, this character will be ducplicated
+		-- When tabulation character is given, this character will be duplicated
 		-- according to length
 		tabulation = function (depth) return char:rep(depth) end
 	end
@@ -230,7 +232,7 @@ function M.indentcode(source, delimiter,indenttable, ...)
 				-- Compute next real depth related offset
 				-- As is offset is pointing a white space before first statement of block,
 				-- We will work with parent node depth
-				indented[#indented+1] = tabulation( indentcount)
+				indented[#indented+1] = tabulation( indentcount )
 				-- Append timmed source code
 				indented[#indented+1] = line
 			end

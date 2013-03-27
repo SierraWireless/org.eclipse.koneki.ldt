@@ -80,6 +80,6 @@ public class LuaTestCase extends TestCase {
 	}
 
 	protected List<String> filesToCompile() {
-		return Collections.emptyList();
+		return Collections.<String> emptyList();
 	}
 }

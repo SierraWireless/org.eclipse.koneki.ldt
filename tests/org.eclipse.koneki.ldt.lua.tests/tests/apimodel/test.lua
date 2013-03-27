@@ -1,5 +1,5 @@
--------------------------------------------------------------------------------
--- Copyright (c) 2012 Sierra Wireless and others.
+--------------------------------------------------------------------------------
+-- Copyright (c) 2012-2013 Sierra Wireless and others.
 -- All rights reserved. This program and the accompanying materials
 -- are made available under the terms of the Eclipse Public License v1.0
 -- which accompanies this distribution, and is available at
@@ -7,9 +7,11 @@
 --
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
--------------------------------------------------------------------------------
-require 'errnode'
+--------------------------------------------------------------------------------
+require 'metalua.package'
 local apimodelbuilder = require 'models.apimodelbuilder'
+local compiler =  require 'metalua.compiler'
+local mlc = compiler.new()
 local tablecompare = require 'tablecompare'
 
 local M = {}
@@ -27,14 +29,10 @@ function M.test(luasourcepath, serializedreferencepath)
 	luafile:close()
 
 	-- Generate AST
-	local ast, errormessage = getast( luasource )
-	assert(
-		ast,
-		string.format('Unable to generate AST for %s.\n%s', luasourcepath, errormessage or '')
-	)
+	local ast = mlc:src_to_ast(luasource)
 
 	-- Check if an error occurred
-	local status, astisvalid, msg = pcall(mlc.check_ast, ast)
+	local status, astisvalid, msg = pcall(compiler.check_ast, ast)
 	assert(
 		status and astisvalid,
 		string.format('Generated AST contains an error.\n%s', msg or '')

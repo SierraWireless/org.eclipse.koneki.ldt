@@ -14,6 +14,7 @@ package org.eclipse.koneki.ldt.metalua.tests.internal.cases;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.koneki.ldt.metalua.internal.Metalua;
 import org.eclipse.koneki.ldt.metalua.tests.AllMetaluaTests;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
 import com.naef.jnlua.LuaException;
@@ -106,7 +108,9 @@ public class TestMetalua extends TestCase {
 	public void testRunMetaluaCode() {
 		// Proofing valid code
 		try {
-			state.load("ast = mlc.luastring_to_ast('var = 1 + 2')", "metaluaCode"); //$NON-NLS-1$ //$NON-NLS-2$
+			final StringBuffer sb = new StringBuffer("local mlc = require ('metalua.compiler').new()\n"); //$NON-NLS-1$ 
+			sb.append("ast = mlc:src_to_ast( 'var = 1 + 2 * 3' )"); //$NON-NLS-1$ 
+			state.load(sb.toString(), "metaluaCode"); //$NON-NLS-1$ 
 			state.call(0, 0);
 		} catch (LuaException e) {
 			fail(e.getMessage());
@@ -142,11 +146,14 @@ public class TestMetalua extends TestCase {
 	}
 
 	/** Ensure access to portable file locations */
-	private String path(String uri) throws IOException {
+	private String path(final String uri) throws IOException {
 
-		String sourcePath = FileLocator.getBundleFile(BUNDLE).getPath();
-		sourcePath += new File(BUNDLE.getEntry(uri).getFile());
-
-		return sourcePath;
+		final StringBuffer sourcePath = new StringBuffer(FileLocator.getBundleFile(BUNDLE).getPath());
+		final URL url = BUNDLE.getEntry(uri);
+		if (url != null)
+			sourcePath.append(new File(url.getFile()));
+		else
+			fail(NLS.bind("Unable to find {0}.", uri)); ////$NON-NLS-1$
+		return sourcePath.toString();
 	}
 }

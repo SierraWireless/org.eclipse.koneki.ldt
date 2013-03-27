@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.koneki.ldt.lua.tests.internal.utils.AbstractLuaTestSuite;
-import org.eclipse.koneki.ldt.lua.tests.internal.utils.ModelTestCase;
+import org.eclipse.koneki.ldt.lua.tests.internal.utils.LuaTestCase;
 
 public class APIModelTestSuite extends AbstractLuaTestSuite {
 
@@ -26,7 +26,7 @@ public class APIModelTestSuite extends AbstractLuaTestSuite {
 
 	@Override
 	protected TestCase createTestCase(final String testName, final String testModuleName, final IPath source, final IPath ref, final List<String> path) {
-		return new ModelTestCase(testName, testModuleName, source, ref, path);
+		return new LuaTestCase(testName, testModuleName, source, ref, path);
 	}
 
 	@Override

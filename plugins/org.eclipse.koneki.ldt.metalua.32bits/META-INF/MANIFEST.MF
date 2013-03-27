@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: %Bundle-Name
-Bundle-SymbolicName: org.eclipse.koneki.ldt.metalua.32bits
-Bundle-Version: 0.9.0.qualifier
-Bundle-Vendor: %Bundle-Vendor
-Fragment-Host: org.eclipse.koneki.ldt.metalua;bundle-version="0.9.0"
-Eclipse-PlatformFilter: (osgi.arch=x86)
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

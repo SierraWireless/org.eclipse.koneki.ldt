@@ -8,5 +8,5 @@
 -- Contributors:
 --     Sierra Wireless - initial API and implementation
 --------------------------------------------------------------------------------
-
-ast = mlc.luastring_to_ast ( "var = 1 + 2 * 3" )
+local mlc = require ('metalua.compiler').new()
+ast = mlc:src_to_ast( "var = 1 + 2 * 3" )

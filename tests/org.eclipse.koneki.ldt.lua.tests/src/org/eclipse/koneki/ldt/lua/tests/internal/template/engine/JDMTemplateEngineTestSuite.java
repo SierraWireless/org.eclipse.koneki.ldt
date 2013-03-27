@@ -85,7 +85,7 @@ public class JDMTemplateEngineTestSuite extends AbstractLuaTestSuite {
 							private MarkDown markdown = new MarkDown();
 
 							@Override
-							public int invoke(LuaState l) {
+							public int invoke(final LuaState l) {
 								String input = l.checkString(1);
 
 								String result = markdown.transform(input);

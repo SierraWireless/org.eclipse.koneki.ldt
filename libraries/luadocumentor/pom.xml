@@ -43,25 +43,14 @@
 				<version>2.3</version>
 				<executions>
 					<execution>
-						<id>make-32bit-archive</id>
+						<id>make-archive</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
 						<configuration>
 							<finalName>luadocumentor-${luadocumentor.version}-${buildNumber}</finalName>
-							<descriptor>archive32.xml</descriptor>
-						</configuration>
-					</execution>
-					<execution>
-						<id>make-64bit-archive</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<finalName>luadocumentor-${luadocumentor.version}-${buildNumber}</finalName>
-							<descriptor>archive64.xml</descriptor>
+							<descriptor>archive.xml</descriptor>
 						</configuration>
 					</execution>
 				</executions>

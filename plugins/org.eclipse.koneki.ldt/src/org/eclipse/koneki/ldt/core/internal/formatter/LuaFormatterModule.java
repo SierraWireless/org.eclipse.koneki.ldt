@@ -146,11 +146,8 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 		return Collections.emptyList();
 	}
 
-	/**
-	 * @see org.eclipse.koneki.ldt.metalua.AbstractMetaLuaModule#getMetaLuaFileToCompile()
-	 */
 	@Override
 	protected List<String> getMetaLuaFileToCompile() {
-		return Collections.emptyList();
+		return Collections.<String> emptyList();
 	}
 }

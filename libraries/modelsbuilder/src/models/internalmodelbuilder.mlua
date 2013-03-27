@@ -9,10 +9,11 @@
 --			Simon BERNARD <sbernard@sierrawireless.com>
 --					- initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
--{ extension 'match' }
+
+-{ extension ('match', ...) }
+
 local Q = require 'metalua.treequery'
-require 'metalua.walk'
-require 'metalua.walk.bindings'
+local bindings = require 'metalua.walk.bindings'
 
 local internalmodel = require 'models.internalmodel'
 local apimodel = require 'models.apimodel'
@@ -22,7 +23,7 @@ local M = {}
 ----------------------------------------
 -- debug function : To delete
 local function pdown (node,parent)
-		print (tostring(parent and parent.tag or nil )..' ' .. tostring(node.tag) .. " down")
+	print (tostring(parent and parent.tag or nil )..' ' .. tostring(node.tag) .. " down")
 end
 	
 local function pup (node, parent)
@@ -33,39 +34,34 @@ end
 
 ------------------------------------------------------------
 -- return true if this node is a block for the internal representation
-local function supportedblock(node,parent)
-	return	node.tag == "Function" or
-					node.tag == "Do" or
-					node.tag == "While" or
-					node.tag == "Fornum" or
-					node.tag == "Forin" or
-					node.tag == "Repeat" or
-					(parent and parent.tag == "If" and node.tag == nil)
+local supported_b = {
+	Function = true,
+	Do       = true,
+	While    = true,
+	Fornum   = true,
+	Forin    = true,
+	Repeat   = true,
+}
+local function supportedblock(node, parent)
+	return supported_b[ node.tag ] or
+		(parent and parent.tag == "If" and node.tag == nil)
 end
 
 ------------------------------------------------------------
 -- create a block from the	metalua node
-local function createblock(block,parent)
+local function createblock(block, parent)
 	local _block =	internalmodel._block()
 	match block with
-		| `Function{param, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset
-				_block.sourcerange.max = block.lineinfo.last.offset
-		| `Do{...} ->
+		| `Function{param, body}
+		| `Do{...}
+		| `Fornum {identifier, min, max, body}
+		| `Forin {identifiers, exprs, body}
+		| `Repeat {body, expr} ->
 				_block.sourcerange.min = block.lineinfo.first.offset
 				_block.sourcerange.max = block.lineinfo.last.offset
 		| `While {expr, body} ->
 				_block.sourcerange.min = body.lineinfo.first.facing.offset
 				_block.sourcerange.max = body.lineinfo.last.facing.offset
-		| `Fornum {identifier, min, max, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset
-				_block.sourcerange.max = block.lineinfo.last.offset
-		| `Forin {identifiers, exprs, body} ->
-				_block.sourcerange.min = block.lineinfo.first.offset
-				_block.sourcerange.max = block.lineinfo.last.offset
-		| `Repeat {body, expr}	->
-				_block.sourcerange.min = block.lineinfo.first.offset
-				_block.sourcerange.max = block.lineinfo.last.offset
 		| _ ->
 				if parent and parent.tag == "If" and block.tag == nil then
 					_block.sourcerange.min = block.lineinfo.first.facing.offset
@@ -77,8 +73,14 @@ end
 
 ------------------------------------------------------------
 -- return true if this node is a expression in the internal representation
+local supported_e = {
+	Index  = true,
+	Id     = true,
+	Call   = true,
+	Invoke = true
+}
 local function supportedexpr(node)
-	return node.tag =="Index" or node.tag =="Id" or node.tag=="Call" or node.tag == "Invoke"
+	return supported_e[ node.tag ]
 end
 
 
