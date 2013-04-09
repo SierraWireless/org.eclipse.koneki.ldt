@@ -1,0 +1,117 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0x9588e68]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x95c1c78]]
+				}
+				--[[table: 0x95c1d40]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0x95c1ca0]]
+		}
+		--[[table: 0x9588e90]],
+		types={
+			typename={
+				shortdescription="",
+				fields={
+
+				}
+				--[[table: 0x95c7388]],
+				name="typename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=100,
+					max=118
+				}
+				--[[table: 0x95c73b0]],
+				description="",
+				tag="recordtypedef"
+			}
+			--[[table: 0x95c7278]],
+			["__#typename=__1"]={
+				shortdescription="",
+				description="",
+				name="__#typename=__1",
+				parent=nil --[[ref]],
+				returns={
+					[1]={
+						types={
+							[1]={
+								typename="typename",
+								tag="internaltyperef"
+							}
+							--[[table: 0x95c7210]]
+						}
+						--[[table: 0x95c71e8]],
+						description="",
+						tag="return"
+					}
+					--[[table: 0x95c7148]]
+				}
+				--[[table: 0x95c7120]],
+				params={
+
+				}
+				--[[table: 0x95c70f8]],
+				tag="functiontypedef"
+			}
+			--[[table: 0x95c6fe8]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__#typename=__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0x95c75a0]],
+						description="",
+						parent=nil --[[ref]],
+						shortdescription="",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=98
+						}
+						--[[table: 0x95c6f68]],
+						occurrences={
+
+						}
+						--[[table: 0x95c6f40]],
+						tag="item"
+					}
+					--[[table: 0x95c6d50]]
+				}
+				--[[table: 0x95c1e78]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0x95c1ea0]],
+				tag="recordtypedef"
+			}
+			--[[table: 0x95c1d68]]
+		}
+		--[[table: 0x9588e40]],
+		tag="file"
+	}
+	--[[table: 0x9588c50]];
+	_.types.typename.parent=_;
+	_.types["__#typename=__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end

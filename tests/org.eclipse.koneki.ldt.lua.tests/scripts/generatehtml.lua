@@ -12,7 +12,7 @@
  
 -- Fetch libraries form current plugin
 local arch = "32" --64
-package.path = '../lib/?.lua;../../../libraries/modelsbuilder/src/?.lua;../../../libraries/modelsbuilder/'..arch..'/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.lua;../lib/external/?.lua' .. package.path
+package.path = '../lib/?.lua;../../../libraries/modelsbuilder/src/?.lua;../../../libraries/modelsbuilder/'..arch..'/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.lua;../lib/external/?.lua;' .. package.path
 
 
 local apimodelbuilder      = require 'models.apimodelbuilder'
@@ -57,7 +57,7 @@ for k = 1, #arg do
 		print( string.format('Unable to generate html for %s.\n%s', luasourcepath, errormessage) )
 	end
 	
-	local htmlfilename = filename:gsub('([%w%-_/\\]+)%.lua', '%1.html')
+	local htmlfilename = filename:gsub('([%w%-_/\\]+)%.lua$', '%1.html')
 
 	-- Save serialized model
 	local htmlfile = io.open(htmlfilename, 'w')

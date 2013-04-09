@@ -31,7 +31,7 @@ do local _ = {
 				name = "typename",
 				parent = nil --[[ref]],
 				sourcerange = {
-
+					min = 25, max = 77
 				}
 				--[[table: 0x9467448]],
 				tag = "recordtypedef"

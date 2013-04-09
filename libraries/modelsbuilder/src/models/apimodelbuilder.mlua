@@ -277,6 +277,10 @@ function M.createmoduleapi(ast)
 				local _recordtypedef = gettypedef (_file, dt_type.name ,"recordtypedef",sourcerangemin,sourcerangemax)
 				_lastapiobject = _recordtypedef
 				
+				-- re-set sourcerange in case the type was created before the type tag
+				_recordtypedef.sourcerange.min = sourcerangemin
+				_recordtypedef.sourcerange.max = sourcerangemax
+				
 				-- manage description
 				_recordtypedef.shortdescription = parsedcomment.shortdescription
 				_recordtypedef.description = parsedcomment.description
@@ -293,6 +297,10 @@ function M.createmoduleapi(ast)
 				end
 			elseif regulartags["field"] then
 				local dt_field = regulartags["field"][1]
+				
+				local sourcerangemin = comment.lineinfo.first.offset
+				local sourcerangemax = comment.lineinfo.last.offset
+				
 				-- create item
 				local _item = createfield(dt_field,_file,sourcerangemin,sourcerangemax)
 				_item.shortdescription = parsedcomment.shortdescription
@@ -300,8 +308,6 @@ function M.createmoduleapi(ast)
 				_lastapiobject = _item
 				
 				-- define sourcerange
-				local sourcerangemin = comment.lineinfo.first.offset
-				local sourcerangemax = comment.lineinfo.last.offset
 				_item.sourcerange.min = sourcerangemin
 				_item.sourcerange.max = sourcerangemax
 

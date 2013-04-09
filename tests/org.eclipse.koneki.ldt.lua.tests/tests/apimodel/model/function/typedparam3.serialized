@@ -1,0 +1,115 @@
+do local _={
+		description="",
+		globalvars={
+
+		}
+		--[[table: 0xa082e68]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0xa0bbc88]]
+				}
+				--[[table: 0xa0bbd50]],
+				description="",
+				tag="return"
+			}
+			--[[table: 0xa0bbcb0]]
+		}
+		--[[table: 0xa082e90]],
+		types={
+			typename={
+				shortdescription="",
+				fields={
+
+				}
+				--[[table: 0xa0c1490]],
+				name="typename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=109,
+					max=127
+				}
+				--[[table: 0xa0c14b8]],
+				description="",
+				tag="recordtypedef"
+			}
+			--[[table: 0xa0c1380]],
+			["__=#typename[paramname]__1"]={
+				shortdescription="",
+				description="",
+				name="__=#typename[paramname]__1",
+				parent=nil --[[ref]],
+				returns={
+
+				}
+				--[[table: 0xa0c1250]],
+				params={
+					[1]={
+						description="",
+						type={
+							typename="typename",
+							tag="internaltyperef"
+						}
+						--[[table: 0xa0c1318]],
+						name="paramname",
+						tag="parameter"
+					}
+					--[[table: 0xa0c1278]]
+				}
+				--[[table: 0xa0c1228]],
+				tag="functiontypedef"
+			}
+			--[[table: 0xa0c1118]],
+			modulename={
+				fields={
+					functionname={
+						type={
+							typename="__=#typename[paramname]__1",
+							tag="internaltyperef"
+						}
+						--[[table: 0xa0c1710]],
+						description="",
+						parent=nil --[[ref]],
+						shortdescription="",
+						name="functionname",
+						sourcerange={
+							min=25,
+							max=107
+						}
+						--[[table: 0xa0c1098]],
+						occurrences={
+
+						}
+						--[[table: 0xa0c0dc0]],
+						tag="item"
+					}
+					--[[table: 0xa0c0d98]]
+				}
+				--[[table: 0xa0bbe88]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
+				}
+				--[[table: 0xa0bbeb0]],
+				tag="recordtypedef"
+			}
+			--[[table: 0xa0bbd78]]
+		}
+		--[[table: 0xa082e40]],
+		tag="file"
+	}
+	--[[table: 0xa082c50]];
+	_.types.typename.parent=_;
+	_.types["__=#typename[paramname]__1"].parent=_;
+	_.types.modulename.fields.functionname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
+	return _;
+end
