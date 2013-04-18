@@ -203,8 +203,9 @@ public final class LuaASTModelUtils {
 			} catch (ModelException e) {
 				Activator.logWarning("unable to get IMember corresponding to the given item " + item, e); //$NON-NLS-1$
 			}
+		} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
+			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccGlobal, item);
 		}
-
 		return null;
 	}
 
