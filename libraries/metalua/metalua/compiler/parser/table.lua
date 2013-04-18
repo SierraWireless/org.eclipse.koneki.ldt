@@ -62,6 +62,12 @@ function M.field (lx)
    local e = _expr (lx)
    if lx :is_keyword (lx :peek(), "=") then 
       lx :next(); -- skip the "="
+      -- Allowing only the right type of key, here `Id
+      local etag = e.tag
+      if etag ~= 'Id' then
+         local message = string.format('Identifier expected, got %s.', etag)
+         return gg.parse_error(lx, message)
+      end
       local key = mlp.id2string(e)
       local val = _expr(lx)
       local r = { tag="Pair", key, val } 
