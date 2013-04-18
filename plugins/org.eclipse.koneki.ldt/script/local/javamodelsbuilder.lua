@@ -40,10 +40,12 @@ function M.build(source)
 	if not astvalid then
 		local msg = errormsg or 'Unable to determine error'
 		if positions then
+			local line = positions.line and positions.line - 1 or 0
+			local column = positions.column and positions.column - 1 or 0
 			local offset = positions.offset and positions.offset - 1 or 0
-			javamodelfactory.setproblem(root, positions.line, positions.column, offset, msg)
+			javamodelfactory.setproblem(root, line, column, offset, msg)
 		else
-			javamodelfactory.setproblem(root, 1, 1, 0, msg)
+			javamodelfactory.setproblem(root, 0, 0, 0, msg)
 		end
 		return root
 	end

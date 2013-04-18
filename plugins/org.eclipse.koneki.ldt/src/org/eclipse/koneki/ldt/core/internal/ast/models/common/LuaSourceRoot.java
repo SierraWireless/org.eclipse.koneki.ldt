@@ -57,7 +57,7 @@ public class LuaSourceRoot extends ModuleDeclaration {
 
 	public void setProblem(final int line, final int column, final int offset, final String message) {
 		final IProblemIdentifier id = DefaultProblemIdentifier.decode(offset);
-		problem = new DefaultProblem("", message, id, new String[0], ProblemSeverity.ERROR, offset, -1, line, column); //$NON-NLS-1$
+		problem = new DefaultProblem("", message, id, new String[0], ProblemSeverity.ERROR, -1, offset, line, column); //$NON-NLS-1$
 		setError(true);
 	}
 
