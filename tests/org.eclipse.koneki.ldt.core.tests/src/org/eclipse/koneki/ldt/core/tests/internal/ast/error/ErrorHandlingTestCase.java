@@ -48,7 +48,7 @@ public class ErrorHandlingTestCase {
 
 		// Check offset
 		final IProblem problem = parseAndCheckErrors(code, line);
-		Assert.assertEquals(MessageFormat.format("Wrong start offset. Given code was:\n{0}", code), offset, problem.getSourceStart()); //$NON-NLS-1$
+		Assert.assertEquals(MessageFormat.format("Wrong offset. Given code was:\n{0}", code), offset, problem.getSourceEnd()); //$NON-NLS-1$
 		return problem;
 	}
 
@@ -57,14 +57,14 @@ public class ErrorHandlingTestCase {
 		// Parse and check line
 		final IProblem problem = parseAndCheckErrors(code, line);
 
+		final int problemSourceEnd = problem.getSourceEnd();
+		
 		// Check start
-		final int problemSourceStart = problem.getSourceStart();
-		final String startMessage = "Start error offset too small :{0} <= expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
-		Assert.assertTrue(MessageFormat.format(startMessage, startOffset, problemSourceStart, code), startOffset <= problemSourceStart);
+		final String startMessage = "Error offset too small :{0} <= expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
+		Assert.assertTrue(MessageFormat.format(startMessage, startOffset, problemSourceEnd, code), startOffset <= problemSourceEnd);
 
 		// Check end
-		final int problemSourceEnd = problem.getSourceEnd();
-		final String endMessage = "End error offset is to big: >={0} expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
+		final String endMessage = "Error offset is to big: >={0} expected, got <{1}>.\nGiven code is:\n{2}"; //$NON-NLS-1$
 		Assert.assertTrue(MessageFormat.format(endMessage, endOffset, problemSourceEnd, code), endOffset >= problemSourceEnd);
 	}
 
@@ -80,7 +80,7 @@ public class ErrorHandlingTestCase {
 		wrongBlock.append("end"); //$NON-NLS-1$
 		wrongBlock.append(NEW_LINE);
 		wrongBlock.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(wrongBlock.toString(), 3, 6);
+		parseAndCheckErrors(wrongBlock.toString(), 2, 6);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class ErrorHandlingTestCase {
 
 	@Test
 	public void testIncompleteElse() {
-		parseAndCheckErrors("else", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("else", 0, 0); //$NON-NLS-1$ 
 		parseAndCheckErrors("else end"); //$NON-NLS-1$ 
 		parseAndCheckErrors("else x=nil end"); //$NON-NLS-1$ 
 		parseAndCheckErrors("if else"); //$NON-NLS-1$ 
@@ -102,12 +102,12 @@ public class ErrorHandlingTestCase {
 
 	@Test
 	public void testIncompleteEnd() {
-		parseAndCheckErrors("end", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("end", 0, 0); //$NON-NLS-1$ 
 	}
 
 	@Test
 	public void testIncompleteFor() {
-		parseAndCheckErrors("for", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("for", 0, 0); //$NON-NLS-1$ 
 	}
 
 	@Test
@@ -139,7 +139,7 @@ public class ErrorHandlingTestCase {
 
 	@Test
 	public void testIncompleteLocal() {
-		parseAndCheckErrors("local", 1, 5); //$NON-NLS-1$
+		parseAndCheckErrors("local", 0, 5); //$NON-NLS-1$
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class ErrorHandlingTestCase {
 
 	@Test
 	public void testIncompleteThen() {
-		parseAndCheckErrors("then", 1, 0); //$NON-NLS-1$ 
+		parseAndCheckErrors("then", 0, 0); //$NON-NLS-1$ 
 	}
 
 	@Test
@@ -158,7 +158,7 @@ public class ErrorHandlingTestCase {
 		sb.append(NEW_LINE);
 		sb.append(NEW_LINE);
 		sb.append("if"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 3, 4);
+		parseAndCheckErrors(sb.toString(), 2, 4);
 	}
 
 	@Test
@@ -167,7 +167,7 @@ public class ErrorHandlingTestCase {
 		sb.append("x"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("return nil"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 1, 0);
+		parseAndCheckErrors(sb.toString(), 0, 0);
 	}
 
 	@Test
@@ -178,7 +178,7 @@ public class ErrorHandlingTestCase {
 		sb.append("x"); //$NON-NLS-1$
 		sb.append(NEW_LINE);
 		sb.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(sb.toString(), 2, 1, sb.length());
+		parseAndCheckErrors(sb.toString(), 1, 1, sb.length());
 	}
 
 	@Test
@@ -189,12 +189,12 @@ public class ErrorHandlingTestCase {
 		wrongFunction.append("return x x");//$NON-NLS-1$
 		wrongFunction.append(NEW_LINE);
 		wrongFunction.append("end"); //$NON-NLS-1$
-		parseAndCheckErrors(wrongFunction.toString(), 2, 24);
+		parseAndCheckErrors(wrongFunction.toString(), 1, 24);
 	}
 
 	@Test
 	public void testWrongStatements() {
-		parseAndCheckErrors("function n(x x)end", 1, 13); //$NON-NLS-1$
+		parseAndCheckErrors("function n(x x)end", 0, 13); //$NON-NLS-1$
 		parseAndCheckErrors("local ="); //$NON-NLS-1$
 		parseAndCheckErrors("for _,_ ine x do end"); //$NON-NLS-1$
 	}
