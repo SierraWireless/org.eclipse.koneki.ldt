@@ -388,7 +388,7 @@ function lexer :extract_short_string()
       elseif x == k then break -- end of string
       else
          assert (not x or x=='\r' or x=='\n')
-         error "Unterminated string"
+         return nil, 'Unterminated string'
       end
    end
    self.i = j
