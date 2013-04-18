@@ -9,7 +9,6 @@
 --       Simon BERNARD <sbernard@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
--{ extension ('match', ...) }
 require 'metalua.walk'
 require 'metalua.walk.bindings'
 local ldp = require "models.ldparser"
@@ -219,6 +218,9 @@ function M.createmoduleapi(ast)
 	resetfunctiontypeidgenerator()
 
 	local _file = apimodel._file()
+	
+	local _comment2apiobj = {}
+	
 	local function handlecomment(comment)
 	
 		-- Extract information from tagged comments
@@ -298,10 +300,9 @@ function M.createmoduleapi(ast)
 			elseif regulartags["field"] then
 				local dt_field = regulartags["field"][1]
 				
+				-- create item
 				local sourcerangemin = comment.lineinfo.first.offset
 				local sourcerangemax = comment.lineinfo.last.offset
-				
-				-- create item
 				local _item = createfield(dt_field,_file,sourcerangemin,sourcerangemax)
 				_item.shortdescription = parsedcomment.shortdescription
 				_item.description = parsedcomment.description
@@ -387,6 +388,11 @@ function M.createmoduleapi(ast)
 					end
 				end
 			end
+			
+			-- if we create an api object linked it to
+			if _lastapiobject then
+				_comment2apiobj[comment] = _lastapiobject
+			end
 		end
 	end
 
@@ -418,7 +424,26 @@ function M.createmoduleapi(ast)
 	end
 	local cfg = { expr={down=parsecomment}, stat={down=parsecomment}}
 	walk.block(cfg, ast)
-	return _file
+	return _file, _comment2apiobj
 end
+
+
+function M.extractlocaltype ( commentblock,_file)
+	if not commentblock then return nil end
+	
+	local stringcomment = commentblock[1]
+	
+	parsedtag = ldp.parseinlinecomment(stringcomment)
+	if parsedtag then
+		local sourcerangemin = commentblock.lineinfo.first.offset
+		local sourcerangemax = commentblock.lineinfo.last.offset
+		
+		return createtyperef(parsedtag,_file,sourcerangemin,sourcerangemax), parsedtag.description
+	end
+	
+	return nil, stringcomment
+end
+
+M.generatefunctiontypename = generatefunctiontypename
 
 return M

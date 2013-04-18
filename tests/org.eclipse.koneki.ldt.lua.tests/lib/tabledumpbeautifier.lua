@@ -9,16 +9,18 @@
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
 local luaformatter = require 'luaformatter'
-require 'metalua.compiler'
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
 require 'metalua.walk'
 local M = {}
 local cache
 local function buildcache(str)
 
 	-- Generate AST
-	local ast, errorstring = mlc.luastring_to_ast(str)
-	if not ast then
-		return nil, string.format("Unable to build AST.%s", errorstring)
+	local ast = mlc:src_to_ast(str)
+	local status, astvalid, errormsg = pcall(compiler.check_ast, ast)
+	if not astvalid then
+		return nil, string.format("Unable to build AST.%s", errormsg)
 	end
 
 	-- Cache string nodes

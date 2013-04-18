@@ -1,0 +1,110 @@
+do local _={
+		fileapi={
+			globalvars={
+				f={
+					type={
+						typename="__=__1",
+						tag="internaltyperef"
+					}
+					--[[table: 0x9b7fc90]],
+					description=" description",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="f",
+					sourcerange={
+						min=25,
+						max=25
+					}
+					--[[table: 0x9b7fc68]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=25,
+								max=25
+							}
+							--[[table: 0x99e2ec0]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x98ed330]]
+					}
+					--[[table: 0x9b7fc40]],
+					tag="item"
+				}
+				--[[table: 0x9b7fa50]]
+			}
+			--[[table: 0x9a6d900]],
+			returns={
+
+			}
+			--[[table: 0x9a6d928]],
+			types={
+				["__=__1"]={
+					name="__=__1",
+					parent=nil --[[ref]],
+					returns={
+
+					}
+					--[[table: 0x991d4e0]],
+					params={
+
+					}
+					--[[table: 0x991d4b8]],
+					tag="functiontypedef"
+				}
+				--[[table: 0x991d3a8]]
+			}
+			--[[table: 0x9a6d8d8]],
+			tag="file"
+		}
+		--[[table: 0x9b339f0]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x99d4d00]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x992ec68]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x992ec90]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						localvars={
+
+						}
+						--[[table: 0x9bcaac0]],
+						sourcerange={
+							min=26,
+							max=31
+						}
+						--[[table: 0x9bcaae8]],
+						content={
+
+						}
+						--[[table: 0x9bcaa98]],
+						tag="MBlock"
+					}
+					--[[table: 0x99c77a8]]
+				}
+				--[[table: 0x992ec40]],
+				tag="MBlock"
+			}
+			--[[table: 0x99d4d28]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x99d4c60]]
+	}
+	--[[table: 0x9a1a3d8]];
+	_.fileapi.globalvars.f.parent=_.fileapi;
+	_.fileapi.globalvars.f.occurrences[1].definition=_.fileapi.globalvars.f;
+	_.fileapi.types["__=__1"].parent=_.fileapi;
+	_.internalcontent.content.content[1]=_.fileapi.globalvars.f.occurrences[1];
+	return _;
+end

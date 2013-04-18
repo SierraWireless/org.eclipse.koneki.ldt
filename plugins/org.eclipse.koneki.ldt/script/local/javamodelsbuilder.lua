@@ -28,9 +28,6 @@ local M = {}
 -- @return	LuaSourceRoot, DLTK node, root of DLTK AST
 function M.build(source)
 
-	--  initialize
-	handledcomments={}
-
 	-- Build AST
 	local ast = mlc:src_to_ast( source )
 	local root = javamodelfactory.newsourceroot(#source)
@@ -53,19 +50,19 @@ function M.build(source)
 
 	-- Create api model
 	local apimodelbuilder = require 'models.apimodelbuilder'
-	local _file = apimodelbuilder.createmoduleapi(ast)
+	local _file, comment2apiobj = apimodelbuilder.createmoduleapi(ast)
+
+	-- create internal model
+	local internalmodelbuilder = require "models.internalmodelbuilder"
+	local _internalcontent = internalmodelbuilder.createinternalcontent(ast,_file,comment2apiobj)
 
 	-- Converting api model to java
 	local javaapimodelbuilder = require 'javaapimodelbuilder'
-	local jfile = javaapimodelbuilder._file(_file)
-
-	-- create internal model
-	local internalmodelbuilder = require 'models.internalmodelbuilder'
-	local _internalcontent = internalmodelbuilder.createinternalcontent(ast)
+	local jfile, handledexpr = javaapimodelbuilder._file(_file)
 
 	-- Converting internal model to java
 	local javainternalmodelbuilder = require 'javainternalmodelbuilder'
-	local jinternalcontent = javainternalmodelbuilder._internalcontent(_internalcontent)
+	local jinternalcontent = javainternalmodelbuilder._internalcontent(_internalcontent,_file, handledexpr)
 
 	-- Append information from documentation
 	javamodelfactory.addcontent(root,jfile,jinternalcontent)

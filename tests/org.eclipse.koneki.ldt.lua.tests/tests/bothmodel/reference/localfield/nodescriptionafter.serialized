@@ -1,0 +1,80 @@
+do local _={
+		fileapi={
+			globalvars={
+
+			}
+			--[[table: 0x892c0c0]],
+			returns={
+
+			}
+			--[[table: 0x892c0e8]],
+			types={
+
+			}
+			--[[table: 0x892c098]],
+			tag="file"
+		}
+		--[[table: 0x897e0b0]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x88fa9d0]],
+			content={
+				localvars={
+					[1]={
+						item={
+							description="",
+							shortdescription="",
+							name="l",
+							sourcerange={
+								min=7,
+								max=7
+							}
+							--[[table: 0x8990b20]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=7,
+										max=7
+									}
+									--[[table: 0x89c0dc0]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x89c0d20]]
+							}
+							--[[table: 0x8990af8]],
+							tag="item"
+						}
+						--[[table: 0x8990908]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x899f5d0]]
+					}
+					--[[table: 0x899f568]]
+				}
+				--[[table: 0x88faac0]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x88faae8]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x88faa98]],
+				tag="MBlock"
+			}
+			--[[table: 0x88fa9f8]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x89c0490]]
+	}
+	--[[table: 0x899f6b0]];
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

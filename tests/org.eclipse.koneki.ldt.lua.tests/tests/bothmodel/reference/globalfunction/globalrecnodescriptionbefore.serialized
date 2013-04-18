@@ -1,0 +1,110 @@
+do local _={
+		fileapi={
+			globalvars={
+				f={
+					type={
+						typename="__=__1",
+						tag="internaltyperef"
+					}
+					--[[table: 0x9aca388]],
+					description="",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="f",
+					sourcerange={
+						min=29,
+						max=29
+					}
+					--[[table: 0x9acac18]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=29,
+								max=29
+							}
+							--[[table: 0x9a547e8]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9aab908]]
+					}
+					--[[table: 0x9acabf0]],
+					tag="item"
+				}
+				--[[table: 0x9acb1f0]]
+			}
+			--[[table: 0x986d738]],
+			returns={
+
+			}
+			--[[table: 0x990b8f8]],
+			types={
+				["__=__1"]={
+					name="__=__1",
+					parent=nil --[[ref]],
+					returns={
+
+					}
+					--[[table: 0x9aca6d0]],
+					params={
+
+					}
+					--[[table: 0x9aca6a8]],
+					tag="functiontypedef"
+				}
+				--[[table: 0x9aca680]]
+			}
+			--[[table: 0x986d710]],
+			tag="file"
+		}
+		--[[table: 0x986d6e8]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x9ba6488]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x9a71238]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9b0aac8]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						localvars={
+
+						}
+						--[[table: 0x99c47c0]],
+						sourcerange={
+							min=30,
+							max=35
+						}
+						--[[table: 0x99df2c0]],
+						content={
+
+						}
+						--[[table: 0x99c4798]],
+						tag="MBlock"
+					}
+					--[[table: 0x99df298]]
+				}
+				--[[table: 0x9a71210]],
+				tag="MBlock"
+			}
+			--[[table: 0x9ba64b0]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x98e0490]]
+	}
+	--[[table: 0x9ac9398]];
+	_.fileapi.globalvars.f.parent=_.fileapi;
+	_.fileapi.globalvars.f.occurrences[1].definition=_.fileapi.globalvars.f;
+	_.fileapi.types["__=__1"].parent=_.fileapi;
+	_.internalcontent.content.content[1]=_.fileapi.globalvars.f.occurrences[1];
+	return _;
+end

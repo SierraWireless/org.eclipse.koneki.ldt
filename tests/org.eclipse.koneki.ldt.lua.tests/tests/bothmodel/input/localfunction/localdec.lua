@@ -1,0 +1,1 @@
+local f = function (a,b) end

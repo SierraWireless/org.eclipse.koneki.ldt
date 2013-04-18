@@ -38,14 +38,14 @@
 		</fileSet>
 		<fileSet>
 			<outputDirectory>./</outputDirectory>
-			<directory>../modelsbuilder/src</directory>
+			<directory>../modelsbuilder</directory>
 			<includes>
 				<include>**/*.lua</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<outputDirectory>./</outputDirectory>
-			<directory>../modelsbuilder/src</directory>
+			<directory>../modelsbuilder</directory>
 			<includes>
 				<include>**/*.mlua</include>
 			</includes>

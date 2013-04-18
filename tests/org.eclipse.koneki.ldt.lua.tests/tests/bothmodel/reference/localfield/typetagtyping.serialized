@@ -1,0 +1,102 @@
+do local _={
+		fileapi={
+			globalvars={
+
+			}
+			--[[table: 0x895e4f8]],
+			returns={
+
+			}
+			--[[table: 0x895e520]],
+			types={
+				typename={
+					shortdescription="description",
+					fields={
+
+					}
+					--[[table: 0x8996fb8]],
+					name="typename",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=38
+					}
+					--[[table: 0x8a23ce8]],
+					description="",
+					tag="recordtypedef"
+				}
+				--[[table: 0x8a93378]]
+			}
+			--[[table: 0x895e4d0]],
+			tag="file"
+		}
+		--[[table: 0x895e4a8]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x8a12f78]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="typename",
+								tag="internaltyperef"
+							}
+							--[[table: 0x8a4d000]],
+							description="",
+							shortdescription="",
+							name="T",
+							sourcerange={
+								min=45,
+								max=45
+							}
+							--[[table: 0x8a4cfd8]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=45,
+										max=45
+									}
+									--[[table: 0x89ff0e8]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x8a87eb8]]
+							}
+							--[[table: 0x8a4cfb0]],
+							tag="item"
+						}
+						--[[table: 0x8a4cf88]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x891b0b0]]
+					}
+					--[[table: 0x8a76cf0]]
+				}
+				--[[table: 0x89c8ca0]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x8a799f0]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x89c8c78]],
+				tag="MBlock"
+			}
+			--[[table: 0x8a12fa0]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x8a799c8]]
+	}
+	--[[table: 0x8a70f50]];
+	_.fileapi.types.typename.parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

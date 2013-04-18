@@ -83,9 +83,11 @@ function M._typeref (_type)
 end
 
 -- create item
-function M._item(_item,notemplate)
+function M._item(_item,notemplate,handledexpr)
 	local description = ""
-	if not notemplate then 
+	if notemplate then
+		description = _item.description
+	else 
 		description = templateengine.applytemplate(_item, 3)
 	end 
 
@@ -95,11 +97,12 @@ function M._item(_item,notemplate)
 		_item.sourcerange.max,
 		M._typeref(_item.type)
 	)
+	handledexpr[_item] = jitem
 	return jitem
 end
 
 -- create typedef
-function M._typedef(_typedef)
+function M._typedef(_typedef,handledexpr)
 	local jtypedef
 	-- Dealing with records
 	if _typedef.tag == "recordtypedef" then
@@ -112,7 +115,7 @@ function M._typedef(_typedef)
 
 		-- Appending fields
 		for _, _item in pairs(_typedef.fields) do
-			local jitem =  M._item(_item)
+			local jitem =  M._item(_item,false,handledexpr)
 			javaapimodelfactory.addfield(jtypedef, jitem)
 		end
 
@@ -140,6 +143,8 @@ end
 -- create lua file api
 function M._file(_file)
 
+	local handledexpr = {}
+
 	-- Enable links just for module file objects 
 	enablelinks()
 	local jfile 
@@ -153,7 +158,7 @@ function M._file(_file)
 	-- Adding gloval variables
 	for _, _item in pairs(_file.globalvars) do
 		-- Fill Java item
-		javaapimodelfactory.addglobalvar(jfile,M._item(_item))
+		javaapimodelfactory.addglobalvar(jfile,M._item(_item,false,handledexpr))
 	end
 
 	-- Adding returned types
@@ -167,9 +172,9 @@ function M._file(_file)
 
 	-- Adding types defined in files
 	for _, _typedef in pairs(_file.types) do
-		javaapimodelfactory.addtypedef(jfile,_typedef.name,M._typedef(_typedef))
+		javaapimodelfactory.addtypedef(jfile,_typedef.name,M._typedef(_typedef,handledexpr))
 	end
 
-	return jfile
+	return jfile, handledexpr
 end
 return M

@@ -1,0 +1,116 @@
+do local _={
+		fileapi={
+			globalvars={
+
+			}
+			--[[table: 0x9b75f98]],
+			returns={
+
+			}
+			--[[table: 0x9c405c0]],
+			types={
+				["__=__1"]={
+					name="__=__1",
+					parent=nil --[[ref]],
+					returns={
+
+					}
+					--[[table: 0x9b93868]],
+					params={
+
+					}
+					--[[table: 0x9b02090]],
+					tag="functiontypedef"
+				}
+				--[[table: 0x9b02068]]
+			}
+			--[[table: 0x9c1bad8]],
+			tag="file"
+		}
+		--[[table: 0x9b75f70]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x9ab08d0]],
+			content={
+				localvars={
+					[1]={
+						item={
+							type={
+								typename="__=__1",
+								tag="internaltyperef"
+							}
+							--[[table: 0x9bb2e88]],
+							description=" description",
+							shortdescription="",
+							name="f",
+							sourcerange={
+								min=16,
+								max=16
+							}
+							--[[table: 0x9d355c0]],
+							occurrences={
+								[1]={
+									sourcerange={
+										min=16,
+										max=16
+									}
+									--[[table: 0x9b19fc0]],
+									definition=nil --[[ref]],
+									tag="MIdentifier"
+								}
+								--[[table: 0x9ae1668]]
+							}
+							--[[table: 0x9d35598]],
+							tag="item"
+						}
+						--[[table: 0x9bc7778]],
+						scope={
+							min=0,
+							max=0
+						}
+						--[[table: 0x9bb2ef0]]
+					}
+					--[[table: 0x9b57128]]
+				}
+				--[[table: 0x9c26348]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9c26370]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						localvars={
+
+						}
+						--[[table: 0x9c63e80]],
+						sourcerange={
+							min=17,
+							max=22
+						}
+						--[[table: 0x9c63ea8]],
+						content={
+
+						}
+						--[[table: 0x9b862d8]],
+						tag="MBlock"
+					}
+					--[[table: 0x9c63e58]]
+				}
+				--[[table: 0x9c2bfb0]],
+				tag="MBlock"
+			}
+			--[[table: 0x9c515e8]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x9ab08a8]]
+	}
+	--[[table: 0x9d18cb0]];
+	_.fileapi.types["__=__1"].parent=_.fileapi;
+	_.internalcontent.content.localvars[1].item.occurrences[1].definition=_.internalcontent.content.localvars[1].item;
+	_.internalcontent.content.content[1]=_.internalcontent.content.localvars[1].item.occurrences[1];
+	return _;
+end

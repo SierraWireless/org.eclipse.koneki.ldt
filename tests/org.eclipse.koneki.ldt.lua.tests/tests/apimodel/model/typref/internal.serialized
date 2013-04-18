@@ -1,30 +1,30 @@
-do local _ = {
-		description = "",
-		globalvars = {
+do local _={
+		description="",
+		globalvars={
 
 		}
-		--[[table: 0x956bc58]],
-		shortdescription = "",
-		name = "modulename",
-		returns = {
-			{
-				types = {
-					{
-						typename = "modulename",
-						tag = "internaltyperef"
+		--[[table: 0x9cebb60]],
+		shortdescription="",
+		name="modulename",
+		returns={
+			[1]={
+				types={
+					[1]={
+						typename="modulename",
+						tag="internaltyperef"
 					}
-					--[[table: 0x94ff348]]
+					--[[table: 0x9d62630]]
 				}
-				--[[table: 0x95715c8]],
-				description = "",
-				tag = "return"
+				--[[table: 0x9d626f8]],
+				description="",
+				tag="return"
 			}
-			--[[table: 0x947a088]]
+			--[[table: 0x9d62658]]
 		}
-		--[[table: 0x956bc80]],
-		types = {
-			typename = {
-				fields = {
+		--[[table: 0x9cebb88]],
+		types={
+			typename={
+				fields={
 
 				}
 				--[[table: 0x9467420]],
@@ -33,53 +33,53 @@ do local _ = {
 				sourcerange = {
 					min = 25, max = 77
 				}
-				--[[table: 0x9467448]],
-				tag = "recordtypedef"
+				--[[table: 0x9d66798]],
+				tag="recordtypedef"
 			}
-			--[[table: 0x9467310]],
-			modulename = {
-				fields = {
-					fieldname = {
-						type = {
-							typename = "typename",
-							tag = "internaltyperef"
+			--[[table: 0x9d66660]],
+			modulename={
+				fields={
+					fieldname={
+						type={
+							typename="typename",
+							tag="internaltyperef"
 						}
-						--[[table: 0x94672a8]],
-						description = "",
-						parent = nil --[[ref]],
-						shortdescription = "",
-						name = "fieldname",
-						sourcerange = {
-							min = 25,
-							max = 77
+						--[[table: 0x9d665f8]],
+						description="",
+						parent=nil --[[ref]],
+						shortdescription="",
+						name="fieldname",
+						sourcerange={
+							min=25,
+							max=77
 						}
-						--[[table: 0x9467280]],
-						occurrences = {
+						--[[table: 0x9d665a0]],
+						occurrences={
 
 						}
-						--[[table: 0x9467258]],
-						tag = "item"
+						--[[table: 0x9d66578]],
+						tag="item"
 					}
-					--[[table: 0x9442e68]]
+					--[[table: 0x9d66200]]
 				}
-				--[[table: 0x9550d80]],
-				name = "modulename",
-				parent = nil --[[ref]],
-				sourcerange = {
-					min = 1,
-					max = 23
+				--[[table: 0x9d62830]],
+				name="modulename",
+				parent=nil --[[ref]],
+				sourcerange={
+					min=1,
+					max=23
 				}
-				--[[table: 0x9550da8]],
-				tag = "recordtypedef"
+				--[[table: 0x9d62858]],
+				tag="recordtypedef"
 			}
-			--[[table: 0x95715f0]]
+			--[[table: 0x9d62720]]
 		}
-		--[[table: 0x956bc30]],
-		tag = "file"
+		--[[table: 0x9cebb38]],
+		tag="file"
 	}
-	--[[table: 0x94ff320]];
-	_.types.typename.parent = _;
-	_.types.modulename.fields.fieldname.parent = _.types.modulename;
-	_.types.modulename.parent = _;
+	--[[table: 0x9ceb948]];
+	_.types.typename.parent=_;
+	_.types.modulename.fields.fieldname.parent=_.types.modulename;
+	_.types.modulename.parent=_;
 	return _;
 end

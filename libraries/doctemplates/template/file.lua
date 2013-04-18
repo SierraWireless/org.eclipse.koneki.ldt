@@ -51,15 +51,13 @@ return[[#
 #
 # -- get type corresponding to this file (module)
 # local currenttype 
-# if not isempty(_file.returns) and _file.returns[1] and not isempty(_file.returns[1].types) then
-#  	local typeref = _file.returns[1].types[1]
-#  	if typeref.tag == "internaltyperef" then 
-#			local typedef = _file.types[typeref.typename]
-#			if typedef and typedef.tag == "recordtypedef" then
-#				currenttype = typedef 
-#			end
-#		end 
+# local typeref = _file:moduletyperef()
+# if typeref and typeref.tag == "internaltyperef" then 
+#	local typedef = _file.types[typeref.typename]
+#	if typedef and typedef.tag == "recordtypedef" then
+#		currenttype = typedef 
 #	end
+# end
 #
 # -- show quick description type exposed by module
 # if currenttype and not isempty(currenttype.fields) then

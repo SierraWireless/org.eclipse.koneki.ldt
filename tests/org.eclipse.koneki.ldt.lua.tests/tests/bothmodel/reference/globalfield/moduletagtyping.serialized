@@ -1,0 +1,109 @@
+do local _={
+		fileapi={
+			description="",
+			globalvars={
+				g={
+					type={
+						typename="modulename",
+						tag="internaltyperef"
+					}
+					--[[table: 0x9d0ddc0]],
+					description="",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="g",
+					sourcerange={
+						min=42,
+						max=42
+					}
+					--[[table: 0x9d102c8]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=42,
+								max=42
+							}
+							--[[table: 0x9d18558]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9d18530]]
+					}
+					--[[table: 0x9d10240]],
+					tag="item"
+				}
+				--[[table: 0x9d101e0]]
+			}
+			--[[table: 0x9d007f0]],
+			shortdescription="description",
+			name="modulename",
+			returns={
+				[1]={
+					types={
+						[1]={
+							typename="modulename",
+							tag="internaltyperef"
+						}
+						--[[table: 0x9d2aa38]]
+					}
+					--[[table: 0x9d2ab50]],
+					description="",
+					tag="return"
+				}
+				--[[table: 0x9d2aad0]]
+			}
+			--[[table: 0x9d00818]],
+			types={
+				modulename={
+					fields={
+
+					}
+					--[[table: 0x9d270b8]],
+					name="modulename",
+					parent=nil --[[ref]],
+					sourcerange={
+						min=1,
+						max=41
+					}
+					--[[table: 0x9d270e0]],
+					tag="recordtypedef"
+				}
+				--[[table: 0x9d2abd8]]
+			}
+			--[[table: 0x9d007c8]],
+			tag="file"
+		}
+		--[[table: 0x9d005d8]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x9d1db88]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x9d1a6d8]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9d1a740]],
+				content={
+					[1]=nil --[[ref]]
+				}
+				--[[table: 0x9d1dc38]],
+				tag="MBlock"
+			}
+			--[[table: 0x9d1dc10]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x9d1daf0]]
+	}
+	--[[table: 0x9d0df00]];
+	_.fileapi.globalvars.g.parent=_.fileapi;
+	_.fileapi.globalvars.g.occurrences[1].definition=_.fileapi.globalvars.g;
+	_.fileapi.types.modulename.parent=_.fileapi;
+	_.internalcontent.content.content[1]=_.fileapi.globalvars.g.occurrences[1];
+	return _;
+end

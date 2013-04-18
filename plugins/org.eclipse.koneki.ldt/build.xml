@@ -14,7 +14,7 @@
 	<property name="librariesFolder" value="../../libraries" />
 	<property name="luaformatterFolder" value="${librariesFolder}/luaformatter" />
 	<property name="markdownFolder" value="${librariesFolder}/markdown" />
-	<property name="modelsbuilderFolder" value="${librariesFolder}/modelsbuilder/src" />
+	<property name="modelsbuilderFolder" value="${librariesFolder}/modelsbuilder" />
 	<property name="penlightFolder" value="${librariesFolder}/penlight" />
 	<property name="templateengineFolder" value="${librariesFolder}/templateengine" />
 	<property name="doctemplatesFolder" value="${librariesFolder}/doctemplates" />

@@ -1,0 +1,110 @@
+do local _={
+		fileapi={
+			globalvars={
+				g={
+					type={
+						typename="__=__1",
+						tag="internaltyperef"
+					}
+					--[[table: 0x99c6be8]],
+					description=" real description",
+					parent=nil --[[ref]],
+					shortdescription="",
+					name="g",
+					sourcerange={
+						min=19,
+						max=19
+					}
+					--[[table: 0x99819a8]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=19,
+								max=19
+							}
+							--[[table: 0x9a04b50]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9a04b28]]
+					}
+					--[[table: 0x9981980]],
+					tag="item"
+				}
+				--[[table: 0x98b3058]]
+			}
+			--[[table: 0x9962cd0]],
+			returns={
+
+			}
+			--[[table: 0x9962cf8]],
+			types={
+				["__=__1"]={
+					name="__=__1",
+					parent=nil --[[ref]],
+					returns={
+
+					}
+					--[[table: 0x9a1da88]],
+					params={
+
+					}
+					--[[table: 0x9a1da60]],
+					tag="functiontypedef"
+				}
+				--[[table: 0x9a1da38]]
+			}
+			--[[table: 0x9962ca8]],
+			tag="file"
+		}
+		--[[table: 0x9ab1f00]],
+		internalcontent={
+			unknownglobalvars={
+
+			}
+			--[[table: 0x98f3148]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x9a6f830]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x99c9f68]],
+				content={
+					[1]=nil --[[ref]],
+					[2]={
+						localvars={
+
+						}
+						--[[table: 0x998b8e0]],
+						sourcerange={
+							min=23,
+							max=36
+						}
+						--[[table: 0x998b908]],
+						content={
+
+						}
+						--[[table: 0x9930198]],
+						tag="MBlock"
+					}
+					--[[table: 0x9930170]]
+				}
+				--[[table: 0x9a6f808]],
+				tag="MBlock"
+			}
+			--[[table: 0x9a6f7e0]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x98f3120]]
+	}
+	--[[table: 0x98e2650]];
+	_.fileapi.globalvars.g.parent=_.fileapi;
+	_.fileapi.globalvars.g.occurrences[1].definition=_.fileapi.globalvars.g;
+	_.fileapi.types["__=__1"].parent=_.fileapi;
+	_.internalcontent.content.content[1]=_.fileapi.globalvars.g.occurrences[1];
+	return _;
+end

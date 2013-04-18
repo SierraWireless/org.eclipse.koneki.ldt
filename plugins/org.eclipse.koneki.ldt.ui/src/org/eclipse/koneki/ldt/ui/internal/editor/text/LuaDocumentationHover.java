@@ -21,6 +21,7 @@ import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationTitleAdapter;
 import org.eclipse.dltk.ui.documentation.ScriptDocumentationAccess;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.koneki.ldt.ui.internal.LuaDocumentationHelper;
 
 @SuppressWarnings("restriction")
@@ -60,6 +61,8 @@ public class LuaDocumentationHover extends DocumentationHover {
 		}
 	};
 
+	private IInformationControlCreator fHoverControlCreator;
+
 	@Override
 	protected String getHoverInfo(String nature, Object[] result) {
 		String htmlContent = null;
@@ -95,6 +98,13 @@ public class LuaDocumentationHover extends DocumentationHover {
 		}
 
 		return null;
+	}
+
+	@Override
+	public IInformationControlCreator getHoverControlCreator() {
+		if (fHoverControlCreator == null)
+			fHoverControlCreator = new LuaHoverControlCreator(getInformationPresenterControlCreator());
+		return fHoverControlCreator;
 	}
 
 }

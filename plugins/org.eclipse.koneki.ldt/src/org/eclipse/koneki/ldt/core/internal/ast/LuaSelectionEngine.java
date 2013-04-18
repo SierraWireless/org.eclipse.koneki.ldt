@@ -35,7 +35,8 @@ public class LuaSelectionEngine extends ScriptSelectionEngine {
 			return null;
 
 		// get selected object
-		LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt(luaSourceRoot, start, end);
+		// HACK when there are no selection end = (start - 1) that's why we use Math.max.
+		LuaExpression luaExpression = LuaASTUtils.getLuaExpressionAt(luaSourceRoot, start, end + 1);
 		if (luaExpression == null)
 			return null;
 

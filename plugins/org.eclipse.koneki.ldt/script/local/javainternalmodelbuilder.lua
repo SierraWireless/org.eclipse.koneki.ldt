@@ -17,26 +17,42 @@ local javaapimodelfactory      = require 'javaapimodelfactory'
 
 --------------------------------------
 -- create internal content java object
-function J._internalcontent(_internalcontent)
+function J._internalcontent(_internalcontent,_file,handledexpr)
 
 	-- Setting body
-	local handledexpr ={}
+	local handledexpr = handledexpr or {}
 	local jblock = J._block(_internalcontent.content,handledexpr)
 	local jinternalcontent = javainternalmodelfactory.newinternalmodel(jblock)
 
-	-- Appending global variables
+	-- Appending unknown global variables
 	for _, _item in ipairs(_internalcontent.unknownglobalvars) do
-		local jitem = javaapimodelbuilder._item(_item,true)
+		local jitem = javaapimodelbuilder._item(_item,true,handledexpr)
 		javainternalmodelfactory.addunknownglobalvar(jinternalcontent,jitem)
 
 		-- add occurrences
 		for _,_occurrence in ipairs(_item.occurrences) do
-			jidentifier = handledexpr[_occurrence]
+			local jidentifier = handledexpr[_occurrence]
 			if jidentifier then
 				javaapimodelfactory.addoccurrence(jitem,jidentifier)
 			end
 		end
 	end
+	
+	-- Appending global variables
+	for _, _item in pairs(_file.globalvars) do
+		local jitem = handledexpr[_item]
+		
+		-- add occurrences
+		if jitem then
+			for _,_occurrence in ipairs(_item.occurrences) do
+				local jidentifier = handledexpr[_occurrence]
+				if jidentifier then
+					javaapimodelfactory.addoccurrence(jitem,jidentifier)
+				end
+			end
+		end
+	end
+	
 
 	return jinternalcontent
 end
@@ -58,14 +74,14 @@ function J._block(_block,handledexpr)
 
 	for _, _localvar in pairs(_block.localvars) do
 		-- Create Java item
-		local jitem = javaapimodelbuilder._item(_localvar.item,true)
+		local jitem = javaapimodelbuilder._item(_localvar.item,true,handledexpr)
 		if _localvar.item.type and _localvar.item.type.tag == "exprtyperef" then
 			javaapimodelfactory.setexpression(jitem,handledexpr[_localvar.item.type.expression])
 		end
 
 		-- add occurrence
 		for _,_occurrence in ipairs(_localvar.item.occurrences) do
-			jidentifier = handledexpr[_occurrence]
+			local jidentifier = handledexpr[_occurrence]
 			if jidentifier then
 				javaapimodelfactory.addoccurrence(jitem,jidentifier)
 			end

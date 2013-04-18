@@ -25,6 +25,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.koneki.ldt.core.internal.Activator;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
@@ -32,6 +33,8 @@ import org.eclipse.koneki.ldt.core.internal.ast.models.api.TypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaASTNode;
 import org.eclipse.koneki.ldt.core.internal.ast.models.common.LuaSourceRoot;
 import org.eclipse.koneki.ldt.core.internal.ast.models.dltk.FakeField;
+import org.eclipse.koneki.ldt.core.internal.ast.models.dltk.FakeMethod;
+import org.eclipse.koneki.ldt.core.internal.ast.models.dltk.IFakeElement;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.LocalVar;
 
 public final class LuaASTModelUtils {
@@ -56,6 +59,8 @@ public final class LuaASTModelUtils {
 	 * DLTK Model => AST
 	 */
 	public static ASTNode getASTNode(final IModelElement modelElement) {
+		if (modelElement instanceof IFakeElement)
+			return ((IFakeElement) modelElement).getLuaASTNode();
 		if (modelElement instanceof ISourceModule)
 			return getLuaSourceRoot((ISourceModule) modelElement);
 		if (modelElement instanceof IType)
@@ -173,7 +178,21 @@ public final class LuaASTModelUtils {
 		} else if (LuaASTUtils.isLocal(item)) {
 			// TODO retrieve local var which are in the model (so the local var in the first block)
 			// support local variable
-			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccPrivate);
+			// ------------------------------------------------------------------------------------
+
+			// manage method
+			TypeDef resolvedtype = LuaASTUtils.resolveTypeLocaly(sourceModule, item);
+			if (resolvedtype != null && resolvedtype instanceof FunctionTypeDef) {
+				FunctionTypeDef functionResolvedType = (FunctionTypeDef) resolvedtype;
+				String[] parametersName = new String[functionResolvedType.getParameters().size()];
+				for (int i = 0; i < parametersName.length; i++) {
+					parametersName[i] = functionResolvedType.getParameters().get(i).getName();
+				}
+				return new FakeMethod(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), parametersName,
+						Declaration.AccPrivate, item);
+			}
+			// manage field
+			return new FakeField(sourceModule, item.getName(), item.sourceStart(), item.getName().length(), Declaration.AccPrivate, item);
 		} else if (LuaASTUtils.isGlobal(item)) {
 			// support global var
 			try {

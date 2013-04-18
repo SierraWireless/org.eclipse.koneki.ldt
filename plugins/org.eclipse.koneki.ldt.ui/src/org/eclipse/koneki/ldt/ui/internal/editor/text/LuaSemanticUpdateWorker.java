@@ -62,7 +62,7 @@ public class LuaSemanticUpdateWorker extends ASTVisitor implements ISemanticHigh
 			if (item != null) {
 				if (LuaASTUtils.isLocal(item)) {
 					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_LOCAL_VARIABLE);
-				} else if (LuaASTUtils.isUnresolvedGlobal(item)) {
+				} else if (LuaASTUtils.isUnresolvedGlobal(item) || LuaASTUtils.isGlobal(item)) {
 					requestor.addPosition(node.sourceStart(), node.sourceEnd(), HL_GLOBAL_VARIABLE);
 				}
 			} else {

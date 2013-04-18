@@ -31,10 +31,18 @@ function M._file()
 			self.types[type.name] = type
 			type.parent = self
 		end,
+		
 		addglobalvar =  function (self,item)
 			self.globalvars[item.name] = item
 			item.parent = self
-		end
+		end,
+		
+		moduletyperef = function (self)
+			if self and self.returns[1] and self.returns[1].types[1] then
+				local typeref = self.returns[1].types[1]
+				return typeref
+			end
+		end		
 	}
 	return file
 end
@@ -97,6 +105,17 @@ function M._item(name)
 		addoccurence = function (self,occ)
 			table.insert(self.occurrences,occ)
 			occ.definition = self
+		end,
+		
+		resolvetype = function (self)
+			if self and self.type and self.type.tag =="internaltyperef" then
+				if self.parent.tag == 'recordtypedef' then
+					local file = self.parent.parent
+					return file.types[ self.type.typename ]
+				elseif self.parent.tag == 'file' then
+					return self.parent.types[ self.type.typename ]
+				end
+			end	
 		end
 	}
 end

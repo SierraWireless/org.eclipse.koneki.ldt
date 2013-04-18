@@ -528,4 +528,24 @@ function M.parse(stringcomment)
 	end
 	return _comment
 end
+
+
+function M.parseinlinecomment(stringcomment)
+	--TODO this code is use to activate typage only on --- comments. (deactivate for now)
+	--	if not stringcomment or not stringcomment:find("^-") then
+	--		-- if this comment don't start by -, we will not handle it.
+	--		return nil
+	--	end
+	--	-- remove the first '-'
+	--	stringcomment = string.sub(stringcomment,2)
+	--	print (stringcomment)
+	--	io.flush()
+	local valid, parsedtag = pcall(typerefparser, lx:newstream(stringcomment, 'typeref parser'))
+	if valid then
+		local endoffset = parsedtag.lineinfo.last.offset
+		parsedtag.description = stringcomment:sub(endoffset+2,-1)
+		return parsedtag
+	end
+end
+
 return M

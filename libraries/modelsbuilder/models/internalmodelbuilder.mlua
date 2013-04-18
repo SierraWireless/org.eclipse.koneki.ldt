@@ -17,6 +17,7 @@ local bindings = require 'metalua.walk.bindings'
 
 local internalmodel = require 'models.internalmodel'
 local apimodel = require 'models.apimodel'
+local apimodelbuilder = require 'models.apimodelbuilder'
 
 local M = {}
 
@@ -30,6 +31,57 @@ local function pup (node, parent)
 	print (tostring(parent and parent.tag or nil) .. ' ' .. tostring(node.tag).. " up")		
 end
 ----------------------------------------
+
+
+------------------------------------------------------------
+-- return the comment linked to this node
+local function getlinkedcommentbefore(node)
+	local function _getlinkedcomment(node,line)
+		if node and node.lineinfo and node.lineinfo.first.line == line then
+			-- get the last comment before (the nearest of code)
+			local comments = node.lineinfo.first.comments
+			local comment = comments and  comments[#comments] 
+			if comment  and comment.lineinfo.last.line == line-1 then
+				return comment
+			else
+				return _getlinkedcomment(node.parent,line)
+			end
+		end
+		return nil	
+	end
+	
+	if node.lineinfo and node.lineinfo.first.line then
+		return _getlinkedcomment(node,node.lineinfo.first.line)
+	else
+		return nil
+	end
+end
+
+
+
+------------------------------------------------------------
+-- return the comment linked to this node
+local function getlinkedcommentafter(node)
+	local function _getlinkedcomment(node,line)
+		if node and node.lineinfo and node.lineinfo.last.line == line then
+			-- get the first comment after (the nearest of code)
+			local comments = node.lineinfo.last.comments
+			local comment = comments and  comments[1] 
+			if comment  and comment.lineinfo.first.line == line then
+				return comment
+			else
+				return _getlinkedcomment(node.parent,line)
+			end
+		end
+		return nil	
+	end
+	
+	if node.lineinfo and node.lineinfo.last.line then
+		return _getlinkedcomment(node,node.lineinfo.last.line)
+	else
+		return nil
+	end
+end
 
 
 ------------------------------------------------------------
@@ -197,6 +249,26 @@ local function createtype(node,position)
 	match node with
 		| `Call{ `Id "require", `String {modulename}} ->
 				return apimodel._moduletyperef(modulename,position)
+		| `Function {params, body} ->
+				-- TODO factorize this code : create internal function type def
+				-- create the functiontypedef
+				local _functiontypedef = apimodel._functiontypedef()
+				for _, p in ipairs(params) do
+					local paramname
+					if p.tag=="Dots" then
+						paramname = "..."
+					else
+						paramname = p[1]
+					end
+					local _param = apimodel._parameter(paramname)
+					table.insert(_functiontypedef.params,_param)
+				end
+				_functiontypedef.name = apimodelbuilder.generatefunctiontypename(_functiontypedef)
+				
+				-- reference the type
+				local typeref = apimodel._internaltyperef(_functiontypedef.name)
+				typeref.internal = _functiontypedef
+				return typeref
 		| _ ->
 	end
 	-- if node is an expression supported
@@ -211,9 +283,48 @@ end
 ------------------------------------------------------------
 -- extract the type and the id with the name itemname 
 -- which could be considered as definition from the binder
-local function extracttype(binder, itemname)
+local function extracttype(binder, itemname, comment2apiobj,file)
 	match binder with
+	| `Set {ids, inits} 
 	| `Local {ids, inits} ->
+			-- if this is a single local var declaration
+			-- we check if there are a comment block linked and try to extract the type
+			if #ids == 1 then
+				local currentid, currentinit = ids[1],inits[1]
+				-- ignore non Ids node
+				if currentid.tag ~= 'Id' or currentid[1] ~= itemname then return nil end
+
+  				-- check for "local" typing
+  				local type,desc = apimodelbuilder.extractlocaltype(getlinkedcommentafter(binder),file)
+				if type then
+					return currentid, type, desc
+				end
+				
+				-- check for luadoc typing
+				local commentbefore = getlinkedcommentbefore(binder);
+				local obj = comment2apiobj[commentbefore]
+				if obj then
+					if obj.tag=="item" then
+						if obj.name and obj.name == itemname then  
+							return currentid, obj.type
+						end
+					elseif obj.tag=="file" then
+						local typeref = obj:moduletyperef()
+						if typeref and typeref.tag == "internaltyperef" then 
+							return currentid, apimodel._internaltyperef(typeref.typename) 
+						end
+					elseif obj.tag=="recordtypedef" then
+						return currentid, apimodel._internaltyperef(obj.name)
+					end
+					
+					-- if the documentation before is not link to the given item, do not attached the comment
+					commentbefore = nil
+				end
+				
+				-- else we use code to extract the type
+				return 	currentid, createtype(inits[1],1), desc or (commentbefore and commentbefore[1])
+			end
+			-- else we use code to extract the type			
 			local init,returnposition = nil,1
 			for i,id in ipairs(ids) do
 				-- calculate the current return position
@@ -232,7 +343,7 @@ local function extracttype(binder, itemname)
 				
 				-- if this is the good id
 				if itemname == idname then
-				-- create type from init node and return position
+					-- create type from init node and return position
 					local type = createtype(init,returnposition)
 					-- return data
 					return id, type 
@@ -244,7 +355,19 @@ local function extracttype(binder, itemname)
 				local idname = id[1]
 				-- if this is the good id
 				if itemname == idname then
-					-- return data : we can not guess the type for now
+					-- extract param's type  from luadocumentation
+					local obj = comment2apiobj[getlinkedcommentbefore(binder)]
+					if obj and obj.tag=="item" then
+						local typedef = obj:resolvetype()
+						if typedef and typedef.tag =="functiontypedef" then 
+							for j, param in ipairs(typedef.params) do
+								if i==j then
+									-- TODO perhaps we must clone the typeref
+									return id, param.type,param.description
+								end
+							end
+						end
+					end							
 					return id, nil 
 				end
 			end
@@ -258,7 +381,7 @@ local function extracttype(binder, itemname)
 						return id, nil 
 					end
 			end	
-	| `Fornum {id, min, max, body} ->
+	| `Fornum {id, ...} ->
 			-- get the name of the current id
 			local idname = id[1]
 			-- if this is the good id
@@ -266,13 +389,26 @@ local function extracttype(binder, itemname)
 					-- return data : we can not guess the type for now
 					return id, nil 
 			end					
-	| `Localrec {{id}, ...} ->
+	| `Localrec {{id}, {func}} ->
 			-- get the name of the current id
 			local idname = id[1]
 			-- if this is the good id
 			if itemname == idname then
-					-- return data : we can not guess the type for now
-					return id, nil 
+					-- extract type from luadocumentation
+					local comment = getlinkedcommentafter(binder)
+					if not comment then
+						comment = getlinkedcommentbefore(binder)
+					end
+					local obj = comment2apiobj[comment]
+					if obj then
+						if obj.tag=="item" then 
+							return id, obj.type
+						end
+					end
+					
+					-- else extract type from code					
+					local type = createtype(func,1)
+					return id, type, comment and comment[1]
 			end						
 	| _ ->
 	end
@@ -280,7 +416,7 @@ end
 
 ------------------------------------------------------------
 -- create local vars, global vars and linked it with theirs occurences
-local function createvardefinitions(_internalcontent,ast)
+local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 	-- use bindings to get locals and globals definition
 	local locals, globals = bindings( ast )
 	
@@ -290,9 +426,19 @@ local function createvardefinitions(_internalcontent,ast)
 			-- create item
 			local _item = apimodel._item(name)
 			-- get type and id 
-			local id, _type = extracttype(binder, name)
+			local id, _type, desc = extracttype(binder, name,comment2apiobj,file)
 			if id then
-				if _type then _item.type = _type end
+				if _type then 
+					_item.type = _type
+					-- TODO manage internal type ref function
+					if _item.type.internal then
+						file:addtype(_item.type.internal)
+						_item.type.internal = nil
+					end
+				end
+				if desc then _item.description = desc end
+				
+				
 				-- add definition as occurence
 				-- we consider the identifier in the binder as an occurence
 				local _identifierdef = idto_identifier[id]
@@ -326,9 +472,31 @@ local function createvardefinitions(_internalcontent,ast)
 	
 	-- create globals var
 	for name, occurrences in pairs( globals ) do
-		local _item = apimodel._item()
-		_item.name = name
-		table.insert(_internalcontent.unknownglobalvars,_item)
+		local _item = file.globalvars[name]
+		
+		if not _item then
+		 	_item =  apimodel._item()
+			_item.name = name
+			
+			-- get type and id
+			local id, _type, desc = extracttype(occurrences[1].parent, name,comment2apiobj,file)
+			if id then
+				if _type then 
+					_item.type = _type-- TODO manage internal type ref function
+					if _item.type.internal then
+						file:addtype(_item.type.internal)
+						_item.type.internal = nil
+					end
+				end
+				if desc then _item.description = desc end
+				
+				file:addglobalvar(_item)
+							
+			else
+				table.insert(_internalcontent.unknownglobalvars,_item)
+			end
+		end
+
 		-- add occurences
 		for _,occurence in ipairs(occurrences) do
 			local _identifier = idto_identifier[occurence]
@@ -349,18 +517,38 @@ end
 
 
 ------------------------------------------------------------
+-- create block and expression node
+local function addparents(ast)
+	-- visitor function (down)
+	local function down (node,parent)
+		node.parent = parent
+	end
+
+	-- visit ast and build internal model	
+	Q(ast):foreach(down,up)
+	
+	return _internalcontent
+end
+
+
+------------------------------------------------------------
 -- create the internalcontent from an ast metalua 
-function M.createinternalcontent (ast)
+function M.createinternalcontent (ast,file,comment2apiobj)
 	-- init cache
 	idto_block = {}	
 	idto_identifier = {} 
 	expreto_expression = {}
+	comment2apiobj = comment2apiobj or {}
+	file = file or apimodel._file()
+		
+	-- create block and expression node
+	local internalcontent = addparents(ast)
 	
 	-- create block and expression node
-	local internalcontent = createtreestructure(ast)
+	internalcontent = createtreestructure(ast)
 	
 	-- create Local vars, global vars and linked occurences (Items)
-	createvardefinitions(internalcontent,ast)
+	createvardefinitions(internalcontent,ast,file,comment2apiobj)
 	
 	-- clean cache
 	idto_block = {}	

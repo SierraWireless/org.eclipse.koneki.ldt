@@ -21,10 +21,13 @@ import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
 import org.eclipse.koneki.ldt.core.internal.ast.models.LuaASTUtils;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.ExternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.FunctionTypeDef;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.InternalTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Item;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.LuaFileAPI;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.Parameter;
+import org.eclipse.koneki.ldt.core.internal.ast.models.api.PrimitiveTypeRef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.RecordTypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.api.TypeDef;
 import org.eclipse.koneki.ldt.core.internal.ast.models.file.Block;
@@ -74,7 +77,10 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 	}
 
 	public boolean endvisit(LuaFileAPI luaAPI) throws Exception {
-		luafileapi = null;
+		// HACK we need the lua fileapi when we traverse the internal content
+		// so we do no set it to null at end visiting anymore.
+		// see LuaSourceRoot.LuaFile.traverse(ASTVisitor)
+		// luafileapi = null;
 		return true;
 	}
 
@@ -148,6 +154,10 @@ public class LuaSourceElementRequestorVisitor extends SourceElementRequestVisito
 				modifiers |= Declaration.AccPublic;
 			}
 			fieldinfo.modifiers = modifiers;
+
+			// calculate type
+			if (item.getType() instanceof PrimitiveTypeRef || item.getType() instanceof InternalTypeRef || item.getType() instanceof ExternalTypeRef)
+				fieldinfo.type = item.getType().toReadableString();
 
 			// store field info
 			this.fRequestor.enterField(fieldinfo);

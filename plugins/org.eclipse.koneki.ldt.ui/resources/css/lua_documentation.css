@@ -8,19 +8,19 @@ h3           { font-size: 1.1em; }
 
 /* Margins */
 h1           { margin-top: 0.3em; margin-bottom: 0.04em }	
-h2           { margin-top: 2em; margin-bottom: 0.25em }
-h3           { margin-top: 1.7em; margin-bottom: 0.25em }
-h4           { margin-top: 2em; margin-bottom: 0.3em }
+h2           { margin-top: 0.8em; margin-bottom: 0.25em }
+h3           { margin-top: 0.8em; margin-bottom: 0.25em }
+h4           { margin-top: 0.6em; margin-bottom: 0.3em }
 h5           { margin-top: 0px; margin-bottom: 0px }
 p:first-child{ margin-top: 0px; }
-p			 {margin-bottom: 0px;}
+p			 { margin-bottom: 0px;}
 pre          { margin-left: 0.6em }
-ul	         { margin-top: 0px; margin-bottom: 1em; }
+ul	         { margin-top: 0px; margin-bottom: 0.5em; }
 li	         { margin-top: 0px; margin-bottom: 0px; }  
-ol	         { margin-top: 0px; margin-bottom: 1em; }
-dl	         { margin-top: 0px; margin-bottom: 1em; }
+ol	         { margin-top: 0px; margin-bottom: 0.8em; }
+dl	         { margin-top: 0px; margin-bottom: 0.8em; }
 dt	         { margin-top: 0px; margin-bottom: 0px; font-weight: bold; }
-dd	         { margin-top: 10px; margin-bottom: 0px; }
+dd	         { margin-top: 0.5em; margin-bottom: 0px; margin-left: 20px}
 td.summary p {margin-top: 0px;}
 
 /* Styles and colors */

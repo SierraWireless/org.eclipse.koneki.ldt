@@ -67,7 +67,7 @@ public final class LuaDocumentationHelper {
 		RGB bgColor = getBackgroundColor().getRGB();
 		RGB fgColor = getForegroundColor().getRGB();
 
-		styleSheetWithPreference = "body {color:" + toHtmlColor(fgColor) + "; background-color:" + toHtmlColor(bgColor) + ";}" + styleSheet; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		styleSheetWithPreference = "body {color:" + toHtmlColor(fgColor) + "; background-color:" + toHtmlColor(bgColor) + ";}" + styleSheetWithPreference; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		return styleSheetWithPreference;
 	}

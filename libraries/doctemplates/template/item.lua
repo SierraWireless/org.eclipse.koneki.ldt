@@ -15,15 +15,8 @@ return
 # --
 # -- Resolve item type definition
 # --
-# local typedef
-#if  _item.parent and _item.type and _item.type.tag == 'internaltyperef' then
-#	if _item.parent.tag == 'recordtypedef' then
-#		local file = _item.parent.parent
-#		typedef = file.types[ _item.type.typename ]
-#	elseif _item.parent.tag == 'file' then
-#		typedef = _item.parent.types[ _item.type.typename ]
-#	end
-#end
+# local typedef = _item:resolvetype()
+
 # --
 # -- Show item type for internal type
 # --

@@ -1,0 +1,181 @@
+do local _={
+		fileapi={
+			globalvars={
+
+			}
+			--[[table: 0x9a65b20]],
+			returns={
+
+			}
+			--[[table: 0x9a90b98]],
+			types={
+
+			}
+			--[[table: 0x98a7308]],
+			tag="file"
+		}
+		--[[table: 0x9b6c888]],
+		internalcontent={
+			unknownglobalvars={
+				[1]={
+					description="",
+					shortdescription="",
+					name="g",
+					sourcerange={
+						min=1,
+						max=1
+					}
+					--[[table: 0x99b3118]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=1,
+								max=1
+							}
+							--[[table: 0x99e0ff8]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9b860b0]],
+						[2]={
+							sourcerange={
+								min=14,
+								max=14
+							}
+							--[[table: 0x9966390]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x99bcd90]]
+					}
+					--[[table: 0x9933828]],
+					tag="item"
+				}
+				--[[table: 0x9933718]]
+			}
+			--[[table: 0x9965d18]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x98f6288]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9a14520]],
+				content={
+					[1]={
+						sourcerange={
+							min=1,
+							max=3
+						}
+						--[[table: 0x9894500]],
+						func=nil --[[ref]],
+						tag="MCall"
+					}
+					--[[table: 0x9944ed8]],
+					[2]=nil --[[ref]],
+					[3]={
+						localvars={
+							[1]={
+								item={
+									description="",
+									shortdescription="",
+									name="a",
+									sourcerange={
+										min=17,
+										max=17
+									}
+									--[[table: 0x9a23b78]],
+									occurrences={
+										[1]={
+											sourcerange={
+												min=17,
+												max=17
+											}
+											--[[table: 0x99caec8]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0x99caa30]]
+									}
+									--[[table: 0x9a703b8]],
+									tag="item"
+								}
+								--[[table: 0x9997a40]],
+								scope={
+									min=0,
+									max=0
+								}
+								--[[table: 0x9996e78]]
+							}
+							--[[table: 0x9ac6968]],
+							[2]={
+								item={
+									description="",
+									shortdescription="",
+									name="b",
+									sourcerange={
+										min=19,
+										max=19
+									}
+									--[[table: 0x9bc9e20]],
+									occurrences={
+										[1]={
+											sourcerange={
+												min=19,
+												max=19
+											}
+											--[[table: 0x9a4efb0]],
+											definition=nil --[[ref]],
+											tag="MIdentifier"
+										}
+										--[[table: 0x9a4eea0]]
+									}
+									--[[table: 0x99aad20]],
+									tag="item"
+								}
+								--[[table: 0x9a1d0d8]],
+								scope={
+									min=0,
+									max=0
+								}
+								--[[table: 0x9b10a48]]
+							}
+							--[[table: 0x9a84068]]
+						}
+						--[[table: 0x99c65f8]],
+						sourcerange={
+							min=16,
+							max=24
+						}
+						--[[table: 0x9a5b3e0]],
+						content={
+							[1]=nil --[[ref]],
+							[2]=nil --[[ref]]
+						}
+						--[[table: 0x9b66ac0]],
+						tag="MBlock"
+					}
+					--[[table: 0x995efe0]]
+				}
+				--[[table: 0x9900428]],
+				tag="MBlock"
+			}
+			--[[table: 0x99893b0]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x9931b40]]
+	}
+	--[[table: 0x9962748]];
+	_.internalcontent.unknownglobalvars[1].occurrences[1].definition=_.internalcontent.unknownglobalvars[1];
+	_.internalcontent.unknownglobalvars[1].occurrences[2].definition=_.internalcontent.unknownglobalvars[1];
+	_.internalcontent.content.content[1].func=_.internalcontent.unknownglobalvars[1].occurrences[1];
+	_.internalcontent.content.content[2]=_.internalcontent.unknownglobalvars[1].occurrences[2];
+	_.internalcontent.content.content[3].localvars[1].item.occurrences[1].definition=_.internalcontent.content.content[3].localvars[1].item;
+	_.internalcontent.content.content[3].localvars[2].item.occurrences[1].definition=_.internalcontent.content.content[3].localvars[2].item;
+	_.internalcontent.content.content[3].content[1]=_.internalcontent.content.content[3].localvars[1].item.occurrences[1];
+	_.internalcontent.content.content[3].content[2]=_.internalcontent.content.content[3].localvars[2].item.occurrences[1];
+	return _;
+end

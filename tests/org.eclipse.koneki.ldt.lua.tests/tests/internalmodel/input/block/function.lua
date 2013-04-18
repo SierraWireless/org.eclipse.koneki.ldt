@@ -1,3 +1,4 @@
+f()
 function f()
 
 end

@@ -129,6 +129,8 @@ public class LuaSourceRoot extends ModuleDeclaration {
 		public void traverse(ASTVisitor visitor) throws Exception {
 			if (visitor.visit(this)) {
 				if (getApi() != null) {
+					// HACK : the file api should be traverse before internal Content, if we want the
+					// LuaSourceElementRequestorVisitor
 					fileAPI.traverse(visitor);
 					internalContent.traverse(visitor);
 				}

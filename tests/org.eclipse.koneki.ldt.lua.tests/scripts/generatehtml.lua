@@ -11,10 +11,13 @@
 -------------------------------------------------------------------------------
  
 -- Fetch libraries form current plugin
-local arch = "32" --64
-package.path = '../lib/?.lua;../../../libraries/modelsbuilder/src/?.lua;../../../libraries/modelsbuilder/'..arch..'/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.luac;../../../plugins/org.eclipse.koneki.ldt.metalua.'..arch..'bits/lib/?.lua;../lib/external/?.lua;' .. package.path
+package.path = './?.lua;../lib/?.lua;../../../libraries/metalua/?.lua;../../../libraries/modelsbuilder/?.lua;../../../libraries/luaformatter/?.lua;../../../libraries/templateengine/?.lua;../../../libraries/penlight/?.lua;../../../libraries/doctemplates/?.lua;../../../libraries/markdown/?.lua;'
+package.mpath = '../../../libraries/metalua/?.mlua;../../../libraries/modelsbuilder/?.mlua;'
+require 'metalua.package'
 
 
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
 local apimodelbuilder      = require 'models.apimodelbuilder'
 local modeltransformations = require 'modeltransformations'
 local templateengine       = require 'templateengine'
@@ -37,9 +40,10 @@ for k = 1, #arg do
 	luafile:close()
 
 	-- Generate AST
-	local ast, errormessage = getast( luasource )
-	if not ast then
-		return nil, string.format('Unable to generate AST for %s.\n%s', filename, errormessage)
+	local ast = mlc:src_to_ast(luasource)
+	local status, astvalid, errormsg = pcall(compiler.check_ast, ast)
+	if not astvalid then
+		return nil, string.format('Unable to generate AST for %s.\n%s', filename, errormsg)
 	end
 
 	--Generate  API model

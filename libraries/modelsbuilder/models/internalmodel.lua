@@ -13,52 +13,52 @@ local M = {}
 
 function M._internalcontent()
 	return {
-	content = nil,					-- block
-	unknownglobalvars = {}, -- list of item
-	tag = "MInternalContent"
+		content = nil,					-- block
+		unknownglobalvars = {},			-- list of item
+		tag = "MInternalContent"
 	}
 end
 
 function M._block()
 	return {
-	content = {},									-- list of expr (identifier, index, call, invoke, block)
-	localvars = {},								-- list of {var=item, scope ={min,max}}
-	sourcerange = {min=0,max=0},
-	tag = "MBlock"
+		content = {},					-- list of expr (identifier, index, call, invoke, block)
+		localvars = {},					-- list of {var=item, scope ={min,max}}
+		sourcerange = {min=0,max=0},
+		tag = "MBlock"
 	}
 end
 
 function M._identifier()
 	return {
-	definition,										-- item
-	sourcerange = {min=0,max=0},
-	tag = "MIdentifier"
+		definition = nil,				-- item
+		sourcerange = {min=0,max=0},
+		tag = "MIdentifier"
 	}
 end
 
 function M._index(key, value)
 	return {
-	left= key,										-- expr (identifier, index, call, invoke, block)
-	right= value,									-- string
-	sourcerange = {min=0,max=0},
-	tag = "MIndex"
+		left= key,						-- expr (identifier, index, call, invoke, block)
+		right= value,					-- string
+		sourcerange = {min=0,max=0},
+		tag = "MIndex"
 	}
 end
 
 function M._call(funct)
 	return {
-	func = funct,									-- expr (identifier, index, call, invoke, block)
-	sourcerange = {min=0,max=0},
-	tag = "MCall"
+		func = funct,					-- expr (identifier, index, call, invoke, block)
+		sourcerange = {min=0,max=0},
+		tag = "MCall"
 	}
 end
 
 function M._invoke(name, expr)
 	return {
-	functionname = name,					-- string
-	record = expr,								-- expr (identifier, index, call, invoke, block)
-	sourcerange = {min=0,max=0},
-	tag = "MInvoke"
+		functionname = name,			-- string
+		record = expr,					-- expr (identifier, index, call, invoke, block)
+		sourcerange = {min=0,max=0},
+		tag = "MInvoke"
 	}
 end
 

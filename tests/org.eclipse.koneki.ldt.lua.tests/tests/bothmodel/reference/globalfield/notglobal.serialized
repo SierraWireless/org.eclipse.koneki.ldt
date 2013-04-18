@@ -1,0 +1,94 @@
+do local _={
+		fileapi={
+			globalvars={
+
+			}
+			--[[table: 0x9c6e898]],
+			returns={
+
+			}
+			--[[table: 0x9c6e8c0]],
+			types={
+
+			}
+			--[[table: 0x9c6e870]],
+			tag="file"
+		}
+		--[[table: 0x9c6e680]],
+		internalcontent={
+			unknownglobalvars={
+				[1]={
+					description="",
+					shortdescription="",
+					name="ng",
+					sourcerange={
+						min=1,
+						max=2
+					}
+					--[[table: 0x9c798d0]],
+					occurrences={
+						[1]={
+							sourcerange={
+								min=1,
+								max=2
+							}
+							--[[table: 0x9cca118]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9cca078]],
+						[2]={
+							sourcerange={
+								min=6,
+								max=7
+							}
+							--[[table: 0x9c73430]],
+							definition=nil --[[ref]],
+							tag="MIdentifier"
+						}
+						--[[table: 0x9c73390]]
+					}
+					--[[table: 0x9c798a8]],
+					tag="item"
+				}
+				--[[table: 0x9c796b8]]
+			}
+			--[[table: 0x9c9e1b8]],
+			content={
+				localvars={
+
+				}
+				--[[table: 0x9cc9bc0]],
+				sourcerange={
+					min=1,
+					max=10000
+				}
+				--[[table: 0x9cc9be8]],
+				content={
+					[1]={
+						sourcerange={
+							min=1,
+							max=4
+						}
+						--[[table: 0x9cca220]],
+						func=nil --[[ref]],
+						tag="MCall"
+					}
+					--[[table: 0x9cca180]],
+					[2]=nil --[[ref]]
+				}
+				--[[table: 0x9c9e280]],
+				tag="MBlock"
+			}
+			--[[table: 0x9c9e1e0]],
+			tag="MInternalContent"
+		}
+		--[[table: 0x9c9e118]]
+	}
+	--[[table: 0x9c799d0]];
+	_.internalcontent.unknownglobalvars[1].occurrences[1].definition=_.internalcontent.unknownglobalvars[1];
+	_.internalcontent.unknownglobalvars[1].occurrences[2].definition=_.internalcontent.unknownglobalvars[1];
+	_.internalcontent.content.content[1].func=_.internalcontent.unknownglobalvars[1].occurrences[1];
+	_.internalcontent.content.content[2]=_.internalcontent.unknownglobalvars[1].occurrences[2];
+	return _;
+end

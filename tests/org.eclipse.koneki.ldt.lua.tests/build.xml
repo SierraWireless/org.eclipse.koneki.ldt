@@ -13,7 +13,7 @@
 	<!-- folder where lua script file should be get -->
 	<property name="librariesFolder" value="../../libraries" />
 	<property name="luaformatterFolder" value="${librariesFolder}/luaformatter" />
-	<property name="modelsbuilderFolder" value="${librariesFolder}/modelsbuilder/src" />
+	<property name="modelsbuilderFolder" value="${librariesFolder}/modelsbuilder" />
 	<property name="penlightFolder" value="${librariesFolder}/penlight" />
 	<property name="templateengineFolder" value="${librariesFolder}/templateengine" />
 	<property name="markdownFolder" value="${librariesFolder}/markdown" />

@@ -9,7 +9,9 @@
 --     Sierra Wireless - initial API and implementation
 -------------------------------------------------------------------------------
 
-require 'errnode'
+local compiler = require 'metalua.compiler'
+local mlc = compiler.new()
+
 local serializer = require 'serpent'
 local tablecompare         = require 'tablecompare'
 local tabledumpbeautifier  = require 'tabledumpbeautifier'
@@ -33,9 +35,10 @@ function M.codetoserialisedmodel(sourcefilepath, resultextension, transformation
 	luafile:close()
 
 	-- Generate AST
-	local ast, errormessage = getast( luasource )
-	if not ast then
-		return nil, string.format('Unable to generate AST for %s.\n%s', filename, errormessage)
+	local ast = mlc:src_to_ast( luasource )
+	local status, astvalid, errormsg = pcall(compiler.check_ast, ast)
+	if not astvalid then
+		return nil, string.format('Unable to generate AST for %s.\n%s', sourcefilepath, errormsg)
 	end
 	
 	--Generate model

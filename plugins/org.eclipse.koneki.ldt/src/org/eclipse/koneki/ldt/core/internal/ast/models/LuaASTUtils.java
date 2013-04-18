@@ -12,7 +12,6 @@ package org.eclipse.koneki.ldt.core.internal.ast.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -382,34 +381,75 @@ public final class LuaASTUtils {
 	}
 
 	public static List<Definition> getAllGlobalVarsDefinition(ISourceModule sourceModule, String start) {
+		final List<Definition> definitions = new ArrayList<Definition>();
+
+		// global vars defined preloaded module.
+		// ----------------------------------------
 		// get preloaded module
 		ISourceModule preloadedSourceModule = getPreloadSourceModule(sourceModule);
-		if (preloadedSourceModule == null)
-			return Collections.emptyList();
+		if (preloadedSourceModule != null) {
+			// get lua source root
+			LuaSourceRoot preloadedLuaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(preloadedSourceModule);
+			if (preloadedLuaSourceRoot != null) {
 
-		// get luasourceroot
-		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(preloadedSourceModule);
-		if (luaSourceRoot == null)
-			return Collections.emptyList();
+				// global var which start with 'start'
+				for (Item globalvar : preloadedLuaSourceRoot.getFileapi().getGlobalvars().values()) {
+					if (start == null || start.isEmpty() || globalvar.getName().toLowerCase().startsWith(start.toLowerCase()))
+						definitions.add(new Definition(preloadedSourceModule, globalvar));
+				}
+			}
+		}
 
-		// get a global var with this name
-		final List<Definition> definitions = new ArrayList<Definition>();
-		for (Item globalvar : luaSourceRoot.getFileapi().getGlobalvars().values()) {
-			if (start == null || start.isEmpty() || globalvar.getName().toLowerCase().startsWith(start.toLowerCase()))
-				definitions.add(new Definition(preloadedSourceModule, globalvar));
+		// global vars defined in current module.
+		// ----------------------------------------
+		LuaSourceRoot currentluaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
+		if (currentluaSourceRoot != null) {
+			// global var which start with 'start'
+			for (Item globalvar : currentluaSourceRoot.getFileapi().getGlobalvars().values()) {
+				if (start == null || start.isEmpty() || globalvar.getName().toLowerCase().startsWith(start.toLowerCase()))
+					definitions.add(new Definition(sourceModule, globalvar));
+			}
 		}
 
 		return definitions;
 	}
 
 	public static Definition getGlobalVarDefinition(ISourceModule sourceModule, String varname) {
+		// SEARCH IN PRELOADED SOURCE MODULE
+		Definition definition = getGlobalVarDefinitionInPreloadedSourceModule(sourceModule, varname);
+		if (definition != null)
+			return definition;
+
+		// SEARCH IN CURRENT SOURCE MODULE
+		definition = getInternalGlobalVarDefinition(sourceModule, varname);
+		if (definition != null)
+			return definition;
+
+		return null;
+	}
+
+	public static Definition getGlobalVarDefinitionInPreloadedSourceModule(ISourceModule sourceModule, String varname) {
 		// get preloaded module
 		ISourceModule preloadedSourceModule = getPreloadSourceModule(sourceModule);
 		if (preloadedSourceModule == null)
 			return null;
 
 		// get luasourceroot
-		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(preloadedSourceModule);
+		LuaSourceRoot preloadedLuaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(preloadedSourceModule);
+		if (preloadedLuaSourceRoot == null)
+			return null;
+
+		// get a global var with this name
+		Item item = preloadedLuaSourceRoot.getFileapi().getGlobalvars().get(varname);
+		if (item == null)
+			return null;
+
+		return new Definition(preloadedSourceModule, item);
+	}
+
+	public static Definition getInternalGlobalVarDefinition(ISourceModule sourceModule, String varname) {
+		// get luasourceroot
+		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModule);
 		if (luaSourceRoot == null)
 			return null;
 
@@ -418,7 +458,7 @@ public final class LuaASTUtils {
 		if (item == null)
 			return null;
 
-		return new Definition(preloadedSourceModule, item);
+		return new Definition(sourceModule, item);
 	}
 
 	public static ISourceModule getPreloadSourceModule(ISourceModule sourceModule) {
@@ -450,6 +490,13 @@ public final class LuaASTUtils {
 
 	public static boolean isUnresolvedGlobal(Item item) {
 		return item.getParent() instanceof LuaInternalContent;
+	}
+
+	public static TypeDef resolveTypeLocaly(ISourceModule sourceModuile, Item item) {
+		LuaSourceRoot luaSourceRoot = LuaASTModelUtils.getLuaSourceRoot(sourceModuile);
+		if (luaSourceRoot != null)
+			return resolveTypeLocaly(luaSourceRoot.getFileapi(), item);
+		return null;
 	}
 
 	public static TypeDef resolveTypeLocaly(LuaFileAPI luaFileAPI, Item item) {

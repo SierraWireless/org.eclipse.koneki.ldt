@@ -14,6 +14,7 @@ local tablecompare    = require 'tablecompare'
 local templateengine  = require 'templateengine'
 local xml = require 'xml'
 local testutil = require 'testutil'
+local testmodelutil = require 'testmodelutil'
 
 --
 -- Loading template engine environment
@@ -34,6 +35,7 @@ function M.test(modelsourcepath, referencepath)
 	-- Load model
 	local modelfunction = loadstring(inputstring)
 	local inputmodel = modelfunction()
+	local inputmodel = testmodelutil.addfunctions(inputmodel)
 
 	-- Generate html
 	local inputhtml = templateengine.applytemplate(inputmodel)
