@@ -177,9 +177,13 @@ end
 -------------------------------------------------------------------------------
 function M.parse_error(lx, fmt, ...)
    local li = lx:lineinfo_left()
-   local line, column, offset
-   if li then line, column, offset = li.line, li.column, li.offset
-   else line, column, offset = -1, -1, -1 end
+   local line, column, offset, positions
+   if li then
+      line, column, offset = li.line, li.column, li.offset
+      positions = { first = li, last = li }
+   else
+      line, column, offset = -1, -1, -1
+   end
 
    local msg  = string.format("line %i, char %i: "..fmt, line, column, ...)   
    local src = lx.src
@@ -192,7 +196,7 @@ function M.parse_error(lx, fmt, ...)
       msg = string.format("%s\n>>> %s\n>>> %s", msg, srcline, idx)
    end
    lx :kill()
-   return { tag='Error', msg }
+   return { tag='Error', msg , lineinfo = positions }
 end
 
 function M.wrap_error(lx, nchildren, tag, ...)
