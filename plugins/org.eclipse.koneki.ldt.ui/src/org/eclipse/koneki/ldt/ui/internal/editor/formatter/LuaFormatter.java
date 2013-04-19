@@ -35,7 +35,7 @@ public class LuaFormatter extends AbstractScriptFormatter {
 	private final String tabulation;
 	private final boolean formatTableValues;
 
-	private final LuaFormatterModule formatLuaModule = new LuaFormatterModule();
+	private final static LuaFormatterModule formatLuaModule = new LuaFormatterModule();
 
 	protected LuaFormatter(final String lineDelimiter, final Map<String, String> preferences) {
 		super(preferences);

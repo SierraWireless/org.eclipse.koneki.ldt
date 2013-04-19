@@ -32,6 +32,8 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	public static final String FORMATTER_LIB_NAME = "luaformatter"; //$NON-NLS-1$
 	public static final String INDENTATION_FUNTION = "indentcode"; //$NON-NLS-1$
 
+	private LuaState lua = null;
+
 	public LuaFormatterModule() {
 	}
 
@@ -50,7 +52,9 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 */
 	public String indent(final String source, final String delimiter, final boolean indentInTable, final String tabulation) {
 		// Load function
-		final LuaState lua = loadLuaModule();
+		if (lua == null)
+			lua = loadLuaModule();
+
 		pushLuaModule(lua);
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
@@ -64,7 +68,7 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 			return source;
 		}
 		final String formattedCode = lua.toString(-1);
-		lua.close();
+		// lua.close();
 		return formattedCode;
 	}
 
@@ -85,7 +89,8 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 	 * @see #indent(String, String, String, int)
 	 */
 	public String indent(final String source, final String delimiter, final boolean indentInTable, final int tabSize, final int indentationSize) {
-		final LuaState lua = loadLuaModule();
+		if (lua == null)
+			lua = loadLuaModule();
 		pushLuaModule(lua);
 		lua.getField(-1, INDENTATION_FUNTION);
 		lua.pushString(source);
@@ -100,7 +105,7 @@ public final class LuaFormatterModule extends AbstractMetaLuaModule {
 			return source;
 		}
 		final String formattedCode = lua.toString(-1);
-		lua.close();
+		// lua.close();
 		return formattedCode;
 	}
 
