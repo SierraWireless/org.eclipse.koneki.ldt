@@ -9,10 +9,9 @@
 --       Simon BERNARD <sbernard@sierrawireless.com>
 --           - initial API and implementation and initial documentation
 --------------------------------------------------------------------------------
-require 'metalua.walk'
-require 'metalua.walk.bindings'
-local ldp = require "models.ldparser"
 local apimodel = require "models.apimodel"
+local ldp      = require "models.ldparser"
+local walk     = require "metalua.walk"
 
 local M = {}
 

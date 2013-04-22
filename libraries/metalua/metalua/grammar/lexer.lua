@@ -599,9 +599,12 @@ function lexer :newstream (src_or_stream, name)
       }
       setmetatable (stream, self)
 
-      -- skip initial sharp-bang for unix scripts
+      -- Skip initial sharp-bang for Unix scripts
       -- FIXME: redundant with mlp.chunk()
-      if src and src :match "^#" then stream.i = src :find "\n" + 1 end
+      if src and src :match "^#!" then
+         local endofline = src :find "\n"
+         stream.i = endofline and (endofline + 1) or #src
+      end
       return stream
    else
       assert(false, ":newstream() takes a source string or a stream, not a "..
@@ -610,7 +613,7 @@ function lexer :newstream (src_or_stream, name)
 end
 
 ----------------------------------------------------------------------
--- if there's no ... args, return the token a (whose truth value is
+-- If there's no ... args, return the token a (whose truth value is
 -- true) if it's a `Keyword{ }, or nil.  If there are ... args, they
 -- have to be strings. if the token a is a keyword, and it's content
 -- is one of the ... args, then returns it (it's truth value is

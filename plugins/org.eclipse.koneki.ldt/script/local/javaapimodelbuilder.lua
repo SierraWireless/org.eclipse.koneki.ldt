@@ -29,7 +29,7 @@ templateengineenv.linktypes['file'] = nil
 
 --
 -- So far, documentation embedded in the IDE does not support links very well.
--- To circumvent this, we will need to desactivate link generation while
+-- To circumvent this, we will need to deactivate link generation while
 -- generation documentation.
 
 -- Cache of link generation
@@ -155,7 +155,7 @@ function M._file(_file)
 	end
 	disablelinks()
 
-	-- Adding gloval variables
+	-- Adding global variables
 	for _, _item in pairs(_file.globalvars) do
 		-- Fill Java item
 		javaapimodelfactory.addglobalvar(jfile,M._item(_item,false,handledexpr))

@@ -35,7 +35,7 @@ local expr = mlp_expr.expr
 local M = { }
 
 --------------------------------------------------------------------------------
--- Alebraic Datatypes
+-- Algebraic Datatypes
 --------------------------------------------------------------------------------
 local function adt (lx)
    local node = mlp_misc.id (lx)
