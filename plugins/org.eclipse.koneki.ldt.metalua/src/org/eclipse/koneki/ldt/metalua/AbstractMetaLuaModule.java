@@ -29,11 +29,16 @@ public abstract class AbstractMetaLuaModule extends AbstractLuaModule {
 	private static final String METALUA_PATTERN = "?.mlua;"; //$NON-NLS-1$
 
 	@Override
+	protected LuaState loadLuaModule() {
+		compileMetaluaFiles();
+		return super.loadLuaModule();
+	}
+
+	@Override
 	protected void definePaths(final LuaState state) {
 		super.definePaths(state);
 		final List<File> metaluaSourceFolders = getScriptFolders(getMetaLuaSourcePaths());
 		setMetaluaPath(state, metaluaSourceFolders);
-		compileMetaluaFiles();
 	}
 
 	public void compileMetaluaFiles() {
