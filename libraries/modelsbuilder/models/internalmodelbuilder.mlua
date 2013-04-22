@@ -40,9 +40,12 @@ local function getlinkedcommentbefore(node)
 		if node and node.lineinfo and node.lineinfo.first.line == line then
 			-- get the last comment before (the nearest of code)
 			local comments = node.lineinfo.first.comments
-			local comment = comments and  comments[#comments] 
+			local comment = comments and  comments[#comments]
 			if comment  and comment.lineinfo.last.line == line-1 then
-				return comment
+				-- ignore the comment if there are code before on the same line
+				if node.lineinfo.first.facing and (node.lineinfo.first.facing.line ~= comment.lineinfo.first.line) then
+					return comment
+				end
 			else
 				return _getlinkedcomment(node.parent,line)
 			end
