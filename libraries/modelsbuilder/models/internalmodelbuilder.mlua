@@ -482,7 +482,13 @@ local function createvardefinitions(_internalcontent,ast,file,comment2apiobj)
 			_item.name = name
 			
 			-- get type and id
-			local id, _type, desc = extracttype(occurrences[1].parent, name,comment2apiobj,file)
+			local id,_type, desc
+			-- global declaration is only if the Id is in a 'Set'
+			if occurrences[1].parent and occurrences[1].parent.tag == "Set" then
+			 	id,_type,desc = extracttype(occurrences[1].parent, name,comment2apiobj,file)
+			end
+			
+			-- if we find the id, this is a global declaration 
 			if id then
 				if _type then 
 					_item.type = _type-- TODO manage internal type ref function
