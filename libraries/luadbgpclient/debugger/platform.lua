@@ -117,7 +117,7 @@ end
 function M.normalize(path)
     local parts = { }
     for w in path:gmatch("[^/]+") do
-        if     w == ".." then table.remove(parts)
+        if     w == ".." and #parts ~=0 then table.remove(parts)
         elseif w ~= "."  then table.insert(parts, w)
         end
     end
