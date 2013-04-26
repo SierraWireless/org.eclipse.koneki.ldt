@@ -76,7 +76,7 @@ public class FakeMethod extends SourceMethod implements ISourceRange, IFakeEleme
 
 	@Override
 	public String getType() throws ModelException {
-		return ""; //$NON-NLS-1$
+		return null;
 	}
 
 	/**
