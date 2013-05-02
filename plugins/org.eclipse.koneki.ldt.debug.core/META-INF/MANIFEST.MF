@@ -15,7 +15,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.koneki.ldt.debug.core,
  org.eclipse.koneki.ldt.debug.core.internal;x-friends:="org.eclipse.koneki.ldt.debug.ui,org.eclipse.koneki.ldt.remote.debug.core",
  org.eclipse.koneki.ldt.debug.core.internal.attach;x-friends:="org.eclipse.koneki.ldt.remote.debug.core",
- org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic;x-friends:="org.eclipse.koneki.ldt.support.lua51,org.eclipse.debug.core",
+ org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic;x-friends:="org.eclipse.koneki.ldt.support.lua51,org.eclipse.koneki.ldt.debug.ui",
  org.eclipse.koneki.ldt.debug.core.internal.interpreter.jnlua;x-friends:="org.eclipse.koneki.ldt.support.lua51,org.eclipse.koneki.ldt.support.lua52",
  org.eclipse.koneki.ldt.debug.core.internal.local;x-friends:="org.eclipse.debug.core",
  org.eclipse.koneki.ldt.debug.core.internal.model.interpreter,

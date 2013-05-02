@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.koneki.ldt.core.LuaNature;
+import org.eclipse.koneki.ldt.debug.core.internal.interpreter.generic.LuaGenericInterpreterUtil;
 import org.eclipse.koneki.ldt.debug.ui.internal.Activator;
 import org.eclipse.koneki.ldt.debug.ui.internal.launchconfiguration.local.tab.Messages;
 import org.eclipse.koneki.ldt.ui.SWTUtil;
@@ -142,6 +143,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 					interpretersViewer.setSelection(new StructuredSelection(install));
 			}
 			refreshUISelection();
+			refreshScriptField();
 
 			addListeners();
 		} catch (CoreException e) {
@@ -155,6 +157,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				refreshUISelection();
+				refreshScriptField();
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -162,6 +165,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				refreshUISelection();
+				refreshScriptField();
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -170,6 +174,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
+				refreshScriptField();
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -181,6 +186,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				refreshInterpretersInformation();
 				if (interpretersViewer.getCombo().getItemCount() > 0)
 					interpretersViewer.getCombo().select(0);
+				refreshScriptField();
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -208,6 +214,13 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		defaultInterpreterLabel.setEnabled(!alternateInterpreterButton.getSelection());
 	}
 
+	private void refreshScriptField() {
+		// refresh script selection UI
+		IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
+		boolean interpreterHandlesFilesAsArgument = LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
+		setEnableScriptField(interpreterHandlesFilesAsArgument);
+	}
+
 	/**
 	 * Shows window with appropriate language preference page.
 	 */
@@ -232,7 +245,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		if (defaultInterpreterButton.getSelection()) {
 			config.setAttribute(ScriptLaunchConfigurationConstants.ATTR_CONTAINER_PATH, (String) null);
 		} else {
-			IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
+			IInterpreterInstall selectedInterpreter = getSelectedAlternateInterpreter();
 			if (selectedInterpreter != null) {
 				IPath containerPath = ScriptRuntime.newInterpreterContainerPath(selectedInterpreter);
 				if (containerPath != null)
@@ -242,6 +255,16 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 
 	private IInterpreterInstall getSelectedInterpreter() {
+		IInterpreterInstall selectedInterpreter;
+		if (alternateInterpreterButton.getSelection()) {
+			selectedInterpreter = getSelectedAlternateInterpreter();
+		} else {
+			selectedInterpreter = getDefaultInterpreter();
+		}
+		return selectedInterpreter;
+	}
+
+	private IInterpreterInstall getSelectedAlternateInterpreter() {
 		ISelection selection = interpretersViewer.getSelection();
 		if (selection instanceof IStructuredSelection) {
 			Object firstElement = ((IStructuredSelection) selection).getFirstElement();
@@ -280,6 +303,19 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 
 	/**
+	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab#validateScript()
+	 */
+	@Override
+	protected boolean validateScript() {
+		IInterpreterInstall selectedInterpreter = getSelectedInterpreter();
+		boolean interpreterHandlesFilesAsArgument = LuaGenericInterpreterUtil.interpreterHandlesFilesAsArgument(selectedInterpreter);
+		if (interpreterHandlesFilesAsArgument)
+			return super.validateScript();
+		else
+			return true;
+	}
+
+	/**
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	@Override
@@ -294,7 +330,7 @@ public class LuaMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 					return false;
 				}
 			} else {
-				if (getSelectedInterpreter() == null) {
+				if (getSelectedAlternateInterpreter() == null) {
 					if (interpretersViewer.getCombo().getItemCount() > 0) {
 						setErrorMessage(Messages.LuaInterpreterTabComboBlockSelectAnInterpreter);
 						return false;
