@@ -346,6 +346,22 @@ public class SshProcess implements IProcess {
 
 			// execute command
 			killChannel.connect();
+
+			// wait the end of command execution
+			int timeout = 5000; // in ms
+			int period = 100; // in ms
+			int i = 0; // counter
+			while (!channel.isClosed() && i * period < timeout) {
+				try {
+					Thread.sleep(period);
+					// CHECKSTYLE:OFF
+				} catch (InterruptedException e) {
+					// nothing to do
+					// CHECKSTYLE:ON
+				} finally {
+					i++;
+				}
+			}
 			// CHECKSTYLE:OFF
 		} catch (Exception e) {
 			// CHECKSTYLE:ON
