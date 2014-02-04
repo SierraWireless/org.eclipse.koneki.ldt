@@ -15,7 +15,7 @@ local apr = require "apr"
 
 -- base 64 wrapping
 function b64_wrap(src)
-  t = {}
+  local t = {}
   local b64_src = mime.b64(src)
   for i=1, #b64_src, 76 do t[#t+1] = b64_src:sub(i, i+75).."\r\n" end
   return table.concat(t)
