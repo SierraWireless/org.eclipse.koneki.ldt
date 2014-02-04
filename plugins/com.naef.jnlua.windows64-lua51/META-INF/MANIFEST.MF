@@ -6,6 +6,6 @@ Bundle-Version: 0.9.1.qualifier
 Bundle-Vendor: %Bundle-Vendor
 Fragment-Host: com.naef.jnlua;bundle-version="[0.9.1,1.0.0)"
 Eclipse-PlatformFilter: (&(osgi.os=win32)(osgi.arch=x86_64))
-Bundle-NativeCode: lib/lua5.1.dll ; lib/jnlua5.1.dll
+Bundle-NativeCode: lib/lua5.1.dll ; lib/jnlua5.1.dll; platform=win32; processor=x86-64
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
